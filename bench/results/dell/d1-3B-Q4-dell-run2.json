@@ -1,0 +1,1130 @@
+{
+  "timestamp": "2026-10-17T13:42:44-0400",
+  "backend": "d1_systemone",
+  "host": "dell321",
+  "base_url": "ssh-tunnel 18080 -> dell321 127.0.0.1:8080",
+  "server_threads": 8,
+  "model": {
+    "path": "C:\\Users\\andre\\Documents\\PersonalCodingProjects\\personal\\Research\\jevResearch\\lab\\d1bench\\models\\d1-3B-Q4_K_M.gguf",
+    "ftype": "Q4_K - Medium",
+    "build_info": "b11512-a11f57ba9"
+  },
+  "n_rows": 50,
+  "malformed_responses": 0,
+  "abstains": 0,
+  "accuracy": 0.84,
+  "latency_ms": {
+    "p50": 134.0,
+    "p95": 146.7,
+    "mean": 146.2,
+    "min": 128.7,
+    "max": 651.9
+  },
+  "accuracy_by_op": {
+    "decide_extract": {
+      "n": 6,
+      "accuracy": 0.5
+    },
+    "decide_pick": {
+      "n": 7,
+      "accuracy": 0.8571
+    },
+    "filesys_glob": {
+      "n": 6,
+      "accuracy": 1.0
+    },
+    "filesys_grep": {
+      "n": 7,
+      "accuracy": 0.5714
+    },
+    "filesys_read": {
+      "n": 8,
+      "accuracy": 0.875
+    },
+    "reddit_digest": {
+      "n": 5,
+      "accuracy": 1.0
+    },
+    "web_fetch": {
+      "n": 5,
+      "accuracy": 1.0
+    },
+    "web_search": {
+      "n": 6,
+      "accuracy": 1.0
+    }
+  },
+  "confidence_calibration": [
+    {
+      "band": 0.0,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.1,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.2,
+      "n": 1,
+      "accuracy": 0.0,
+      "mean_conf": 0.2388
+    },
+    {
+      "band": 0.3,
+      "n": 1,
+      "accuracy": 0.0,
+      "mean_conf": 0.3671
+    },
+    {
+      "band": 0.4,
+      "n": 4,
+      "accuracy": 0.5,
+      "mean_conf": 0.4285
+    },
+    {
+      "band": 0.5,
+      "n": 4,
+      "accuracy": 1.0,
+      "mean_conf": 0.5554
+    },
+    {
+      "band": 0.6,
+      "n": 2,
+      "accuracy": 0.5,
+      "mean_conf": 0.6791
+    },
+    {
+      "band": 0.7,
+      "n": 5,
+      "accuracy": 1.0,
+      "mean_conf": 0.7521
+    },
+    {
+      "band": 0.8,
+      "n": 8,
+      "accuracy": 0.625,
+      "mean_conf": 0.8572
+    },
+    {
+      "band": 0.9,
+      "n": 25,
+      "accuracy": 1.0,
+      "mean_conf": 0.95
+    }
+  ],
+  "conf_distribution": {
+    "min": 0.2388,
+    "mean": 0.8054,
+    "max": 0.9794
+  },
+  "per_row": [
+    {
+      "idx": 0,
+      "utterance": "show me the contents of src/main.py",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "correct": true,
+      "conf": 0.9414456361791811,
+      "probabilities": {
+        "filesys_read": 0.9487649316567834,
+        "filesys_glob": 0.01291125157934218,
+        "filesys_grep": 0.006144203985751377,
+        "decide_pick": 0.0038678274140994777,
+        "decide_extract": 0.01386967537239835,
+        "web_search": 0.0024849225216349675,
+        "web_fetch": 0.010349293234201116,
+        "reddit_digest": 0.0016078942357891082
+      },
+      "ms": 651.8730130010226,
+      "error": null
+    },
+    {
+      "idx": 1,
+      "utterance": "read README.md and tell me what it says",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "correct": true,
+      "conf": 0.9491306083054436,
+      "probabilities": {
+        "filesys_read": 0.9554892822672632,
+        "filesys_glob": 0.00896681874251088,
+        "filesys_grep": 0.005997419572076827,
+        "decide_pick": 0.002715449647030834,
+        "decide_extract": 0.0035546143353833532,
+        "web_search": 0.002759332550021514,
+        "web_fetch": 0.018715922204683644,
+        "reddit_digest": 0.0018011606810299328
+      },
+      "ms": 139.66916099889204,
+      "error": null
+    },
+    {
+      "idx": 2,
+      "utterance": "open config/defaults.json",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "correct": true,
+      "conf": 0.9656955007786249,
+      "probabilities": {
+        "filesys_read": 0.9699835631812967,
+        "filesys_glob": 0.008737035219423218,
+        "filesys_grep": 0.0067588789816484815,
+        "decide_pick": 0.0027865571039245385,
+        "decide_extract": 0.004269309479722901,
+        "web_search": 0.002121660459095136,
+        "web_fetch": 0.003928551247433785,
+        "reddit_digest": 0.0014144443274552035
+      },
+      "ms": 137.97417700152437,
+      "error": null
+    },
+    {
+      "idx": 3,
+      "utterance": "what does the LICENSE file contain?",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "correct": true,
+      "conf": 0.9281516067745276,
+      "probabilities": {
+        "filesys_read": 0.9371326559277117,
+        "filesys_glob": 0.012389548372238008,
+        "filesys_grep": 0.017368761855546984,
+        "decide_pick": 0.0035294116938448497,
+        "decide_extract": 0.003222413590825107,
+        "web_search": 0.004962721955744742,
+        "web_fetch": 0.019601495730945558,
+        "reddit_digest": 0.0017929908731432926
+      },
+      "ms": 130.54179999926419,
+      "error": null
+    },
+    {
+      "idx": 4,
+      "utterance": "print the first 50 lines of bench/replay.py",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "correct": true,
+      "conf": 0.9348423473807342,
+      "probabilities": {
+        "filesys_read": 0.9429870539581424,
+        "filesys_glob": 0.02425913644735533,
+        "filesys_grep": 0.011575555372610206,
+        "decide_pick": 0.002589062853039201,
+        "decide_extract": 0.005800987462203266,
+        "web_search": 0.0024559834462976825,
+        "web_fetch": 0.008814771727782039,
+        "reddit_digest": 0.0015174487325697796
+      },
+      "ms": 133.94460400013486,
+      "error": null
+    },
+    {
+      "idx": 5,
+      "utterance": "look at the pyproject.toml file",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "correct": true,
+      "conf": 0.9094728865867326,
+      "probabilities": {
+        "filesys_read": 0.920788775763391,
+        "filesys_glob": 0.023671897617431138,
+        "filesys_grep": 0.01386628569084841,
+        "decide_pick": 0.008931256984513863,
+        "decide_extract": 0.01151862196958771,
+        "web_search": 0.005229067940006939,
+        "web_fetch": 0.01398658681844183,
+        "reddit_digest": 0.0020075072157790218
+      },
+      "ms": 137.44664700061549,
+      "error": null
+    },
+    {
+      "idx": 6,
+      "utterance": "read my ~/.bashrc",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "correct": true,
+      "conf": 0.9504880605016897,
+      "probabilities": {
+        "filesys_read": 0.9566770529389784,
+        "filesys_glob": 0.010834885918408326,
+        "filesys_grep": 0.010624327257463501,
+        "decide_pick": 0.0032463393097624835,
+        "decide_extract": 0.008256286246291095,
+        "web_search": 0.002674229403934057,
+        "web_fetch": 0.005873216986249453,
+        "reddit_digest": 0.001813661938912658
+      },
+      "ms": 139.31927900011942,
+      "error": null
+    },
+    {
+      "idx": 7,
+      "utterance": "display service/ti/service_entry.py",
+      "label": "filesys_read",
+      "choice": "decide_extract",
+      "correct": false,
+      "conf": 0.2388453970648954,
+      "probabilities": {
+        "filesys_read": 0.048705059716877865,
+        "filesys_glob": 0.10131547134620038,
+        "filesys_grep": 0.052189553304035435,
+        "decide_pick": 0.13896352043557172,
+        "decide_extract": 0.3339897224317835,
+        "web_search": 0.061607729734147035,
+        "web_fetch": 0.24625589600371206,
+        "reddit_digest": 0.01697304702767201
+      },
+      "ms": 199.7741480008699,
+      "error": null
+    },
+    {
+      "idx": 8,
+      "utterance": "list all python files under src/",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.9688446913619816,
+      "probabilities": {
+        "filesys_read": 0.0035097810199314215,
+        "filesys_glob": 0.9727391049417339,
+        "filesys_grep": 0.004026498157761725,
+        "decide_pick": 0.005509987996889894,
+        "decide_extract": 0.006878675998742258,
+        "web_search": 0.003847978454445327,
+        "web_fetch": 0.0018287843367567323,
+        "reddit_digest": 0.0016591890937389029
+      },
+      "ms": 152.17434300029709,
+      "error": null
+    },
+    {
+      "idx": 9,
+      "utterance": "find every markdown file in docs",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.9692515594901361,
+      "probabilities": {
+        "filesys_read": 0.004234511332524784,
+        "filesys_glob": 0.9730951145538691,
+        "filesys_grep": 0.0042481951146344215,
+        "decide_pick": 0.005334267273063081,
+        "decide_extract": 0.005307267092412587,
+        "web_search": 0.003924916070169078,
+        "web_fetch": 0.0021076410588086705,
+        "reddit_digest": 0.0017480875045181618
+      },
+      "ms": 131.77432300108194,
+      "error": null
+    },
+    {
+      "idx": 10,
+      "utterance": "which files match tests/test_*.py",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.9604786255812022,
+      "probabilities": {
+        "filesys_read": 0.004609237334438164,
+        "filesys_glob": 0.965418797383552,
+        "filesys_grep": 0.005163646984802074,
+        "decide_pick": 0.010175026522833338,
+        "decide_extract": 0.006876787914427451,
+        "web_search": 0.004055007244645083,
+        "web_fetch": 0.0019668797575961828,
+        "reddit_digest": 0.001734616857705758
+      },
+      "ms": 136.11329999912414,
+      "error": null
+    },
+    {
+      "idx": 11,
+      "utterance": "locate all json files in the repo",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.9633802273336621,
+      "probabilities": {
+        "filesys_read": 0.00390944060733631,
+        "filesys_glob": 0.9679576989169544,
+        "filesys_grep": 0.006337417466785948,
+        "decide_pick": 0.006063664483928573,
+        "decide_extract": 0.007780963114931544,
+        "web_search": 0.00417264961466473,
+        "web_fetch": 0.002088820351525101,
+        "reddit_digest": 0.001689345443873416
+      },
+      "ms": 132.98224400023173,
+      "error": null
+    },
+    {
+      "idx": 12,
+      "utterance": "find any .gguf files under models/",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.9589407935381098,
+      "probabilities": {
+        "filesys_read": 0.004743784387327472,
+        "filesys_glob": 0.964073194345846,
+        "filesys_grep": 0.00905805417299888,
+        "decide_pick": 0.005530712746998531,
+        "decide_extract": 0.007513352024648038,
+        "web_search": 0.004642099660704916,
+        "web_fetch": 0.0024470149335921367,
+        "reddit_digest": 0.0019917877278838483
+      },
+      "ms": 130.96361399948364,
+      "error": null
+    },
+    {
+      "idx": 13,
+      "utterance": "show me all bash scripts in extern",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.9359166772819948,
+      "probabilities": {
+        "filesys_read": 0.020011198186107897,
+        "filesys_glob": 0.9439270926217455,
+        "filesys_grep": 0.007470040414323056,
+        "decide_pick": 0.0054238159907076915,
+        "decide_extract": 0.00854549098709951,
+        "web_search": 0.0052315561362661885,
+        "web_fetch": 0.006686375908794761,
+        "reddit_digest": 0.002704429754955455
+      },
+      "ms": 139.9052649994701,
+      "error": null
+    },
+    {
+      "idx": 14,
+      "utterance": "which files mention systemone?",
+      "label": "filesys_grep",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.3671375012117471,
+      "probabilities": {
+        "filesys_read": 0.03719574516593259,
+        "filesys_glob": 0.4462453135602787,
+        "filesys_grep": 0.42239182389297353,
+        "decide_pick": 0.03547963566288343,
+        "decide_extract": 0.022385178004490955,
+        "web_search": 0.023143141883775226,
+        "web_fetch": 0.009755625387557802,
+        "reddit_digest": 0.003403536442107753
+      },
+      "ms": 129.84185500135936,
+      "error": null
+    },
+    {
+      "idx": 15,
+      "utterance": "grep for TODO across the service dir",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.9557514643745411,
+      "probabilities": {
+        "filesys_read": 0.004096928973927824,
+        "filesys_glob": 0.015083212778492623,
+        "filesys_grep": 0.9612825313277235,
+        "decide_pick": 0.0035007884397060198,
+        "decide_extract": 0.010167594307047828,
+        "web_search": 0.002671679694299639,
+        "web_fetch": 0.0017284801815001653,
+        "reddit_digest": 0.0014687842973024787
+      },
+      "ms": 135.0442250004562,
+      "error": null
+    },
+    {
+      "idx": 16,
+      "utterance": "find where gate_route is used",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.5014718084595268,
+      "probabilities": {
+        "filesys_read": 0.06595934566632058,
+        "filesys_glob": 0.10992411913708675,
+        "filesys_grep": 0.563787832402086,
+        "decide_pick": 0.0284549794299743,
+        "decide_extract": 0.13964459200802065,
+        "web_search": 0.02938411917319832,
+        "web_fetch": 0.05756017929379341,
+        "reddit_digest": 0.005284832889520076
+      },
+      "ms": 130.85831199896347,
+      "error": null
+    },
+    {
+      "idx": 17,
+      "utterance": "search the codebase for useTool",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.8891760008156293,
+      "probabilities": {
+        "filesys_read": 0.01995389620754898,
+        "filesys_glob": 0.04097218792882861,
+        "filesys_grep": 0.9030290007136756,
+        "decide_pick": 0.0068798541841716574,
+        "decide_extract": 0.014325917102324776,
+        "web_search": 0.00614168861752889,
+        "web_fetch": 0.00663784250656099,
+        "reddit_digest": 0.002059612739360474
+      },
+      "ms": 139.86446199851343,
+      "error": null
+    },
+    {
+      "idx": 18,
+      "utterance": "which functions call urllib in tests",
+      "label": "filesys_grep",
+      "choice": "web_fetch",
+      "correct": false,
+      "conf": 0.8525466948281488,
+      "probabilities": {
+        "filesys_read": 0.021156650868633244,
+        "filesys_glob": 0.013309830964450846,
+        "filesys_grep": 0.012509893658396998,
+        "decide_pick": 0.008912818414025263,
+        "decide_extract": 0.012688852462919117,
+        "web_search": 0.053014419207755216,
+        "web_fetch": 0.8709783579746302,
+        "reddit_digest": 0.007429176449189178
+      },
+      "ms": 138.24788900092244,
+      "error": null
+    },
+    {
+      "idx": 19,
+      "utterance": "find occurrences of NotImplementedError in service/",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.6792685955343912,
+      "probabilities": {
+        "filesys_read": 0.030946207918726897,
+        "filesys_glob": 0.1831737872948985,
+        "filesys_grep": 0.7193600210925923,
+        "decide_pick": 0.00826087694746268,
+        "decide_extract": 0.037036737011262554,
+        "web_search": 0.00829600937159777,
+        "web_fetch": 0.010154503645895065,
+        "reddit_digest": 0.002771856717564232
+      },
+      "ms": 134.7924060009973,
+      "error": null
+    },
+    {
+      "idx": 20,
+      "utterance": "does any file import fastapi?",
+      "label": "filesys_grep",
+      "choice": "filesys_read",
+      "correct": false,
+      "conf": 0.4142297341809549,
+      "probabilities": {
+        "filesys_read": 0.4874510174083355,
+        "filesys_glob": 0.2803031748152572,
+        "filesys_grep": 0.05917502313966422,
+        "decide_pick": 0.03123751481519271,
+        "decide_extract": 0.03974634561900478,
+        "web_search": 0.027883955855297557,
+        "web_fetch": 0.06911165553398745,
+        "reddit_digest": 0.0050913128132607545
+      },
+      "ms": 133.957306999946,
+      "error": null
+    },
+    {
+      "idx": 21,
+      "utterance": "from these search results pick the ones worth reading",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "correct": true,
+      "conf": 0.703025244848491,
+      "probabilities": {
+        "filesys_read": 0.006967641364176995,
+        "filesys_glob": 0.01331012518074339,
+        "filesys_grep": 0.007959284683375823,
+        "decide_pick": 0.7401470892424297,
+        "decide_extract": 0.013691912027650414,
+        "web_search": 0.1446695589095399,
+        "web_fetch": 0.06916983486200215,
+        "reddit_digest": 0.004084553730081747
+      },
+      "ms": 130.79078600094363,
+      "error": null
+    },
+    {
+      "idx": 22,
+      "utterance": "choose the 3 best candidates from the URL list",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "correct": true,
+      "conf": 0.5878689190566713,
+      "probabilities": {
+        "filesys_read": 0.008610838256187034,
+        "filesys_glob": 0.11351460943251648,
+        "filesys_grep": 0.006022270666861666,
+        "decide_pick": 0.6393853041745874,
+        "decide_extract": 0.006708276796251925,
+        "web_search": 0.03614672184945807,
+        "web_fetch": 0.18707757557865443,
+        "reddit_digest": 0.0025344032454830026
+      },
+      "ms": 131.8112230001134,
+      "error": null
+    },
+    {
+      "idx": 23,
+      "utterance": "which of these forums looks most relevant?",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "correct": true,
+      "conf": 0.7311112175472422,
+      "probabilities": {
+        "filesys_read": 0.006714631902845419,
+        "filesys_glob": 0.01643915797815352,
+        "filesys_grep": 0.0088131630831413,
+        "decide_pick": 0.764722315353837,
+        "decide_extract": 0.056903117594932044,
+        "web_search": 0.09496990222098076,
+        "web_fetch": 0.037370720447054015,
+        "reddit_digest": 0.014066991419056067
+      },
+      "ms": 132.52804099829518,
+      "error": null
+    },
+    {
+      "idx": 24,
+      "utterance": "pick top 2 links by relevance from the fetch queue",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "correct": true,
+      "conf": 0.866544826475538,
+      "probabilities": {
+        "filesys_read": 0.005507806590516008,
+        "filesys_glob": 0.011047769517594046,
+        "filesys_grep": 0.0059401346656311835,
+        "decide_pick": 0.8832267231660957,
+        "decide_extract": 0.011199209646319928,
+        "web_search": 0.01639119901222151,
+        "web_fetch": 0.06460133160804524,
+        "reddit_digest": 0.0020858257935762636
+      },
+      "ms": 132.81040800029587,
+      "error": null
+    },
+    {
+      "idx": 25,
+      "utterance": "among the files found, pick the one that matches the task",
+      "label": "decide_pick",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.4079774658701156,
+      "probabilities": {
+        "filesys_read": 0.03981725866650796,
+        "filesys_glob": 0.4819802826363511,
+        "filesys_grep": 0.035637641873624976,
+        "decide_pick": 0.4064522056056766,
+        "decide_extract": 0.02201511349603217,
+        "web_search": 0.006758429049268168,
+        "web_fetch": 0.004717032604151289,
+        "reddit_digest": 0.002622036068387624
+      },
+      "ms": 133.06355600070674,
+      "error": null
+    },
+    {
+      "idx": 26,
+      "utterance": "rank these snippets and choose the best",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "correct": true,
+      "conf": 0.8120149416753064,
+      "probabilities": {
+        "filesys_read": 0.010993939517177793,
+        "filesys_glob": 0.011730699335569476,
+        "filesys_grep": 0.029545502938241403,
+        "decide_pick": 0.8355130739658931,
+        "decide_extract": 0.020291227202881422,
+        "web_search": 0.04531829187483799,
+        "web_fetch": 0.042930276799535816,
+        "reddit_digest": 0.00367698836586291
+      },
+      "ms": 130.48547099970165,
+      "error": null
+    },
+    {
+      "idx": 27,
+      "utterance": "select the most promising result from the search output",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "correct": true,
+      "conf": 0.7545314710027435,
+      "probabilities": {
+        "filesys_read": 0.0043821530968293195,
+        "filesys_glob": 0.008778539391943936,
+        "filesys_grep": 0.012118012287122426,
+        "decide_pick": 0.7852150371274006,
+        "decide_extract": 0.009042053802229763,
+        "web_search": 0.15615857714600012,
+        "web_fetch": 0.021835816250619634,
+        "reddit_digest": 0.0024698108978540878
+      },
+      "ms": 132.28109199917526,
+      "error": null
+    },
+    {
+      "idx": 28,
+      "utterance": "turn my request into three search queries",
+      "label": "decide_extract",
+      "choice": "decide_extract",
+      "correct": true,
+      "conf": 0.4274285193158422,
+      "probabilities": {
+        "filesys_read": 0.0045517208262266596,
+        "filesys_glob": 0.023025492600042337,
+        "filesys_grep": 0.011030276232387226,
+        "decide_pick": 0.006459805484488969,
+        "decide_extract": 0.4989999544013619,
+        "web_search": 0.4430771251393061,
+        "web_fetch": 0.009679308815079614,
+        "reddit_digest": 0.0031763165011072887
+      },
+      "ms": 135.1260250012274,
+      "error": null
+    },
+    {
+      "idx": 29,
+      "utterance": "what search terms should we use for this task?",
+      "label": "decide_extract",
+      "choice": "web_search",
+      "correct": false,
+      "conf": 0.6789436931788905,
+      "probabilities": {
+        "filesys_read": 0.007465354893258881,
+        "filesys_glob": 0.040035932579216116,
+        "filesys_grep": 0.04941929944972249,
+        "decide_pick": 0.016771886245325558,
+        "decide_extract": 0.13779248425914015,
+        "web_search": 0.7190757315315291,
+        "web_fetch": 0.024474875114031177,
+        "reddit_digest": 0.004964435927776451
+      },
+      "ms": 140.06365299974277,
+      "error": null
+    },
+    {
+      "idx": 30,
+      "utterance": "extract the file paths mentioned in the user instruction",
+      "label": "decide_extract",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.8317441262815003,
+      "probabilities": {
+        "filesys_read": 0.011048125892114645,
+        "filesys_glob": 0.8527761104963127,
+        "filesys_grep": 0.008948265248201715,
+        "decide_pick": 0.03815496725982025,
+        "decide_extract": 0.07060783699990097,
+        "web_search": 0.007954381190994984,
+        "web_fetch": 0.007759144045840146,
+        "reddit_digest": 0.002751168866814396
+      },
+      "ms": 130.07411799844704,
+      "error": null
+    },
+    {
+      "idx": 31,
+      "utterance": "list the parameter values needed for the fetch step",
+      "label": "decide_extract",
+      "choice": "decide_extract",
+      "correct": true,
+      "conf": 0.5573759755066281,
+      "probabilities": {
+        "filesys_read": 0.007735736541142562,
+        "filesys_glob": 0.01693717036078141,
+        "filesys_grep": 0.004282558839648494,
+        "decide_pick": 0.005263348929729362,
+        "decide_extract": 0.6127039785682996,
+        "web_search": 0.01039544437311122,
+        "web_fetch": 0.33968188693697365,
+        "reddit_digest": 0.0029998754503135984
+      },
+      "ms": 128.65592799971637,
+      "error": null
+    },
+    {
+      "idx": 32,
+      "utterance": "pull the topic names out of the command",
+      "label": "decide_extract",
+      "choice": "decide_extract",
+      "correct": true,
+      "conf": 0.8782015074877598,
+      "probabilities": {
+        "filesys_read": 0.01376543592247132,
+        "filesys_glob": 0.021885574537997245,
+        "filesys_grep": 0.01325249048256899,
+        "decide_pick": 0.03027430087191554,
+        "decide_extract": 0.8934263190517898,
+        "web_search": 0.009282467213541557,
+        "web_fetch": 0.014144896341606908,
+        "reddit_digest": 0.00396851557810862
+      },
+      "ms": 138.93737299986242,
+      "error": null
+    },
+    {
+      "idx": 33,
+      "utterance": "generate query variations for the web search",
+      "label": "decide_extract",
+      "choice": "web_search",
+      "correct": false,
+      "conf": 0.8286631102096642,
+      "probabilities": {
+        "filesys_read": 0.0034949592120429446,
+        "filesys_glob": 0.008920181178315586,
+        "filesys_grep": 0.007911408897248659,
+        "decide_pick": 0.008612538750513751,
+        "decide_extract": 0.10820716796842536,
+        "web_search": 0.8500802214334562,
+        "web_fetch": 0.009868562870143531,
+        "reddit_digest": 0.0029049596898539287
+      },
+      "ms": 134.0373279999767,
+      "error": null
+    },
+    {
+      "idx": 34,
+      "utterance": "search the web for llama.cpp release notes",
+      "label": "web_search",
+      "choice": "web_search",
+      "correct": true,
+      "conf": 0.9619371720841797,
+      "probabilities": {
+        "filesys_read": 0.0029272826265273207,
+        "filesys_glob": 0.003404562847978387,
+        "filesys_grep": 0.002957202117398073,
+        "decide_pick": 0.0023376266647479565,
+        "decide_extract": 0.006149241978426047,
+        "web_search": 0.9666950255736573,
+        "web_fetch": 0.01330281036194346,
+        "reddit_digest": 0.0022262478293215513
+      },
+      "ms": 129.09523799862654,
+      "error": null
+    },
+    {
+      "idx": 35,
+      "utterance": "look up online what Liquid LFM2-d1 is",
+      "label": "web_search",
+      "choice": "web_search",
+      "correct": true,
+      "conf": 0.9597459346695736,
+      "probabilities": {
+        "filesys_read": 0.0024673738845509717,
+        "filesys_glob": 0.0033191127450316153,
+        "filesys_grep": 0.0023744597616688085,
+        "decide_pick": 0.004034987993057997,
+        "decide_extract": 0.006513311257808079,
+        "web_search": 0.9647776928358769,
+        "web_fetch": 0.014135647065979381,
+        "reddit_digest": 0.0023774144560263456
+      },
+      "ms": 135.43999399917084,
+      "error": null
+    },
+    {
+      "idx": 36,
+      "utterance": "find recent news about AVX2 CPU throttling",
+      "label": "web_search",
+      "choice": "web_search",
+      "correct": true,
+      "conf": 0.9217180049610548,
+      "probabilities": {
+        "filesys_read": 0.0033347007944401204,
+        "filesys_glob": 0.004297926967822651,
+        "filesys_grep": 0.003845863968097298,
+        "decide_pick": 0.005766199907085118,
+        "decide_extract": 0.021509606025475084,
+        "web_search": 0.931503254340923,
+        "web_fetch": 0.026074175556799164,
+        "reddit_digest": 0.0036682724393577184
+      },
+      "ms": 136.57030200010922,
+      "error": null
+    },
+    {
+      "idx": 37,
+      "utterance": "google the npm docs for request timeouts",
+      "label": "web_search",
+      "choice": "web_search",
+      "correct": true,
+      "conf": 0.9003609471820744,
+      "probabilities": {
+        "filesys_read": 0.0029492690819329995,
+        "filesys_glob": 0.0034850481045771734,
+        "filesys_grep": 0.0029859442732946945,
+        "decide_pick": 0.0029022686578120604,
+        "decide_extract": 0.01526609981652996,
+        "web_search": 0.9128158287843151,
+        "web_fetch": 0.05736239690407966,
+        "reddit_digest": 0.002233144377458457
+      },
+      "ms": 131.92285900004208,
+      "error": null
+    },
+    {
+      "idx": 38,
+      "utterance": "check the internet for the python 3.12 release date",
+      "label": "web_search",
+      "choice": "web_search",
+      "correct": true,
+      "conf": 0.9729291487329385,
+      "probabilities": {
+        "filesys_read": 0.0019390625583946928,
+        "filesys_glob": 0.002359810783884052,
+        "filesys_grep": 0.0018239622091673895,
+        "decide_pick": 0.0022271080358141414,
+        "decide_extract": 0.005071787718853444,
+        "web_search": 0.9763130051413211,
+        "web_fetch": 0.008149942837136253,
+        "reddit_digest": 0.002115320715428817
+      },
+      "ms": 137.5918539997656,
+      "error": null
+    },
+    {
+      "idx": 39,
+      "utterance": "find documentation on ggml multi-threading",
+      "label": "web_search",
+      "choice": "web_search",
+      "correct": true,
+      "conf": 0.5747703045925705,
+      "probabilities": {
+        "filesys_read": 0.10918345249562603,
+        "filesys_glob": 0.01700889655437961,
+        "filesys_grep": 0.03734440515258292,
+        "decide_pick": 0.009597762867718686,
+        "decide_extract": 0.05842062696997915,
+        "web_search": 0.6279240165184992,
+        "web_fetch": 0.13465754753672565,
+        "reddit_digest": 0.005863291904488846
+      },
+      "ms": 134.30483500087576,
+      "error": null
+    },
+    {
+      "idx": 40,
+      "utterance": "fetch https://github.com/ggml-org/llama.cpp",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "correct": true,
+      "conf": 0.9793908065704365,
+      "probabilities": {
+        "filesys_read": 0.00222348313498927,
+        "filesys_glob": 0.002419467808875765,
+        "filesys_grep": 0.0017839713640443124,
+        "decide_pick": 0.0019718817228767675,
+        "decide_extract": 0.003367701138398477,
+        "web_search": 0.004105719458847727,
+        "web_fetch": 0.981966955749132,
+        "reddit_digest": 0.002160819622835671
+      },
+      "ms": 133.09390199901827,
+      "error": null
+    },
+    {
+      "idx": 41,
+      "utterance": "open the pending URL and give me its contents",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "correct": true,
+      "conf": 0.9526461027452308,
+      "probabilities": {
+        "filesys_read": 0.010543826228492627,
+        "filesys_glob": 0.006423858512726522,
+        "filesys_grep": 0.0028707307233588053,
+        "decide_pick": 0.005886751667143256,
+        "decide_extract": 0.006838390043753575,
+        "web_search": 0.0059627355346597195,
+        "web_fetch": 0.9585653399020769,
+        "reddit_digest": 0.0029083673877886287
+      },
+      "ms": 135.11787099923822,
+      "error": null
+    },
+    {
+      "idx": 42,
+      "utterance": "read the page at https://example.com/llama-bench",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "correct": true,
+      "conf": 0.9693106095965158,
+      "probabilities": {
+        "filesys_read": 0.004705085135009497,
+        "filesys_glob": 0.0033016726350934412,
+        "filesys_grep": 0.00227109856600386,
+        "decide_pick": 0.0025132537009723566,
+        "decide_extract": 0.0033547156219018836,
+        "web_search": 0.00853233041060643,
+        "web_fetch": 0.9731467833969514,
+        "reddit_digest": 0.0021750605334610812
+      },
+      "ms": 133.13822599957348,
+      "error": null
+    },
+    {
+      "idx": 43,
+      "utterance": "grab the full text of the StackOverflow question at that link",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "correct": true,
+      "conf": 0.9772387276649134,
+      "probabilities": {
+        "filesys_read": 0.003055451039669653,
+        "filesys_glob": 0.002456934443838939,
+        "filesys_grep": 0.001976711698901427,
+        "decide_pick": 0.0021044254219611705,
+        "decide_extract": 0.002478325948136479,
+        "web_search": 0.005236298876782735,
+        "web_fetch": 0.9800838867067992,
+        "reddit_digest": 0.0026079658639103927
+      },
+      "ms": 135.45479100139346,
+      "error": null
+    },
+    {
+      "idx": 44,
+      "utterance": "read the release notes page at the pending link",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "correct": true,
+      "conf": 0.9040724099547083,
+      "probabilities": {
+        "filesys_read": 0.04664863859404574,
+        "filesys_glob": 0.006658022580903232,
+        "filesys_grep": 0.003116495766727627,
+        "decide_pick": 0.0029077094830902944,
+        "decide_extract": 0.011011320495642839,
+        "web_search": 0.01120445278864099,
+        "web_fetch": 0.9160633587103697,
+        "reddit_digest": 0.002390001580579668
+      },
+      "ms": 132.3543550006434,
+      "error": null
+    },
+    {
+      "idx": 45,
+      "utterance": "what is r/LocalLLaMA saying about d1-3B?",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.8987500463628517,
+      "probabilities": {
+        "filesys_read": 0.0035952967653826084,
+        "filesys_glob": 0.0042504343397726475,
+        "filesys_grep": 0.004678609104481644,
+        "decide_pick": 0.0074637082256816464,
+        "decide_extract": 0.011467967569536733,
+        "web_search": 0.04203474218926195,
+        "web_fetch": 0.015102951238387483,
+        "reddit_digest": 0.9114062905674952
+      },
+      "ms": 132.1289440002147,
+      "error": null
+    },
+    {
+      "idx": 46,
+      "utterance": "summarize top posts in r/Python this week",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.9593932055056442,
+      "probabilities": {
+        "filesys_read": 0.0030711371773853766,
+        "filesys_glob": 0.002787026641841465,
+        "filesys_grep": 0.003016257392358371,
+        "decide_pick": 0.009209515684383992,
+        "decide_extract": 0.004264563376599024,
+        "web_search": 0.007902613409476199,
+        "web_fetch": 0.005279831500516791,
+        "reddit_digest": 0.9644690548174387
+      },
+      "ms": 134.4325129994104,
+      "error": null
+    },
+    {
+      "idx": 47,
+      "utterance": "digest the thread about llama.cpp quantization at that reddit url",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.7735680203268231,
+      "probabilities": {
+        "filesys_read": 0.013333374893937622,
+        "filesys_glob": 0.0038140003542213793,
+        "filesys_grep": 0.0033856425026027362,
+        "decide_pick": 0.002944769899198514,
+        "decide_extract": 0.003008215992934377,
+        "web_search": 0.012410270674635,
+        "web_fetch": 0.15923170789650007,
+        "reddit_digest": 0.8018720177859703
+      },
+      "ms": 133.98451399916667,
+      "error": null
+    },
+    {
+      "idx": 48,
+      "utterance": "what are people in r/cpp discussing today?",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.7980691822456841,
+      "probabilities": {
+        "filesys_read": 0.004865821964573896,
+        "filesys_glob": 0.009537762125809998,
+        "filesys_grep": 0.007623830471815682,
+        "decide_pick": 0.010672724339839875,
+        "decide_extract": 0.018961792767386364,
+        "web_search": 0.10674847068368724,
+        "web_fetch": 0.018279063181913288,
+        "reddit_digest": 0.8233105344649736
+      },
+      "ms": 134.37202800014347,
+      "error": null
+    },
+    {
+      "idx": 49,
+      "utterance": "check what the sub says about the new release",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.46425972983191627,
+      "probabilities": {
+        "filesys_read": 0.0452529915164165,
+        "filesys_glob": 0.012504269710109142,
+        "filesys_grep": 0.01889862830715424,
+        "decide_pick": 0.013270634886303406,
+        "decide_extract": 0.020231500432001705,
+        "web_search": 0.15862155574345654,
+        "web_fetch": 0.19999315580163177,
+        "reddit_digest": 0.5312272636029267
+      },
+      "ms": 133.8306930010731,
+      "error": null
+    }
+  ],
+  "wall_time_s": 7.31,
+  "serving_stable": true,
+  "gpu_offload": "requested -ngl 99 (vulkan build b11510-c35b66744); per-layer offload lines not capturable in-process; serve RSS ~2.9GB",
+  "notes": ""
+}

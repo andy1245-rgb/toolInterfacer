@@ -49,7 +49,7 @@ _REGISTRY: dict[str, Callable[[], DecideBackend]] = {}
 def _ensure_backends_loaded() -> None:
     if _REGISTRY:
         return
-    from .backends import d1_systemone, fixture, heuristic_micro  # noqa: F401  (registration)
+    from .backends import d1_systemone, fixture, heuristic_micro, logit_read  # noqa: F401  (registration)
 
 
 def register(name: str) -> Callable[[type[DecideBackend]], type[DecideBackend]]:

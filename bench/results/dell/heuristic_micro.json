@@ -1,0 +1,734 @@
+{
+  "timestamp": "2026-10-17T13:52:15-0400",
+  "backend": "heuristic_micro",
+  "host": "local-lenovo-cpu",
+  "base_url": "",
+  "server_threads": 0,
+  "model": {
+    "path": "local/ti/decide/backends/heuristic_micro.py",
+    "ftype": null,
+    "build_info": "n/a"
+  },
+  "n_rows": 50,
+  "malformed_responses": 0,
+  "abstains": 44,
+  "accuracy": 0.12,
+  "latency_ms": {
+    "p50": 0.0,
+    "p95": 0.0,
+    "mean": 0.0,
+    "min": 0.0,
+    "max": 0.0
+  },
+  "accuracy_by_op": {
+    "decide_extract": {
+      "n": 6,
+      "accuracy": 0.0
+    },
+    "decide_pick": {
+      "n": 7,
+      "accuracy": 0.0
+    },
+    "filesys_glob": {
+      "n": 6,
+      "accuracy": 0.0
+    },
+    "filesys_grep": {
+      "n": 7,
+      "accuracy": 0.0
+    },
+    "filesys_read": {
+      "n": 8,
+      "accuracy": 0.0
+    },
+    "reddit_digest": {
+      "n": 5,
+      "accuracy": 0.8
+    },
+    "web_fetch": {
+      "n": 5,
+      "accuracy": 0.4
+    },
+    "web_search": {
+      "n": 6,
+      "accuracy": 0.0
+    }
+  },
+  "confidence_calibration": [
+    {
+      "band": 0.0,
+      "n": 44,
+      "accuracy": 0.0,
+      "mean_conf": 0.0
+    },
+    {
+      "band": 0.1,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.2,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.3,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.4,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.5,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.6,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.7,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.8,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.9,
+      "n": 6,
+      "accuracy": 1.0,
+      "mean_conf": 0.99
+    }
+  ],
+  "conf_distribution": {
+    "min": 0.0,
+    "mean": 0.1188,
+    "max": 0.99
+  },
+  "per_row": [
+    {
+      "idx": 0,
+      "utterance": "show me the contents of src/main.py",
+      "label": "filesys_read",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.007364998964476399,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 1,
+      "utterance": "read README.md and tell me what it says",
+      "label": "filesys_read",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.002998998752445914,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 2,
+      "utterance": "open config/defaults.json",
+      "label": "filesys_read",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0018150003597838804,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 3,
+      "utterance": "what does the LICENSE file contain?",
+      "label": "filesys_read",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0021859996195416898,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 4,
+      "utterance": "print the first 50 lines of bench/replay.py",
+      "label": "filesys_read",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0023049997253110632,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 5,
+      "utterance": "look at the pyproject.toml file",
+      "label": "filesys_read",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.001698999767540954,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 6,
+      "utterance": "read my ~/.bashrc",
+      "label": "filesys_read",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0013500011846190318,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 7,
+      "utterance": "display service/ti/service_entry.py",
+      "label": "filesys_read",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0017729998944560066,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 8,
+      "utterance": "list all python files under src/",
+      "label": "filesys_glob",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0016779995348770171,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 9,
+      "utterance": "find every markdown file in docs",
+      "label": "filesys_glob",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0016470003174617887,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 10,
+      "utterance": "which files match tests/test_*.py",
+      "label": "filesys_glob",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0017099991964641958,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 11,
+      "utterance": "locate all json files in the repo",
+      "label": "filesys_glob",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.001755999619490467,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 12,
+      "utterance": "find any .gguf files under models/",
+      "label": "filesys_glob",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.001962998794624582,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 13,
+      "utterance": "show me all bash scripts in extern",
+      "label": "filesys_glob",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0017669990484137088,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 14,
+      "utterance": "which files mention systemone?",
+      "label": "filesys_grep",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0015410005289595574,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 15,
+      "utterance": "grep for TODO across the service dir",
+      "label": "filesys_grep",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0018979990272782743,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 16,
+      "utterance": "find where gate_route is used",
+      "label": "filesys_grep",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0016480007616337389,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 17,
+      "utterance": "search the codebase for useTool",
+      "label": "filesys_grep",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.001594000423210673,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 18,
+      "utterance": "which functions call urllib in tests",
+      "label": "filesys_grep",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0017779984773369506,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 19,
+      "utterance": "find occurrences of NotImplementedError in service/",
+      "label": "filesys_grep",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0021249998098937795,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 20,
+      "utterance": "does any file import fastapi?",
+      "label": "filesys_grep",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.001491000148234889,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 21,
+      "utterance": "from these search results pick the ones worth reading",
+      "label": "decide_pick",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0023860011424403638,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 22,
+      "utterance": "choose the 3 best candidates from the URL list",
+      "label": "decide_pick",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0022429994714912027,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 23,
+      "utterance": "which of these forums looks most relevant?",
+      "label": "decide_pick",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0019060007616644725,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 24,
+      "utterance": "pick top 2 links by relevance from the fetch queue",
+      "label": "decide_pick",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0024080000002868474,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 25,
+      "utterance": "among the files found, pick the one that matches the task",
+      "label": "decide_pick",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.002585000402177684,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 26,
+      "utterance": "rank these snippets and choose the best",
+      "label": "decide_pick",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.001971999154193327,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 27,
+      "utterance": "select the most promising result from the search output",
+      "label": "decide_pick",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.002310000127181411,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 28,
+      "utterance": "turn my request into three search queries",
+      "label": "decide_extract",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.002071999915642664,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 29,
+      "utterance": "what search terms should we use for this task?",
+      "label": "decide_extract",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.002099999619531445,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 30,
+      "utterance": "extract the file paths mentioned in the user instruction",
+      "label": "decide_extract",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0023520005925092846,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 31,
+      "utterance": "list the parameter values needed for the fetch step",
+      "label": "decide_extract",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0021590003598248586,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 32,
+      "utterance": "pull the topic names out of the command",
+      "label": "decide_extract",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0018219998310087249,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 33,
+      "utterance": "generate query variations for the web search",
+      "label": "decide_extract",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0019620001694420353,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 34,
+      "utterance": "search the web for llama.cpp release notes",
+      "label": "web_search",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0019129984138999134,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 35,
+      "utterance": "look up online what Liquid LFM2-d1 is",
+      "label": "web_search",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.001853000867413357,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 36,
+      "utterance": "find recent news about AVX2 CPU throttling",
+      "label": "web_search",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0019229992176406085,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 37,
+      "utterance": "google the npm docs for request timeouts",
+      "label": "web_search",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0018260016076965258,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 38,
+      "utterance": "check the internet for the python 3.12 release date",
+      "label": "web_search",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0023529992176918313,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 39,
+      "utterance": "find documentation on ggml multi-threading",
+      "label": "web_search",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0018360005924478173,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 40,
+      "utterance": "fetch https://github.com/ggml-org/llama.cpp",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "correct": true,
+      "conf": 0.99,
+      "probabilities": {
+        "web_fetch": 1.0,
+        "filesys_read": 1e-06,
+        "filesys_glob": 1e-06,
+        "filesys_grep": 1e-06,
+        "decide_pick": 1e-06,
+        "decide_extract": 1e-06,
+        "web_search": 1e-06,
+        "reddit_digest": 1e-06
+      },
+      "ms": 0.01012499888020102,
+      "error": null
+    },
+    {
+      "idx": 41,
+      "utterance": "open the pending URL and give me its contents",
+      "label": "web_fetch",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.002704999133129604,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 42,
+      "utterance": "read the page at https://example.com/llama-bench",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "correct": true,
+      "conf": 0.99,
+      "probabilities": {
+        "web_fetch": 1.0,
+        "filesys_read": 1e-06,
+        "filesys_glob": 1e-06,
+        "filesys_grep": 1e-06,
+        "decide_pick": 1e-06,
+        "decide_extract": 1e-06,
+        "web_search": 1e-06,
+        "reddit_digest": 1e-06
+      },
+      "ms": 0.008946000889409333,
+      "error": null
+    },
+    {
+      "idx": 43,
+      "utterance": "grab the full text of the StackOverflow question at that link",
+      "label": "web_fetch",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0023749998945277184,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 44,
+      "utterance": "read the release notes page at the pending link",
+      "label": "web_fetch",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.0019079998310189694,
+      "error": "abstain (no opinion)"
+    },
+    {
+      "idx": 45,
+      "utterance": "what is r/LocalLLaMA saying about d1-3B?",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.99,
+      "probabilities": {
+        "reddit_digest": 1.0,
+        "filesys_read": 1e-06,
+        "filesys_glob": 1e-06,
+        "filesys_grep": 1e-06,
+        "decide_pick": 1e-06,
+        "decide_extract": 1e-06,
+        "web_search": 1e-06,
+        "web_fetch": 1e-06
+      },
+      "ms": 0.0033910000638570637,
+      "error": null
+    },
+    {
+      "idx": 46,
+      "utterance": "summarize top posts in r/Python this week",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.99,
+      "probabilities": {
+        "reddit_digest": 1.0,
+        "filesys_read": 1e-06,
+        "filesys_glob": 1e-06,
+        "filesys_grep": 1e-06,
+        "decide_pick": 1e-06,
+        "decide_extract": 1e-06,
+        "web_search": 1e-06,
+        "web_fetch": 1e-06
+      },
+      "ms": 0.00307400114252232,
+      "error": null
+    },
+    {
+      "idx": 47,
+      "utterance": "digest the thread about llama.cpp quantization at that reddit url",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.99,
+      "probabilities": {
+        "reddit_digest": 1.0,
+        "filesys_read": 1e-06,
+        "filesys_glob": 1e-06,
+        "filesys_grep": 1e-06,
+        "decide_pick": 1e-06,
+        "decide_extract": 1e-06,
+        "web_search": 1e-06,
+        "web_fetch": 1e-06
+      },
+      "ms": 0.00407900006393902,
+      "error": null
+    },
+    {
+      "idx": 48,
+      "utterance": "what are people in r/cpp discussing today?",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.99,
+      "probabilities": {
+        "reddit_digest": 1.0,
+        "filesys_read": 1e-06,
+        "filesys_glob": 1e-06,
+        "filesys_grep": 1e-06,
+        "decide_pick": 1e-06,
+        "decide_extract": 1e-06,
+        "web_search": 1e-06,
+        "web_fetch": 1e-06
+      },
+      "ms": 0.004683999577537179,
+      "error": null
+    },
+    {
+      "idx": 49,
+      "utterance": "check what the sub says about the new release",
+      "label": "reddit_digest",
+      "choice": null,
+      "correct": false,
+      "conf": 0.0,
+      "probabilities": {},
+      "ms": 0.002160000803996809,
+      "error": "abstain (no opinion)"
+    }
+  ],
+  "wall_time_s": 0.0,
+  "serving_stable": null,
+  "gpu_offload": "n/a (no model server)",
+  "notes": "local Lenovo CPU, no server; 44/50 rows abstain (no URL/reddit/path hit -> opinion None)"
+}

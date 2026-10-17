@@ -2,8 +2,9 @@
 """P2 live routing probe — one `choice` question per utterance against a live
 llama.cpp /v1/systemone server, measured for latency + accuracy vs labels.
 
-Usage: python bench/live_probe.py [--limit N] [--threads T]
-       [--utterances tests/data/utterances.json] [--out bench/results/live_probe_summary.json]
+Usage: python bench/live_probe.py [--limit N] [--threads T] [--backend NAME]
+       [--base-url URL] [--host NAME] [--utterances tests/data/utterances.json]
+       [--out bench/results/live_probe_summary.json]
 """
 from __future__ import annotations
 
@@ -18,6 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "service"))
 
+from ti.decide.resolve import resolve  # noqa: E402
 from ti.conf import load  # noqa: E402
 
 INSTRUCTIONS = "Which single operation should handle the user command?"
@@ -34,18 +36,6 @@ OP_DESCRIPTIONS = {
 }
 
 
-def ask(base_url: str, utterance: str) -> dict:
-    body = json.dumps({
-        "state": utterance,
-        "questions": {"route": {"type": "choice", "instructions": INSTRUCTIONS,
-                                "criteria": OP_DESCRIPTIONS}},
-    }).encode()
-    req = urllib.request.Request(base_url.rstrip("/") + "/v1/systemone", data=body,
-                                 headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        return json.loads(resp.read())
-
-
 def percentile(sorted_vals: list[float], pct: float) -> float:
     if not sorted_vals:
         return 0.0
@@ -60,25 +50,41 @@ def main() -> None:
     ap.add_argument("--utterances", default=str(ROOT / "tests/data/utterances.json"))
     ap.add_argument("--out", default=str(ROOT / "bench/results/live_probe_summary.json"))
     ap.add_argument("--threads", type=int, default=8, help="server -t value, recorded in the summary")
+    ap.add_argument("--backend", default="d1_systemone",
+                    choices=["d1_systemone", "logit_read", "heuristic_micro"],
+                    help="decide backend resolved through ti.decide.resolve")
+    ap.add_argument("--base-url", default="",
+                    help="override conf base_url for the backend (e.g. ssh-tunnel address)")
+    ap.add_argument("--host", default="localhost", help="label recorded in the summary")
     args = ap.parse_args()
 
-    base_url = load()["decide"]["d1_systemone"]["base_url"]
+    cfg = load()
+    if args.base_url:
+        cfg["decide"]["d1_systemone"]["base_url"] = args.base_url
+        cfg["decide"].setdefault("logit_read", {})["base_url"] = args.base_url
+    cfg["decide"]["backends_in_use"] = {"choice": args.backend, "noul": args.backend}
+    base_url = args.base_url or cfg["decide"].get(args.backend, {}).get("base_url", "")
+    backend = resolve("choice")
     rows = json.loads(Path(args.utterances).read_text())
     if args.limit:
         rows = rows[: args.limit]
 
-    with urllib.request.urlopen(base_url.rstrip("/") + "/health", timeout=10) as resp:
-        health = json.loads(resp.read())
-    if health.get("status") != "ok":
-        raise SystemExit(f"server unhealthy: {health}")
-    with urllib.request.urlopen(base_url.rstrip("/") + "/props", timeout=10) as resp:
-        props = json.loads(resp.read())
+    if args.backend == "heuristic_micro":
+        props = {"model_path": "local/ti/decide/backends/heuristic_micro.py",
+                 "ftype": "n/a", "build_info": "n/a"}
+    else:
+        with urllib.request.urlopen(base_url.rstrip("/") + "/health", timeout=10) as resp:
+            health = json.loads(resp.read())
+        if health.get("status") != "ok":
+            raise SystemExit(f"server unhealthy: {health}")
+        with urllib.request.urlopen(base_url.rstrip("/") + "/props", timeout=10) as resp:
+            props = json.loads(resp.read())
 
-    per_row, malformed, latencies = [], 0, []
+    per_row, malformed, latencies, abstains = [], 0, [], 0
     for i, row in enumerate(rows):
         t0 = time.perf_counter()
         try:
-            out = ask(base_url, row["utterance"])
+            ans = backend.choice(row["utterance"], INSTRUCTIONS, OP_DESCRIPTIONS)
         except Exception as e:
             per_row.append({"idx": i, "utterance": row["utterance"], "label": row["label"],
                             "choice": None, "correct": False, "conf": 0.0, "probabilities": {},
@@ -87,13 +93,17 @@ def main() -> None:
             continue
         ms = (time.perf_counter() - t0) * 1000
         latencies.append(ms)
-        ans = (out.get("answers") or {}).get("route") or {}
-        conf = float(ans.get("confidence") or 0.0)
-        probs = {k: float(v) for k, v in (ans.get("probabilities") or {}).items()}
-        choice = ans.get("choice")
-        correct = bool(choice == row["label"])
-        if out.get("usage", {}).get("output_tokens") not in (None, 0):
+        if ans is None:  # deliberate abstain (no opinion — caller must fall back)
+            per_row.append({"idx": i, "utterance": row["utterance"], "label": row["label"],
+                            "choice": None, "correct": False, "conf": 0.0, "probabilities": {},
+                            "ms": ms, "error": "abstain (no opinion)"})
             malformed += 1
+            abstains += 1
+            continue
+        conf = float(ans.confidence)
+        probs = {k: float(v) for k, v in ans.probabilities.items()}
+        choice = ans.choice
+        correct = bool(choice == row["label"])
         per_row.append({"idx": i, "utterance": row["utterance"], "label": row["label"],
                         "choice": choice, "correct": correct, "conf": conf, "probabilities": probs,
                         "ms": ms, "error": None if choice else "missing choice"})
@@ -118,13 +128,16 @@ def main() -> None:
 
     summary = {
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+        "backend": args.backend,
+        "host": args.host,
         "base_url": base_url,
         "server_threads": args.threads,
         "model": {"path": props.get("model_path"),
                   "ftype": props.get("model_ftype"),
                   "build_info": (props.get("build_info") or "")},
         "n_rows": len(rows),
-        "malformed_responses": malformed,
+        "malformed_responses": malformed - abstains,
+        "abstains": abstains,
         "accuracy": round(len(correct_rows) / len(rows), 4),
         "latency_ms": {
             "p50": round(percentile(lat_sorted, 0.5), 1),
