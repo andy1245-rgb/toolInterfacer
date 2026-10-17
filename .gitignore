@@ -9,4 +9,5 @@ node_modules/
 service/logs/
 models/
 *.gguf
+extern/
 .env
