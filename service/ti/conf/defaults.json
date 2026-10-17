@@ -1,0 +1,38 @@
+{
+  "decide": {
+    "routing": "heuristic_micro_then_d1",
+    "d1_systemone": {"base_url": "http://127.0.0.1:8080", "timeout_s": 30},
+    "fixture": {"fixture_path": ""},
+    "backends_in_use": {"choice": "fixture", "noul": "fixture"}
+  },
+  "policy": {
+    "gate_route": 0.7,
+    "gate_slot": 0.7,
+    "gate_noul": 0.75,
+    "max_asks": 2
+  },
+  "budget": {
+    "max_hops": 24,
+    "max_asks": 2,
+    "max_seconds": 180
+  },
+  "context": {
+    "digest_max_tokens": 400,
+    "state_max_tokens": 2000
+  },
+  "research": {
+    "query_count": [3, 6],
+    "pick_top_k": 4,
+    "good_pages_target": 4,
+    "backends": ["free-search"]
+  },
+  "reddit": {"use_backend": "reddit-research", "thread_cap": 5},
+  "ops": {
+    "web_fetch": {"script": "~/.pi/profiles/registry/web-fetch/scripts/web-fetch"},
+    "web_search": {"script": "~/.pi/profiles/registry/web-search/scripts/free-search"},
+    "reddit": {"cwd": "~/Documents/PersonalCodingProjects/Research/redditScrapingSearching"},
+    "cli_timeout_s": 60
+  },
+  "hops_log": {"path": "service/logs/hops.jsonl", "enabled": true},
+  "http": {"host": "127.0.0.1", "port": 8090}
+}

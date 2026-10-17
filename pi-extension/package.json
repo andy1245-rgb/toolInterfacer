@@ -1,0 +1,14 @@
+{
+  "name": "pi-toolinterfacer",
+  "version": "0.1.0",
+  "description": "useTool — decision-model tool interfacing for pi",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}
