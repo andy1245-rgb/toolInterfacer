@@ -1,0 +1,3130 @@
+{
+  "timestamp": "2026-10-17T15:54:42-0400",
+  "backend": "logit_read",
+  "host": "dell-q4",
+  "base_url": "http://127.0.0.1:18080",
+  "server_threads": 8,
+  "model": {
+    "path": "C:\\Users\\andre\\Documents\\PersonalCodingProjects\\personal\\toolInterfacerLab\\models\\Intern-Decision-4B-Q4_K_M.gguf",
+    "ftype": "Q4_K - Medium",
+    "build_info": "b11512-a11f57ba9"
+  },
+  "n_rows": 150,
+  "malformed_responses": 0,
+  "abstains": 0,
+  "accuracy": 0.36,
+  "latency_ms": {
+    "p50": 2379.7,
+    "p95": 2469.4,
+    "mean": 2187.3,
+    "min": 1375.0,
+    "max": 3014.3
+  },
+  "accuracy_by_op": {
+    "decide_extract": {
+      "n": 24,
+      "accuracy": 0.0417
+    },
+    "decide_pick": {
+      "n": 18,
+      "accuracy": 0.0
+    },
+    "filesys_glob": {
+      "n": 21,
+      "accuracy": 0.5714
+    },
+    "filesys_grep": {
+      "n": 22,
+      "accuracy": 0.9545
+    },
+    "filesys_read": {
+      "n": 17,
+      "accuracy": 0.4118
+    },
+    "reddit_digest": {
+      "n": 15,
+      "accuracy": 0.5333
+    },
+    "web_fetch": {
+      "n": 15,
+      "accuracy": 0.3333
+    },
+    "web_search": {
+      "n": 18,
+      "accuracy": 0.0
+    }
+  },
+  "confidence_calibration": [
+    {
+      "band": 0.0,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.1,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.2,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.3,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.4,
+      "n": 18,
+      "accuracy": 0.4444,
+      "mean_conf": 0.4673
+    },
+    {
+      "band": 0.5,
+      "n": 7,
+      "accuracy": 0.4286,
+      "mean_conf": 0.5486
+    },
+    {
+      "band": 0.6,
+      "n": 63,
+      "accuracy": 0.254,
+      "mean_conf": 0.651
+    },
+    {
+      "band": 0.7,
+      "n": 31,
+      "accuracy": 0.3548,
+      "mean_conf": 0.7408
+    },
+    {
+      "band": 0.8,
+      "n": 11,
+      "accuracy": 0.6364,
+      "mean_conf": 0.834
+    },
+    {
+      "band": 0.9,
+      "n": 20,
+      "accuracy": 0.45,
+      "mean_conf": 0.9503
+    }
+  ],
+  "conf_distribution": {
+    "min": 0.4435,
+    "mean": 0.6961,
+    "max": 0.9841
+  },
+  "per_row": [
+    {
+      "idx": 0,
+      "utterance": "print the whole pyproject.toml for me",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "correct": true,
+      "conf": 0.9764,
+      "probabilities": {
+        "filesys_read": 0.993899,
+        "filesys_glob": 0.000872,
+        "filesys_grep": 0.000872,
+        "decide_pick": 0.000872,
+        "decide_extract": 0.000872,
+        "web_search": 0.000872,
+        "web_fetch": 0.000872,
+        "reddit_digest": 0.000872
+      },
+      "ms": 2365.2714000018022,
+      "error": null
+    },
+    {
+      "idx": 1,
+      "utterance": "list every file ending in .toml anywhere in the repo",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.6747,
+      "probabilities": {
+        "filesys_read": 0.298568,
+        "filesys_glob": 0.692008,
+        "filesys_grep": 0.001571,
+        "decide_pick": 0.001571,
+        "decide_extract": 0.001571,
+        "web_search": 0.001571,
+        "web_fetch": 0.001571,
+        "reddit_digest": 0.001571
+      },
+      "ms": 1863.2477699975425,
+      "error": null
+    },
+    {
+      "idx": 2,
+      "utterance": "where is handle_stream defined?",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.6463,
+      "probabilities": {
+        "filesys_read": 0.343486,
+        "filesys_glob": 0.002314,
+        "filesys_grep": 0.642628,
+        "decide_pick": 0.002314,
+        "decide_extract": 0.002314,
+        "web_search": 0.002314,
+        "web_fetch": 0.002314,
+        "reddit_digest": 0.002314
+      },
+      "ms": 2383.1544680033403,
+      "error": null
+    },
+    {
+      "idx": 3,
+      "utterance": "out of the fetched pages, keep the two most useful",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6391,
+      "probabilities": {
+        "filesys_read": 0.39433,
+        "filesys_glob": 0.00198,
+        "filesys_grep": 0.59379,
+        "decide_pick": 0.00198,
+        "decide_extract": 0.00198,
+        "web_search": 0.00198,
+        "web_fetch": 0.00198,
+        "reddit_digest": 0.00198
+      },
+      "ms": 1876.536012001452,
+      "error": null
+    },
+    {
+      "idx": 4,
+      "utterance": "give me three phrasings of this question for the engine",
+      "label": "decide_extract",
+      "choice": "filesys_read",
+      "correct": false,
+      "conf": 0.6222,
+      "probabilities": {
+        "filesys_read": 0.530198,
+        "filesys_glob": 0.002531,
+        "filesys_grep": 0.454616,
+        "decide_pick": 0.002531,
+        "decide_extract": 0.002531,
+        "web_search": 0.002531,
+        "web_fetch": 0.002531,
+        "reddit_digest": 0.002531
+      },
+      "ms": 1899.9155519995838,
+      "error": null
+    },
+    {
+      "idx": 5,
+      "utterance": "look up the latest llama.cpp server flags",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6904,
+      "probabilities": {
+        "filesys_read": 0.267923,
+        "filesys_glob": 0.001446,
+        "filesys_grep": 0.723403,
+        "decide_pick": 0.001446,
+        "decide_extract": 0.001446,
+        "web_search": 0.001446,
+        "web_fetch": 0.001446,
+        "reddit_digest": 0.001446
+      },
+      "ms": 1936.8181140016532,
+      "error": null
+    },
+    {
+      "idx": 6,
+      "utterance": "grab the page at https://ggml.ai/news",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "correct": true,
+      "conf": 0.6479,
+      "probabilities": {
+        "filesys_read": 0.001494,
+        "filesys_glob": 0.001494,
+        "filesys_grep": 0.391253,
+        "decide_pick": 0.001494,
+        "decide_extract": 0.001494,
+        "web_search": 0.001494,
+        "web_fetch": 0.599781,
+        "reddit_digest": 0.001494
+      },
+      "ms": 2375.454957000329,
+      "error": null
+    },
+    {
+      "idx": 7,
+      "utterance": "what's hot on r/LocalLLaMA today?",
+      "label": "reddit_digest",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.5396,
+      "probabilities": {
+        "filesys_read": 0.09566,
+        "filesys_glob": 0.000525,
+        "filesys_grep": 0.499266,
+        "decide_pick": 0.000525,
+        "decide_extract": 0.000525,
+        "web_search": 0.000525,
+        "web_fetch": 0.000525,
+        "reddit_digest": 0.402449
+      },
+      "ms": 1882.2119840006053,
+      "error": null
+    },
+    {
+      "idx": 8,
+      "utterance": "what's inside config/permissions.yaml?",
+      "label": "filesys_read",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7406,
+      "probabilities": {
+        "filesys_read": 0.216952,
+        "filesys_glob": 0.000309,
+        "filesys_grep": 0.781192,
+        "decide_pick": 0.000309,
+        "decide_extract": 0.000309,
+        "web_search": 0.000309,
+        "web_fetch": 0.000309,
+        "reddit_digest": 0.000309
+      },
+      "ms": 1950.3692130019772,
+      "error": null
+    },
+    {
+      "idx": 9,
+      "utterance": "which config files live in the conf/ directory?",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.6626,
+      "probabilities": {
+        "filesys_read": 0.338795,
+        "filesys_glob": 0.652601,
+        "filesys_grep": 0.001434,
+        "decide_pick": 0.001434,
+        "decide_extract": 0.001434,
+        "web_search": 0.001434,
+        "web_fetch": 0.001434,
+        "reddit_digest": 0.001434
+      },
+      "ms": 1970.6525980000151,
+      "error": null
+    },
+    {
+      "idx": 10,
+      "utterance": "find every call site of retry_with_backoff",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.9347,
+      "probabilities": {
+        "filesys_read": 0.002829,
+        "filesys_glob": 0.002829,
+        "filesys_grep": 0.980198,
+        "decide_pick": 0.002829,
+        "decide_extract": 0.002829,
+        "web_search": 0.002829,
+        "web_fetch": 0.002829,
+        "reddit_digest": 0.002829
+      },
+      "ms": 2402.611284000159,
+      "error": null
+    },
+    {
+      "idx": 11,
+      "utterance": "which of these four candidates is the strongest match?",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.731,
+      "probabilities": {
+        "filesys_read": 0.211872,
+        "filesys_glob": 0.000923,
+        "filesys_grep": 0.782593,
+        "decide_pick": 0.000923,
+        "decide_extract": 0.000923,
+        "web_search": 0.000923,
+        "web_fetch": 0.000923,
+        "reddit_digest": 0.000923
+      },
+      "ms": 1885.1210140019248,
+      "error": null
+    },
+    {
+      "idx": 12,
+      "utterance": "what keywords best capture what I'm after?",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.9841,
+      "probabilities": {
+        "filesys_read": 0.000558,
+        "filesys_glob": 0.000558,
+        "filesys_grep": 0.996097,
+        "decide_pick": 0.000558,
+        "decide_extract": 0.000558,
+        "web_search": 0.000558,
+        "web_fetch": 0.000558,
+        "reddit_digest": 0.000558
+      },
+      "ms": 1873.8867489992117,
+      "error": null
+    },
+    {
+      "idx": 13,
+      "utterance": "find out what changed in pytest 8.2",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.638,
+      "probabilities": {
+        "filesys_read": 0.420768,
+        "filesys_glob": 0.001778,
+        "filesys_grep": 0.568565,
+        "decide_pick": 0.001778,
+        "decide_extract": 0.001778,
+        "web_search": 0.001778,
+        "web_fetch": 0.001778,
+        "reddit_digest": 0.001778
+      },
+      "ms": 1930.3634239986422,
+      "error": null
+    },
+    {
+      "idx": 14,
+      "utterance": "load https://docs.python.org/3/library/ssl.html",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "correct": true,
+      "conf": 0.6467,
+      "probabilities": {
+        "filesys_read": 0.001217,
+        "filesys_glob": 0.001217,
+        "filesys_grep": 0.426845,
+        "decide_pick": 0.001217,
+        "decide_extract": 0.001217,
+        "web_search": 0.001217,
+        "web_fetch": 0.565856,
+        "reddit_digest": 0.001217
+      },
+      "ms": 1870.639905999269,
+      "error": null
+    },
+    {
+      "idx": 15,
+      "utterance": "grab the top threads in r/rust from this week",
+      "label": "reddit_digest",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.4714,
+      "probabilities": {
+        "filesys_read": 0.297859,
+        "filesys_glob": 0.00068,
+        "filesys_grep": 0.435119,
+        "decide_pick": 0.00068,
+        "decide_extract": 0.00068,
+        "web_search": 0.00068,
+        "web_fetch": 0.00068,
+        "reddit_digest": 0.263622
+      },
+      "ms": 2394.1736739980115,
+      "error": null
+    },
+    {
+      "idx": 16,
+      "utterance": "open service/ti/registry.py",
+      "label": "filesys_read",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6622,
+      "probabilities": {
+        "filesys_read": 0.372783,
+        "filesys_glob": 0.000935,
+        "filesys_grep": 0.621608,
+        "decide_pick": 0.000935,
+        "decide_extract": 0.000935,
+        "web_search": 0.000935,
+        "web_fetch": 0.000935,
+        "reddit_digest": 0.000935
+      },
+      "ms": 1890.4044379996776,
+      "error": null
+    },
+    {
+      "idx": 17,
+      "utterance": "find all test fixtures under tests/fixtures",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.6407,
+      "probabilities": {
+        "filesys_read": 0.368997,
+        "filesys_glob": 0.617646,
+        "filesys_grep": 0.002226,
+        "decide_pick": 0.002226,
+        "decide_extract": 0.002226,
+        "web_search": 0.002226,
+        "web_fetch": 0.002226,
+        "reddit_digest": 0.002226
+      },
+      "ms": 1879.4071350021113,
+      "error": null
+    },
+    {
+      "idx": 18,
+      "utterance": "which modules import yaml.safe_load?",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.6463,
+      "probabilities": {
+        "filesys_read": 0.395575,
+        "filesys_glob": 0.001542,
+        "filesys_grep": 0.595174,
+        "decide_pick": 0.001542,
+        "decide_extract": 0.001542,
+        "web_search": 0.001542,
+        "web_fetch": 0.001542,
+        "reddit_digest": 0.001542
+      },
+      "ms": 2381.579475997569,
+      "error": null
+    },
+    {
+      "idx": 19,
+      "utterance": "from the candidate list, choose one to fetch first",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6458,
+      "probabilities": {
+        "filesys_read": 0.357918,
+        "filesys_glob": 0.002092,
+        "filesys_grep": 0.629528,
+        "decide_pick": 0.002092,
+        "decide_extract": 0.002092,
+        "web_search": 0.002092,
+        "web_fetch": 0.002092,
+        "reddit_digest": 0.002092
+      },
+      "ms": 2395.4485100002785,
+      "error": null
+    },
+    {
+      "idx": 20,
+      "utterance": "turn 'setup guides for llama quantization' into several distinct queries",
+      "label": "decide_extract",
+      "choice": "decide_extract",
+      "correct": true,
+      "conf": 0.4845,
+      "probabilities": {
+        "filesys_read": 0.223525,
+        "filesys_glob": 0.00139,
+        "filesys_grep": 0.256469,
+        "decide_pick": 0.00139,
+        "decide_extract": 0.513057,
+        "web_search": 0.00139,
+        "web_fetch": 0.00139,
+        "reddit_digest": 0.00139
+      },
+      "ms": 2571.162831001857,
+      "error": null
+    },
+    {
+      "idx": 21,
+      "utterance": "any recent coverage of the torch.compile release?",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.9419,
+      "probabilities": {
+        "filesys_read": 0.002469,
+        "filesys_glob": 0.002469,
+        "filesys_grep": 0.982717,
+        "decide_pick": 0.002469,
+        "decide_extract": 0.002469,
+        "web_search": 0.002469,
+        "web_fetch": 0.002469,
+        "reddit_digest": 0.002469
+      },
+      "ms": 1905.054602000746,
+      "error": null
+    },
+    {
+      "idx": 22,
+      "utterance": "open that blog post about the kv-cache fix",
+      "label": "web_fetch",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6478,
+      "probabilities": {
+        "filesys_read": 0.445998,
+        "filesys_glob": 0.001034,
+        "filesys_grep": 0.547796,
+        "decide_pick": 0.001034,
+        "decide_extract": 0.001034,
+        "web_search": 0.001034,
+        "web_fetch": 0.001034,
+        "reddit_digest": 0.001034
+      },
+      "ms": 1869.509938002011,
+      "error": null
+    },
+    {
+      "idx": 23,
+      "utterance": "summarize r/MLQuestions posts about fine-tuning",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.7861,
+      "probabilities": {
+        "filesys_read": 0.000219,
+        "filesys_glob": 0.000219,
+        "filesys_grep": 0.155771,
+        "decide_pick": 0.000219,
+        "decide_extract": 0.000219,
+        "web_search": 0.000219,
+        "web_fetch": 0.000219,
+        "reddit_digest": 0.842918
+      },
+      "ms": 2386.352844998328,
+      "error": null
+    },
+    {
+      "idx": 24,
+      "utterance": "check the top of CHANGELOG.md",
+      "label": "filesys_read",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6776,
+      "probabilities": {
+        "filesys_read": 0.349565,
+        "filesys_glob": 0.000472,
+        "filesys_grep": 0.647605,
+        "decide_pick": 0.000472,
+        "decide_extract": 0.000472,
+        "web_search": 0.000472,
+        "web_fetch": 0.000472,
+        "reddit_digest": 0.000472
+      },
+      "ms": 2404.006192999077,
+      "error": null
+    },
+    {
+      "idx": 25,
+      "utterance": "names of all .proto files under api/",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.4566,
+      "probabilities": {
+        "filesys_read": 0.287157,
+        "filesys_glob": 0.436181,
+        "filesys_grep": 0.267645,
+        "decide_pick": 0.001803,
+        "decide_extract": 0.001803,
+        "web_search": 0.001803,
+        "web_fetch": 0.001803,
+        "reddit_digest": 0.001803
+      },
+      "ms": 2443.985881000117,
+      "error": null
+    },
+    {
+      "idx": 26,
+      "utterance": "look for hardcoded timeout values in src/net",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.8562,
+      "probabilities": {
+        "filesys_read": 0.079682,
+        "filesys_glob": 0.000403,
+        "filesys_grep": 0.917899,
+        "decide_pick": 0.000403,
+        "decide_extract": 0.000403,
+        "web_search": 0.000403,
+        "web_fetch": 0.000403,
+        "reddit_digest": 0.000403
+      },
+      "ms": 2922.62583000047,
+      "error": null
+    },
+    {
+      "idx": 27,
+      "utterance": "the browser returned ten hits \u2014 keep the best three",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6343,
+      "probabilities": {
+        "filesys_read": 0.393111,
+        "filesys_glob": 0.002293,
+        "filesys_grep": 0.593133,
+        "decide_pick": 0.002293,
+        "decide_extract": 0.002293,
+        "web_search": 0.002293,
+        "web_fetch": 0.002293,
+        "reddit_digest": 0.002293
+      },
+      "ms": 1901.4013790001627,
+      "error": null
+    },
+    {
+      "idx": 28,
+      "utterance": "list the exact identifiers the user mentioned",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7153,
+      "probabilities": {
+        "filesys_read": 0.221508,
+        "filesys_glob": 0.001445,
+        "filesys_grep": 0.769824,
+        "decide_pick": 0.001445,
+        "decide_extract": 0.001445,
+        "web_search": 0.001445,
+        "web_fetch": 0.001445,
+        "reddit_digest": 0.001445
+      },
+      "ms": 2380.286858002364,
+      "error": null
+    },
+    {
+      "idx": 29,
+      "utterance": "search for benchmarks comparing q4 and q5 quants",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7299,
+      "probabilities": {
+        "filesys_read": 0.214005,
+        "filesys_glob": 0.000912,
+        "filesys_grep": 0.780523,
+        "decide_pick": 0.000912,
+        "decide_extract": 0.000912,
+        "web_search": 0.000912,
+        "web_fetch": 0.000912,
+        "reddit_digest": 0.000912
+      },
+      "ms": 2396.171995002078,
+      "error": null
+    },
+    {
+      "idx": 30,
+      "utterance": "get me the content of the huggingface model card",
+      "label": "web_fetch",
+      "choice": "filesys_read",
+      "correct": false,
+      "conf": 0.6624,
+      "probabilities": {
+        "filesys_read": 0.645826,
+        "filesys_glob": 0.001318,
+        "filesys_grep": 0.346264,
+        "decide_pick": 0.001318,
+        "decide_extract": 0.001318,
+        "web_search": 0.001318,
+        "web_fetch": 0.001318,
+        "reddit_digest": 0.001318
+      },
+      "ms": 2432.8124659987225,
+      "error": null
+    },
+    {
+      "idx": 31,
+      "utterance": "catch me up on that quantization megathread on the sub",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.612,
+      "probabilities": {
+        "filesys_read": 0.088803,
+        "filesys_glob": 0.000394,
+        "filesys_grep": 0.208746,
+        "decide_pick": 0.000394,
+        "decide_extract": 0.000394,
+        "web_search": 0.000394,
+        "web_fetch": 0.000394,
+        "reddit_digest": 0.700481
+      },
+      "ms": 1956.4858539997658,
+      "error": null
+    },
+    {
+      "idx": 32,
+      "utterance": "give me the body of the root makefile",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "correct": true,
+      "conf": 0.7829,
+      "probabilities": {
+        "filesys_read": 0.852207,
+        "filesys_glob": 0.000888,
+        "filesys_grep": 0.142463,
+        "decide_pick": 0.000888,
+        "decide_extract": 0.000888,
+        "web_search": 0.000888,
+        "web_fetch": 0.000888,
+        "reddit_digest": 0.000888
+      },
+      "ms": 1872.075669998594,
+      "error": null
+    },
+    {
+      "idx": 33,
+      "utterance": "find every .sh under scripts/",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.4554,
+      "probabilities": {
+        "filesys_read": 0.28708,
+        "filesys_glob": 0.425848,
+        "filesys_grep": 0.278477,
+        "decide_pick": 0.001719,
+        "decide_extract": 0.001719,
+        "web_search": 0.001719,
+        "web_fetch": 0.001719,
+        "reddit_digest": 0.001719
+      },
+      "ms": 1898.6909849991207,
+      "error": null
+    },
+    {
+      "idx": 34,
+      "utterance": "grep the tree for deprecated",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.8688,
+      "probabilities": {
+        "filesys_read": 0.0712,
+        "filesys_glob": 0.000298,
+        "filesys_grep": 0.927012,
+        "decide_pick": 0.000298,
+        "decide_extract": 0.000298,
+        "web_search": 0.000298,
+        "web_fetch": 0.000298,
+        "reddit_digest": 0.000298
+      },
+      "ms": 2393.015800997091,
+      "error": null
+    },
+    {
+      "idx": 35,
+      "utterance": "which of those two forum threads is more on-topic?",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6756,
+      "probabilities": {
+        "filesys_read": 0.282604,
+        "filesys_glob": 0.001904,
+        "filesys_grep": 0.705971,
+        "decide_pick": 0.001904,
+        "decide_extract": 0.001904,
+        "web_search": 0.001904,
+        "web_fetch": 0.001904,
+        "reddit_digest": 0.001904
+      },
+      "ms": 1864.606964001723,
+      "error": null
+    },
+    {
+      "idx": 36,
+      "utterance": "what should the search string be for this goal?",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.8166,
+      "probabilities": {
+        "filesys_read": 0.109505,
+        "filesys_glob": 0.000738,
+        "filesys_grep": 0.886068,
+        "decide_pick": 0.000738,
+        "decide_extract": 0.000738,
+        "web_search": 0.000738,
+        "web_fetch": 0.000738,
+        "reddit_digest": 0.000738
+      },
+      "ms": 1872.8006790006475,
+      "error": null
+    },
+    {
+      "idx": 37,
+      "utterance": "who ships a cpu-only ffmpeg build these days?",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6312,
+      "probabilities": {
+        "filesys_read": 0.455658,
+        "filesys_glob": 0.001955,
+        "filesys_grep": 0.532611,
+        "decide_pick": 0.001955,
+        "decide_extract": 0.001955,
+        "web_search": 0.001955,
+        "web_fetch": 0.001955,
+        "reddit_digest": 0.001955
+      },
+      "ms": 1871.2810570032161,
+      "error": null
+    },
+    {
+      "idx": 38,
+      "utterance": "fetch the changelog at that docs link",
+      "label": "web_fetch",
+      "choice": "filesys_read",
+      "correct": false,
+      "conf": 0.47,
+      "probabilities": {
+        "filesys_read": 0.459884,
+        "filesys_glob": 0.001208,
+        "filesys_grep": 0.283159,
+        "decide_pick": 0.001208,
+        "decide_extract": 0.001208,
+        "web_search": 0.001208,
+        "web_fetch": 0.250917,
+        "reddit_digest": 0.001208
+      },
+      "ms": 2375.752461000957,
+      "error": null
+    },
+    {
+      "idx": 39,
+      "utterance": "digest the comments on the llama.cpp release post",
+      "label": "reddit_digest",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.5252,
+      "probabilities": {
+        "filesys_read": 0.126637,
+        "filesys_glob": 0.000801,
+        "filesys_grep": 0.542837,
+        "decide_pick": 0.000801,
+        "decide_extract": 0.000801,
+        "web_search": 0.000801,
+        "web_fetch": 0.000801,
+        "reddit_digest": 0.326522
+      },
+      "ms": 1857.823518999794,
+      "error": null
+    },
+    {
+      "idx": 40,
+      "utterance": "read through requirements-dev.txt",
+      "label": "filesys_read",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6462,
+      "probabilities": {
+        "filesys_read": 0.460373,
+        "filesys_glob": 0.001052,
+        "filesys_grep": 0.533314,
+        "decide_pick": 0.001052,
+        "decide_extract": 0.001052,
+        "web_search": 0.001052,
+        "web_fetch": 0.001052,
+        "reddit_digest": 0.001052
+      },
+      "ms": 2418.0609960021684,
+      "error": null
+    },
+    {
+      "idx": 41,
+      "utterance": "do we have any dockerfile at the top level?",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.6369,
+      "probabilities": {
+        "filesys_read": 0.387163,
+        "filesys_glob": 0.599616,
+        "filesys_grep": 0.002204,
+        "decide_pick": 0.002204,
+        "decide_extract": 0.002204,
+        "web_search": 0.002204,
+        "web_fetch": 0.002204,
+        "reddit_digest": 0.002204
+      },
+      "ms": 2386.8280140013667,
+      "error": null
+    },
+    {
+      "idx": 42,
+      "utterance": "does anything in bin/ reference the legacy CLI?",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.7295,
+      "probabilities": {
+        "filesys_read": 0.202384,
+        "filesys_glob": 0.001323,
+        "filesys_grep": 0.789677,
+        "decide_pick": 0.001323,
+        "decide_extract": 0.001323,
+        "web_search": 0.001323,
+        "web_fetch": 0.001323,
+        "reddit_digest": 0.001323
+      },
+      "ms": 2428.090940000402,
+      "error": null
+    },
+    {
+      "idx": 43,
+      "utterance": "narrow these eight matches down to the most relevant",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6642,
+      "probabilities": {
+        "filesys_read": 0.323186,
+        "filesys_glob": 0.001641,
+        "filesys_grep": 0.666968,
+        "decide_pick": 0.001641,
+        "decide_extract": 0.001641,
+        "web_search": 0.001641,
+        "web_fetch": 0.001641,
+        "reddit_digest": 0.001641
+      },
+      "ms": 3014.3144260000554,
+      "error": null
+    },
+    {
+      "idx": 44,
+      "utterance": "write out the file names the request refers to",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6415,
+      "probabilities": {
+        "filesys_read": 0.377017,
+        "filesys_glob": 0.002062,
+        "filesys_grep": 0.610612,
+        "decide_pick": 0.002062,
+        "decide_extract": 0.002062,
+        "web_search": 0.002062,
+        "web_fetch": 0.002062,
+        "reddit_digest": 0.002062
+      },
+      "ms": 1854.417017999367,
+      "error": null
+    },
+    {
+      "idx": 45,
+      "utterance": "look up sdpa vs flash attention perf numbers",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.667,
+      "probabilities": {
+        "filesys_read": 0.330458,
+        "filesys_glob": 0.001341,
+        "filesys_grep": 0.661496,
+        "decide_pick": 0.001341,
+        "decide_extract": 0.001341,
+        "web_search": 0.001341,
+        "web_fetch": 0.001341,
+        "reddit_digest": 0.001341
+      },
+      "ms": 2383.62967500143,
+      "error": null
+    },
+    {
+      "idx": 46,
+      "utterance": "read https://github.com/ggml-org/llama.cpp/pull/1203",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "correct": true,
+      "conf": 0.5296,
+      "probabilities": {
+        "filesys_read": 0.11341,
+        "filesys_glob": 0.000532,
+        "filesys_grep": 0.3738,
+        "decide_pick": 0.000532,
+        "decide_extract": 0.000532,
+        "web_search": 0.000532,
+        "web_fetch": 0.510127,
+        "reddit_digest": 0.000532
+      },
+      "ms": 2388.814417001413,
+      "error": null
+    },
+    {
+      "idx": 47,
+      "utterance": "skim r/programming and tell me the big stories",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.7199,
+      "probabilities": {
+        "filesys_read": 0.055337,
+        "filesys_glob": 0.0003,
+        "filesys_grep": 0.117699,
+        "decide_pick": 0.0003,
+        "decide_extract": 0.0003,
+        "web_search": 0.0003,
+        "web_fetch": 0.0003,
+        "reddit_digest": 0.825465
+      },
+      "ms": 2489.5013729983475,
+      "error": null
+    },
+    {
+      "idx": 48,
+      "utterance": "how is the retry logic implemented in service/net/client.py?",
+      "label": "filesys_read",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.9103,
+      "probabilities": {
+        "filesys_read": 0.004113,
+        "filesys_glob": 0.004113,
+        "filesys_grep": 0.97121,
+        "decide_pick": 0.004113,
+        "decide_extract": 0.004113,
+        "web_search": 0.004113,
+        "web_fetch": 0.004113,
+        "reddit_digest": 0.004113
+      },
+      "ms": 1851.2300369984587,
+      "error": null
+    },
+    {
+      "idx": 49,
+      "utterance": "how many .md docs are there in docs/guide?",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.4995,
+      "probabilities": {
+        "filesys_read": 0.26092,
+        "filesys_glob": 0.536555,
+        "filesys_grep": 0.197289,
+        "decide_pick": 0.001047,
+        "decide_extract": 0.001047,
+        "web_search": 0.001047,
+        "web_fetch": 0.001047,
+        "reddit_digest": 0.001047
+      },
+      "ms": 2400.5513390002307,
+      "error": null
+    },
+    {
+      "idx": 50,
+      "utterance": "locate each place we catch HTTPError",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.8107,
+      "probabilities": {
+        "filesys_read": 0.114796,
+        "filesys_glob": 0.000773,
+        "filesys_grep": 0.880563,
+        "decide_pick": 0.000773,
+        "decide_extract": 0.000773,
+        "web_search": 0.000773,
+        "web_fetch": 0.000773,
+        "reddit_digest": 0.000773
+      },
+      "ms": 2419.053450001229,
+      "error": null
+    },
+    {
+      "idx": 51,
+      "utterance": "I have five candidate paths \u2014 tell me which to open",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6688,
+      "probabilities": {
+        "filesys_read": 0.330537,
+        "filesys_glob": 0.001241,
+        "filesys_grep": 0.662015,
+        "decide_pick": 0.001241,
+        "decide_extract": 0.001241,
+        "web_search": 0.001241,
+        "web_fetch": 0.001241,
+        "reddit_digest": 0.001241
+      },
+      "ms": 2407.874954998988,
+      "error": null
+    },
+    {
+      "idx": 52,
+      "utterance": "come up with alternate wordings for my lookup",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6704,
+      "probabilities": {
+        "filesys_read": 0.332155,
+        "filesys_glob": 0.001122,
+        "filesys_grep": 0.661111,
+        "decide_pick": 0.001122,
+        "decide_extract": 0.001122,
+        "web_search": 0.001122,
+        "web_fetch": 0.001122,
+        "reddit_digest": 0.001122
+      },
+      "ms": 2948.69942400328,
+      "error": null
+    },
+    {
+      "idx": 53,
+      "utterance": "find the official docs on httponly cookie flags",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.8177,
+      "probabilities": {
+        "filesys_read": 0.112242,
+        "filesys_glob": 0.000554,
+        "filesys_grep": 0.884432,
+        "decide_pick": 0.000554,
+        "decide_extract": 0.000554,
+        "web_search": 0.000554,
+        "web_fetch": 0.000554,
+        "reddit_digest": 0.000554
+      },
+      "ms": 1910.7058709996636,
+      "error": null
+    },
+    {
+      "idx": 54,
+      "utterance": "open the arxiv abs page for 2401.06919",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "correct": true,
+      "conf": 0.9226,
+      "probabilities": {
+        "filesys_read": 0.003456,
+        "filesys_glob": 0.003456,
+        "filesys_grep": 0.003456,
+        "decide_pick": 0.003456,
+        "decide_extract": 0.003456,
+        "web_search": 0.003456,
+        "web_fetch": 0.975808,
+        "reddit_digest": 0.003456
+      },
+      "ms": 2430.809590998251,
+      "error": null
+    },
+    {
+      "idx": 55,
+      "utterance": "what are people in the machine learning sub asking?",
+      "label": "reddit_digest",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.5169,
+      "probabilities": {
+        "filesys_read": 0.21885,
+        "filesys_glob": 0.001204,
+        "filesys_grep": 0.582943,
+        "decide_pick": 0.001204,
+        "decide_extract": 0.192188,
+        "web_search": 0.001204,
+        "web_fetch": 0.001204,
+        "reddit_digest": 0.001204
+      },
+      "ms": 2385.642356999597,
+      "error": null
+    },
+    {
+      "idx": 56,
+      "utterance": "dump the schema block from models/registry.py",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "correct": true,
+      "conf": 0.6534,
+      "probabilities": {
+        "filesys_read": 0.51863,
+        "filesys_glob": 0.000614,
+        "filesys_grep": 0.477688,
+        "decide_pick": 0.000614,
+        "decide_extract": 0.000614,
+        "web_search": 0.000614,
+        "web_fetch": 0.000614,
+        "reddit_digest": 0.000614
+      },
+      "ms": 2378.561877998436,
+      "error": null
+    },
+    {
+      "idx": 57,
+      "utterance": "which files here start with bench_?",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.4521,
+      "probabilities": {
+        "filesys_read": 0.294118,
+        "filesys_glob": 0.35895,
+        "filesys_grep": 0.340142,
+        "decide_pick": 0.001358,
+        "decide_extract": 0.001358,
+        "web_search": 0.001358,
+        "web_fetch": 0.001358,
+        "reddit_digest": 0.001358
+      },
+      "ms": 1973.2777899989742,
+      "error": null
+    },
+    {
+      "idx": 58,
+      "utterance": "search the fixtures for api_token strings",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.9037,
+      "probabilities": {
+        "filesys_read": 0.045841,
+        "filesys_glob": 0.000257,
+        "filesys_grep": 0.952614,
+        "decide_pick": 0.000257,
+        "decide_extract": 0.000257,
+        "web_search": 0.000257,
+        "web_fetch": 0.000257,
+        "reddit_digest": 0.000257
+      },
+      "ms": 1890.7159209993551,
+      "error": null
+    },
+    {
+      "idx": 59,
+      "utterance": "sort these search hits by how well they fit the task",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6945,
+      "probabilities": {
+        "filesys_read": 0.261454,
+        "filesys_glob": 0.001391,
+        "filesys_grep": 0.730203,
+        "decide_pick": 0.001391,
+        "decide_extract": 0.001391,
+        "web_search": 0.001391,
+        "web_fetch": 0.001391,
+        "reddit_digest": 0.001391
+      },
+      "ms": 1859.2784030006442,
+      "error": null
+    },
+    {
+      "idx": 60,
+      "utterance": "pull the topic keywords from my message",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6973,
+      "probabilities": {
+        "filesys_read": 0.263933,
+        "filesys_glob": 0.001173,
+        "filesys_grep": 0.729027,
+        "decide_pick": 0.001173,
+        "decide_extract": 0.001173,
+        "web_search": 0.001173,
+        "web_fetch": 0.001173,
+        "reddit_digest": 0.001173
+      },
+      "ms": 2448.1359439996595,
+      "error": null
+    },
+    {
+      "idx": 61,
+      "utterance": "search the web for ggml backend api changes",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.9438,
+      "probabilities": {
+        "filesys_read": 0.002373,
+        "filesys_glob": 0.002373,
+        "filesys_grep": 0.983389,
+        "decide_pick": 0.002373,
+        "decide_extract": 0.002373,
+        "web_search": 0.002373,
+        "web_fetch": 0.002373,
+        "reddit_digest": 0.002373
+      },
+      "ms": 1925.153236999904,
+      "error": null
+    },
+    {
+      "idx": 62,
+      "utterance": "show the page stored under the pending url",
+      "label": "web_fetch",
+      "choice": "filesys_read",
+      "correct": false,
+      "conf": 0.6428,
+      "probabilities": {
+        "filesys_read": 0.588581,
+        "filesys_glob": 0.001682,
+        "filesys_grep": 0.401326,
+        "decide_pick": 0.001682,
+        "decide_extract": 0.001682,
+        "web_search": 0.001682,
+        "web_fetch": 0.001682,
+        "reddit_digest": 0.001682
+      },
+      "ms": 2448.3626569999615,
+      "error": null
+    },
+    {
+      "idx": 63,
+      "utterance": "pull up the flash attention discussion on the subreddit",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.8082,
+      "probabilities": {
+        "filesys_read": 0.000706,
+        "filesys_glob": 0.000706,
+        "filesys_grep": 0.118723,
+        "decide_pick": 0.000706,
+        "decide_extract": 0.000706,
+        "web_search": 0.000706,
+        "web_fetch": 0.000706,
+        "reddit_digest": 0.87704
+      },
+      "ms": 2424.3266920020687,
+      "error": null
+    },
+    {
+      "idx": 64,
+      "utterance": "pull up the cron config for me",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "correct": true,
+      "conf": 0.709,
+      "probabilities": {
+        "filesys_read": 0.732691,
+        "filesys_glob": 0.000575,
+        "filesys_grep": 0.263862,
+        "decide_pick": 0.000575,
+        "decide_extract": 0.000575,
+        "web_search": 0.000575,
+        "web_fetch": 0.000575,
+        "reddit_digest": 0.000575
+      },
+      "ms": 1888.9620100017055,
+      "error": null
+    },
+    {
+      "idx": 65,
+      "utterance": "where do we keep the probe fixtures?",
+      "label": "filesys_glob",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.4691,
+      "probabilities": {
+        "filesys_read": 0.271189,
+        "filesys_glob": 0.244034,
+        "filesys_grep": 0.476556,
+        "decide_pick": 0.001644,
+        "decide_extract": 0.001644,
+        "web_search": 0.001644,
+        "web_fetch": 0.001644,
+        "reddit_digest": 0.001644
+      },
+      "ms": 2437.9005420014437,
+      "error": null
+    },
+    {
+      "idx": 66,
+      "utterance": "where do we define the hop budget?",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.6606,
+      "probabilities": {
+        "filesys_read": 0.316072,
+        "filesys_glob": 0.002,
+        "filesys_grep": 0.671928,
+        "decide_pick": 0.002,
+        "decide_extract": 0.002,
+        "web_search": 0.002,
+        "web_fetch": 0.002,
+        "reddit_digest": 0.002
+      },
+      "ms": 2504.348235001089,
+      "error": null
+    },
+    {
+      "idx": 67,
+      "utterance": "of the results we just pulled, which one matters?",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.9438,
+      "probabilities": {
+        "filesys_read": 0.002371,
+        "filesys_glob": 0.002371,
+        "filesys_grep": 0.9834,
+        "decide_pick": 0.002371,
+        "decide_extract": 0.002371,
+        "web_search": 0.002371,
+        "web_fetch": 0.002371,
+        "reddit_digest": 0.002371
+      },
+      "ms": 2410.5073639984766,
+      "error": null
+    },
+    {
+      "idx": 68,
+      "utterance": "how would you phrase this ask for the engine?",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6531,
+      "probabilities": {
+        "filesys_read": 0.381282,
+        "filesys_glob": 0.001321,
+        "filesys_grep": 0.610794,
+        "decide_pick": 0.001321,
+        "decide_extract": 0.001321,
+        "web_search": 0.001321,
+        "web_fetch": 0.001321,
+        "reddit_digest": 0.001321
+      },
+      "ms": 1967.217751996941,
+      "error": null
+    },
+    {
+      "idx": 69,
+      "utterance": "anything out there on the new moka decode path?",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7059,
+      "probabilities": {
+        "filesys_read": 0.262435,
+        "filesys_glob": 0.000763,
+        "filesys_grep": 0.732989,
+        "decide_pick": 0.000763,
+        "decide_extract": 0.000763,
+        "web_search": 0.000763,
+        "web_fetch": 0.000763,
+        "reddit_digest": 0.000763
+      },
+      "ms": 2023.0673879996175,
+      "error": null
+    },
+    {
+      "idx": 70,
+      "utterance": "get me whatever lives at that address",
+      "label": "web_fetch",
+      "choice": "filesys_read",
+      "correct": false,
+      "conf": 0.6404,
+      "probabilities": {
+        "filesys_read": 0.568851,
+        "filesys_glob": 0.001629,
+        "filesys_grep": 0.421377,
+        "decide_pick": 0.001629,
+        "decide_extract": 0.001629,
+        "web_search": 0.001629,
+        "web_fetch": 0.001629,
+        "reddit_digest": 0.001629
+      },
+      "ms": 2933.1210290001763,
+      "error": null
+    },
+    {
+      "idx": 71,
+      "utterance": "what's the community saying about the llama 4 dump?",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.6924,
+      "probabilities": {
+        "filesys_read": 0.000859,
+        "filesys_glob": 0.000859,
+        "filesys_grep": 0.287506,
+        "decide_pick": 0.000859,
+        "decide_extract": 0.000859,
+        "web_search": 0.000859,
+        "web_fetch": 0.000859,
+        "reddit_digest": 0.707343
+      },
+      "ms": 1877.137032999599,
+      "error": null
+    },
+    {
+      "idx": 72,
+      "utterance": "what does the makefile actually do?",
+      "label": "filesys_read",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6433,
+      "probabilities": {
+        "filesys_read": 0.451899,
+        "filesys_glob": 0.001253,
+        "filesys_grep": 0.540585,
+        "decide_pick": 0.001253,
+        "decide_extract": 0.001253,
+        "web_search": 0.001253,
+        "web_fetch": 0.001253,
+        "reddit_digest": 0.001253
+      },
+      "ms": 2390.112384000531,
+      "error": null
+    },
+    {
+      "idx": 73,
+      "utterance": "is there a migration script for the settings table?",
+      "label": "filesys_glob",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7642,
+      "probabilities": {
+        "filesys_read": 0.161652,
+        "filesys_glob": 0.001039,
+        "filesys_grep": 0.832115,
+        "decide_pick": 0.001039,
+        "decide_extract": 0.001039,
+        "web_search": 0.001039,
+        "web_fetch": 0.001039,
+        "reddit_digest": 0.001039
+      },
+      "ms": 1904.1309829990496,
+      "error": null
+    },
+    {
+      "idx": 74,
+      "utterance": "does anything here still call the v1 endpoint?",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.9558,
+      "probabilities": {
+        "filesys_read": 0.001797,
+        "filesys_glob": 0.001797,
+        "filesys_grep": 0.987422,
+        "decide_pick": 0.001797,
+        "decide_extract": 0.001797,
+        "web_search": 0.001797,
+        "web_fetch": 0.001797,
+        "reddit_digest": 0.001797
+      },
+      "ms": 1874.0467699972214,
+      "error": null
+    },
+    {
+      "idx": 75,
+      "utterance": "several hits came back; I only care about one",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6228,
+      "probabilities": {
+        "filesys_read": 0.438069,
+        "filesys_glob": 0.002591,
+        "filesys_grep": 0.546384,
+        "decide_pick": 0.002591,
+        "decide_extract": 0.002591,
+        "web_search": 0.002591,
+        "web_fetch": 0.002591,
+        "reddit_digest": 0.002591
+      },
+      "ms": 2408.9951179994387,
+      "error": null
+    },
+    {
+      "idx": 76,
+      "utterance": "what words should I throw at it to get hits?",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7971,
+      "probabilities": {
+        "filesys_read": 0.132473,
+        "filesys_glob": 0.000625,
+        "filesys_grep": 0.863779,
+        "decide_pick": 0.000625,
+        "decide_extract": 0.000625,
+        "web_search": 0.000625,
+        "web_fetch": 0.000625,
+        "reddit_digest": 0.000625
+      },
+      "ms": 2405.9297870007867,
+      "error": null
+    },
+    {
+      "idx": 77,
+      "utterance": "any chatter elsewhere about the sigill crash?",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7386,
+      "probabilities": {
+        "filesys_read": 0.190658,
+        "filesys_glob": 0.001258,
+        "filesys_grep": 0.801791,
+        "decide_pick": 0.001258,
+        "decide_extract": 0.001258,
+        "web_search": 0.001258,
+        "web_fetch": 0.001258,
+        "reddit_digest": 0.001258
+      },
+      "ms": 1900.168284002575,
+      "error": null
+    },
+    {
+      "idx": 78,
+      "utterance": "click through to the pydantic settings guide",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "correct": true,
+      "conf": 0.4435,
+      "probabilities": {
+        "filesys_read": 0.296985,
+        "filesys_glob": 0.002001,
+        "filesys_grep": 0.346416,
+        "decide_pick": 0.002001,
+        "decide_extract": 0.002001,
+        "web_search": 0.002001,
+        "web_fetch": 0.346593,
+        "reddit_digest": 0.002001
+      },
+      "ms": 2408.2986209978117,
+      "error": null
+    },
+    {
+      "idx": 79,
+      "utterance": "check the boards for reactions to the new quant release",
+      "label": "reddit_digest",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7215,
+      "probabilities": {
+        "filesys_read": 0.221285,
+        "filesys_glob": 0.001116,
+        "filesys_grep": 0.772017,
+        "decide_pick": 0.001116,
+        "decide_extract": 0.001116,
+        "web_search": 0.001116,
+        "web_fetch": 0.001116,
+        "reddit_digest": 0.001116
+      },
+      "ms": 1899.8700119991554,
+      "error": null
+    },
+    {
+      "idx": 80,
+      "utterance": "walk me through middleware/auth.py",
+      "label": "filesys_read",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7064,
+      "probabilities": {
+        "filesys_read": 0.250569,
+        "filesys_glob": 0.001049,
+        "filesys_grep": 0.743135,
+        "decide_pick": 0.001049,
+        "decide_extract": 0.001049,
+        "web_search": 0.001049,
+        "web_fetch": 0.001049,
+        "reddit_digest": 0.001049
+      },
+      "ms": 2422.9077070012863,
+      "error": null
+    },
+    {
+      "idx": 81,
+      "utterance": "find the README",
+      "label": "filesys_glob",
+      "choice": "filesys_read",
+      "correct": false,
+      "conf": 0.7088,
+      "probabilities": {
+        "filesys_read": 0.748617,
+        "filesys_glob": 0.001078,
+        "filesys_grep": 0.244914,
+        "decide_pick": 0.001078,
+        "decide_extract": 0.001078,
+        "web_search": 0.001078,
+        "web_fetch": 0.001078,
+        "reddit_digest": 0.001078
+      },
+      "ms": 2409.6627889994124,
+      "error": null
+    },
+    {
+      "idx": 82,
+      "utterance": "track down every use of the SignedHeaders helper",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.7828,
+      "probabilities": {
+        "filesys_read": 0.1492,
+        "filesys_glob": 0.000615,
+        "filesys_grep": 0.847109,
+        "decide_pick": 0.000615,
+        "decide_extract": 0.000615,
+        "web_search": 0.000615,
+        "web_fetch": 0.000615,
+        "reddit_digest": 0.000615
+      },
+      "ms": 2428.0434229985985,
+      "error": null
+    },
+    {
+      "idx": 83,
+      "utterance": "from what's in the queue, what should we actually visit?",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.9528,
+      "probabilities": {
+        "filesys_read": 0.001937,
+        "filesys_glob": 0.001937,
+        "filesys_grep": 0.986442,
+        "decide_pick": 0.001937,
+        "decide_extract": 0.001937,
+        "web_search": 0.001937,
+        "web_fetch": 0.001937,
+        "reddit_digest": 0.001937
+      },
+      "ms": 1893.7378310001804,
+      "error": null
+    },
+    {
+      "idx": 84,
+      "utterance": "name the dirs the request refers to",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6697,
+      "probabilities": {
+        "filesys_read": 0.293632,
+        "filesys_glob": 0.001978,
+        "filesys_grep": 0.694497,
+        "decide_pick": 0.001978,
+        "decide_extract": 0.001978,
+        "web_search": 0.001978,
+        "web_fetch": 0.001978,
+        "reddit_digest": 0.001978
+      },
+      "ms": 2415.0663649998023,
+      "error": null
+    },
+    {
+      "idx": 85,
+      "utterance": "who else has hit this exact xformers error?",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.809,
+      "probabilities": {
+        "filesys_read": 0.120196,
+        "filesys_glob": 0.0006,
+        "filesys_grep": 0.876206,
+        "decide_pick": 0.0006,
+        "decide_extract": 0.0006,
+        "web_search": 0.0006,
+        "web_fetch": 0.0006,
+        "reddit_digest": 0.0006
+      },
+      "ms": 1374.9650400022801,
+      "error": null
+    },
+    {
+      "idx": 86,
+      "utterance": "download the text of that advisory page",
+      "label": "web_fetch",
+      "choice": "filesys_read",
+      "correct": false,
+      "conf": 0.9564,
+      "probabilities": {
+        "filesys_read": 0.987622,
+        "filesys_glob": 0.001768,
+        "filesys_grep": 0.001768,
+        "decide_pick": 0.001768,
+        "decide_extract": 0.001768,
+        "web_search": 0.001768,
+        "web_fetch": 0.001768,
+        "reddit_digest": 0.001768
+      },
+      "ms": 2389.7393660008674,
+      "error": null
+    },
+    {
+      "idx": 87,
+      "utterance": "did anyone respond on that thread about tool use?",
+      "label": "reddit_digest",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7101,
+      "probabilities": {
+        "filesys_read": 0.000542,
+        "filesys_glob": 0.000542,
+        "filesys_grep": 0.733912,
+        "decide_pick": 0.000542,
+        "decide_extract": 0.000542,
+        "web_search": 0.000542,
+        "web_fetch": 0.000542,
+        "reddit_digest": 0.262833
+      },
+      "ms": 1878.2177760003833,
+      "error": null
+    },
+    {
+      "idx": 88,
+      "utterance": "need the full text of cli/help.txt",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "correct": true,
+      "conf": 0.6889,
+      "probabilities": {
+        "filesys_read": 0.690045,
+        "filesys_glob": 0.000649,
+        "filesys_grep": 0.306059,
+        "decide_pick": 0.000649,
+        "decide_extract": 0.000649,
+        "web_search": 0.000649,
+        "web_fetch": 0.000649,
+        "reddit_digest": 0.000649
+      },
+      "ms": 2422.693202002847,
+      "error": null
+    },
+    {
+      "idx": 89,
+      "utterance": "which dotfiles did the setup leave behind?",
+      "label": "filesys_glob",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6503,
+      "probabilities": {
+        "filesys_read": 0.388075,
+        "filesys_glob": 0.001395,
+        "filesys_grep": 0.603553,
+        "decide_pick": 0.001395,
+        "decide_extract": 0.001395,
+        "web_search": 0.001395,
+        "web_fetch": 0.001395,
+        "reddit_digest": 0.001395
+      },
+      "ms": 2424.5217379975657,
+      "error": null
+    },
+    {
+      "idx": 90,
+      "utterance": "any references to wallet.json left in the tree?",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.7706,
+      "probabilities": {
+        "filesys_read": 0.164226,
+        "filesys_glob": 0.000618,
+        "filesys_grep": 0.832065,
+        "decide_pick": 0.000618,
+        "decide_extract": 0.000618,
+        "web_search": 0.000618,
+        "web_fetch": 0.000618,
+        "reddit_digest": 0.000618
+      },
+      "ms": 1903.8689809967764,
+      "error": null
+    },
+    {
+      "idx": 91,
+      "utterance": "I got a pile of matches \u2014 point me at the right entry",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6369,
+      "probabilities": {
+        "filesys_read": 0.481954,
+        "filesys_glob": 0.00153,
+        "filesys_grep": 0.508867,
+        "decide_pick": 0.00153,
+        "decide_extract": 0.00153,
+        "web_search": 0.00153,
+        "web_fetch": 0.00153,
+        "reddit_digest": 0.00153
+      },
+      "ms": 2407.0481670023582,
+      "error": null
+    },
+    {
+      "idx": 92,
+      "utterance": "give me some alternative ways to ask this",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.622,
+      "probabilities": {
+        "filesys_read": 0.447628,
+        "filesys_glob": 0.002579,
+        "filesys_grep": 0.5369,
+        "decide_pick": 0.002579,
+        "decide_extract": 0.002579,
+        "web_search": 0.002579,
+        "web_fetch": 0.002579,
+        "reddit_digest": 0.002579
+      },
+      "ms": 1878.6257860010664,
+      "error": null
+    },
+    {
+      "idx": 93,
+      "utterance": "is there anything published about the tokenizer patch?",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.9509,
+      "probabilities": {
+        "filesys_read": 0.002027,
+        "filesys_glob": 0.002027,
+        "filesys_grep": 0.985808,
+        "decide_pick": 0.002027,
+        "decide_extract": 0.002027,
+        "web_search": 0.002027,
+        "web_fetch": 0.002027,
+        "reddit_digest": 0.002027
+      },
+      "ms": 2379.0568269978394,
+      "error": null
+    },
+    {
+      "idx": 94,
+      "utterance": "I want the body of the release page",
+      "label": "web_fetch",
+      "choice": "filesys_read",
+      "correct": false,
+      "conf": 0.6336,
+      "probabilities": {
+        "filesys_read": 0.536736,
+        "filesys_glob": 0.001824,
+        "filesys_grep": 0.452322,
+        "decide_pick": 0.001824,
+        "decide_extract": 0.001824,
+        "web_search": 0.001824,
+        "web_fetch": 0.001824,
+        "reddit_digest": 0.001824
+      },
+      "ms": 2381.8927020001865,
+      "error": null
+    },
+    {
+      "idx": 95,
+      "utterance": "which files talk about the eviction policy?",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.7293,
+      "probabilities": {
+        "filesys_read": 0.202452,
+        "filesys_glob": 0.001335,
+        "filesys_grep": 0.789536,
+        "decide_pick": 0.001335,
+        "decide_extract": 0.001335,
+        "web_search": 0.001335,
+        "web_fetch": 0.001335,
+        "reddit_digest": 0.001335
+      },
+      "ms": 2431.918507998489,
+      "error": null
+    },
+    {
+      "idx": 96,
+      "utterance": "which files have 'replay' in their name?",
+      "label": "filesys_glob",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.4858,
+      "probabilities": {
+        "filesys_read": 0.212345,
+        "filesys_glob": 0.274282,
+        "filesys_grep": 0.507256,
+        "decide_pick": 0.001223,
+        "decide_extract": 0.001223,
+        "web_search": 0.001223,
+        "web_fetch": 0.001223,
+        "reddit_digest": 0.001223
+      },
+      "ms": 1884.3319529987639,
+      "error": null
+    },
+    {
+      "idx": 97,
+      "utterance": "show ops/matcher.py on screen",
+      "label": "filesys_read",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6722,
+      "probabilities": {
+        "filesys_read": 0.337308,
+        "filesys_glob": 0.000935,
+        "filesys_grep": 0.657082,
+        "decide_pick": 0.000935,
+        "decide_extract": 0.000935,
+        "web_search": 0.000935,
+        "web_fetch": 0.000935,
+        "reddit_digest": 0.000935
+      },
+      "ms": 2426.188670000556,
+      "error": null
+    },
+    {
+      "idx": 98,
+      "utterance": "among the files found, which one should we ship to the fetcher?",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6376,
+      "probabilities": {
+        "filesys_read": 0.42178,
+        "filesys_glob": 0.00179,
+        "filesys_grep": 0.56748,
+        "decide_pick": 0.00179,
+        "decide_extract": 0.00179,
+        "web_search": 0.00179,
+        "web_fetch": 0.00179,
+        "reddit_digest": 0.00179
+      },
+      "ms": 2470.6881899983273,
+      "error": null
+    },
+    {
+      "idx": 99,
+      "utterance": "what search terms fit this ask?",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7586,
+      "probabilities": {
+        "filesys_read": 0.175723,
+        "filesys_glob": 0.000778,
+        "filesys_grep": 0.819609,
+        "decide_pick": 0.000778,
+        "decide_extract": 0.000778,
+        "web_search": 0.000778,
+        "web_fetch": 0.000778,
+        "reddit_digest": 0.000778
+      },
+      "ms": 2398.2734189994517,
+      "error": null
+    },
+    {
+      "idx": 100,
+      "utterance": "extract the file paths mentioned in the last message",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6766,
+      "probabilities": {
+        "filesys_read": 0.3071,
+        "filesys_glob": 0.001273,
+        "filesys_grep": 0.685264,
+        "decide_pick": 0.001273,
+        "decide_extract": 0.001273,
+        "web_search": 0.001273,
+        "web_fetch": 0.001273,
+        "reddit_digest": 0.001273
+      },
+      "ms": 1893.3862060002866,
+      "error": null
+    },
+    {
+      "idx": 101,
+      "utterance": "do any modules pull in pydantic here?",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.9813,
+      "probabilities": {
+        "filesys_read": 0.000669,
+        "filesys_glob": 0.000669,
+        "filesys_grep": 0.995319,
+        "decide_pick": 0.000669,
+        "decide_extract": 0.000669,
+        "web_search": 0.000669,
+        "web_fetch": 0.000669,
+        "reddit_digest": 0.000669
+      },
+      "ms": 1916.4911400002893,
+      "error": null
+    },
+    {
+      "idx": 102,
+      "utterance": "which functions call urllib in the test suite?",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.9733,
+      "probabilities": {
+        "filesys_read": 0.001004,
+        "filesys_glob": 0.001004,
+        "filesys_grep": 0.992973,
+        "decide_pick": 0.001004,
+        "decide_extract": 0.001004,
+        "web_search": 0.001004,
+        "web_fetch": 0.001004,
+        "reddit_digest": 0.001004
+      },
+      "ms": 1866.118762998667,
+      "error": null
+    },
+    {
+      "idx": 103,
+      "utterance": "which of these three wordings fits the goal best?",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7471,
+      "probabilities": {
+        "filesys_read": 0.181304,
+        "filesys_glob": 0.001158,
+        "filesys_grep": 0.811747,
+        "decide_pick": 0.001158,
+        "decide_extract": 0.001158,
+        "web_search": 0.001158,
+        "web_fetch": 0.001158,
+        "reddit_digest": 0.001158
+      },
+      "ms": 2445.6285710002703,
+      "error": null
+    },
+    {
+      "idx": 104,
+      "utterance": "how is r/LocalLLaMA reacting to the d1 weights?",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.5909,
+      "probabilities": {
+        "filesys_read": 0.079398,
+        "filesys_glob": 0.000486,
+        "filesys_grep": 0.265927,
+        "decide_pick": 0.000486,
+        "decide_extract": 0.000486,
+        "web_search": 0.000486,
+        "web_fetch": 0.000486,
+        "reddit_digest": 0.652245
+      },
+      "ms": 1870.5615539984137,
+      "error": null
+    },
+    {
+      "idx": 105,
+      "utterance": "which files mention the scheduler hooks?",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.7153,
+      "probabilities": {
+        "filesys_read": 0.224249,
+        "filesys_glob": 0.001357,
+        "filesys_grep": 0.767609,
+        "decide_pick": 0.001357,
+        "decide_extract": 0.001357,
+        "web_search": 0.001357,
+        "web_fetch": 0.001357,
+        "reddit_digest": 0.001357
+      },
+      "ms": 1945.4811369978415,
+      "error": null
+    },
+    {
+      "idx": 106,
+      "utterance": "are there any .har files in the captures dir?",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.6666,
+      "probabilities": {
+        "filesys_read": 0.306141,
+        "filesys_glob": 0.682668,
+        "filesys_grep": 0.001865,
+        "decide_pick": 0.001865,
+        "decide_extract": 0.001865,
+        "web_search": 0.001865,
+        "web_fetch": 0.001865,
+        "reddit_digest": 0.001865
+      },
+      "ms": 1952.214721000928,
+      "error": null
+    },
+    {
+      "idx": 107,
+      "utterance": "pull up the full listing of core/registry.py",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "correct": true,
+      "conf": 0.5473,
+      "probabilities": {
+        "filesys_read": 0.570729,
+        "filesys_glob": 0.10078,
+        "filesys_grep": 0.325096,
+        "decide_pick": 0.000679,
+        "decide_extract": 0.000679,
+        "web_search": 0.000679,
+        "web_fetch": 0.000679,
+        "reddit_digest": 0.000679
+      },
+      "ms": 2389.1829940002935,
+      "error": null
+    },
+    {
+      "idx": 108,
+      "utterance": "of the dozen files that came up, which is the right one to open?",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6345,
+      "probabilities": {
+        "filesys_read": 0.491501,
+        "filesys_glob": 0.001664,
+        "filesys_grep": 0.498515,
+        "decide_pick": 0.001664,
+        "decide_extract": 0.001664,
+        "web_search": 0.001664,
+        "web_fetch": 0.001664,
+        "reddit_digest": 0.001664
+      },
+      "ms": 2407.2188259997347,
+      "error": null
+    },
+    {
+      "idx": 109,
+      "utterance": "generate a few phrasings of the lookup before we hit the web",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6219,
+      "probabilities": {
+        "filesys_read": 0.455757,
+        "filesys_glob": 0.002547,
+        "filesys_grep": 0.52896,
+        "decide_pick": 0.002547,
+        "decide_extract": 0.002547,
+        "web_search": 0.002547,
+        "web_fetch": 0.002547,
+        "reddit_digest": 0.002547
+      },
+      "ms": 2467.87165799833,
+      "error": null
+    },
+    {
+      "idx": 110,
+      "utterance": "pull out the dirs the user pointed at",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6245,
+      "probabilities": {
+        "filesys_read": 0.441827,
+        "filesys_glob": 0.002453,
+        "filesys_grep": 0.543454,
+        "decide_pick": 0.002453,
+        "decide_extract": 0.002453,
+        "web_search": 0.002453,
+        "web_fetch": 0.002453,
+        "reddit_digest": 0.002453
+      },
+      "ms": 1844.2988030001288,
+      "error": null
+    },
+    {
+      "idx": 111,
+      "utterance": "is fastapi referenced anywhere in the tree?",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.9697,
+      "probabilities": {
+        "filesys_read": 0.00116,
+        "filesys_glob": 0.00116,
+        "filesys_grep": 0.991882,
+        "decide_pick": 0.00116,
+        "decide_extract": 0.00116,
+        "web_search": 0.00116,
+        "web_fetch": 0.00116,
+        "reddit_digest": 0.00116
+      },
+      "ms": 2395.1955909979006,
+      "error": null
+    },
+    {
+      "idx": 112,
+      "utterance": "find any use of the requests module in src",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.8681,
+      "probabilities": {
+        "filesys_read": 0.07079,
+        "filesys_glob": 0.000348,
+        "filesys_grep": 0.927122,
+        "decide_pick": 0.000348,
+        "decide_extract": 0.000348,
+        "web_search": 0.000348,
+        "web_fetch": 0.000348,
+        "reddit_digest": 0.000348
+      },
+      "ms": 2427.0647759985877,
+      "error": null
+    },
+    {
+      "idx": 113,
+      "utterance": "of the two candidate queries on the table, which do we run?",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7803,
+      "probabilities": {
+        "filesys_read": 0.143757,
+        "filesys_glob": 0.000969,
+        "filesys_grep": 0.850431,
+        "decide_pick": 0.000969,
+        "decide_extract": 0.000969,
+        "web_search": 0.000969,
+        "web_fetch": 0.000969,
+        "reddit_digest": 0.000969
+      },
+      "ms": 2404.902452999522,
+      "error": null
+    },
+    {
+      "idx": 114,
+      "utterance": "any threads in r/MachineLearning about the kv cache trick?",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.8954,
+      "probabilities": {
+        "filesys_read": 0.000339,
+        "filesys_glob": 0.000339,
+        "filesys_grep": 0.050273,
+        "decide_pick": 0.000339,
+        "decide_extract": 0.000339,
+        "web_search": 0.000339,
+        "web_fetch": 0.000339,
+        "reddit_digest": 0.947694
+      },
+      "ms": 1856.5813839995826,
+      "error": null
+    },
+    {
+      "idx": 115,
+      "utterance": "which files under src discuss the shard map?",
+      "label": "filesys_grep",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.4693,
+      "probabilities": {
+        "filesys_read": 0.227729,
+        "filesys_glob": 0.465453,
+        "filesys_grep": 0.299146,
+        "decide_pick": 0.001534,
+        "decide_extract": 0.001534,
+        "web_search": 0.001534,
+        "web_fetch": 0.001534,
+        "reddit_digest": 0.001534
+      },
+      "ms": 2411.106509000092,
+      "error": null
+    },
+    {
+      "idx": 116,
+      "utterance": "files ending in .bak anywhere in the project?",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.4677,
+      "probabilities": {
+        "filesys_read": 0.245949,
+        "filesys_glob": 0.456599,
+        "filesys_grep": 0.290676,
+        "decide_pick": 0.001355,
+        "decide_extract": 0.001355,
+        "web_search": 0.001355,
+        "web_fetch": 0.001355,
+        "reddit_digest": 0.001355
+      },
+      "ms": 2405.373483998119,
+      "error": null
+    },
+    {
+      "idx": 117,
+      "utterance": "what's written in prompts/system.txt?",
+      "label": "filesys_read",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7073,
+      "probabilities": {
+        "filesys_read": 0.26031,
+        "filesys_glob": 0.000747,
+        "filesys_grep": 0.735211,
+        "decide_pick": 0.000747,
+        "decide_extract": 0.000747,
+        "web_search": 0.000747,
+        "web_fetch": 0.000747,
+        "reddit_digest": 0.000747
+      },
+      "ms": 1869.4927760006976,
+      "error": null
+    },
+    {
+      "idx": 118,
+      "utterance": "among the earlier matches, pick the one answering the ask",
+      "label": "decide_pick",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.8031,
+      "probabilities": {
+        "filesys_read": 0.121623,
+        "filesys_glob": 0.000819,
+        "filesys_grep": 0.87346,
+        "decide_pick": 0.000819,
+        "decide_extract": 0.000819,
+        "web_search": 0.000819,
+        "web_fetch": 0.000819,
+        "reddit_digest": 0.000819
+      },
+      "ms": 2455.7498450012645,
+      "error": null
+    },
+    {
+      "idx": 119,
+      "utterance": "turn this into three distinct ways to ask around",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6321,
+      "probabilities": {
+        "filesys_read": 0.451742,
+        "filesys_glob": 0.001922,
+        "filesys_grep": 0.536724,
+        "decide_pick": 0.001922,
+        "decide_extract": 0.001922,
+        "web_search": 0.001922,
+        "web_fetch": 0.001922,
+        "reddit_digest": 0.001922
+      },
+      "ms": 1899.0471479992266,
+      "error": null
+    },
+    {
+      "idx": 120,
+      "utterance": "what literal paths show up in that instruction?",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6348,
+      "probabilities": {
+        "filesys_read": 0.389957,
+        "filesys_glob": 0.002298,
+        "filesys_grep": 0.596255,
+        "decide_pick": 0.002298,
+        "decide_extract": 0.002298,
+        "web_search": 0.002298,
+        "web_fetch": 0.002298,
+        "reddit_digest": 0.002298
+      },
+      "ms": 2412.123178000911,
+      "error": null
+    },
+    {
+      "idx": 121,
+      "utterance": "where does the codebase touch the stage registry?",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.7563,
+      "probabilities": {
+        "filesys_read": 0.171786,
+        "filesys_glob": 0.001046,
+        "filesys_grep": 0.821938,
+        "decide_pick": 0.001046,
+        "decide_extract": 0.001046,
+        "web_search": 0.001046,
+        "web_fetch": 0.001046,
+        "reddit_digest": 0.001046
+      },
+      "ms": 2446.7793479998363,
+      "error": null
+    },
+    {
+      "idx": 122,
+      "utterance": "where is the http client wired up in service/net?",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.9317,
+      "probabilities": {
+        "filesys_read": 0.00298,
+        "filesys_glob": 0.00298,
+        "filesys_grep": 0.979139,
+        "decide_pick": 0.00298,
+        "decide_extract": 0.00298,
+        "web_search": 0.00298,
+        "web_fetch": 0.00298,
+        "reddit_digest": 0.00298
+      },
+      "ms": 2460.1799369993387,
+      "error": null
+    },
+    {
+      "idx": 123,
+      "utterance": "sort the drafts and say which one to send",
+      "label": "decide_pick",
+      "choice": "filesys_read",
+      "correct": false,
+      "conf": 0.6383,
+      "probabilities": {
+        "filesys_read": 0.532627,
+        "filesys_glob": 0.001513,
+        "filesys_grep": 0.458296,
+        "decide_pick": 0.001513,
+        "decide_extract": 0.001513,
+        "web_search": 0.001513,
+        "web_fetch": 0.001513,
+        "reddit_digest": 0.001513
+      },
+      "ms": 1783.3179980007117,
+      "error": null
+    },
+    {
+      "idx": 124,
+      "utterance": "pull the top comments off that r/cpp announcement post",
+      "label": "reddit_digest",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.5904,
+      "probabilities": {
+        "filesys_read": 0.203998,
+        "filesys_glob": 0.000732,
+        "filesys_grep": 0.68375,
+        "decide_pick": 0.000732,
+        "decide_extract": 0.000732,
+        "web_search": 0.000732,
+        "web_fetch": 0.000732,
+        "reddit_digest": 0.108594
+      },
+      "ms": 2383.7235770006373,
+      "error": null
+    },
+    {
+      "idx": 125,
+      "utterance": "what files make use of the old env var?",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.669,
+      "probabilities": {
+        "filesys_read": 0.31429,
+        "filesys_glob": 0.001545,
+        "filesys_grep": 0.676439,
+        "decide_pick": 0.001545,
+        "decide_extract": 0.001545,
+        "web_search": 0.001545,
+        "web_fetch": 0.001545,
+        "reddit_digest": 0.001545
+      },
+      "ms": 2361.0109709989047,
+      "error": null
+    },
+    {
+      "idx": 126,
+      "utterance": "which files match the pattern used for backups?",
+      "label": "filesys_glob",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.9305,
+      "probabilities": {
+        "filesys_read": 0.003044,
+        "filesys_glob": 0.003044,
+        "filesys_grep": 0.978689,
+        "decide_pick": 0.003044,
+        "decide_extract": 0.003044,
+        "web_search": 0.003044,
+        "web_fetch": 0.003044,
+        "reddit_digest": 0.003044
+      },
+      "ms": 2410.785768999631,
+      "error": null
+    },
+    {
+      "idx": 127,
+      "utterance": "turn the user's wording into the exact filenames to print",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.4898,
+      "probabilities": {
+        "filesys_read": 0.274651,
+        "filesys_glob": 0.001343,
+        "filesys_grep": 0.519359,
+        "decide_pick": 0.001343,
+        "decide_extract": 0.199277,
+        "web_search": 0.001343,
+        "web_fetch": 0.001343,
+        "reddit_digest": 0.001343
+      },
+      "ms": 1993.6037520019454,
+      "error": null
+    },
+    {
+      "idx": 128,
+      "utterance": "give me keyword variants for the upcoming lookup",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.722,
+      "probabilities": {
+        "filesys_read": 0.214693,
+        "filesys_glob": 0.001305,
+        "filesys_grep": 0.777477,
+        "decide_pick": 0.001305,
+        "decide_extract": 0.001305,
+        "web_search": 0.001305,
+        "web_fetch": 0.001305,
+        "reddit_digest": 0.001305
+      },
+      "ms": 1902.7320419991156,
+      "error": null
+    },
+    {
+      "idx": 129,
+      "utterance": "list the matches for the pattern in the user's note",
+      "label": "filesys_glob",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7268,
+      "probabilities": {
+        "filesys_read": 0.208141,
+        "filesys_glob": 0.001269,
+        "filesys_grep": 0.784247,
+        "decide_pick": 0.001269,
+        "decide_extract": 0.001269,
+        "web_search": 0.001269,
+        "web_fetch": 0.001269,
+        "reddit_digest": 0.001269
+      },
+      "ms": 1840.4755589981505,
+      "error": null
+    },
+    {
+      "idx": 130,
+      "utterance": "what's the retry flow inside bench/replay.py?",
+      "label": "filesys_read",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.9635,
+      "probabilities": {
+        "filesys_read": 0.001437,
+        "filesys_glob": 0.001437,
+        "filesys_grep": 0.989943,
+        "decide_pick": 0.001437,
+        "decide_extract": 0.001437,
+        "web_search": 0.001437,
+        "web_fetch": 0.001437,
+        "reddit_digest": 0.001437
+      },
+      "ms": 2408.5877969992,
+      "error": null
+    },
+    {
+      "idx": 131,
+      "utterance": "how do other projects do graceful shutdowns?",
+      "label": "web_search",
+      "choice": "filesys_read",
+      "correct": false,
+      "conf": 0.616,
+      "probabilities": {
+        "filesys_read": 0.513365,
+        "filesys_glob": 0.002882,
+        "filesys_grep": 0.469341,
+        "decide_pick": 0.002882,
+        "decide_extract": 0.002882,
+        "web_search": 0.002882,
+        "web_fetch": 0.002882,
+        "reddit_digest": 0.002882
+      },
+      "ms": 1873.1586980029533,
+      "error": null
+    },
+    {
+      "idx": 132,
+      "utterance": "come up with five candidate titles from the brief",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6392,
+      "probabilities": {
+        "filesys_read": 0.435351,
+        "filesys_glob": 0.001589,
+        "filesys_grep": 0.555114,
+        "decide_pick": 0.001589,
+        "decide_extract": 0.001589,
+        "web_search": 0.001589,
+        "web_fetch": 0.001589,
+        "reddit_digest": 0.001589
+      },
+      "ms": 2437.4363589995482,
+      "error": null
+    },
+    {
+      "idx": 133,
+      "utterance": "see what coverage the d1 launch is getting online",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6218,
+      "probabilities": {
+        "filesys_read": 0.418032,
+        "filesys_glob": 0.002817,
+        "filesys_grep": 0.565068,
+        "decide_pick": 0.002817,
+        "decide_extract": 0.002817,
+        "web_search": 0.002817,
+        "web_fetch": 0.002817,
+        "reddit_digest": 0.002817
+      },
+      "ms": 1438.8782340029138,
+      "error": null
+    },
+    {
+      "idx": 134,
+      "utterance": "give me the gist of that thread in r/MachineLearning",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "correct": true,
+      "conf": 0.8199,
+      "probabilities": {
+        "filesys_read": 0.025944,
+        "filesys_glob": 0.000142,
+        "filesys_grep": 0.068252,
+        "decide_pick": 0.000142,
+        "decide_extract": 0.000142,
+        "web_search": 0.000142,
+        "web_fetch": 0.000142,
+        "reddit_digest": 0.905093
+      },
+      "ms": 2425.026049000735,
+      "error": null
+    },
+    {
+      "idx": 135,
+      "utterance": "which ones in here end in .patch?",
+      "label": "filesys_glob",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.63,
+      "probabilities": {
+        "filesys_read": 0.418787,
+        "filesys_glob": 0.002287,
+        "filesys_grep": 0.56749,
+        "decide_pick": 0.002287,
+        "decide_extract": 0.002287,
+        "web_search": 0.002287,
+        "web_fetch": 0.002287,
+        "reddit_digest": 0.002287
+      },
+      "ms": 1830.886768999335,
+      "error": null
+    },
+    {
+      "idx": 136,
+      "utterance": "show what logging.yml actually contains",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "correct": true,
+      "conf": 0.7457,
+      "probabilities": {
+        "filesys_read": 0.804161,
+        "filesys_glob": 0.000894,
+        "filesys_grep": 0.190478,
+        "decide_pick": 0.000894,
+        "decide_extract": 0.000894,
+        "web_search": 0.000894,
+        "web_fetch": 0.000894,
+        "reddit_digest": 0.000894
+      },
+      "ms": 1869.4531800028926,
+      "error": null
+    },
+    {
+      "idx": 137,
+      "utterance": "carry on reading at the linked pytorch discussion",
+      "label": "web_fetch",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6954,
+      "probabilities": {
+        "filesys_read": 0.280579,
+        "filesys_glob": 0.00086,
+        "filesys_grep": 0.71426,
+        "decide_pick": 0.00086,
+        "decide_extract": 0.00086,
+        "web_search": 0.00086,
+        "web_fetch": 0.00086,
+        "reddit_digest": 0.00086
+      },
+      "ms": 2380.8370320002723,
+      "error": null
+    },
+    {
+      "idx": 138,
+      "utterance": "what good names could we use for the search strings?",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7882,
+      "probabilities": {
+        "filesys_read": 0.135801,
+        "filesys_glob": 0.000915,
+        "filesys_grep": 0.858708,
+        "decide_pick": 0.000915,
+        "decide_extract": 0.000915,
+        "web_search": 0.000915,
+        "web_fetch": 0.000915,
+        "reddit_digest": 0.000915
+      },
+      "ms": 1853.5907580007915,
+      "error": null
+    },
+    {
+      "idx": 139,
+      "utterance": "find chatter across the forums about the moka fork",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.9789,
+      "probabilities": {
+        "filesys_read": 0.000766,
+        "filesys_glob": 0.000766,
+        "filesys_grep": 0.994636,
+        "decide_pick": 0.000766,
+        "decide_extract": 0.000766,
+        "web_search": 0.000766,
+        "web_fetch": 0.000766,
+        "reddit_digest": 0.000766
+      },
+      "ms": 1843.3344139994006,
+      "error": null
+    },
+    {
+      "idx": 140,
+      "utterance": "open the linked post from the announcements board",
+      "label": "web_fetch",
+      "choice": "filesys_read",
+      "correct": false,
+      "conf": 0.4532,
+      "probabilities": {
+        "filesys_read": 0.393773,
+        "filesys_glob": 0.001658,
+        "filesys_grep": 0.337899,
+        "decide_pick": 0.001658,
+        "decide_extract": 0.001658,
+        "web_search": 0.001658,
+        "web_fetch": 0.260036,
+        "reddit_digest": 0.001658
+      },
+      "ms": 2408.857161000924,
+      "error": null
+    },
+    {
+      "idx": 141,
+      "utterance": "any config files lying around that look relevant?",
+      "label": "filesys_glob",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.4493,
+      "probabilities": {
+        "filesys_read": 0.315139,
+        "filesys_glob": 0.290488,
+        "filesys_grep": 0.385795,
+        "decide_pick": 0.001716,
+        "decide_extract": 0.001716,
+        "web_search": 0.001716,
+        "web_fetch": 0.001716,
+        "reddit_digest": 0.001716
+      },
+      "ms": 2365.4231900000013,
+      "error": null
+    },
+    {
+      "idx": 142,
+      "utterance": "before we dump anything, write out the paths it wants",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6329,
+      "probabilities": {
+        "filesys_read": 0.390847,
+        "filesys_glob": 0.002411,
+        "filesys_grep": 0.594688,
+        "decide_pick": 0.002411,
+        "decide_extract": 0.002411,
+        "web_search": 0.002411,
+        "web_fetch": 0.002411,
+        "reddit_digest": 0.002411
+      },
+      "ms": 2375.8241159994213,
+      "error": null
+    },
+    {
+      "idx": 143,
+      "utterance": "work out the paths for every manifest under deploy/",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.6338,
+      "probabilities": {
+        "filesys_read": 0.431122,
+        "filesys_glob": 0.557203,
+        "filesys_grep": 0.001946,
+        "decide_pick": 0.001946,
+        "decide_extract": 0.001946,
+        "web_search": 0.001946,
+        "web_fetch": 0.001946,
+        "reddit_digest": 0.001946
+      },
+      "ms": 1858.9309740018507,
+      "error": null
+    },
+    {
+      "idx": 144,
+      "utterance": "find several angles on the kv cache debate",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.7388,
+      "probabilities": {
+        "filesys_read": 0.202169,
+        "filesys_glob": 0.000844,
+        "filesys_grep": 0.792769,
+        "decide_pick": 0.000844,
+        "decide_extract": 0.000844,
+        "web_search": 0.000844,
+        "web_fetch": 0.000844,
+        "reddit_digest": 0.000844
+      },
+      "ms": 2391.7380629973195,
+      "error": null
+    },
+    {
+      "idx": 145,
+      "utterance": "give me a fresh batch of angles to try",
+      "label": "decide_extract",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.4496,
+      "probabilities": {
+        "filesys_read": 0.330125,
+        "filesys_glob": 0.001606,
+        "filesys_grep": 0.371573,
+        "decide_pick": 0.001606,
+        "decide_extract": 0.290274,
+        "web_search": 0.001606,
+        "web_fetch": 0.001606,
+        "reddit_digest": 0.001606
+      },
+      "ms": 1850.642303998029,
+      "error": null
+    },
+    {
+      "idx": 146,
+      "utterance": "give me the collection of test data files we have",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.4482,
+      "probabilities": {
+        "filesys_read": 0.335834,
+        "filesys_glob": 0.363537,
+        "filesys_grep": 0.292248,
+        "decide_pick": 0.001676,
+        "decide_extract": 0.001676,
+        "web_search": 0.001676,
+        "web_fetch": 0.001676,
+        "reddit_digest": 0.001676
+      },
+      "ms": 2428.9929149999807,
+      "error": null
+    },
+    {
+      "idx": 147,
+      "utterance": "show me what's out there about speculative decoding",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6488,
+      "probabilities": {
+        "filesys_read": 0.346906,
+        "filesys_glob": 0.002099,
+        "filesys_grep": 0.6405,
+        "decide_pick": 0.002099,
+        "decide_extract": 0.002099,
+        "web_search": 0.002099,
+        "web_fetch": 0.002099,
+        "reddit_digest": 0.002099
+      },
+      "ms": 2401.49545299937,
+      "error": null
+    },
+    {
+      "idx": 148,
+      "utterance": "load the full thread at that forum url",
+      "label": "web_fetch",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.4959,
+      "probabilities": {
+        "filesys_read": 0.23526,
+        "filesys_glob": 0.001438,
+        "filesys_grep": 0.5441,
+        "decide_pick": 0.001438,
+        "decide_extract": 0.001438,
+        "web_search": 0.001438,
+        "web_fetch": 0.213449,
+        "reddit_digest": 0.001438
+      },
+      "ms": 1850.568599998951,
+      "error": null
+    },
+    {
+      "idx": 149,
+      "utterance": "look up alternate writeups of the mmap regression",
+      "label": "web_search",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.6854,
+      "probabilities": {
+        "filesys_read": 0.267935,
+        "filesys_glob": 0.00173,
+        "filesys_grep": 0.721687,
+        "decide_pick": 0.00173,
+        "decide_extract": 0.00173,
+        "web_search": 0.00173,
+        "web_fetch": 0.00173,
+        "reddit_digest": 0.00173
+      },
+      "ms": 2381.8395660018723,
+      "error": null
+    }
+  ],
+  "dataset": "v2-150-utterances",
+  "serving_stable": true,
+  "gpu_offload": "requested -ngl 99 (vulkan b11512 build); offload lines absent, in-process stays CPU for qwen35 arch (~30ms/tok prefill; llama-bench same build offloads qwen35 at 377 t/s on the Arc 140V, so vulkan device works standalone but not via in-process LoadLibrary); serve RSS ~4.0GB",
+  "notes": "frozen Jev letter prompt; deterministic zero-temp (conf mean .696 identical both runs); native Jev-schema prompt differs from this protocol \u2014 underperforms card numbers as expected; stable"
+}
