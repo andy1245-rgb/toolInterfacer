@@ -62,4 +62,7 @@ def validate_params(op_name: str, params: dict[str, Any]) -> tuple[dict[str, Any
 
 def import_all() -> None:
     """Import every op module so registrations fire (called by http.api boot)."""
-    from . import filesys, reddit, web  # noqa: F401
+    from . import decisions  # noqa: F401  (registration)
+    from .web import fetch as _wf, search as _ws  # noqa: F401
+    from .reddit import digest as _rd  # noqa: F401
+    from .filesys import impl as _fi  # noqa: F401

@@ -14,6 +14,7 @@ from ...conf import load
 def apply(intent: str, digest: dict) -> list[Step]:
     cfg = load()["research"]
     k = int(cfg["pick_top_k"])
+    slot_gate = float(load()["policy"]["gate_slot"])
     steps: list[Step] = [
         Step(id="queries", op="__decide_extract__",
              params={"instructions": "Extract 3-6 search queries for the intent."}),
@@ -23,7 +24,7 @@ def apply(intent: str, digest: dict) -> list[Step]:
              params={"source_artifact": "hits", "instructions": "Pick the top relevant URLs.",
                      "top_k": k}),
         Step(id="pages", op="web_fetch", inject={"urls": "picked"},
-             gate=Gate(pre=[{"artifact": "picked", "kind": "conf_gte", "min": 0.7}]),
+             gate=Gate(pre=[{"artifact": "picked", "kind": "conf_gte", "min": slot_gate}]),
              params={}),
     ]
     return steps

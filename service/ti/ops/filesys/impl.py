@@ -19,13 +19,21 @@ class FileHit:
     excerpt: str
 
 
+def _walk(root: str):
+    for dirpath, dirs, files in os.walk(root):
+        dirs[:] = [d for d in dirs if not d.startswith(".") and d != "__pycache__"]
+        yield dirpath, files
+
+
 @op("filesys_glob", kind="path_list", required=["pattern"], optional=["cwd"])
 def run(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
     cwd = params.get("cwd") or os.getcwd()
     root = os.path.expanduser(cwd)
     hits: list[str] = []
-    for dirpath, _dirs, files in os.walk(root):
+    for dirpath, files in _walk(root):
         for f in files:
+            if f.startswith("."):
+                continue
             rel = os.path.relpath(os.path.join(dirpath, f), root)
             if re.match(params["pattern"].replace("**", ".*"), rel):
                 hits.append(rel)
