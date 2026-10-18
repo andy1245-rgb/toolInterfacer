@@ -37,7 +37,7 @@ class D1SystemoneBackend(DecideBackend):
         return ChoiceAnswer(ans.get("choice"), probs, float(ans.get("confidence") or 0.0))
 
     def noul(self, state, question: str) -> float:
-        out = self._ask(state, {"check": {"type": "noul", "question": question}})
+        out = self._ask(state, {"check": {"type": "noul", "instructions": question}})
         return float((out.get("answers") or {}).get("check", {}).get("noul", 0.0))
 
 

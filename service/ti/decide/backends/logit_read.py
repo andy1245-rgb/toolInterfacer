@@ -12,6 +12,7 @@ import math
 import urllib.request
 
 from ...conf import load
+from ..conf_scale import entropy_conf
 from ..primitives import ChoiceAnswer, DecideBackend, register
 
 LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -55,8 +56,7 @@ class LogitReadBackend(DecideBackend):
 
     @staticmethod
     def _entropy_conf(probs: list[float]) -> float:
-        h = -sum(p * math.log(p) for p in probs if p > 0)
-        return float(1.0 - h / math.log(len(probs)))
+        return entropy_conf(probs)
 
     def choice(self, state, instructions: str, criteria: dict[str, str]) -> ChoiceAnswer:
         if not 2 <= len(criteria) <= MAX_OPTIONS:
