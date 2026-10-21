@@ -4,7 +4,7 @@
     "d1_systemone": {"base_url": "http://127.0.0.1:8080", "timeout_s": 30},
     "logit_read": {"base_url": "http://127.0.0.1:8080", "model": "jev-style", "timeout_s": 30},
     "fixture": {"fixture_path": "", "default_choice_conf": 0.95, "default_noul": 0.9},
-    "backends_in_use": {"choice": "fixture", "noul": "fixture"},
+    "backends_in_use": {"choice": "fixture", "noul": "fixture", "extract": "rule_extract"},
     "cascade": {
       "enabled": false,
       "stage1": "d1_systemone",

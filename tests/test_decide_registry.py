@@ -17,7 +17,7 @@ import pathlib
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SERVICE = ROOT / "service"
 
-BACKENDS = ["d1_systemone", "fixture", "heuristic_micro", "logit_read"]
+BACKENDS = ["d1_systemone", "fixture", "heuristic_micro", "logit_read", "rule_extract"]
 
 
 def _fresh_import(first: str | None) -> subprocess.CompletedProcess:
