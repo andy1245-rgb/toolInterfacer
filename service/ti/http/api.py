@@ -51,7 +51,7 @@ def serve(host: str | None = None, port: int | None = None) -> None:
     cfg = load()["http"]
     _ = host
     import_all()
-    addr = host or str(cfg.get("host", "127.0.0.1")), int(port or cfg.get("port", 8090))
+    addr = host or str(cfg.get("host", "127.0.0.1")), int(port or cfg.get("port", 1113))
     ThreadingHTTPServer(addr, Handler).serve_forever()
 
 

@@ -8,7 +8,7 @@ export interface ServiceHealth {
 }
 
 export function base(): string {
-	return process.env.TI_BASE_URL ?? "http://127.0.0.1:8090";
+	return process.env.TI_BASE_URL ?? "http://127.0.0.1:1113";
 }
 
 /** Every way a service call can fail, so callers can say something actionable. */
