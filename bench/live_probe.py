@@ -4,7 +4,14 @@ llama.cpp /v1/systemone server, measured for latency + accuracy vs labels.
 
 Usage: python bench/live_probe.py [--limit N] [--threads T] [--backend NAME]
        [--base-url URL] [--host NAME] [--utterances tests/data/utterances.json]
+       [--expect-model d1-3B-Q4_K_M.gguf]
        [--out bench/results/live_probe_summary.json]
+
+--expect-model is the served-model guard: /health answers "ok" for any
+llama-server, so without it a stale server on the port is measured silently
+(see docs/model-sweep-consolidated.md, CORRECTION). When given, /props is
+asserted against the expected basename and the run aborts before any probe
+traffic on a mismatch.
 """
 from __future__ import annotations
 
@@ -18,7 +25,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "service"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from model_guard import ModelAssertionError, preflight  # noqa: E402
 from ti.decide.resolve import resolve  # noqa: E402
 from ti.conf import load  # noqa: E402
 
@@ -44,7 +53,7 @@ def percentile(sorted_vals: list[float], pct: float) -> float:
     return sorted_vals[lo] + (sorted_vals[hi] - sorted_vals[lo]) * (idx - lo)
 
 
-def main() -> None:
+def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0, help="run only the first N rows (0 = all)")
     ap.add_argument("--utterances", default=str(ROOT / "tests/data/utterances.json"))
@@ -56,7 +65,31 @@ def main() -> None:
     ap.add_argument("--base-url", default="",
                     help="override conf base_url for the backend (e.g. ssh-tunnel address)")
     ap.add_argument("--host", default="localhost", help="label recorded in the summary")
-    args = ap.parse_args()
+    ap.add_argument("--expect-model", default="",
+                    help="gguf basename the served model must match; a mismatch aborts the "
+                         "run before any probe traffic (no assertion is made if omitted)")
+    ap.add_argument("--expect-sha", default="", help="optional served-model sha to assert")
+    ap.add_argument("--expect-size", type=int, default=None,
+                    help="optional served-model byte size to assert")
+    return ap
+
+
+def guard_served_model(props: dict, expect_model: str, expect_sha: str = "",
+                       expect_size: int | None = None, source: str = "/props",
+                       stream=None) -> dict:
+    """Abort (SystemExit) on a /props mismatch; warn loudly when unasserted."""
+    stream = stream if stream is not None else sys.stderr
+    try:
+        served, warning = preflight(props, expect_model, expect_sha, expect_size, source)
+    except ModelAssertionError as e:
+        raise SystemExit(f"ABORT: {e}")
+    if warning:
+        print(warning, file=stream)
+    return served
+
+
+def main() -> None:
+    args = build_parser().parse_args()
 
     cfg = load()
     if args.base_url:
@@ -72,6 +105,12 @@ def main() -> None:
     if args.backend == "heuristic_micro":
         props = {"model_path": "local/ti/decide/backends/heuristic_micro.py",
                  "ftype": "n/a", "build_info": "n/a"}
+        served = {}
+        if args.expect_model:
+            print("note: heuristic_micro is in-process — --expect-model does not apply",
+                  file=sys.stderr)
+        else:
+            guard_served_model(props, "")
     else:
         with urllib.request.urlopen(base_url.rstrip("/") + "/health", timeout=10) as resp:
             health = json.loads(resp.read())
@@ -79,6 +118,8 @@ def main() -> None:
             raise SystemExit(f"server unhealthy: {health}")
         with urllib.request.urlopen(base_url.rstrip("/") + "/props", timeout=10) as resp:
             props = json.loads(resp.read())
+        served = guard_served_model(props, args.expect_model, args.expect_sha,
+                                    args.expect_size, base_url.rstrip("/") + "/props")
 
     per_row, malformed, latencies, abstains = [], 0, [], 0
     for i, row in enumerate(rows):
@@ -135,6 +176,10 @@ def main() -> None:
         "model": {"path": props.get("model_path"),
                   "ftype": props.get("model_ftype"),
                   "build_info": (props.get("build_info") or "")},
+        "model_assertion": {
+            "expect_model": args.expect_model,
+            "checked": bool(args.expect_model) and args.backend != "heuristic_micro",
+            "served_basename": served.get("basename", "")},
         "n_rows": len(rows),
         "malformed_responses": malformed - abstains,
         "abstains": abstains,
@@ -159,6 +204,9 @@ def main() -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(summary, indent=2))
 
+    if args.expect_model:
+        print(f"model assertion: OK — serving {served.get('basename')} "
+              f"(expected {args.expect_model})")
     print(f"n={summary['n_rows']} accuracy={summary['accuracy']:.1%} "
           f"malformed={malformed} p50={summary['latency_ms']['p50']}ms "
           f"p95={summary['latency_ms']['p95']}ms (threads={args.threads})")

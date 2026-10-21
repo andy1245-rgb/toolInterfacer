@@ -1,0 +1,166 @@
+{
+  "timestamp": "2026-10-18T13:55:10-0400",
+  "backend": "logit_read",
+  "host": "dell-corrected",
+  "base_url": "http://127.0.0.1:18080",
+  "server_threads": 8,
+  "model": {
+    "path": "C:\\Users\\andre\\Documents\\PersonalCodingProjects\\personal\\toolInterfacerLab\\models\\Qwen3.5-4B-Q4_K_M.gguf",
+    "ftype": "Q4_K - Medium",
+    "build_info": "b11512-a11f57ba9"
+  },
+  "n_rows": 3,
+  "malformed_responses": 0,
+  "abstains": 0,
+  "accuracy": 0.6667,
+  "latency_ms": {
+    "p50": 2522.8,
+    "p95": 3026.0,
+    "mean": 2367.9,
+    "min": 1499.1,
+    "max": 3081.9
+  },
+  "accuracy_by_op": {
+    "filesys_glob": {
+      "n": 1,
+      "accuracy": 1.0
+    },
+    "filesys_grep": {
+      "n": 1,
+      "accuracy": 0.0
+    },
+    "filesys_read": {
+      "n": 1,
+      "accuracy": 1.0
+    }
+  },
+  "confidence_calibration": [
+    {
+      "band": 0.0,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.1,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.2,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.3,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.4,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.5,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.6,
+      "n": 2,
+      "accuracy": 0.5,
+      "mean_conf": 0.6655
+    },
+    {
+      "band": 0.7,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.8,
+      "n": 0,
+      "accuracy": null,
+      "mean_conf": null
+    },
+    {
+      "band": 0.9,
+      "n": 1,
+      "accuracy": 1.0,
+      "mean_conf": 0.993
+    }
+  ],
+  "conf_distribution": {
+    "min": 0.6536,
+    "mean": 0.7747,
+    "max": 0.993
+  },
+  "per_row": [
+    {
+      "idx": 0,
+      "utterance": "print the whole pyproject.toml for me",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "correct": true,
+      "conf": 0.6536,
+      "probabilities": {
+        "filesys_read": 0.801446,
+        "filesys_glob": 0.007416,
+        "filesys_grep": 0.013715,
+        "decide_pick": 0.003016,
+        "decide_extract": 0.13578,
+        "web_search": 0.012993,
+        "web_fetch": 0.022835,
+        "reddit_digest": 0.002799
+      },
+      "ms": 1499.0969879999057,
+      "error": null
+    },
+    {
+      "idx": 1,
+      "utterance": "list every file ending in .toml anywhere in the repo",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "correct": true,
+      "conf": 0.993,
+      "probabilities": {
+        "filesys_read": 0.001482,
+        "filesys_glob": 0.998163,
+        "filesys_grep": 5.6e-05,
+        "decide_pick": 0.0,
+        "decide_extract": 0.000251,
+        "web_search": 4.8e-05,
+        "web_fetch": 0.0,
+        "reddit_digest": 0.0
+      },
+      "ms": 2522.767767000005,
+      "error": null
+    },
+    {
+      "idx": 2,
+      "utterance": "where is handle_stream defined?",
+      "label": "filesys_grep",
+      "choice": "decide_extract",
+      "correct": false,
+      "conf": 0.6775,
+      "probabilities": {
+        "filesys_read": 0.027789,
+        "filesys_glob": 0.023874,
+        "filesys_grep": 0.028328,
+        "decide_pick": 0.022975,
+        "decide_extract": 0.85614,
+        "web_search": 0.02925,
+        "web_fetch": 0.0026,
+        "reddit_digest": 0.009044
+      },
+      "ms": 3081.885449999959,
+      "error": null
+    }
+  ]
+}

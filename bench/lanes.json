@@ -1,0 +1,23 @@
+{
+  "comment": "Lane definitions for bench/serve_lane.py. Model filenames are resolved against --models-dir at runtime, so no host paths live here. chat_template_kwargs is serialized by the launcher in-process and never written to a shell command line.",
+  "base": ["--host", "127.0.0.1", "--port", "8080", "-c", "8192", "-t", "8", "-ngl", "99"],
+  "lanes": {
+    "d1": {
+      "model": "d1-3B-Q4_K_M.gguf",
+      "extra": []
+    },
+    "qwen": {
+      "model": "Qwen3.5-4B-Q4_K_M.gguf",
+      "extra": ["--jinja"],
+      "chat_template_kwargs": {"enable_thinking": false}
+    },
+    "intern": {
+      "model": "Intern-Decision-4B-Q4_K_M.gguf",
+      "extra": []
+    },
+    "kev": {
+      "model": "Kev-4B-Q4_K_M.gguf",
+      "extra": []
+    }
+  }
+}
