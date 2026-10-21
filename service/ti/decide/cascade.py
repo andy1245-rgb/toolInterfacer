@@ -2,7 +2,10 @@
 
 Registered as an ordinary DecideBackend ("cascade"), so the primitive wall in
 primitives.py stays intact: callers ask for a backend name and get a
-ChoiceAnswer. Config selects it through decide.backends_in_use.
+ChoiceAnswer. Config selects it through decide.cascade.enabled, which is
+ authoritative for the "choice" kind in decide/resolve.py: with the flag on the
+ cascade serves every choice decision whatever decide.backends_in_use.choice
+ names, and with it off the backend map decides as usual.
 
 Policy (round2/A2-frontier-corrected.md §7.2 "P2 banded sys→lr", validated at
 precision budgets <= 0.85; thresholds live in decide.cascade):
@@ -82,9 +85,11 @@ def cascade_cfg() -> dict[str, Any]:
 class CascadeBackend(DecideBackend):
     """Banded cascade over one or two stage backends; see the module docstring.
 
-    Stage backends may be injected (tests, bench) or resolved from
+    Stage backends may be injected (tests, bench) or built from
     decide.cascade.stage1 / .stage2 by name; thresholds come from `cfg` or, when
-    it is None, from decide.cascade.
+    it is None, from decide.cascade. Stages are built straight through
+    primitives.make_backend, never through resolve(), so a cascade never asks for
+    the "choice" backend it is serving and cannot recurse into itself.
     """
 
     name = "cascade"
