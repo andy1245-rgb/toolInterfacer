@@ -1,5 +1,6 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import type { SessionEntry } from "@earendil-works/pi-coding-agent";
 
 export interface DigestTurn {
 	role: "user" | "assistant";
@@ -44,7 +45,7 @@ function mentions(text: string): string[] {
 	return [...new Set(text.match(FILEISH) ?? [])].slice(0, 6);
 }
 
-export function buildDigest(entries: unknown[], cwd: string): SessionDigest {
+export function buildDigest(entries: readonly unknown[], cwd: string): SessionDigest {
 	const turns: DigestTurn[] = [];
 	const antecedents: { phrase: string; resolved?: string }[] = [];
 	const seenAntecedents = new Set<string>();
@@ -73,4 +74,13 @@ export function buildDigest(entries: unknown[], cwd: string): SessionDigest {
 		antecedents: antecedents.slice(-MAX_TURNS),
 		cwd,
 	};
+}
+
+/** Most recent `custom` entry with this customType on the active branch, if any. */
+export function readLastCustom<T>(branch: readonly SessionEntry[], customType: string): T | undefined {
+	for (let i = branch.length - 1; i >= 0; i--) {
+		const entry = branch[i];
+		if (entry.type === "custom" && entry.customType === customType) return entry.data as T | undefined;
+	}
+	return undefined;
 }
