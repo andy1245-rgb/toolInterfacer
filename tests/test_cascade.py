@@ -449,6 +449,70 @@ class LoopIntegrationTest(unittest.TestCase):
         self.assertEqual(out["hops"][-1]["op"], "askback")
 
 
+class ResolvePrecedenceTest(unittest.TestCase):
+    """decide.cascade.enabled is authoritative for the "choice" kind.
+
+    Before this rule the flag alone did nothing: resolve("choice") read only
+    decide.backends_in_use, so turning the cascade on also meant hand-editing the
+    map entry to "cascade" — two keys that had to agree, with the flag silently
+    losing when they did not.
+    """
+
+    def setUp(self):
+        from ti.conf import load
+        from ti.decide.resolve import resolve
+        self._conf = load()["decide"]
+        self._resolve = resolve
+        self._before = (self._conf["cascade"]["enabled"],
+                        self._conf["backends_in_use"]["choice"])
+        self.addCleanup(self._restore)
+
+    def _restore(self):
+        self._conf["cascade"]["enabled"] = self._before[0]
+        self._conf["backends_in_use"]["choice"] = self._before[1]
+
+    def _set(self, enabled, choice):
+        self._conf["cascade"]["enabled"] = enabled
+        self._conf["backends_in_use"]["choice"] = choice
+
+    def test_enabled_flag_beats_a_fixture_map_entry(self):
+        self._set(True, "fixture")
+        backend = self._resolve("choice")
+        self.assertIsInstance(backend, CascadeBackend)
+        self.assertEqual(backend.name, "cascade")
+
+    def test_enabled_flag_beats_any_named_choice_backend(self):
+        for name in ("fixture", "heuristic_micro", "d1_systemone", "logit_read"):
+            with self.subTest(backends_in_use_choice=name):
+                self._set(True, name)
+                self.assertIsInstance(self._resolve("choice"), CascadeBackend)
+
+    def test_disabled_flag_leaves_the_map_entry_in_charge(self):
+        self._set(False, "fixture")
+        self.assertEqual(self._resolve("choice").name, "fixture")
+
+    def test_map_entry_alone_does_not_turn_the_band_on(self):
+        self._set(False, "cascade")
+        backend = self._resolve("choice")
+        self.assertIsInstance(backend, CascadeBackend)
+        self.assertFalse(backend._enabled, "resolve() must not enable the band for you")
+
+    def test_enabled_flag_leaves_the_other_kinds_on_the_map(self):
+        self._set(True, "fixture")
+        self.assertEqual(self._resolve("noul").name, "fixture")
+
+    def test_stages_come_from_the_cascade_config_not_from_resolve(self):
+        self._set(True, "fixture")
+        backend = self._resolve("choice")
+        cfg = cascade_mod.cascade_cfg()
+        self.assertEqual([stage.name for stage in backend._stages],
+                         [cfg["stage1"], cfg["stage2"]])
+        for stage in backend._stages:
+            self.assertNotIsInstance(stage, CascadeBackend,
+                                     "a stage must never be another cascade")
+            self.assertIsNot(stage, backend, "stages are built, not resolved")
+
+
 class ConfigTest(unittest.TestCase):
     def test_cascade_block_matches_the_validated_bands(self):
         cfg = cascade_mod.cascade_cfg()
