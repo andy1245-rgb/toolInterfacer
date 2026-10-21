@@ -1,0 +1,42 @@
+{
+  "query": "what is the current python stable version",
+  "ranAt": "2026-10-18T06:23:41+00:00",
+  "mode": "free",
+  "maxResults": 3,
+  "sourceErrors": [],
+  "braveError": null,
+  "braveTrigger": "none",
+  "searxngEnabled": false,
+  "searxngError": null,
+  "searxngTrigger": "none",
+  "runDir": "/tmp/free-search/20261018T062330Z",
+  "results": [
+    {
+      "title": "Python 3.14.5 released: Maintenance update with return to the old garbage collector - igor´sLAB",
+      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPMlRDODF4TFMxN2NqVGt4cndfc1RFa1RSQnI2TXRLeHpTNzYyTmVROF9XaXZGVnotbFdSYW1td2tIZFNudUVLRHBRS2RiNjhkbnhFM3h4WGhqVldLWl9iZDZraTRGTlliM1Z0dU5UamFlS3JQbFA2aVFGVUJxOG1MZVVDQS12VkI4Nndpb1Z4cjJ2WGtOenc?oc=5",
+      "snippet": "Python 3.14.5 released: Maintenance update with return to the old garbage collector &nbsp;&nbsp; igor´sLAB",
+      "source_count": 1,
+      "sources": [
+        "google_news"
+      ]
+    },
+    {
+      "title": "Microsoft Agent Framework Setup: 13 Steps, 90 Min [2026] - https://tech-insider.org/",
+      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE1XNkNCYXFzQ3RnOFF6UWk2aWFINmZkNGVqLVo1MlRBMVduWEJ6eXBadUFKOWY5U0xpOWYwaVNQbWVTSjdfOW9iQzZmTUd5TEYzaDJjRHdycTlYYWVVOXp1QUd5MnN6d2oxTzNqeGJOWQ?oc=5",
+      "snippet": "Microsoft Agent Framework Setup: 13 Steps, 90 Min [2026] &nbsp;&nbsp; https://tech-insider.org/",
+      "source_count": 1,
+      "sources": [
+        "google_news"
+      ]
+    },
+    {
+      "title": "nvm: Install and Switch Node.js Versions with Node Version Manager - SitePoint",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1PbHotelViMV9wd1lQZFd6ZWI0Zm83VUNIcEstQnRDNmtybWZSek9zdFdyUUFYcFFibnNxT0tMcVNMSEtvRWxSZURHRmw1MUJGM1VhRGhGZ3hHWDFvcmlxMnFBTXBOQS1fMW85NkNMWmk?oc=5",
+      "snippet": "nvm: Install and Switch Node.js Versions with Node Version Manager &nbsp;&nbsp; SitePoint",
+      "source_count": 1,
+      "sources": [
+        "google_news"
+      ]
+    }
+  ]
+}

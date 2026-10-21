@@ -20,7 +20,7 @@ stays there. Nothing in this directory decides anything.
 | `contract.ts` | TypeBox schemas for the wire response (`UseToolResponseSchema`, `HopsSchema`, `QuestionSchema`, `PlanStepSchema`) + the `UseToolRequest` interface; TS types are derived with `Static<…>`. Mirrors `service/ti/service_entry.py`. |
 | `bridge.ts` | HTTP client: `call()` → `/v1/useTool`, `health()` → `/health`; base URL from `TI_BASE_URL` (default `http://127.0.0.1:1113`), timeout per call (120s, 240s for `mode:"raw"`). Classifies failures as `ServiceError` and validates the body against the schema before returning it. |
 | `session_push.ts` | rolling digest from `ctx.sessionManager.getBranch()` (active branch, not `getEntries()`): last 8 user/assistant turns (~240 chars each), file-path mentions per turn, user-mentioned paths that exist on disk as antecedents with their resolved absolute path, plus cwd. Also `readLastCustom()` for state restored on resume. |
-| `lifecycle.ts` | `ensureService()`: `GET /health`; if down, spawns `python3 -m ti.http.api` detached (cwd `TI_SERVICE_DIR`, default `/home/andrew/toolInterfacer`, `PYTHONPATH=service`, interpreter from `TI_PYTHON`), polls /health up to 10s, returns `{ok, pid?, reason?, detail?}`. |
+| `lifecycle.ts` | `ensureService()`: `GET /health`; if down, spawns `python3 -m ti.http.api` detached (cwd `TI_SERVICE_DIR`, default: the repo root, derived from the extension's own location, `PYTHONPATH=service`, interpreter from `TI_PYTHON`), polls /health up to 10s, returns `{ok, pid?, reason?, detail?}`. |
 | `index.ts` | registers `useTool` (direct exposure, `outputSchema` + `structuredContent`, `onUpdate`, `executionMode:"sequential"`), the `/ti` command, and the `session_start` / `session_shutdown` hooks. |
 | `scripts/contract-check.ts` | runtime check that every body the service can return passes the schema, and that malformed bodies do not. |
 
@@ -89,7 +89,7 @@ from timeout by checking which signal fired.
 | var | effect |
 |---|---|
 | `TI_BASE_URL` | service base (default `http://127.0.0.1:1113`) |
-| `TI_SERVICE_DIR` | cwd for the spawned service (default `/home/andrew/toolInterfacer`) |
+| `TI_SERVICE_DIR` | cwd for the spawned service (default: repo root, derived from the extension's own location) |
 | `TI_PYTHON` | interpreter for the spawn (default `python3`) |
 | `TI_DEV=1` | dev mode — see below |
 
@@ -145,7 +145,7 @@ global `fetch`.
 ## Install (pi extension discovery)
 
 ```sh
-ln -s /home/andrew/toolInterfacer/pi-extension/src ~/.pi/agent/extensions/toolinterfacer
+ln -s <repo>/pi-extension/src ~/.pi/agent/extensions/toolinterfacer
 ```
 
 pi loads each directory in `~/.pi/agent/extensions/` from its `index.ts`

@@ -14,8 +14,8 @@ sys.path.insert(0, str(ROOT / "service"))
 import live_probe  # noqa: E402
 import model_guard  # noqa: E402
 
-D1_PATH = r"C:\Users\andre\Documents\PersonalCodingProjects\personal\Research\jevResearch\lab\d1bench\models\d1-3B-Q4_K_M.gguf"
-QWEN_PATH = r"C:\Users\andre\Documents\PersonalCodingProjects\personal\toolInterfacerLab\models\Qwen3.5-4B-Q4_K_M.gguf"
+D1_PATH = r"C:\models\d1bench\models\d1-3B-Q4_K_M.gguf"
+QWEN_PATH = r"D:\models\Qwen3.5-4B-Q4_K_M.gguf"
 D1 = "d1-3B-Q4_K_M.gguf"
 QWEN = "Qwen3.5-4B-Q4_K_M.gguf"
 

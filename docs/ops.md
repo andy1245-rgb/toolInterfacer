@@ -76,7 +76,7 @@ even when every URL failed. Every op therefore reads the document.
   "web_fetch":           {"script": "…/web-fetch/scripts/web-fetch",
                           "max_chars": 20000},
   "reddit":              {"cwd": "~/…/redditScrapingSearching",
-                          "cwd_candidates": ["/home/andrew/mnt/dell321/…/redditScrapingSearching"],
+                          "cwd_candidates": ["~/…/redditScrapingSearching"],
                           "cli": [".venv/bin/python", "-m", "reddit_research.cli"]}
 }
 ```
@@ -149,7 +149,7 @@ shell instead of the page) is passed through. conf is the mean over URLs of 1.0
 ## 6. reddit-research: the op that cannot run yet
 
 The skill's project lives on an external mount
-(`/home/andrew/mnt/dell321/…`) that is not mounted, and `ops.reddit.cwd` points
+(an external mount) that is not mounted, and `ops.reddit.cwd` points
 at a path that does not exist either. The op probes `cwd` then every entry in
 `cwd_candidates`, and when none is a directory it raises `CliMissingBinary`
 naming each path it tried. It does not hang, does not return an empty digest,

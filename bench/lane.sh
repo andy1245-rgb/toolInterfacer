@@ -9,7 +9,8 @@
 # CORRECTION). This lane therefore (a) asserts the served model in /props before
 # any probe traffic and (b) tears down without self-matching its own pkill.
 #
-#   lane.sh qwen 'C:/Users/andre/.../toolInterfacerLab/models' logit_read qwen35-4B
+#   DELL_LAB=<dell lab dir> DELL_E3_PY=<dell e3 python.exe> \
+#     lane.sh qwen "<dell lab dir>/models" logit_read qwen35-4B
 set -u
 
 LANE="${1:?usage: lane.sh <lane> <models-dir> [backend] [out-name]}"
@@ -20,12 +21,16 @@ NAME="${4:-$LANE}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-e3py='C:/Users/andre/Documents/PersonalCodingProjects/personal/Research/jevResearch/lab/d1bench/e3/python.exe'
-DEPLOY='C:/Users/andre/Documents/PersonalCodingProjects/personal/toolInterfacerLab/v2serve'
-# serve_pyhost.py lives beside the lab dir, not inside v2serve/; serve_lane.py
-# imports it from --serve-pyhost (its own dir has no copy, so the default fails).
-PYHOST='C:/Users/andre/Documents/PersonalCodingProjects/personal/toolInterfacerLab'
-SLOG="C:/Users/andre/Documents/PersonalCodingProjects/personal/toolInterfacerLab/logs/v2-${NAME}-serve.log"
+# Machine-specific dell321 paths come from the environment (see bench/lane.env.example):
+#   DELL_LAB    the lab dir on dell321 (models/, logs/, serve_pyhost.py live there)
+#   DELL_E3_PY  the python.exe with the llama-server impl DLLs that serves the model
+: "${DELL_LAB:?set DELL_LAB (the dell321 lab dir) - see bench/lane.env.example}"
+: "${DELL_E3_PY:?set DELL_E3_PY (the dell321 e3 python.exe) - see bench/lane.env.example}"
+e3py="$DELL_E3_PY"
+DEPLOY="$DELL_LAB/v2serve"
+# serve_pyhost.py lives in the lab dir, not inside v2serve/ (the default import fails).
+PYHOST="$DELL_LAB"
+SLOG="$DELL_LAB/logs/v2-${NAME}-serve.log"
 ROUTE=bench/results/dell
 EXPECT=$(python3 -c "import json,sys; print(json.load(open('bench/lanes.json'))['lanes'][sys.argv[1]]['model'])" "$LANE")
 

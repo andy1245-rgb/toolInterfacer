@@ -1,0 +1,31 @@
+{
+  "adapter": "web-fetch",
+  "cli": "web-fetch",
+  "fixture_key": "https://example.com",
+  "slug": "https-example-com",
+  "upstream": "~/.pi/profiles/registry/web-fetch/scripts/web-fetch",
+  "argv": [
+    "https://example.com",
+    "--json"
+  ],
+  "exit": 0,
+  "recorded_at": "2026-10-18T17:50:40+00:00",
+  "provenance": {
+    "capture": "research/round1/captures/wf-json.out",
+    "capture_sha256": "04527fda130d452e64752f14b487edc8f03bbee3104a6d1d351081af0ef3c92d",
+    "note": "verbatim stdout of the live CLI captured in round 1; nothing synthesized"
+  },
+  "replay_rewrites": [
+    "runDir -> dev run dir",
+    "files.text -> materialized companion"
+  ],
+  "companions_recorded": [
+    "python-stdlib-text.txt"
+  ],
+  "companions_missing": [
+    "python-raw.txt (files.raw) — raw HTML was not part of the capture"
+  ],
+  "mode_observed": "python-stdlib",
+  "argv_inferred": true,
+  "argv_inference_basis": "the round-1 capture files record stdout/stderr only, not the invoking argv; the flags here are read back off the output shape (web-fetch https://example.com, --json)"
+}

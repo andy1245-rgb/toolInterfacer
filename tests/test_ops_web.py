@@ -28,7 +28,7 @@ from ti.ops.web import search as web_search  # noqa: E402
 
 FAKE = ROOT / "tests" / "data" / "fake_cli.py"
 DEVSKILLS = pathlib.Path(os.environ.get(
-    "TI_DEVSKILLS_FIXTURES", "/home/andrew/toolInterfacerExtras/devskills"))
+    "TI_DEVSKILLS_FIXTURES", str(ROOT / "tests" / "data" / "devskills")))
 WS_FIXTURE = (DEVSKILLS / "web-search" / "fixtures" /
               "what-is-the-current-python-stable-version" / "combined.json")
 WF_FIXTURE = DEVSKILLS / "web-fetch" / "fixtures" / "https-example-com" / "combined.json"

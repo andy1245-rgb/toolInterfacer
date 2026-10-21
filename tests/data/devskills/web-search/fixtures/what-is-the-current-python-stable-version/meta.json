@@ -1,0 +1,24 @@
+{
+  "adapter": "web-search",
+  "cli": "free-search",
+  "fixture_key": "what is the current python stable version",
+  "slug": "what-is-the-current-python-stable-version",
+  "upstream": "~/.pi/profiles/registry/web-search/scripts/free-search",
+  "argv": [
+    "what is the current python stable version",
+    "--json"
+  ],
+  "exit": 0,
+  "recorded_at": "2026-10-18T17:50:40+00:00",
+  "provenance": {
+    "capture": "research/round1/captures/fs-json.out",
+    "capture_sha256": "1d3458296b38de5b25f6fba230a5cb31c87f5ed98ad11ac5be8c3270782f19d1",
+    "note": "verbatim stdout of the live CLI captured in round 1; nothing synthesized"
+  },
+  "replay_rewrites": [
+    "runDir -> dev run dir"
+  ],
+  "mode_observed": "free",
+  "argv_inferred": true,
+  "argv_inference_basis": "the round-1 capture files record stdout/stderr only, not the invoking argv; the flags here are read back off the output shape (web-search what is the current python stable version, --json)"
+}

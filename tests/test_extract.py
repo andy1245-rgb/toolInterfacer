@@ -104,10 +104,10 @@ class UrlTest(EnvCase):
 
 class PathTest(EnvCase):
     def test_paths_are_extracted_when_the_ask_names_files(self):
-        out = extract("see ./service/ti/ops/matcher.py and /home/andrew/dir/file.ext",
+        out = extract("see ./service/ti/ops/matcher.py and /tmp/x/file.ext",
                       "extract the file paths mentioned in the last message")
         self.assertEqual(out["values"], ["./service/ti/ops/matcher.py",
-                                         "/home/andrew/dir/file.ext"])
+                                         "/tmp/x/file.ext"])
         self.assertGreaterEqual(out["conf"], 0.9)
 
     def test_a_bare_filename_counts_only_when_the_ask_names_files(self):

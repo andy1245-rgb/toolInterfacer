@@ -5,10 +5,12 @@
 # over tests/data/utterances_v2.json, teardown, verification. One restart allowed.
 set -u
 KEY="$1"; LOGNAME="$2"; BK="$3"; OUTNAME="$4"
-cd /home/andrew/toolInterfacer
+cd "${TI_REPO:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
-e3py='C:\Users\andre\Documents\PersonalCodingProjects\personal\Research\jevResearch\lab\d1bench\e3\python.exe'
-LIB='C:\Users\andre\Documents\PersonalCodingProjects\personal\Research\jevResearch\lab\d1bench\tibench.py'
+: "${DELL_E3_PY:?set DELL_E3_PY (the dell321 e3 python.exe)}"
+: "${DELL_TIBENCH:?set DELL_TIBENCH (path to tibench.py on dell321)}"
+e3py="$DELL_E3_PY"
+LIB="$DELL_TIBENCH"
 UT=tests/data/utterances_v2.json
 ROUTE=bench/results/dell
 

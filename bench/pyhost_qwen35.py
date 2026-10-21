@@ -39,8 +39,8 @@ import sys
 import time
 import urllib.request
 
-E3PY = r"C:\Users\andre\Documents\PersonalCodingProjects\personal\Research\jevResearch\lab\d1bench\e3\python.exe"
-LAB = r"C:\Users\andre\Documents\PersonalCodingProjects\personal\toolInterfacerLab"
+E3PY = os.environ.get("DELL_E3_PY", "")
+LAB = os.environ.get("DELL_LAB", "")
 QDIAG = LAB + r"\qdiag.py"
 MODELS = LAB + r"\models"
 
@@ -58,7 +58,7 @@ def write_config(mode: str, extra: list[str], env: dict[str, str] | None = None)
            "args": args + extra,
            "env": env or {},
            "log": LAB + r"\logs\qdiag.log"}
-    path = "/home/andrew/mnt/dell321" + "/Documents/PersonalCodingProjects/personal/toolInterfacerLab/qdiag_config.json"
+    path = os.path.join(os.environ.get("DELL_MOUNT", ""), "Documents/PersonalCodingProjects/personal/toolInterfacerLab/qdiag_config.json")
     open(path, "w").write(json.dumps(cfg, indent=1))
     return path
 
