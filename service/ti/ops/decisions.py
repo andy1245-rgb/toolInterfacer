@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from ..context.packer import guard_state
 from ..decide.resolve import resolve as resolve_backend
 from .op_api import op
 
@@ -33,7 +34,8 @@ def run_extract(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
     src = params.get("source_artifact")
     ctx = store.try_get(src).data if (src and store.try_get(src)) else {}
     backend = resolve_backend("extract")
-    values = backend.extract({"context": ctx, "instructions": params["instructions"]},
+    state = guard_state({"context": ctx, "instructions": params["instructions"]})
+    values = backend.extract(state,
                              {"type": "value_list", "count": int(params.get("count", 4))})
     conf = float(values.get("conf", 0.7)) if isinstance(values, dict) else 0.7
     data = values.get("values", values) if isinstance(values, dict) else values
@@ -49,10 +51,11 @@ def run_pick(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
     candidates = art.data
     criteria = _describe(candidates if isinstance(candidates, list) else [candidates])
     backend = resolve_backend("choice")
-    answer = backend.choice(
-        {"intent_context": params.get("intent_context"), "candidates": criteria,
-         "source_kind": art.kind},
-        params["instructions"], criteria)
+    # Every choice backend — cascade included, it forwards the state it is given
+    # straight to its stages — sees a state bounded by conf.context.state_max_tokens.
+    state = guard_state({"intent_context": params.get("intent_context"),
+                         "candidates": criteria, "source_kind": art.kind})
+    answer = backend.choice(state, params["instructions"], criteria)
     k = int(params.get("top_k", 1))
     keys = answer.probabilities and sorted(answer.probabilities, key=answer.probabilities.get, reverse=True)
     picks = (keys[:k] if k > 1 else [answer.choice]) or [answer.choice]

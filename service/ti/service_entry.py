@@ -10,6 +10,7 @@ import time
 from typing import Any
 
 from .conf import load
+from .context.session_digest import sanitize
 from .core.budget import Budget
 from .core.runner import run_plan, Step
 from .hops.log import HopLog
@@ -26,7 +27,9 @@ def use_tool(body: dict[str, Any], dry: bool = False, on_ask: Any = None) -> dic
     if not intent:
         return {"status": "error", "error": "empty intent", "hops": []}
     params: dict[str, Any] = dict(body.get("params") or {})
-    digest: dict[str, Any] = body.get("digest") or {}
+    # Ingress bound: whatever the caller sent, downstream sees <= 8 turns x 240
+    # chars, <= 8 antecedents, plus the cwd the L1 bridge reads.
+    digest: dict[str, Any] = sanitize(body.get("digest"))
     mode = str(body.get("mode") or "auto")
 
     meta = inspect(intent, params, digest)
