@@ -145,6 +145,7 @@ def _plan_view(meta: dict[str, Any], intent: str, params: dict[str, Any],
             "final_key": final_key,
             "steps": [{"id": s.id, "op": s.op, "params": _safe(s.params), "inject": s.inject,
                        "gate_pre": s.gate.pre, "gate_post": s.gate.post} for s in steps],
+            "hops": [],
             "ops_available": True}
 
 

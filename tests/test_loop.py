@@ -15,6 +15,9 @@ class LoopTest(unittest.TestCase):
                         "mode": "plan",
                         "digest": {"cwd": str(ROOT)}})
         self.assertEqual(out["status"], "plan")
+        # Every useTool response carries `hops`; the extension's response schema requires
+        # the same envelope for auto and plan, so plan mode must not omit the key.
+        self.assertEqual(out["hops"], [])
         ops = [s["op"] for s in out["steps"]]
         self.assertEqual(ops, ["filesys_glob", "decide_pick", "filesys_read"])
 
