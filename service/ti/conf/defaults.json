@@ -62,5 +62,5 @@
     "cli_timeout_s": 60
   },
   "hops_log": {"path": "service/logs/hops.jsonl", "enabled": true},
-  "http": {"host": "127.0.0.1", "port": 8090}
+  "http": {"host": "127.0.0.1", "port": 1113}
 }

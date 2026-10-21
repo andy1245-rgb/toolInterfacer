@@ -5,7 +5,7 @@ decision service over localhost HTTP, pushes the rolling session digest, and
 starts the service process on session start.
 
 ```
-LLM ──useTool(intent, params, mode)──▶ this extension ──HTTP 127.0.0.1:8090──▶ service/ti/http.api
+LLM ──useTool(intent, params, mode)──▶ this extension ──HTTP 127.0.0.1:1113──▶ service/ti/http.api
        ◀── one compact result: result, hops (op, ms, conf), assumptions, degraded flags ──
 ```
 
@@ -18,7 +18,7 @@ stays there. Nothing in this directory decides anything.
 | file | responsibility |
 |---|---|
 | `contract.ts` | TypeBox schemas for the wire response (`UseToolResponseSchema`, `HopsSchema`, `QuestionSchema`, `PlanStepSchema`) + the `UseToolRequest` interface; TS types are derived with `Static<…>`. Mirrors `service/ti/service_entry.py`. |
-| `bridge.ts` | HTTP client: `call()` → `/v1/useTool`, `health()` → `/health`; base URL from `TI_BASE_URL` (default `http://127.0.0.1:8090`), timeout per call (120s, 240s for `mode:"raw"`). Classifies failures as `ServiceError` and validates the body against the schema before returning it. |
+| `bridge.ts` | HTTP client: `call()` → `/v1/useTool`, `health()` → `/health`; base URL from `TI_BASE_URL` (default `http://127.0.0.1:1113`), timeout per call (120s, 240s for `mode:"raw"`). Classifies failures as `ServiceError` and validates the body against the schema before returning it. |
 | `session_push.ts` | rolling digest from `ctx.sessionManager.getBranch()` (active branch, not `getEntries()`): last 8 user/assistant turns (~240 chars each), file-path mentions per turn, user-mentioned paths that exist on disk as antecedents with their resolved absolute path, plus cwd. Also `readLastCustom()` for state restored on resume. |
 | `lifecycle.ts` | `ensureService()`: `GET /health`; if down, spawns `python3 -m ti.http.api` detached (cwd `TI_SERVICE_DIR`, default `/home/andrew/toolInterfacer`, `PYTHONPATH=service`, interpreter from `TI_PYTHON`), polls /health up to 10s, returns `{ok, pid?, reason?, detail?}`. |
 | `index.ts` | registers `useTool` (direct exposure, `outputSchema` + `structuredContent`, `onUpdate`, `executionMode:"sequential"`), the `/ti` command, and the `session_start` / `session_shutdown` hooks. |
@@ -88,7 +88,7 @@ from timeout by checking which signal fired.
 
 | var | effect |
 |---|---|
-| `TI_BASE_URL` | service base (default `http://127.0.0.1:8090`) |
+| `TI_BASE_URL` | service base (default `http://127.0.0.1:1113`) |
 | `TI_SERVICE_DIR` | cwd for the spawned service (default `/home/andrew/toolInterfacer`) |
 | `TI_PYTHON` | interpreter for the spawn (default `python3`) |
 | `TI_DEV=1` | dev mode — see below |
@@ -104,7 +104,7 @@ from timeout by checking which signal fired.
 
 Canonical loop: run a stub or real service on some port, then launch pi with
 `TI_BASE_URL=http://127.0.0.1:<port> TI_DEV=1`. Nothing is spawned or killed, and
-the live service on 8090 (shared by other sessions and bench runs) is untouched.
+the live service on 1113 (shared by other sessions and bench runs) is untouched.
 
 ## `/ti` command
 
