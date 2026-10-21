@@ -4,7 +4,17 @@
     "d1_systemone": {"base_url": "http://127.0.0.1:8080", "timeout_s": 30},
     "logit_read": {"base_url": "http://127.0.0.1:8080", "model": "jev-style", "timeout_s": 30},
     "fixture": {"fixture_path": "", "default_choice_conf": 0.95, "default_noul": 0.9},
-    "backends_in_use": {"choice": "fixture", "noul": "fixture"}
+    "backends_in_use": {"choice": "fixture", "noul": "fixture"},
+    "cascade": {
+      "enabled": false,
+      "stage1": "d1_systemone",
+      "stage2": "logit_read",
+      "tau_hi": 0.7,
+      "tau_lo": 0.4,
+      "tau2": 0.5,
+      "precision_target": 0.85,
+      "path_conf": {"stage1_confident": 0.87, "agreement": 0.79, "stage2_alone": 0.8}
+    }
   },
   "policy": {
     "gate_route": 0.7,

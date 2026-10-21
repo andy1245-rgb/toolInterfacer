@@ -13,8 +13,7 @@ from ti.decide import conf_scale  # noqa: E402
 
 
 def setUpModule():
-    # load every backend together: the registry's lazy loader bails once any
-    # single backend has self-registered on import.
+    # load every backend: registration happens on import
     from ti.decide.primitives import _ensure_backends_loaded
     _ensure_backends_loaded()
 

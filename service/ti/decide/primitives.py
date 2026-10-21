@@ -44,11 +44,22 @@ class DecideBackend(abc.ABC):
 
 
 _REGISTRY: dict[str, Callable[[], DecideBackend]] = {}
+_LOADED = False
 
 
 def _ensure_backends_loaded() -> None:
-    if _REGISTRY:
+    """Import every backend module once so the registry is complete.
+
+    Guarded by its own flag, not by ``_REGISTRY`` being non-empty: backends
+    self-register on import, so any caller that imported a single backend
+    module first used to leave the rest unregistered and make_backend() would
+    raise KeyError for them. Import order is not a contract.
+    """
+    global _LOADED
+    if _LOADED:
         return
+    _LOADED = True  # before the imports: a backend resolving another on import must not recurse
+    from . import cascade  # noqa: F401  (registration: composes other backends by name)
     from .backends import d1_systemone, fixture, heuristic_micro, logit_read  # noqa: F401  (registration)
 
 
