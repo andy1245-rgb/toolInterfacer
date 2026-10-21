@@ -13,7 +13,7 @@ MODULES = [
     "ti.core.runner", "ti.decide", "ti.decide.primitives", "ti.decide.resolve",
     "ti.decide.backends.fixture", "ti.decide.backends.heuristic_micro",
     "ti.decide.backends.d1_systemone",
-    "ti.ops", "ti.ops.op_api", "ti.ops.decisions", "ti.ops.web.search", "ti.ops.web.fetch",
+    "ti.ops", "ti.ops.op_api", "ti.ops.cli", "ti.ops.decisions", "ti.ops.web.search", "ti.ops.web.fetch",
     "ti.ops.reddit.digest", "ti.ops.filesys.impl",
     "ti.planner", "ti.planner.inspector", "ti.planner.free",
     "ti.planner.templates.research", "ti.planner.templates.reddit_digest",

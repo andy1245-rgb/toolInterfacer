@@ -29,9 +29,26 @@
   },
   "reddit": {"use_backend": "reddit-research", "thread_cap": 5},
   "ops": {
-    "web_fetch": {"script": "~/.pi/profiles/registry/web-fetch/scripts/web-fetch"},
-    "web_search": {"script": "~/.pi/profiles/registry/web-search/scripts/free-search"},
-    "reddit": {"cwd": "~/Documents/PersonalCodingProjects/Research/redditScrapingSearching"},
+    "web_fetch": {
+      "script": "~/.pi/profiles/registry/web-fetch/scripts/web-fetch",
+      "max_chars": 20000
+    },
+    "web_search": {
+      "script": "~/.pi/profiles/registry/web-search/scripts/free-search",
+      "backend": "free-search",
+      "brave": "auto"
+    },
+    "web_search_provider": {
+      "script": "~/.pi/profiles/registry/web-search/scripts/web-search",
+      "provider": "duckduckgo"
+    },
+    "reddit": {
+      "cwd": "~/Documents/PersonalCodingProjects/Research/redditScrapingSearching",
+      "cwd_candidates": [
+        "/home/andrew/mnt/dell321/Documents/PersonalCodingProjects/Research/redditScrapingSearching"
+      ],
+      "cli": [".venv/bin/python", "-m", "reddit_research.cli"]
+    },
     "cli_timeout_s": 60
   },
   "hops_log": {"path": "service/logs/hops.jsonl", "enabled": true},
