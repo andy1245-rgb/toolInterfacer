@@ -40,6 +40,29 @@ LLM ──useTool(intent, params)──▶ pi extension ──HTTP──▶ deci
    tunables live in `conf/defaults.json`, so template files only publish the
    *shape* of a pipeline while config publishes its *degree*.
 
+## Bounded context (the two-line guarantee)
+
+The decision model never sees an unbounded payload, and that is structural, not
+accidental:
+
+- **extension side** — the session digest is `<= 8 turns x 240 chars`
+  (`session_push.ts`: last 8 user/assistant turns, each compacted to 240 chars,
+  plus <= 8 file-path antecedents and `cwd`).
+- **service side** — `service_entry.use_tool` runs that digest through
+  `context.session_digest.sanitize` at ingress (same 8 x 240 bound, `cwd` kept
+  because the L1 bridge resolves every path from it), and every state handed to
+  a decide backend passes `context.packer.guard_state`, which bounds it to
+  `conf.context.state_max_tokens` (chars ~= tokens x 4).
+
+`guard_state` is shape-preserving and a **no-op for normal-sized state** — the
+same object comes back, so the prompt the decision model's validated numbers were
+measured on is unchanged (`tests/test_context_bound.py` asserts byte-identical
+serialization for the normal case). Over budget it trims in a fixed order: clip
+long candidate descriptions, drop surplus candidate entries, stub the digest,
+then clip any remaining long string — never dropping an outer key or changing a
+key's type. Callers other than the extension therefore cannot inflate the prompt;
+worst case they get a thinner state, not a bigger one.
+
 ## Benchmarking without pi or a model
 
 `tests/` uses the fixture-player decide backend (replays recorded
