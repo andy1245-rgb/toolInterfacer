@@ -95,6 +95,8 @@ def _run_steps(steps: list[Step], llm_params: dict[str, Any], final_key: str,
         "meta": {"level": inspect(intent, params, {})["level"],
                  "route_gate": gate_route()},
     }
+    if res.error is not None:
+        out["error"] = res.error
     if res.status == "need_input" and on_ask is None and not res.degraded:
         out["question"] = {"kind": "choice", "question": "resolve step", "options": []}
     return out

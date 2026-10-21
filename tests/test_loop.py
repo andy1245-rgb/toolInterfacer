@@ -1,6 +1,7 @@
 """P1 basic-loop tests: full engine, fixture decide backend, zero network."""
 import pathlib
 import sys
+import tempfile
 import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -70,6 +71,27 @@ class LoopTest(unittest.TestCase):
         finally:
             prim._REGISTRY.pop("low_pick", None)
             load()["decide"]["backends_in_use"] = conf_backup
+
+    def test_runner_error_is_surfaced_in_response(self):
+        # A one-file dir whose file is picked, then read by a relative path that does not
+        # resolve from the process cwd — the op raises, the runner converts it to
+        # status "error" carrying the message, and service_entry must forward that message.
+        with tempfile.TemporaryDirectory() as tmp:
+            pathlib.Path(tmp, "errprop_missing_xyz.txt").write_text("x", encoding="utf-8")
+            out = use_tool({"intent": "read the file we discussed",
+                            "digest": {"cwd": tmp}})
+        self.assertEqual(out["status"], "error", out)
+        self.assertEqual([h["step"] for h in out["hops"]], ["candidates", "picked_file"], out)
+        self.assertIn("error", out)
+        self.assertIsInstance(out["error"], str)
+        self.assertTrue(out["error"].strip())
+        self.assertIn("errprop_missing_xyz.txt", out["error"])
+
+    def test_successful_run_omits_error(self):
+        out = use_tool({"intent": "read the file we discussed",
+                        "digest": {"cwd": str(ROOT)}})
+        self.assertEqual(out["status"], "done", out)
+        self.assertIsNone(out.get("error"))
 
     def test_runresult_schema(self):
         out = use_tool({"intent": "write a file", "params": {"tool": "filesys_read",
