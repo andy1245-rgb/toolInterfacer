@@ -22,6 +22,9 @@ cd "$ROOT"
 
 e3py='C:/Users/andre/Documents/PersonalCodingProjects/personal/Research/jevResearch/lab/d1bench/e3/python.exe'
 DEPLOY='C:/Users/andre/Documents/PersonalCodingProjects/personal/toolInterfacerLab/v2serve'
+# serve_pyhost.py lives beside the lab dir, not inside v2serve/; serve_lane.py
+# imports it from --serve-pyhost (its own dir has no copy, so the default fails).
+PYHOST='C:/Users/andre/Documents/PersonalCodingProjects/personal/toolInterfacerLab'
 SLOG="C:/Users/andre/Documents/PersonalCodingProjects/personal/toolInterfacerLab/logs/v2-${NAME}-serve.log"
 ROUTE=bench/results/dell
 EXPECT=$(python3 -c "import json,sys; print(json.load(open('bench/lanes.json'))['lanes'][sys.argv[1]]['model'])" "$LANE")
@@ -41,6 +44,25 @@ assert_props() { # $1 = stage label; $2 = props json (empty -> fetch from dell)
   echo "!! /props assertion FAILED at '$1' — served model is not $EXPECT"; return 1
 }
 
+SERVE_SSH=""
+PYS_BEFORE=""
+TEARDOWN=0
+teardown() { # trap: any exit path past serve start must free the port + tunnel
+  [ "$TEARDOWN" = 1 ] || return 0
+  echo "== teardown"
+  if pgrep -f "[s]sh -f -N -L 18080" >/dev/null; then pkill -f "[s]sh -f -N -L 18080"; fi
+  kill "$SERVE_SSH" 2>/dev/null
+  sleep 2
+  for p in $(pythons | awk '{print $2}' | sort | comm -13 <(echo "$PYS_BEFORE") -); do
+    ssh -o ConnectTimeout=10 dell321 "taskkill /F /PID $p" >/dev/null 2>&1
+  done
+  sleep 2
+  [ -z "$(port80)" ] && echo "dell 8080 free" || echo "!! dell 8080 still busy"
+  ss -tln | grep 18080 >/dev/null && echo "!! local tunnel still up" || echo "local tunnel free"
+  echo "== lane $NAME done"
+}
+trap teardown EXIT
+
 echo "== lane $NAME (lane=$LANE, expected model: $EXPECT, backend: $BK)"
 if [ -n "$(port80)" ]; then echo "!! dell 8080 already busy — ABORT"; exit 42; fi
 PYS_BEFORE=$(pythons | awk '{print $2}' | sort)
@@ -51,8 +73,9 @@ scp -q bench/serve_lane.py bench/lanes.json "dell321:$DEPLOY/" || { echo "!! scp
 
 echo "== serve via serve_lane.py (argv built in-process, no shell quoting)"
 nohup ssh -o ConnectTimeout=10 dell321 \
-  "$e3py $DEPLOY/serve_lane.py $LANE --models-dir '$MODELS_DIR'" > "/tmp/lane_serve_${NAME}.log" 2>&1 &
+  "$e3py $DEPLOY/serve_lane.py $LANE --models-dir '$MODELS_DIR' --serve-pyhost '$PYHOST'" > "/tmp/lane_serve_${NAME}.log" 2>&1 &
 SERVE_SSH=$!
+TEARDOWN=1
 
 H=""
 for i in $(seq 1 40); do
@@ -73,7 +96,8 @@ assert_props "after health" "" || exit 43
 sleep 15
 assert_props "after settle (port-steal check)" "" || exit 43
 
-ssh -f -N -L 18080:127.0.0.1:8080 -o ConnectTimeout=10 dell321
+ssh -f -N -L 18080:127.0.0.1:8080 -o ConnectTimeout=10 \
+  -o ServerAliveInterval=10 -o ServerAliveCountMax=6 -o ExitOnForwardFailure=yes dell321
 sleep 1
 ss -tln | grep 18080 >/dev/null || { echo "!! tunnel FAILED"; exit 1; }
 echo "tunnel up"
@@ -96,14 +120,3 @@ for ds in v1 v2; do
   done
 done
 
-echo "== teardown"
-if pgrep -f "[s]sh -f -N -L 18080" >/dev/null; then pkill -f "[s]sh -f -N -L 18080"; fi
-kill "$SERVE_SSH" 2>/dev/null
-sleep 2
-for p in $(pythons | awk '{print $2}' | sort | comm -13 <(echo "$PYS_BEFORE") -); do
-  ssh -o ConnectTimeout=10 dell321 "taskkill /F /PID $p" >/dev/null 2>&1
-done
-sleep 2
-[ -z "$(port80)" ] && echo "dell 8080 free" || echo "!! dell 8080 still busy"
-ss -tln | grep 18080 >/dev/null && echo "!! local tunnel still up" || echo "local tunnel free"
-echo "== lane $NAME done"
