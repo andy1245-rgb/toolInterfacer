@@ -1,8 +1,8 @@
 """reddit.digest — reddit-research CLI search, projected into a thread digest.
 
 **The CLI this op drives is currently unavailable on this box.** The skill's
-project lives on an external mount (``/home/andrew/mnt/dell321/...``) that is not
-mounted, and the path ``service/ti/conf/defaults.json`` ships
+project lives on an external mount that is not mounted here, and the path
+``service/ti/conf/defaults.json`` ships
 (``~/Documents/PersonalCodingProjects/Research/redditScrapingSearching``) does
 not exist either. So the op probes ``ops.reddit.cwd`` and every path in
 ``ops.reddit.cwd_candidates`` and, when none is a directory, raises

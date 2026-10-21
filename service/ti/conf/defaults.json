@@ -55,7 +55,8 @@
     "reddit": {
       "cwd": "~/Documents/PersonalCodingProjects/Research/redditScrapingSearching",
       "cwd_candidates": [
-        "/home/andrew/mnt/dell321/Documents/PersonalCodingProjects/Research/redditScrapingSearching"
+        "~/Documents/PersonalCodingProjects/Research/redditScrapingSearching",
+        "~/redditScrapingSearching"
       ],
       "cli": [".venv/bin/python", "-m", "reddit_research.cli"]
     },

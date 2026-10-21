@@ -1,4 +1,7 @@
 import { spawn } from "node:child_process";
+import { realpathSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { health } from "./bridge.ts";
 
 const POLL_MS = 500;
@@ -17,12 +20,22 @@ export function isDev(): boolean {
 	return process.env.TI_DEV === "1";
 }
 
+/** Repo root, derived from this file's REAL path: the extension is loaded through
+ *  a symlink under ~/.pi/agent/extensions, so realpath is what lands on the repo. */
+function defaultServiceDir(): string {
+	try {
+		return resolve(dirname(realpathSync(fileURLToPath(import.meta.url))), "..", "..");
+	} catch {
+		return process.cwd();
+	}
+}
+
 export function serviceCmd(): { cmd: string; args: string[]; options: { cwd: string; env: NodeJS.ProcessEnv; detached: true; stdio: "ignore" } } {
 	return {
 		cmd: process.env.TI_PYTHON ?? "python3",
 		args: ["-m", "ti.http.api"],
 		options: {
-			cwd: process.env.TI_SERVICE_DIR ?? "/home/andrew/toolInterfacer",
+			cwd: process.env.TI_SERVICE_DIR ?? defaultServiceDir(),
 			env: { ...process.env, PYTHONPATH: "service" },
 			detached: true,
 			stdio: "ignore",

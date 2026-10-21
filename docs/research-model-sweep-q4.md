@@ -102,7 +102,7 @@ wins):
 
 | File (exact) | Dell path (Windows) | Bytes | SHA-256 (head) | Verified |
 |---|---|---:|---|---|
-| `Intern-Decision-4B-Q4_K_M.gguf` | `C:\Users\andre\Documents\PersonalCodingProjects\personal\toolInterfacerLab\models\Intern-Decision-4B-Q4_K_M.gguf` | 2,708,804,416 | `3c3be9bd…` (full: 3c3be9bd66008743fc24a763f28e2de51fb2417d2e4406ae59a3015ec7eaeaab) | GGUF magic; **SHA-256 matches yeaay card's published hash** |
+| `Intern-Decision-4B-Q4_K_M.gguf` | `<dell lab>\models\Intern-Decision-4B-Q4_K_M.gguf` | 2,708,804,416 | `3c3be9bd…` (full: 3c3be9bd66008743fc24a763f28e2de51fb2417d2e4406ae59a3015ec7eaeaab) | GGUF magic; **SHA-256 matches yeaay card's published hash** |
 | `Kev-4B-Q4_K_M.gguf` | `…\toolInterfacerLab\models\Kev-4B-Q4_K_M.gguf` | 3,033,489,824 | `33ae6b18…` | GGUF magic; size == HF tree (3.03 GB); no upstream SHA published |
 | `Qwen3.5-4B-Q4_K_M.gguf` | `…\toolInterfacerLab\models\Qwen3.5-4B-Q4_K_M.gguf` | 2,740,937,888 | `00fe7986…` (full: 00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4) | GGUF magic; size == HF tree (2.74 GB); no upstream SHA published |
 

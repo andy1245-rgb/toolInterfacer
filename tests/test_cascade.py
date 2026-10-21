@@ -27,8 +27,7 @@ from ti.decide import cascade as cascade_mod  # noqa: E402
 from ti.decide.cascade import CascadeBackend, budget_warning  # noqa: E402
 from ti.decide.primitives import ChoiceAnswer, DecideBackend, make_backend  # noqa: E402
 
-LANE_DIR = pathlib.Path(os.environ.get("TI_LANE_DIR",
-                                       "/home/andrew/toolInterfacerExtras/dell-rerun"))
+LANE_DIR = pathlib.Path(os.environ.get("TI_LANE_DIR", str(ROOT / "tests" / "data" / "lanes")))
 LANE_FILES = {"d1_systemone": "v2-d1-3B-Q4-systemone.json",
               "logit_read": "v2-d1-3B-Q4-logit_read.json"}
 LANES_PRESENT = all((LANE_DIR / name).is_file() for name in LANE_FILES.values())

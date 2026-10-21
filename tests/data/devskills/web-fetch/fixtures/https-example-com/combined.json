@@ -1,0 +1,39 @@
+{
+ "url": "https://example.com",
+ "ranAt": "2026-10-18T06:44:16+00:00",
+ "source": "python-stdlib",
+ "contentLength": 577,
+ "files": {
+  "raw": "companions/python-raw.txt",
+  "text": "companions/python-stdlib-text.txt"
+ },
+ "extractionMethod": "regex",
+ "extractionQuality": null,
+ "pageType": null,
+ "metadata": {
+  "title": null,
+  "author": null,
+  "date": null
+ },
+ "text": "Example Domain This domain is for use in documentation examples without needing permission. This is not a service; avoid relying on it for testing and monitoring purposes.",
+ "textLength": 171,
+ "truncated": false,
+ "maxChars": 300,
+ "durationMs": 97,
+ "startedAt": "2026-10-18T06:44:15+00:00",
+ "fallbackTried": [
+  {
+   "method": "curl",
+   "error": "short extraction (171 < 400 chars; likely JS shell)",
+   "source": "curl",
+   "proxy": null,
+   "durationMs": 169
+  },
+  {
+   "error": "nodriver not installed",
+   "source": "nodriver",
+   "durationMs": 4
+  }
+ ],
+ "cached": false
+}

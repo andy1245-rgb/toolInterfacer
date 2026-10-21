@@ -12,3 +12,6 @@ models/
 *.gguf
 extern/
 .env
+
+# machine-specific bench env (see bench/lane.env.example)
+bench/lane.env
