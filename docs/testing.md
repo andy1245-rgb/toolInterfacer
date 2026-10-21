@@ -28,3 +28,12 @@ llama-server -m models/d1-3B-Q4_K_M.gguf --mmproj models/mmproj-d1-3B-F16.gguf \
 `bench/results/*.json` — each run is one file with `timestamp`, config,
 per-row data, calibration bands. Canonical summary: `live_probe_summary.json`.
 Never overwrite; write new files (variants get suffixes like `-t8-v2`).
+
+## Portability rule (enforced)
+
+Do not hardcode machine-specific absolute paths in source, config, tests, or docs
+(`/home/<user>/...`, `C:\Users\<user>\...`). Use an environment variable, a
+`~`-relative default, a repo-relative path, or `<placeholder>`. `tests/test_no_personal_paths.py`
+fails the suite if one appears. Machine-specific bench paths belong in
+`bench/lane.env` (gitignored) — see `bench/lane.env.example`. Recorded evidence
+under `bench/results/` is exempt: those files are the proof of what ran where.
