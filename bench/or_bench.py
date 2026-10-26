@@ -30,6 +30,7 @@ import random
 import re
 import statistics
 import sys
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -44,14 +45,81 @@ from live_probe import INSTRUCTIONS, OP_DESCRIPTIONS, percentile  # noqa: E402
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 KEY_ENV = "OPENROUTER_API_KEY"
 
-# USD per 1M tokens, resolved against the live OpenRouter catalog.
+# USD per 1M tokens, catalogue `pricing` block. For z-ai/glm-5.3-flash this is
+# the *sheet*, not the bill: 38 endpoints serve the model and none bills this
+# (see PROVIDERS). Used only as the computed-cost fallback when the provider
+# returns no usage.cost.
 MODELS = {
-    "z-ai/glm-5.3-flash": {"in": 0.15, "out": 0.50},
+    "z-ai/glm-5.3-flash": {"in": 0.15, "out": 0.50, "cache": 0.03},
+    "z-ai/glm-5.3-flash:batch": {"in": 0.05, "out": 0.18, "cache": 0.01},
     "deepseek/deepseek-v4-flash": {"in": 0.091, "out": 0.182},
     "deepseek/deepseek-v4.1-flash": {"in": 0.02, "out": 1.00},
     "qwen/qwen3.8-flash": {"in": 0.15, "out": 0.47},
     "qwen/qwen3.8-27b": {"in": 0.20, "out": 2.50},
 }
+
+# Per-endpoint prices for z-ai/glm-5.3-flash, USD per 1M tokens, read from
+# /api/v1/models/z-ai/glm-5.3-flash/endpoints. One model id => many endpoints,
+# each with its own quantization and its own price; pinning is the lever.
+PROVIDERS = {
+    "Relace": {"quant": "unknown", "in": 0.0413, "out": 0.0758, "cache": 0.0300},
+    "StreamLake": {"quant": "fp8", "in": 0.0435, "out": 0.1450, "cache": 0.0087},
+    "Wafer": {"quant": "nvfp4", "in": 0.0540, "out": 0.2000, "cache": 0.0530},
+    "Darkbloom": {"quant": "fp4", "in": 0.0650, "out": 0.1800, "cache": 0.0325},
+    "GMICloud": {"quant": "fp8", "in": 0.0750, "out": 0.2500, "cache": 0.0150},
+    "OpenInference": {"quant": "fp4", "in": 0.0767, "out": 0.0100, "cache": 0.0198},
+    "Near AI": {"quant": "fp8", "in": 0.0800, "out": 0.5000, "cache": 0.0120},
+}
+
+# accuracy guardrail: a configuration below this may be reported as a trade-off
+# only, never recommended.
+GUARDRAIL_ACCURACY = 0.933
+
+LETTERS = "ABCDEFGH"
+
+# Output contract variants. "json" reproduces the baseline prompt byte for byte.
+ANSWER_FORMATS = {
+    "json": {
+        "parse": "json",
+        "tail": ('Answer with strict JSON only, no prose:\n'
+                 '{"choice": "<one operation label above>", "confidence": <number 0-1>}'),
+    },
+    "json-noconf": {
+        "parse": "json",
+        "tail": 'Answer with strict JSON only, no prose:\n{"choice": "<one operation label above>"}',
+    },
+    "label": {
+        "parse": "label",
+        "tail": "Reply with one operation label from the list above and nothing else.",
+    },
+    "letter": {
+        "parse": "letter",
+        "tail": "Reply with the single letter of the best operation and nothing else.",
+    },
+}
+
+# OpenRouter's `reasoning` request field, one mode per key.
+REASONING_MODES = {
+    "default": None,
+    "off": {"enabled": False},
+    "minimal": {"effort": "minimal"},
+    "exclude": {"exclude": True},
+}
+
+# Compaction of the 8 descriptions: same discriminative axis, fewer tokens.
+COMPACT_OP_DESCRIPTIONS = {
+    "filesys_read": "Read one file.",
+    "filesys_glob": "List paths matching a name pattern (no content search).",
+    "filesys_grep": "Regex search file contents.",
+    "decide_pick": "Pick the best item(s) from candidates.",
+    "decide_extract": "Extract query strings or parameters from the command.",
+    "web_search": "Web search by keywords.",
+    "web_fetch": "Fetch one URL.",
+    "reddit_digest": "Digest a subreddit or thread.",
+}
+
+PROMPT_VARIANTS = {"full": OP_DESCRIPTIONS, "compact": COMPACT_OP_DESCRIPTIONS}
+
 
 LABELS = list(OP_DESCRIPTIONS)
 # Tolerate a bare op name ("read" for "filesys_read") without inventing labels:
@@ -61,30 +129,51 @@ SUFFIX_TO_LABEL = {label.split("_", 1)[1]: label for label in LABELS}
 JSON_HINT = re.compile(r"response_?format|json|structured", re.I)
 
 
-def build_system_prompt() -> str:
-    ops = "\n".join(f"- {name}: {desc}" for name, desc in OP_DESCRIPTIONS.items())
-    return (
-        f"{INSTRUCTIONS}\n\n"
-        f"Operations:\n{ops}\n\n"
-        "Answer with strict JSON only, no prose:\n"
-        '{"choice": "<one operation label above>", "confidence": <number 0-1>}'
-    )
+def build_system_prompt(variant: str = "full", answer: str = "json") -> str:
+    """Static block. It goes FIRST and the utterance LAST on purpose: an
+    identical leading prefix is what a prefix cache can serve."""
+    descriptions = PROMPT_VARIANTS[variant]
+    if answer == "letter":
+        ops = "\n".join(f"{LETTERS[i]}. {name}: {desc}"
+                        for i, (name, desc) in enumerate(descriptions.items()))
+    else:
+        ops = "\n".join(f"- {name}: {desc}" for name, desc in descriptions.items())
+    return f"{INSTRUCTIONS}\n\nOperations:\n{ops}\n\n{ANSWER_FORMATS[answer]['tail']}"
 
 
-def build_payload(model: str, utterance: str, max_tokens: int, json_mode: bool) -> dict:
+def build_payload(cfg: dict, utterance: str, max_tokens: int, json_mode: bool) -> dict:
     payload = {
-        "model": model,
+        "model": cfg["model"],
         "messages": [
-            {"role": "system", "content": build_system_prompt()},
+            {"role": "system", "content": build_system_prompt(cfg["variant"], cfg["answer"])},
             {"role": "user", "content": utterance},
         ],
         "temperature": 0,
         "max_tokens": max_tokens,
         "usage": {"include": True},  # ask OpenRouter to report real cost
     }
+    if cfg.get("provider"):
+        payload["provider"] = cfg["provider"]
+    if cfg.get("reasoning") is not None:
+        payload["reasoning"] = cfg["reasoning"]
     if json_mode:
         payload["response_format"] = {"type": "json_object"}
     return payload
+
+
+# Request-level counters, so a run can report rate limits and retries rather
+# than silently absorbing them. Guarded: the accuracy pass is threaded.
+_METRICS: dict = {"rate_limited": 0, "retries": 0, "http_errors": {}}
+_METRICS_LOCK = threading.Lock()
+
+
+def note(key: str, bump: int = 1, sub: str | None = None) -> None:
+    with _METRICS_LOCK:
+        if sub is None:
+            _METRICS[key] = _METRICS.get(key, 0) + bump
+        else:
+            bucket = _METRICS.setdefault(key, {})
+            bucket[sub] = bucket.get(sub, 0) + bump
 
 
 def backoff(attempt: int, retry_after: str | None) -> float:
@@ -118,12 +207,17 @@ def post(payload: dict, key: str, timeout: float, attempts: int = 4) -> tuple[di
         except urllib.error.HTTPError as e:
             text = e.read().decode("utf-8", "replace")[:400]
             last = {"status": e.code, "error": text}
+            note("http_errors", sub=str(e.code))
             if e.code == 429 or e.code >= 500:
+                if e.code == 429:
+                    note("rate_limited")
+                note("retries")
                 time.sleep(backoff(attempt, e.headers.get("Retry-After") if e.headers else None))
                 continue
             return None, last
         except (urllib.error.URLError, TimeoutError, OSError) as e:
             last = {"status": None, "error": f"{type(e).__name__}: {e}"}
+            note("retries")
             time.sleep(backoff(attempt, None))
         except json.JSONDecodeError as e:
             last = {"status": None, "error": f"undecodable response body: {e}"}
@@ -180,24 +274,52 @@ def resolve_label(raw: object) -> tuple[str | None, str]:
     return None, "none"
 
 
-def ask(model: str, utterance: str, key: str, args, state: dict) -> dict:
+def parse_answer(text: str, answer: str) -> tuple[object, object, str]:
+    """(choice, confidence, how) under the config's answer format."""
+    if ANSWER_FORMATS[answer]["parse"] == "json":
+        return parse_reply(text)
+    stripped = (text or "").strip()
+    if not stripped:
+        return None, None, "empty"
+    if answer == "letter":
+        hit = re.search(r"\b([A-H])\b", stripped.upper())
+        if hit:
+            idx = ord(hit.group(1)) - ord("A")
+            if idx < len(LABELS):
+                return LABELS[idx], None, "letter"
+        return None, None, "no-letter"
+    for candidate in (stripped, stripped.strip("\"'`.,;:*").splitlines()[0],
+                      stripped.split()[0] if stripped.split() else ""):
+        if candidate and resolve_label(candidate)[0]:
+            return candidate, None, "label"
+    for token in re.findall(r"[A-Za-z_]+(?:\.[A-Za-z_]+)?", stripped):
+        if resolve_label(token)[0]:
+            return token, None, "label-in-prose"
+    return stripped[:40], None, "label-unresolved"
+
+
+def ask(cfg: dict, utterance: str, key: str, args, state: dict) -> dict:
     """One decision. Never raises; a bad reply comes back as ok=False."""
     t0 = time.perf_counter()
-    body, err = post(build_payload(model, utterance, args.max_tokens, state["json_mode"]),
+    body, err = post(build_payload(cfg, utterance, args.max_tokens, state["json_mode"]),
                      key, args.timeout)
     if err and state["json_mode"] and err.get("status") == 400 and JSON_HINT.search(err["error"]):
         state["json_mode"] = False  # provider refused response_format — fall back to text
         t0 = time.perf_counter()
-        body, err = post(build_payload(model, utterance, args.max_tokens, False), key, args.timeout)
+        body, err = post(build_payload(cfg, utterance, args.max_tokens, False), key, args.timeout)
     latency_ms = (time.perf_counter() - t0) * 1000
     if err:
         return {"ok": False, "latency_ms": latency_ms, "error": err,
                 "choice": None, "choice_raw": None, "confidence": 0.0,
-                "prompt_tokens": 0, "completion_tokens": 0, "cost": None}
+                "prompt_tokens": 0, "completion_tokens": 0, "cost": None,
+                "provider": None}
 
     usage = body.get("usage") or {}
+    pdet = usage.get("prompt_tokens_details") or {}
+    cdet = usage.get("completion_tokens_details") or {}
+    cdet_cost = usage.get("cost_details") or {}
     text = message_text(body)
-    raw_choice, raw_conf, how = parse_reply(text)
+    raw_choice, raw_conf, how = parse_answer(text, cfg["answer"])
     label, resolution = resolve_label(raw_choice)
     try:
         confidence = min(max(float(raw_conf), 0.0), 1.0)
@@ -205,6 +327,9 @@ def ask(model: str, utterance: str, key: str, args, state: dict) -> dict:
         confidence = 0.0
     if raw_conf is not None and not isinstance(raw_conf, (int, float)):
         resolution = f"{resolution}/conf-unparsed"
+    reasoning = ((body.get("choices") or [{}])[0].get("message") or {}).get("reasoning")
+    if reasoning is None and (body.get("choices") or [{}])[0].get("message"):
+        reasoning = body["choices"][0]["message"].get("reasoning_content")
     return {
         "ok": bool(label),
         "latency_ms": latency_ms,
@@ -215,14 +340,32 @@ def ask(model: str, utterance: str, key: str, args, state: dict) -> dict:
         "confidence": confidence,
         "prompt_tokens": int(usage.get("prompt_tokens") or 0),
         "completion_tokens": int(usage.get("completion_tokens") or 0),
+        "cached_tokens": int(pdet.get("cached_tokens") or 0),
+        "reasoning_tokens": int(cdet.get("reasoning_tokens") or 0),
+        "reasoning_chars": len(reasoning) if isinstance(reasoning, str) else 0,
+        "cost_prompt": cdet_cost.get("upstream_inference_prompt_cost"),
+        "cost_completion": cdet_cost.get("upstream_inference_completions_cost"),
         "cost": usage.get("cost"),
+        "provider": body.get("provider"),
         "provider_model": body.get("model"),
         "finish_reason": finish_reason(body),
     }
 
 
-def run_row(model: str, idx: int, row: dict, key: str, args, state: dict) -> dict:
-    ans = ask(model, row["utterance"], key, args, state)
+def served_by_pin(cfg: dict, served: str | None) -> bool:
+    """True when a requested endpoint list was not honoured.
+
+    `only` is a hard pin, `order` a preference; both count as a fallback when a
+    different endpoint answers, because either way the measured cost belongs to
+    an endpoint the configuration did not ask for.
+    """
+    block = cfg.get("provider") or {}
+    requested = (block.get("only") or []) + (block.get("order") or [])
+    return bool(requested) and served not in requested
+
+
+def run_row(cfg: dict, idx: int, row: dict, key: str, args, state: dict) -> dict:
+    ans = ask(cfg, row["utterance"], key, args, state)
     return {
         "idx": idx,
         "utterance": row["utterance"],
@@ -237,27 +380,34 @@ def run_row(model: str, idx: int, row: dict, key: str, args, state: dict) -> dic
         "latency_ms": round(ans["latency_ms"], 1),
         "prompt_tokens": ans["prompt_tokens"],
         "completion_tokens": ans["completion_tokens"],
+        "cached_tokens": ans.get("cached_tokens", 0),
+        "reasoning_tokens": ans.get("reasoning_tokens", 0),
+        "reasoning_chars": ans.get("reasoning_chars", 0),
+        "cost_prompt": ans.get("cost_prompt"),
+        "cost_completion": ans.get("cost_completion"),
         "cost": ans.get("cost"),
+        "provider": ans.get("provider"),
+        "fallback": served_by_pin(cfg, ans.get("provider")),
         "ok": ans["ok"],
         "finish_reason": ans.get("finish_reason"),
         "error": ans["error"],
     }
 
 
-def run_concurrent(model: str, rows: list[dict], key: str, args, state: dict) -> list[dict]:
+def run_concurrent(cfg: dict, rows: list[dict], key: str, args, state: dict) -> list[dict]:
     out: list[dict | None] = [None] * len(rows)
 
     def work(i: int) -> None:
-        out[i] = run_row(model, i, rows[i], key, args, state)
+        out[i] = run_row(cfg, i, rows[i], key, args, state)
 
     with ThreadPoolExecutor(max_workers=args.concurrency) as pool:
         list(pool.map(work, range(len(rows))))
     return [r for r in out if r is not None]
 
 
-def run_sequential(model: str, picks: list[tuple[int, dict]], key: str, args,
+def run_sequential(cfg: dict, picks: list[tuple[int, dict]], key: str, args,
                    state: dict) -> list[dict]:
-    return [run_row(model, idx, row, key, args, state) for idx, row in picks]
+    return [run_row(cfg, idx, row, key, args, state) for idx, row in picks]
 
 
 def cost_of(rows: list[dict], pricing: dict) -> dict:
@@ -265,10 +415,43 @@ def cost_of(rows: list[dict], pricing: dict) -> dict:
     measured = sum(float(r["cost"]) for r in rows if isinstance(r.get("cost"), (int, float)))
     prompted = sum(r["prompt_tokens"] for r in rows)
     completed = sum(r["completion_tokens"] for r in rows)
-    computed = (prompted * pricing["in"] + completed * pricing["out"]) / 1_000_000
+    cached = sum(r.get("cached_tokens") or 0 for r in rows)
+    fresh = max(prompted - cached, 0)
+    computed = (fresh * pricing["in"] + cached * pricing.get("cache", pricing["in"])
+                + completed * pricing["out"]) / 1_000_000
     return {"measured_usd": round(measured, 6), "computed_usd": round(computed, 6),
             "prompt_tokens": prompted, "completion_tokens": completed,
             "source": "provider usage.cost" if measured > 0 else "price sheet x tokens"}
+
+
+def token_detail(rows: list[dict]) -> dict:
+    """Per-request token shape, and the rate actually charged per token.
+
+    The effective rates come from usage.cost_details, which splits the upstream
+    bill into a prompt part and a completion part — dividing each by its own
+    token count recovers the per-M rate the endpoint billed, which is how a
+    pinned endpoint's real price is confirmed rather than assumed.
+    """
+    n = len(rows) or 1
+    prompted = sum(r["prompt_tokens"] for r in rows)
+    completed = sum(r["completion_tokens"] for r in rows)
+    cached = sum(r.get("cached_tokens") or 0 for r in rows)
+    reasoning = sum(r.get("reasoning_tokens") or 0 for r in rows)
+    cost_prompt = sum(r.get("cost_prompt") or 0 for r in rows)
+    cost_completion = sum(r.get("cost_completion") or 0 for r in rows)
+    return {
+        "prompt_per_req": round(prompted / n, 1),
+        "completion_per_req": round(completed / n, 1),
+        "reasoning_per_req": round(reasoning / n, 1),
+        "reasoning_share_of_completion": round(reasoning / completed, 4) if completed else None,
+        "cached_per_req": round(cached / n, 1),
+        "cached_share_of_prompt": round(cached / prompted, 4) if prompted else None,
+        "max_completion": max((r["completion_tokens"] for r in rows), default=0),
+        "effective_in_usd_per_mtok": round(cost_prompt / prompted * 1e6, 4)
+        if prompted and cost_prompt else None,
+        "effective_out_usd_per_mtok": round(cost_completion / completed * 1e6, 4)
+        if completed and cost_completion else None,
+    }
 
 
 def aggregate(rows: list[dict], latency_rows: list[dict], pricing: dict) -> dict:
@@ -283,15 +466,24 @@ def aggregate(rows: list[dict], latency_rows: list[dict], pricing: dict) -> dict
             slot["correct"] += int(r["correct"])
     lat = sorted(r["latency_ms"] for r in latency_rows if r["ok"])
     cost = cost_of(rows + latency_rows, pricing)  # every request we paid for counts
+    acc_only = cost_of(rows, pricing)  # the accuracy pass alone: one request per decision
     spend = cost["measured_usd"] or cost["computed_usd"]
+    per_decision = (acc_only["measured_usd"] or acc_only["computed_usd"]) / n if n else 0.0
     n_correct = len(correct)
+    served: dict[str, int] = {}
+    for r in rows:
+        served[r.get("provider") or "unknown"] = served.get(r.get("provider") or "unknown", 0) + 1
+    accuracy = round(n_correct / n, 4) if n else 0.0
     return {
         "n_rows": n,
-        "accuracy": round(n_correct / n, 4) if n else 0.0,
+        "accuracy": accuracy,
+        "meets_guardrail": accuracy >= GUARDRAIL_ACCURACY,
         "malformed": sum(1 for r in rows if not r["ok"]),
         "truncated": sum(1 for r in rows if r.get("finish_reason") == "length"),
         "failures": sum(1 for r in rows if r["error"] and r["error"].get("status") not in (200,)),
         "alias_resolutions": sum(1 for r in rows if r.get("resolution") == "alias"),
+        "providers_served": dict(sorted(served.items())),
+        "fallbacks": sum(1 for r in rows if r.get("fallback")),
         "accuracy_by_band": {k: {"n": v["n"], "accuracy": round(v["correct"] / v["n"], 4)}
                              for k, v in sorted(by_band.items())},
         "accuracy_by_label": {k: {"n": v["n"], "accuracy": round(v["correct"] / v["n"], 4)}
@@ -310,7 +502,12 @@ def aggregate(rows: list[dict], latency_rows: list[dict], pricing: dict) -> dict
             "total_usd": round(spend, 6),
             "per_1k_decisions_usd": round(spend / n * 1000, 4) if n else None,
             "per_1k_correct_usd": round(spend / n_correct * 1000, 4) if n_correct else None,
+            "per_decision_usd": round(per_decision, 8),
+            "per_1k_decisions_request_only_usd": round(per_decision * 1000, 4),
+            "per_1k_correct_request_only_usd": round(per_decision / (n_correct / n) * 1000, 4)
+            if n_correct else None,
         },
+        "tokens": token_detail(rows + latency_rows),
         "per_row": rows,
         "latency_rows": latency_rows,
     }
@@ -356,23 +553,38 @@ def rank(models: dict) -> dict:
 
 def print_report(summary: dict) -> None:
     models = summary["models"]
-    print(f"\n{'model':<30}{'acc':>7}{'t1':>7}{'t2':>7}{'t3':>7}"
-          f"{'p50':>8}{'p95':>8}{'$total':>9}{'$/1k':>8}{'$/1k-ok':>9}{'bad':>5}{'fail':>5}")
+    print(f"\n{'config':<38}{'acc':>7}{'gate':>5}{'t1':>7}{'t2':>7}{'t3':>7}"
+          f"{'p50':>8}{'p95':>8}{'$total':>9}{'$/1k':>8}{'$/1k-ok':>9}"
+          f"{'bad':>4}{'fail':>5}{'fb':>4}")
     for name, m in models.items():
         b = m["accuracy_by_band"]
         f = lambda k: f"{b.get(k, {}).get('accuracy', 0):.1%}" if k in b else "-"  # noqa: E731
         p50 = m["latency_ms"]["p50"]
         p95 = m["latency_ms"]["p95"]
         lat = f"{p50:>7.0f}m{p95:>7.0f}m" if p50 is not None else f"{'-':>7}{'-':>7}"
-        print(f"{name:<30}{m['accuracy']:>6.1%}{f('t1'):>7}{f('t2'):>7}{f('t3'):>7}"
-              f"{lat}"
+        print(f"{name:<38}{m['accuracy']:>6.1%}{'ok' if m['meets_guardrail'] else 'LOW':>5}"
+              f"{f('t1'):>7}{f('t2'):>7}{f('t3'):>7}{lat}"
               f"{m['cost']['total_usd']:>9.5f}{m['cost']['per_1k_decisions_usd'] or 0:>8.4f}"
-              f"{m['cost']['per_1k_correct_usd'] or 0:>9.4f}{m['malformed']:>5}{m['failures']:>5}")
+              f"{m['cost']['per_1k_correct_usd'] or 0:>9.4f}{m['malformed']:>4}"
+              f"{m['failures']:>5}{m.get('fallbacks', 0):>4}")
     base = summary["baselines"]["local_d1_3B_Q4"]
     print(f"\nbaseline {base['model']}: {base['accuracy']:.1%} acc, p50 {base['p50_ms']} ms, $0 (local)")
+    print(f"accuracy guardrail: >= {GUARDRAIL_ACCURACY:.1%} (gate column 'LOW' = trade-off only)")
+
+    print("\ntoken shape and the rate actually charged (usage.cost_details split):")
+    print(f"  {'config':<38}{'in/req':>7}{'out/req':>8}{'reas/req':>9}{'cached%':>8}"
+          f"{'$in/M':>8}{'$out/M':>8}  served")
+    for name, m in models.items():
+        t = m["tokens"]
+        cached = t["cached_share_of_prompt"]
+        print(f"  {name:<38}{t['prompt_per_req']:>7.1f}{t['completion_per_req']:>8.1f}"
+              f"{t['reasoning_per_req']:>9.1f}"
+              f"{cached * 100 if cached is not None else 0:>7.1f}%"
+              f"{t['effective_in_usd_per_mtok'] or 0:>8.4f}"
+              f"{t['effective_out_usd_per_mtok'] or 0:>8.4f}  {m['providers_served']}")
 
     print("\nper-label accuracy:")
-    header = [n.split("/")[-1] for n in models]
+    header = [n.split("|")[-2] if "|" in n else n.split("/")[-1] for n in models]
     print(f"  {'label':<16}" + "".join(f"{h[:14]:>16}" for h in header))
     for label in LABELS:
         cells = "".join(f"{models[n]['accuracy_by_label'].get(label, {}).get('accuracy', 0):>15.0%} "
@@ -386,10 +598,84 @@ def print_report(summary: dict) -> None:
     print(f"  strictly dominated:                {r['pareto_vs_cost']['dominated']}")
     print(f"Pareto frontier vs p50 latency:      {r['pareto_vs_latency']['on_frontier']}")
     print(f"  strictly dominated:                {r['pareto_vs_latency']['dominated']}")
-    print(f"\nwall time: {summary['wall_time_s']}s   "
+    metrics = summary.get("request_metrics") or {}
+    print(f"\nrequests: rate_limited={metrics.get('rate_limited', 0)} "
+          f"retries={metrics.get('retries', 0)} http_errors={metrics.get('http_errors', {})} "
+          f"fallbacks={sum(m.get('fallbacks', 0) for m in models.values())}")
+    print(f"wall time: {summary['wall_time_s']}s   "
           f"total cost incurred: ${summary['total_cost_usd']:.5f}   "
           f"(accuracy pass x{summary['concurrency']} concurrent; "
           f"latency pass sequential, n={summary['latency_run']['n']})")
+
+
+def provider_block(pin: str, allow_fallbacks: bool) -> dict | None:
+    """Build the OpenRouter `provider` request field for one pin.
+
+    A named endpoint is pinned with `only` and, by default, with fallbacks
+    disallowed — a silent fallback would measure a different endpoint than the
+    one under test. `sort:*` deliberately allows fallbacks: it is a policy, not
+    a pin.
+    """
+    if not pin or pin == "auto":
+        return None
+    if pin.startswith("sort:"):
+        return {"sort": pin.split(":", 1)[1], "allow_fallbacks": True}
+    if pin.startswith("order:"):
+        return {"order": [p for p in pin.split(":", 1)[1].split("+") if p],
+                "allow_fallbacks": True}
+    return {"only": [pin], "allow_fallbacks": allow_fallbacks}
+
+
+def pricing_for(cfg: dict) -> dict:
+    """Price sheet for the computed-cost fallback: the pinned endpoint's when
+    known, else the catalogue block."""
+    return PROVIDERS.get(cfg.get("pin") or "auto", MODELS[cfg["model"]])
+
+
+def config_label(cfg: dict) -> str:
+    """Deterministic name for a run configuration; the results-file key."""
+    pin = cfg.get("pin") or "auto"
+    extra = [x for x in (cfg["variant"] if cfg["variant"] != "full" else "",
+                         cfg["answer"] if cfg["answer"] != "json" else "",
+                         "r:" + cfg["reasoning_mode"]
+                         if cfg["reasoning_mode"] != "default" else "") if x]
+    if pin == "auto" and not extra:
+        return cfg["model"]
+    return "|".join([cfg["model"].split("/")[-1]]
+                     + ([pin] if pin != "auto" else []) + extra)
+
+
+def build_configs(models: list[str], args) -> list[tuple[str, dict]]:
+    """Cartesian product of the sweep dimensions, one labelled config each."""
+    picks = lambda raw, table, what: ([v.strip() for v in raw.split(",") if v.strip()]  # noqa: E731
+                                      or list(table))
+    pins = [p.strip() for p in args.providers.split(",") if p.strip()] or ["auto"]
+    variants = picks(args.variants, PROMPT_VARIANTS, "variant") if args.variants else ["full"]
+    answers = picks(args.answers, ANSWER_FORMATS, "answer") if args.answers else ["json"]
+    reasons = picks(args.reasoning, REASONING_MODES, "reasoning") \
+        if args.reasoning else ["default"]
+    bad = ([f"provider {p}" for p in pins
+            if p != "auto" and not p.startswith(("sort:", "order:")) and p not in PROVIDERS]
+           + [f"variant {v}" for v in variants if v not in PROMPT_VARIANTS]
+           + [f"answer {a}" for a in answers if a not in ANSWER_FORMATS]
+           + [f"reasoning {r}" for r in reasons if r not in REASONING_MODES])
+    if bad:
+        raise SystemExit(f"unknown {', '.join(bad)}; known providers {list(PROVIDERS)}, "
+                         f"variants {list(PROMPT_VARIANTS)}, answers {list(ANSWER_FORMATS)}, "
+                         f"reasoning {list(REASONING_MODES)}")
+    configs = []
+    for model in models:
+        for pin in pins:
+            for variant in variants:
+                for answer in answers:
+                    for reason in reasons:
+                        cfg = {"model": model, "pin": pin,
+                               "provider": provider_block(pin, args.allow_fallbacks),
+                               "variant": variant, "answer": answer,
+                               "reasoning_mode": reason,
+                               "reasoning": REASONING_MODES[reason]}
+                        configs.append((config_label(cfg), cfg))
+    return configs
 
 
 def pick_output(out: Path) -> Path:
@@ -407,8 +693,23 @@ def pick_output(out: Path) -> Path:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--models", default="", help="comma-separated model ids (default: all 5)")
+    ap.add_argument("--providers", default="",
+                    help=f"endpoint pin(s): a name from {list(PROVIDERS)}, sort:price, "
+                         "sort:throughput, order:Relace+Wafer (tries in order, "
+                         "falls back), or auto (default). Cartesian with the other axes.")
+    ap.add_argument("--allow-fallbacks", action="store_true",
+                    help="allow a pinned endpoint to fall back (default: strict pin; a "
+                         "fallback is still counted per row when it happens)")
+    ap.add_argument("--variants", default="", help="prompt variants: full,compact")
+    ap.add_argument("--answers", default="",
+                    help="answer formats: json,json-noconf,label,letter")
+    ap.add_argument("--reasoning", default="",
+                    help=f"reasoning modes: {list(REASONING_MODES)}")
     ap.add_argument("--utterances", default=str(ROOT / "tests/data/utterances_v2.json"))
     ap.add_argument("--limit", type=int, default=0, help="run only the first N rows")
+    ap.add_argument("--sample", type=int, default=0,
+                    help="deterministic stride sample of N rows across the whole set "
+                         "(unlike --limit, which is the first N and is band-skewed)")
     ap.add_argument("--concurrency", type=int, default=8, help="max requests in flight (accuracy pass)")
     ap.add_argument("--latency-n", type=int, default=20, help="sequential latency rows per model")
     ap.add_argument("--max-tokens", type=int, default=2048)
@@ -422,6 +723,9 @@ def main() -> None:
     rows = json.loads(Path(args.utterances).read_text())
     if args.limit:
         rows = rows[: args.limit]
+    if args.sample and 0 < args.sample < len(rows):
+        step = len(rows) / args.sample
+        rows = [rows[int(i * step)] for i in range(args.sample)]
     wanted = [m.strip() for m in args.models.split(",") if m.strip()] or list(MODELS)
     unknown = [m for m in wanted if m not in MODELS]
     if unknown:
@@ -431,6 +735,10 @@ def main() -> None:
         print(build_system_prompt())
         print(f"\nuser: {rows[0]['utterance']}")
         print(f"\nmodels: {wanted}\nrows: {len(rows)}")
+        for label, cfg in build_configs(wanted, args):
+            payload = build_payload(cfg, rows[0]["utterance"], args.max_tokens, True)
+            print(f"\n[{label}] prompt_chars={len(payload['messages'][0]['content'])} "
+                  f"provider={payload.get('provider')} reasoning={payload.get('reasoning')}")
         return
 
     key = os.environ.get(args.key_env, "")
@@ -450,14 +758,22 @@ def main() -> None:
         "endpoint": API_URL,
         "dataset": str(Path(args.utterances).relative_to(ROOT)),
         "n_rows": len(rows),
+        "sample": args.sample or None,
+        "bands": {b: sum(1 for r in rows if r.get("band") == b)
+                  for b in sorted({r.get("band") for r in rows if r.get("band")})},
         "concurrency": args.concurrency,
         "latency_run": {"n": 0 if args.no_latency_run else len(latency_picks),
                         "mode": "sequential",
                         "row_indices": [] if args.no_latency_run else [i for i, _ in latency_picks]},
         "prompt_source": "bench/live_probe.py INSTRUCTIONS + OP_DESCRIPTIONS (verbatim import)",
         "request": {"temperature": 0, "max_tokens": args.max_tokens,
-                    "response_format": '{"type":"json_object"} with plain-text JSON fallback',
-                    "usage_include": True},
+                    "response_format": '{"type":"json_object"} on json answers only',
+                    "usage_include": True,
+                    "allow_fallbacks": args.allow_fallbacks},
+        "sweep": {"providers": args.providers or "auto",
+                  "variants": args.variants or "full",
+                  "answers": args.answers or "json",
+                  "reasoning": args.reasoning or "default"},
         "baselines": {
             "local_d1_3B_Q4": {"model": "d1-3B-Q4_K_M (local llama.cpp)",
                                "accuracy": 0.74, "p50_ms": 147.9,
@@ -469,31 +785,36 @@ def main() -> None:
         "models": {},
     }
 
-    for model in wanted:
-        pricing = MODELS[model]
-        state = {"json_mode": True}
-        print(f"[{model}] accuracy pass: {len(rows)} rows, {args.concurrency} in flight", flush=True)
+    for label, cfg in build_configs(wanted, args):
+        pricing = pricing_for(cfg)
+        state = {"json_mode": cfg["answer"].startswith("json")}
+        print(f"[{label}] accuracy pass: {len(rows)} rows, {args.concurrency} in flight",
+              flush=True)
         t_model = time.perf_counter()
-        acc_rows = run_concurrent(model, rows, key, args, state)
+        acc_rows = run_concurrent(cfg, rows, key, args, state)
         latency_rows: list[dict] = []
         if not args.no_latency_run:
-            print(f"[{model}] latency pass: {len(latency_picks)} rows, strictly sequential",
+            print(f"[{label}] latency pass: {len(latency_picks)} rows, strictly sequential",
                   flush=True)
-            latency_rows = run_sequential(model, latency_picks, key, args, state)
+            latency_rows = run_sequential(cfg, latency_picks, key, args, state)
         entry = aggregate(acc_rows, latency_rows, pricing)
         entry["pricing_usd_per_mtok"] = pricing
+        entry["config"] = {k: v for k, v in cfg.items()}
         entry["json_mode"] = "accepted" if state["json_mode"] else "rejected, text parse used"
         entry["wall_time_s"] = round(time.perf_counter() - t_model, 1)
-        summary["models"][model] = entry
-        print(f"[{model}] acc={entry['accuracy']:.1%} "
+        summary["models"][label] = entry
+        print(f"[{label}] acc={entry['accuracy']:.1%} "
               f"p50={entry['latency_ms']['p50']}ms malformed={entry['malformed']} "
-              f"failures={entry['failures']} cost=${entry['cost']['total_usd']:.5f}", flush=True)
+              f"failures={entry['failures']} fallbacks={entry['fallbacks']} "
+              f"served={entry['providers_served']} cost=${entry['cost']['total_usd']:.5f}",
+              flush=True)
 
     summary["wall_time_s"] = round(time.perf_counter() - started, 1)
     summary["total_cost_usd"] = round(
         sum(m["cost"]["total_usd"] for m in summary["models"].values()), 6)
     summary["total_decisions"] = sum(len(m["per_row"]) + len(m["latency_rows"])
                                      for m in summary["models"].values())
+    summary["request_metrics"] = dict(_METRICS)
     summary["ranking"] = rank(summary["models"])
 
     out.parent.mkdir(parents=True, exist_ok=True)

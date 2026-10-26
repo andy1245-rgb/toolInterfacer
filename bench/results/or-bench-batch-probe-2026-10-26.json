@@ -1,0 +1,251 @@
+{
+  "timestamp": "2026-10-26T01:42:46-0400",
+  "harness": "bench/or_bench.py",
+  "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+  "dataset": "tests/data/utterances_v2.json",
+  "n_rows": 3,
+  "sample": null,
+  "bands": {
+    "t1": 3
+  },
+  "concurrency": 8,
+  "latency_run": {
+    "n": 0,
+    "mode": "sequential",
+    "row_indices": []
+  },
+  "prompt_source": "bench/live_probe.py INSTRUCTIONS + OP_DESCRIPTIONS (verbatim import)",
+  "request": {
+    "temperature": 0,
+    "max_tokens": 2048,
+    "response_format": "{\"type\":\"json_object\"} on json answers only",
+    "usage_include": true,
+    "allow_fallbacks": false
+  },
+  "sweep": {
+    "providers": "auto",
+    "variants": "full",
+    "answers": "json",
+    "reasoning": "default"
+  },
+  "baselines": {
+    "local_d1_3B_Q4": {
+      "model": "d1-3B-Q4_K_M (local llama.cpp)",
+      "accuracy": 0.74,
+      "p50_ms": 147.9,
+      "source": "bench/results/dell/v2-d1-3B-Q4-run2.json"
+    },
+    "char_4gram_1nn": {
+      "model": "char 4-gram 1-NN (leave-one-out)",
+      "accuracy": 0.54,
+      "p50_ms": 0.5,
+      "source": "docs/model-sweep-consolidated"
+    }
+  },
+  "models": {
+    "z-ai/glm-5.3-flash:batch": {
+      "n_rows": 3,
+      "accuracy": 0.0,
+      "meets_guardrail": false,
+      "malformed": 3,
+      "truncated": 0,
+      "failures": 3,
+      "alias_resolutions": 0,
+      "providers_served": {
+        "unknown": 3
+      },
+      "fallbacks": 0,
+      "accuracy_by_band": {
+        "t1": {
+          "n": 3,
+          "accuracy": 0.0
+        }
+      },
+      "accuracy_by_label": {
+        "filesys_glob": {
+          "n": 1,
+          "accuracy": 0.0
+        },
+        "filesys_grep": {
+          "n": 1,
+          "accuracy": 0.0
+        },
+        "filesys_read": {
+          "n": 1,
+          "accuracy": 0.0
+        }
+      },
+      "latency_ms": {
+        "mode": "sequential",
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "mean": null,
+        "min": null,
+        "max": null
+      },
+      "cost": {
+        "measured_usd": 0,
+        "computed_usd": 0.0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "source": "price sheet x tokens",
+        "total_usd": 0.0,
+        "per_1k_decisions_usd": 0.0,
+        "per_1k_correct_usd": null
+      },
+      "tokens": {
+        "prompt_per_req": 0.0,
+        "completion_per_req": 0.0,
+        "reasoning_per_req": 0.0,
+        "reasoning_share_of_completion": null,
+        "cached_per_req": 0.0,
+        "cached_share_of_prompt": null,
+        "max_completion": 0,
+        "effective_in_usd_per_mtok": null,
+        "effective_out_usd_per_mtok": null
+      },
+      "per_row": [
+        {
+          "idx": 0,
+          "utterance": "print the whole pyproject.toml for me",
+          "label": "filesys_read",
+          "band": "t1",
+          "tier_target": null,
+          "choice": null,
+          "choice_raw": null,
+          "resolution": null,
+          "correct": false,
+          "confidence": 0.0,
+          "latency_ms": 128.2,
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0,
+          "reasoning_chars": 0,
+          "cost_prompt": null,
+          "cost_completion": null,
+          "cost": null,
+          "provider": null,
+          "fallback": false,
+          "ok": false,
+          "finish_reason": null,
+          "error": {
+            "status": 404,
+            "error": "{\"error\":{\"message\":\"z-ai/glm-5.3-flash:batch cannot be used with the chat/completions endpoint (adapter SailResearchBatchAdapter).\",\"code\":404},\"user_id\":\"user_2d62rvIfitLvp8ubQfcapVibeWy\"}"
+          }
+        },
+        {
+          "idx": 1,
+          "utterance": "list every file ending in .toml anywhere in the repo",
+          "label": "filesys_glob",
+          "band": "t1",
+          "tier_target": null,
+          "choice": null,
+          "choice_raw": null,
+          "resolution": null,
+          "correct": false,
+          "confidence": 0.0,
+          "latency_ms": 131.1,
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0,
+          "reasoning_chars": 0,
+          "cost_prompt": null,
+          "cost_completion": null,
+          "cost": null,
+          "provider": null,
+          "fallback": false,
+          "ok": false,
+          "finish_reason": null,
+          "error": {
+            "status": 404,
+            "error": "{\"error\":{\"message\":\"z-ai/glm-5.3-flash:batch cannot be used with the chat/completions endpoint (adapter SailResearchBatchAdapter).\",\"code\":404},\"user_id\":\"user_2d62rvIfitLvp8ubQfcapVibeWy\"}"
+          }
+        },
+        {
+          "idx": 2,
+          "utterance": "where is handle_stream defined?",
+          "label": "filesys_grep",
+          "band": "t1",
+          "tier_target": null,
+          "choice": null,
+          "choice_raw": null,
+          "resolution": null,
+          "correct": false,
+          "confidence": 0.0,
+          "latency_ms": 136.1,
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0,
+          "reasoning_chars": 0,
+          "cost_prompt": null,
+          "cost_completion": null,
+          "cost": null,
+          "provider": null,
+          "fallback": false,
+          "ok": false,
+          "finish_reason": null,
+          "error": {
+            "status": 404,
+            "error": "{\"error\":{\"message\":\"z-ai/glm-5.3-flash:batch cannot be used with the chat/completions endpoint (adapter SailResearchBatchAdapter).\",\"code\":404},\"user_id\":\"user_2d62rvIfitLvp8ubQfcapVibeWy\"}"
+          }
+        }
+      ],
+      "latency_rows": [],
+      "pricing_usd_per_mtok": {
+        "in": 0.05,
+        "out": 0.18,
+        "cache": 0.01
+      },
+      "config": {
+        "model": "z-ai/glm-5.3-flash:batch",
+        "pin": "auto",
+        "provider": null,
+        "variant": "full",
+        "answer": "json",
+        "reasoning_mode": "default",
+        "reasoning": null
+      },
+      "json_mode": "accepted",
+      "wall_time_s": 0.1
+    }
+  },
+  "wall_time_s": 0.1,
+  "total_cost_usd": 0.0,
+  "total_decisions": 3,
+  "request_metrics": {
+    "rate_limited": 0,
+    "retries": 0,
+    "http_errors": {
+      "404": 3
+    }
+  },
+  "ranking": {
+    "by_accuracy_then_cost": [
+      "z-ai/glm-5.3-flash:batch"
+    ],
+    "by_accuracy_then_latency": [
+      "z-ai/glm-5.3-flash:batch"
+    ],
+    "accuracy_per_dollar": {
+      "z-ai/glm-5.3-flash:batch": null
+    },
+    "pareto_vs_cost": {
+      "metric": "cost_per_1k_correct",
+      "on_frontier": [
+        "z-ai/glm-5.3-flash:batch"
+      ],
+      "dominated": []
+    },
+    "pareto_vs_latency": {
+      "metric": "p50_ms",
+      "on_frontier": [
+        "z-ai/glm-5.3-flash:batch"
+      ],
+      "dominated": []
+    }
+  }
+}

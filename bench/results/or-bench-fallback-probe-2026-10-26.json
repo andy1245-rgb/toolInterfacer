@@ -1,0 +1,461 @@
+{
+  "timestamp": "2026-10-26T02:03:17-0400",
+  "harness": "bench/or_bench.py",
+  "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+  "dataset": "tests/data/utterances_v2.json",
+  "n_rows": 10,
+  "sample": 10,
+  "bands": {
+    "t1": 5,
+    "t2": 2,
+    "t3": 3
+  },
+  "concurrency": 8,
+  "latency_run": {
+    "n": 0,
+    "mode": "sequential",
+    "row_indices": []
+  },
+  "prompt_source": "bench/live_probe.py INSTRUCTIONS + OP_DESCRIPTIONS (verbatim import)",
+  "request": {
+    "temperature": 0,
+    "max_tokens": 2048,
+    "response_format": "{\"type\":\"json_object\"} on json answers only",
+    "usage_include": true,
+    "allow_fallbacks": false
+  },
+  "sweep": {
+    "providers": "order:Darkbloom+Relace",
+    "variants": "full",
+    "answers": "json",
+    "reasoning": "minimal"
+  },
+  "baselines": {
+    "local_d1_3B_Q4": {
+      "model": "d1-3B-Q4_K_M (local llama.cpp)",
+      "accuracy": 0.74,
+      "p50_ms": 147.9,
+      "source": "bench/results/dell/v2-d1-3B-Q4-run2.json"
+    },
+    "char_4gram_1nn": {
+      "model": "char 4-gram 1-NN (leave-one-out)",
+      "accuracy": 0.54,
+      "p50_ms": 0.5,
+      "source": "docs/model-sweep-consolidated"
+    }
+  },
+  "models": {
+    "glm-5.3-flash|order:Darkbloom+Relace|r:minimal": {
+      "n_rows": 10,
+      "accuracy": 1.0,
+      "meets_guardrail": true,
+      "malformed": 0,
+      "truncated": 0,
+      "failures": 0,
+      "alias_resolutions": 0,
+      "providers_served": {
+        "Darkbloom": 1,
+        "Wafer": 9
+      },
+      "fallbacks": 0,
+      "accuracy_by_band": {
+        "t1": {
+          "n": 5,
+          "accuracy": 1.0
+        },
+        "t2": {
+          "n": 2,
+          "accuracy": 1.0
+        },
+        "t3": {
+          "n": 3,
+          "accuracy": 1.0
+        }
+      },
+      "accuracy_by_label": {
+        "decide_extract": {
+          "n": 2,
+          "accuracy": 1.0
+        },
+        "decide_pick": {
+          "n": 1,
+          "accuracy": 1.0
+        },
+        "filesys_glob": {
+          "n": 1,
+          "accuracy": 1.0
+        },
+        "filesys_grep": {
+          "n": 2,
+          "accuracy": 1.0
+        },
+        "filesys_read": {
+          "n": 1,
+          "accuracy": 1.0
+        },
+        "reddit_digest": {
+          "n": 1,
+          "accuracy": 1.0
+        },
+        "web_fetch": {
+          "n": 1,
+          "accuracy": 1.0
+        },
+        "web_search": {
+          "n": 1,
+          "accuracy": 1.0
+        }
+      },
+      "latency_ms": {
+        "mode": "sequential",
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "mean": null,
+        "min": null,
+        "max": null
+      },
+      "cost": {
+        "measured_usd": 0.000161,
+        "computed_usd": 0.000294,
+        "prompt_tokens": 1770,
+        "completion_tokens": 334,
+        "source": "provider usage.cost",
+        "total_usd": 0.000161,
+        "per_1k_decisions_usd": 0.0161,
+        "per_1k_correct_usd": 0.0161
+      },
+      "tokens": {
+        "prompt_per_req": 177.0,
+        "completion_per_req": 33.4,
+        "reasoning_per_req": 16.4,
+        "reasoning_share_of_completion": 0.491,
+        "cached_per_req": 115.2,
+        "cached_share_of_prompt": 0.6508,
+        "max_completion": 87,
+        "effective_in_usd_per_mtok": 0.0547,
+        "effective_out_usd_per_mtok": 0.1983
+      },
+      "per_row": [
+        {
+          "idx": 0,
+          "utterance": "print the whole pyproject.toml for me",
+          "label": "filesys_read",
+          "band": "t1",
+          "tier_target": null,
+          "choice": "filesys_read",
+          "choice_raw": "filesys_read",
+          "resolution": "exact",
+          "correct": true,
+          "confidence": 0.95,
+          "latency_ms": 456.1,
+          "prompt_tokens": 172,
+          "completion_tokens": 22,
+          "cached_tokens": 128,
+          "reasoning_tokens": 5,
+          "reasoning_chars": 17,
+          "cost_prompt": 9.16e-06,
+          "cost_completion": 4.4e-06,
+          "cost": 1.34244e-05,
+          "provider": "Wafer",
+          "fallback": false,
+          "ok": true,
+          "finish_reason": "stop",
+          "error": null
+        },
+        {
+          "idx": 1,
+          "utterance": "grab the top threads in r/rust from this week",
+          "label": "reddit_digest",
+          "band": "t1",
+          "tier_target": null,
+          "choice": "reddit_digest",
+          "choice_raw": "reddit_digest",
+          "resolution": "exact",
+          "correct": true,
+          "confidence": 0.98,
+          "latency_ms": 664.2,
+          "prompt_tokens": 174,
+          "completion_tokens": 19,
+          "cached_tokens": 128,
+          "reasoning_tokens": 3,
+          "reasoning_chars": 13,
+          "cost_prompt": 9.268e-06,
+          "cost_completion": 3.8e-06,
+          "cost": 1.293732e-05,
+          "provider": "Wafer",
+          "fallback": false,
+          "ok": true,
+          "finish_reason": "stop",
+          "error": null
+        },
+        {
+          "idx": 2,
+          "utterance": "get me the content of the huggingface model card",
+          "label": "web_fetch",
+          "band": "t1",
+          "tier_target": null,
+          "choice": "web_fetch",
+          "choice_raw": "web_fetch",
+          "resolution": "exact",
+          "correct": true,
+          "confidence": 0.7,
+          "latency_ms": 3247.1,
+          "prompt_tokens": 221,
+          "completion_tokens": 28,
+          "cached_tokens": 0,
+          "reasoning_tokens": 11,
+          "reasoning_chars": 43,
+          "cost_prompt": 1.4365e-05,
+          "cost_completion": 5.04e-06,
+          "cost": 1.921095e-05,
+          "provider": "Darkbloom",
+          "fallback": false,
+          "ok": true,
+          "finish_reason": "stop",
+          "error": null
+        },
+        {
+          "idx": 3,
+          "utterance": "look up sdpa vs flash attention perf numbers",
+          "label": "web_search",
+          "band": "t1",
+          "tier_target": null,
+          "choice": "web_search",
+          "choice_raw": "web_search",
+          "resolution": "exact",
+          "correct": true,
+          "confidence": 0.9,
+          "latency_ms": 479.0,
+          "prompt_tokens": 172,
+          "completion_tokens": 20,
+          "cached_tokens": 128,
+          "reasoning_tokens": 4,
+          "reasoning_chars": 11,
+          "cost_prompt": 9.16e-06,
+          "cost_completion": 4e-06,
+          "cost": 1.30284e-05,
+          "provider": "Wafer",
+          "fallback": false,
+          "ok": true,
+          "finish_reason": "stop",
+          "error": null
+        },
+        {
+          "idx": 4,
+          "utterance": "pull the topic keywords from my message",
+          "label": "decide_extract",
+          "band": "t1",
+          "tier_target": null,
+          "choice": "decide_extract",
+          "choice_raw": "decide_extract",
+          "resolution": "exact",
+          "correct": true,
+          "confidence": 0.95,
+          "latency_ms": 453.8,
+          "prompt_tokens": 170,
+          "completion_tokens": 18,
+          "cached_tokens": 128,
+          "reasoning_tokens": 1,
+          "reasoning_chars": 0,
+          "cost_prompt": 9.052e-06,
+          "cost_completion": 3.6e-06,
+          "cost": 1.252548e-05,
+          "provider": "Wafer",
+          "fallback": false,
+          "ok": true,
+          "finish_reason": "stop",
+          "error": null
+        },
+        {
+          "idx": 5,
+          "utterance": "several hits came back; I only care about one",
+          "label": "decide_pick",
+          "band": "t2",
+          "tier_target": null,
+          "choice": "decide_pick",
+          "choice_raw": "decide_pick",
+          "resolution": "exact",
+          "correct": true,
+          "confidence": 0.9,
+          "latency_ms": 1119.1,
+          "prompt_tokens": 174,
+          "completion_tokens": 47,
+          "cached_tokens": 128,
+          "reasoning_tokens": 30,
+          "reasoning_chars": 122,
+          "cost_prompt": 9.268e-06,
+          "cost_completion": 9.4e-06,
+          "cost": 1.848132e-05,
+          "provider": "Wafer",
+          "fallback": false,
+          "ok": true,
+          "finish_reason": "stop",
+          "error": null
+        },
+        {
+          "idx": 6,
+          "utterance": "any references to wallet.json left in the tree?",
+          "label": "filesys_grep",
+          "band": "t2",
+          "tier_target": null,
+          "choice": "filesys_grep",
+          "choice_raw": "filesys_grep",
+          "resolution": "exact",
+          "correct": true,
+          "confidence": 0.9,
+          "latency_ms": 682.9,
+          "prompt_tokens": 173,
+          "completion_tokens": 28,
+          "cached_tokens": 128,
+          "reasoning_tokens": 10,
+          "reasoning_chars": 36,
+          "cost_prompt": 9.214e-06,
+          "cost_completion": 5.6e-06,
+          "cost": 1.466586e-05,
+          "provider": "Wafer",
+          "fallback": false,
+          "ok": true,
+          "finish_reason": "stop",
+          "error": null
+        },
+        {
+          "idx": 7,
+          "utterance": "which files mention the scheduler hooks?",
+          "label": "filesys_grep",
+          "band": "t3",
+          "tier_target": "filesys_glob",
+          "choice": "filesys_grep",
+          "choice_raw": "filesys_grep",
+          "resolution": "exact",
+          "correct": true,
+          "confidence": 0.9,
+          "latency_ms": 528.2,
+          "prompt_tokens": 170,
+          "completion_tokens": 27,
+          "cached_tokens": 128,
+          "reasoning_tokens": 9,
+          "reasoning_chars": 45,
+          "cost_prompt": 9.052e-06,
+          "cost_completion": 5.4e-06,
+          "cost": 1.430748e-05,
+          "provider": "Wafer",
+          "fallback": false,
+          "ok": true,
+          "finish_reason": "stop",
+          "error": null
+        },
+        {
+          "idx": 8,
+          "utterance": "what literal paths show up in that instruction?",
+          "label": "decide_extract",
+          "band": "t3",
+          "tier_target": "filesys_glob",
+          "choice": "decide_extract",
+          "choice_raw": "decide_extract",
+          "resolution": "exact",
+          "correct": true,
+          "confidence": 0.6,
+          "latency_ms": 694.1,
+          "prompt_tokens": 172,
+          "completion_tokens": 87,
+          "cached_tokens": 128,
+          "reasoning_tokens": 70,
+          "reasoning_chars": 335,
+          "cost_prompt": 9.16e-06,
+          "cost_completion": 1.74e-05,
+          "cost": 2.62944e-05,
+          "provider": "Wafer",
+          "fallback": false,
+          "ok": true,
+          "finish_reason": "stop",
+          "error": null
+        },
+        {
+          "idx": 9,
+          "utterance": "which ones in here end in .patch?",
+          "label": "filesys_glob",
+          "band": "t3",
+          "tier_target": "decide_pick",
+          "choice": "filesys_glob",
+          "choice_raw": "filesys_glob",
+          "resolution": "exact",
+          "correct": true,
+          "confidence": 0.9,
+          "latency_ms": 494.9,
+          "prompt_tokens": 172,
+          "completion_tokens": 38,
+          "cached_tokens": 128,
+          "reasoning_tokens": 21,
+          "reasoning_chars": 95,
+          "cost_prompt": 9.16e-06,
+          "cost_completion": 7.6e-06,
+          "cost": 1.65924e-05,
+          "provider": "Wafer",
+          "fallback": false,
+          "ok": true,
+          "finish_reason": "stop",
+          "error": null
+        }
+      ],
+      "latency_rows": [],
+      "pricing_usd_per_mtok": {
+        "in": 0.15,
+        "out": 0.5,
+        "cache": 0.03
+      },
+      "config": {
+        "model": "z-ai/glm-5.3-flash",
+        "pin": "order:Darkbloom+Relace",
+        "provider": {
+          "order": [
+            "Darkbloom",
+            "Relace"
+          ],
+          "allow_fallbacks": true
+        },
+        "variant": "full",
+        "answer": "json",
+        "reasoning_mode": "minimal",
+        "reasoning": {
+          "effort": "minimal"
+        }
+      },
+      "json_mode": "accepted",
+      "wall_time_s": 3.3
+    }
+  },
+  "wall_time_s": 3.3,
+  "total_cost_usd": 0.000161,
+  "total_decisions": 10,
+  "request_metrics": {
+    "rate_limited": 0,
+    "retries": 0,
+    "http_errors": {}
+  },
+  "ranking": {
+    "by_accuracy_then_cost": [
+      "glm-5.3-flash|order:Darkbloom+Relace|r:minimal"
+    ],
+    "by_accuracy_then_latency": [
+      "glm-5.3-flash|order:Darkbloom+Relace|r:minimal"
+    ],
+    "accuracy_per_dollar": {
+      "glm-5.3-flash|order:Darkbloom+Relace|r:minimal": 62.1118
+    },
+    "pareto_vs_cost": {
+      "metric": "cost_per_1k_correct",
+      "on_frontier": [
+        "glm-5.3-flash|order:Darkbloom+Relace|r:minimal"
+      ],
+      "dominated": []
+    },
+    "pareto_vs_latency": {
+      "metric": "p50_ms",
+      "on_frontier": [
+        "glm-5.3-flash|order:Darkbloom+Relace|r:minimal"
+      ],
+      "dominated": []
+    }
+  }
+}

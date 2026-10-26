@@ -27,3 +27,29 @@
   `bench/results/or-bench-<date>.json` (`or-bench-2026-10-26.json` is the
   `--max-tokens 512` run, whose truncated replies understate the
   reasoning-heavy models; `-run2` is the 2048-token run, the primary one).
+
+  A run is one labelled *configuration*, and the sweep dimensions multiply:
+  `--providers` (`Relace`, `Wafer`, …, `sort:price`, `order:Relace+Wafer`),
+  `--variants` (`full`, `compact`), `--answers` (`json`, `json-noconf`,
+  `label`, `letter`), `--reasoning` (`default`, `off`, `minimal`, `exclude`).
+  Each row records the endpoint that actually answered (`provider`), a
+  `fallback` flag when a requested endpoint list was not honoured, and
+  `cached_tokens` / `reasoning_tokens` / the `cost_details` split, so cost can
+  be attributed to the endpoint that served it rather than assumed. A pin with
+  `only` fails closed by default (`--allow-fallbacks` to relax it) — a silent
+  fallback would otherwise measure a different endpoint than the one under
+  test. `--sample N` takes a deterministic stride sample across the whole set;
+  prefer it to `--limit N`, which is the first N rows and is band-skewed (the
+  first 50 rows are all t1). Per-endpoint prices for `z-ai/glm-5.3-flash` live
+  in `PROVIDERS`; they are what is billed, unlike the catalogue block.
+- `prefilter.py` — the deterministic pre-filter in front of a routing call: 15
+  regex rules over the utterance, tiered by how much of the surface form has to
+  line up, first match wins. It asserts no accuracy of its own; the rules are
+  ranked by measured precision elsewhere.
+- `cost_curve.py` — call-reduction cost curve from a recorded run: applies
+  `prefilter.py` to every row, ranks rules by measured precision, and reports
+  coverage / pre-filter precision / blended accuracy / $ per 1k decisions for
+  every prefix of the ranking, plus the 20/40/60% points. Cost per point is
+  measured per-decision cost × the calls the cascade still makes.
+
+See `docs/cost-reduction-glm-flash.md` for what those levers actually bought.
