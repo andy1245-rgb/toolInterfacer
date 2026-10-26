@@ -145,8 +145,10 @@ def _handle_block(gb: GateBlocked, step: Step, store: ArtifactStore,
     if src_art and isinstance(src_art.data, list):
         for it in src_art.data[:12]:
             options.append({"id": str(it if not isinstance(it, dict) else it.get("id", it)), "desc": ""})
-    hops.append({"step": step.id, "op": "askback", "ms": 0.0,
-                 "conf": 0.0, "artifact_summary": gb.what})
+    ask_hop: dict[str, Any] = {"step": step.id, "op": "askback", "ms": 0.0,
+                              "conf": 0.0, "ask_available": False,
+                              "artifact_summary": gb.what}
+    hops.append(ask_hop)
     try:
         q = Question(kind="choice" if options else "free",
                      question=f"Step {step.id!r} blocked: {gb.what}. Answer to resolve:",
@@ -154,13 +156,16 @@ def _handle_block(gb: GateBlocked, step: Step, store: ArtifactStore,
         answer = on_ask(q)
     except MaxAsksReached:
         return False
+    ask_hop["ask_available"] = True
     pick = None
     if isinstance(answer, dict):
         pick = answer.get("choice") or answer.get("text")
     if pick is not None and isinstance(gb.detail, dict) and gb.detail.get("artifact"):
         store.put(str(gb.detail["artifact"]), "askback", "picked_items", [str(pick)], 0.9)
         hops.append({"step": step.id, "op": "askback.resolved", "ms": 0.0,
-                     "conf": 0.9, "artifact_summary": str(pick)[:120]})
+                     "conf": 0.9, "ask_available": True,
+                     "resolves": str(gb.detail["artifact"]),
+                     "artifact_summary": str(pick)[:120]})
         return True
     assumptions.append(f"{step.id}: asked, answer not applicable: {str(pick)[:120]}")
     return False

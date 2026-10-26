@@ -106,10 +106,28 @@ def _run_steps(steps: list[Step], llm_params: dict[str, Any], final_key: str,
 
 
 def _route_conf(hops: list[dict[str, Any]]) -> float:
-    decide_hops = [h["conf"] for h in hops if h["op"].startswith("decide") or h["op"] == "askback"]
-    if not decide_hops:
+    """The run's confidence: the min over hops that carry a measurement.
+
+    The `askback` hop is written before the ask is attempted, so its conf 0.0 is
+    a placeholder rather than a measurement — ask-back is not wired into the
+    HTTP path at all (use_tool is called without on_ask), which would make every
+    gated run report 0.0 and destroy the decide confidence it did reach. Only a
+    resolved ask-back counts: `askback.resolved` (conf 0.9, the LLM-trusted
+    answer) supersedes the hop for the artifact it re-wrote, because that hop
+    scored a proposal the gate rejected, not the answer that was delivered.
+    A solicited but unanswered ask-back (no channel, asks exhausted, or an
+    answer that did not apply) measures nothing either, so it is left out and
+    the run reports the real decide signal as its lower bound; the gap is
+    stated by `degraded` + assumptions[], not by a fabricated 0.0.
+    """
+    superseded = {h["resolves"] for h in hops
+                  if h["op"] == "askback.resolved" and h.get("resolves")}
+    signal = [h["conf"] for h in hops
+              if h["op"] == "askback.resolved"
+              or (h["op"].startswith("decide") and h["step"] not in superseded)]
+    if not signal:
         return 1.0
-    return max(0.0, min(decide_hops))
+    return max(0.0, min(signal))
 
 
 def _run_op_with_log(log: HopLog | None):
