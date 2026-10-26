@@ -15,3 +15,15 @@
   assertion, probe, teardown.
 - `baseline.py` (P4) — scripted LLM-driver baseline for the research template
   comparison.
+- `or_bench.py` — hosted-model sweep over the same 8-way routing task: one
+  chat completion per utterance per model, accuracy pass at bounded
+  concurrency plus a strictly sequential latency pass (the concurrent pass's
+  timings are never reported as latency). Prompt material is imported
+  verbatim from `live_probe.py`, so accuracy is comparable to the local probe
+  runs. Cost comes from the provider's own `usage.cost` when OpenRouter
+  returns it, else from token counts at the catalog prices. The key is read
+  only from `OPENROUTER_API_KEY` — export it from your funBot `.env`; the
+  harness never reads that file, logs the key, or puts it in argv. Results:
+  `bench/results/or-bench-<date>.json` (`or-bench-2026-10-26.json` is the
+  `--max-tokens 512` run, whose truncated replies understate the
+  reasoning-heavy models; `-run2` is the 2048-token run, the primary one).
