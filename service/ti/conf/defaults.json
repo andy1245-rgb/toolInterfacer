@@ -2,11 +2,53 @@
   "decide": {
     "routing": "heuristic_micro_then_d1",
     "max_candidates": 6,
-    "cache": {"enabled": true, "max_entries": 256},
-    "d1_systemone": {"base_url": "http://127.0.0.1:8080", "timeout_s": 30},
-    "logit_read": {"base_url": "http://127.0.0.1:8080", "model": "jev-style", "timeout_s": 30},
-    "fixture": {"fixture_path": "", "default_choice_conf": 0.95, "default_noul": 0.9},
-    "backends_in_use": {"choice": "d1_systemone", "noul": "fixture", "extract": "rule_extract"},
+    "cache": {
+      "enabled": true,
+      "max_entries": 256
+    },
+    "d1_systemone": {
+      "base_url": "http://127.0.0.1:8080",
+      "timeout_s": 30
+    },
+    "logit_read": {
+      "base_url": "http://127.0.0.1:8080",
+      "model": "jev-style",
+      "timeout_s": 30
+    },
+    "fixture": {
+      "fixture_path": "",
+      "default_choice_conf": 0.95,
+      "default_noul": 0.9
+    },
+    "openrouter": {
+      "base_url": "https://openrouter.ai/api/v1",
+      "model": "z-ai/glm-5.3-flash",
+      "provider": {
+        "only": [
+          "Relace"
+        ],
+        "allow_fallbacks": true
+      },
+      "reasoning": {
+        "effort": "minimal"
+      },
+      "key_env": "TI_OPENROUTER_API_KEY",
+      "user": "toolinterfacer",
+      "timeout_s": 30,
+      "max_tokens": 64,
+      "json_object": true
+    },
+    "backends_in_use": {
+      "choice": "pair",
+      "noul": "fixture",
+      "extract": "rule_extract"
+    },
+    "pair": {
+      "stage1": "d1_systemone",
+      "stage2": "openrouter",
+      "tau": 0.90,
+      "escalate_on_error": true
+    },
     "cascade": {
       "enabled": false,
       "stage1": "d1_systemone",
@@ -15,7 +57,11 @@
       "tau_lo": 0.4,
       "tau2": 0.5,
       "precision_target": 0.85,
-      "path_conf": {"stage1_confident": 0.87, "agreement": 0.79, "stage2_alone": 0.8}
+      "path_conf": {
+        "stage1_confident": 0.87,
+        "agreement": 0.79,
+        "stage2_alone": 0.8
+      }
     }
   },
   "policy": {
@@ -34,12 +80,20 @@
     "state_max_tokens": 2000
   },
   "research": {
-    "query_count": [3, 6],
+    "query_count": [
+      3,
+      6
+    ],
     "pick_top_k": 4,
     "good_pages_target": 4,
-    "backends": ["free-search"]
+    "backends": [
+      "free-search"
+    ]
   },
-  "reddit": {"use_backend": "reddit-research", "thread_cap": 5},
+  "reddit": {
+    "use_backend": "reddit-research",
+    "thread_cap": 5
+  },
   "ops": {
     "web_fetch": {
       "script": "~/.pi/profiles/registry/web-fetch/scripts/web-fetch",
@@ -60,10 +114,20 @@
         "~/Documents/PersonalCodingProjects/Research/redditScrapingSearching",
         "~/redditScrapingSearching"
       ],
-      "cli": [".venv/bin/python", "-m", "reddit_research.cli"]
+      "cli": [
+        ".venv/bin/python",
+        "-m",
+        "reddit_research.cli"
+      ]
     },
     "cli_timeout_s": 60
   },
-  "hops_log": {"path": "service/logs/hops.jsonl", "enabled": true},
-  "http": {"host": "127.0.0.1", "port": 1113}
+  "hops_log": {
+    "path": "service/logs/hops.jsonl",
+    "enabled": true
+  },
+  "http": {
+    "host": "127.0.0.1",
+    "port": 1113
+  }
 }
