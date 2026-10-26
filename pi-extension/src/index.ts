@@ -1,9 +1,10 @@
 import { Type, type Static } from "@earendil-works/pi-ai";
 import { defineTool, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { base, call, health, ServiceError } from "./bridge.ts";
+import { captureReport, digestSizes, record as recordCapture } from "./capture.ts";
 import { UseToolResponseSchema, type Hops, type Question, type UseToolResponse } from "./contract.ts";
 import { ensureService, isDev, serviceCmd } from "./lifecycle.ts";
-import { buildDigest, readLastCustom } from "./session_push.ts";
+import { buildDigest, readLastCustom, type SessionDigest } from "./session_push.ts";
 
 const RESULT_CHARS = 1500;
 const HOPS_SHOWN = 6;
@@ -125,6 +126,12 @@ function renderResponse(resp: UseToolResponse, intent: string, meta: { elapsedMs
 	return lines.join("\n");
 }
 
+/** Error label for the capture record — the rendered message stays untouched. */
+function errorLabel(err: unknown): string {
+	if (err instanceof ServiceError) return `${err.kind}: ${err.message}`;
+	return err instanceof Error ? err.message : String(err);
+}
+
 function formatServiceError(err: unknown, elapsedMs: number): string {
 	if (err instanceof ServiceError) {
 		switch (err.kind) {
@@ -176,19 +183,37 @@ export default function (pi: ExtensionAPI): void {
 			executionMode: "sequential",
 			execute: async (_toolCallId, params, signal, onUpdate, ctx) => {
 				const started = Date.now();
+				let digest: SessionDigest | undefined;
+				const captureCommon = () => ({
+					cwd: ctx.cwd,
+					intent: params.intent,
+					paramsKeys: Object.keys(params.params ?? {}),
+					mode: params.mode ?? null,
+					digest: digestSizes(digest),
+				});
 				if (ctx.hasUI) ctx.ui.setStatus(STATUS_KEY, `useTool: ${params.intent.slice(0, 60)}`);
 				onUpdate?.({
 					content: [{ type: "text", text: `useTool: calling the decision-model service at ${base()}…` }],
 					details: { status: "pending", degraded: false },
 				});
 				try {
-					const digest = buildDigest(ctx.sessionManager.getBranch(), ctx.cwd);
+					digest = buildDigest(ctx.sessionManager.getBranch(), ctx.cwd);
 					const resp = await call(
 						{ intent: params.intent, params: params.params, mode: params.mode, digest },
 						signal,
 						params.mode === "raw" ? RAW_TIMEOUT_MS : TIMEOUT_MS,
 					);
 					const elapsedMs = Date.now() - started;
+					recordCapture({
+						...captureCommon(),
+						status: resp.status,
+						degraded: resp.degraded ?? false,
+						confidence: resp.confidence,
+						hops: (resp.hops ?? []).map((h) => ({ op: h.op, ms: h.ms, conf: h.conf })),
+						wallMs: elapsedMs,
+						error: resp.error,
+						questionKind: resp.question?.kind,
+					});
 					lastCall = {
 						intent: params.intent,
 						status: resp.status,
@@ -211,6 +236,14 @@ export default function (pi: ExtensionAPI): void {
 					};
 				} catch (err) {
 					const elapsedMs = Date.now() - started;
+					recordCapture({
+						...captureCommon(),
+						status: "error",
+						degraded: false,
+						hops: [],
+						wallMs: elapsedMs,
+						error: errorLabel(err),
+					});
 					return {
 						content: [{ type: "text", text: formatServiceError(err, elapsedMs) }],
 						details: { status: "error", degraded: false, elapsedMs },
@@ -224,9 +257,14 @@ export default function (pi: ExtensionAPI): void {
 	);
 
 	pi.registerCommand("ti", {
-		description: "useTool service status — /ti shows health + last call, /ti doctor probes and repairs the service",
+		description:
+			"useTool service status — /ti shows health + last call, /ti doctor probes and repairs the service, /ti capture [on|off|path|stats] controls live capture",
 		handler: async (args, ctx) => {
-			const [sub] = (args ?? "").trim().split(/\s+/);
+			const [sub, arg] = (args ?? "").trim().split(/\s+/);
+			if (sub === "capture") {
+				if (ctx.hasUI) ctx.ui.notify(`[ti capture]\n${captureReport(arg).join("\n")}`, "info");
+				return;
+			}
 			const h = await health();
 			const lines: string[] = [];
 			lines.push(`service ${h ? "up" : "DOWN"} at ${base()}${isDev() ? " (TI_DEV=1 — spawn disabled, dev echo on)" : ""}`);
