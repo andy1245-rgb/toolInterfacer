@@ -47,6 +47,7 @@ FILES = {
     "sub/deep/bench_deep.py": "deep bench_ entry",
     # a directory whose name contains the criterion word but no entry that does
     "bench/lane.py": "not a bench_* name, only inside a 'bench' dir",
+    "bench_x/lane.py": "not a bench_* name, only inside a 'bench_'-prefixed dir",
     "bench/serve_local.sh": "sh in the bench dir",
     # decoys: what the regex fragment matched and a glob must not
     "other/session_push.ts": "not a shell script",
@@ -91,9 +92,12 @@ class GlobMatcherTest(unittest.TestCase):
                          {"bench_lane.py", "sub/bench_train.py", "sub/deep/bench_deep.py"})
 
     def test_bench_widened_to_a_name_criterion_does_not_match_a_directory(self):
-        # "contains bench" would have returned bench/lane.py; a glob does not
+        # "contains bench" would have returned bench/lane.py, and fnmatch's `*`
+        # crossing '/' returned bench_x/lane.py; a glob matches the entry name
         self.assertExact("**/*bench_*",
                          {"bench_lane.py", "sub/bench_train.py", "sub/deep/bench_deep.py"})
+        self.assertNotIn("bench_x/lane.py", self.hits("**/*bench_*"))
+        self.assertNotIn("bench_x/lane.py", self.hits("**/bench_*"))
 
     def test_the_dotfile_pattern_matches_no_visible_entry(self):
         # the walk skips dot entries before matching, so `**/.*` is empty by

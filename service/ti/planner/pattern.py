@@ -39,6 +39,10 @@ NONE = "none"
 
 _QUOTED = r"['\"`]([^'\"`]{1,40})['\"`]"
 
+# A bare token is bounded the same way: an unbounded `[\w.-]+` followed by `\s+`
+# backtracks over a long run of word characters, which made build() quadratic on a
+# single 10 KB token (~0.6 s) and on unicode (~0.9 s).
+
 # A dotfile is asked for by class ("the dotfiles") or by one of its usual names.
 _DOTFILE = re.compile(r"\bdotfiles?\b|\.gitignore\b|\.env\b", re.IGNORECASE)
 
@@ -48,12 +52,12 @@ _EXT_FRAME = re.compile(r"\bend(?:s|ing)?\s+(?:in|with)\s+\.(" + EXT + r")\b")
 _EXT_ANY = re.compile(r"\.(" + EXT + r")\b")
 
 _PREFIX = re.compile(r"\b(?:start(?:s|ing)?|begin(?:s|ning)?|prefix(?:ed)?)\s+with\s+"
-                     r"(?:" + _QUOTED + r"|([\w.-]+))", re.IGNORECASE)
+                     r"(?:" + _QUOTED + r"|([\w.-]{1,40}))", re.IGNORECASE)
 
-_IN_NAME = re.compile(r"(?:" + _QUOTED + r"|([\w.-]+))\s+in\s+(?:their|its)\s+names?\b",
+_IN_NAME = re.compile(r"(?:" + _QUOTED + r"|([\w.-]{1,40}))\s+in\s+(?:their|its)\s+names?\b",
                       re.IGNORECASE)
 _WHOSE_NAME = re.compile(r"\bwhose\s+names?\s+(?:has|have|contains?|includes?)\s+"
-                         r"(?:" + _QUOTED + r"|([\w.-]+))", re.IGNORECASE)
+                         r"(?:" + _QUOTED + r"|([\w.-]{1,40}))", re.IGNORECASE)
 
 # A file class on its own is a read ("what does the makefile actually do?"); only
 # an existence frame makes it a name criterion. Mirrors the conjunction shape.py

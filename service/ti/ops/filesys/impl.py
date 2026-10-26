@@ -37,16 +37,24 @@ def _walk(root: str):
 def _matched(rel: str, pattern: str) -> bool:
     """Glob semantics for a listing pattern, over a walk-relative path.
 
-    `**` crosses directory separators and `**/` also matches zero directories, so
-    a top-level entry is a candidate for `**/bench_*`; fnmatch's `*` crosses `/`
-    but still needs one, which is why the stripped form is tried as well.
+    `**/` is a depth prefix that also matches zero directories, so a top-level
+    entry is a candidate for `**/bench_*`. Because fnmatch's `*` crosses `/`,
+    the prefix is stripped and the remainder matched against the entry's own
+    name: matching the whole relative path instead let a directory component
+    satisfy the wildcard and returned `bench_x/lane.py` for `**/bench_*`.
     Matching is case-insensitive: a caller writing `dockerfile` means Dockerfile.
     """
     name = rel.replace(os.sep, "/").lower()
     pat = pattern.replace(os.sep, "/").lower()
-    if fnmatch.fnmatchcase(name, pat):
-        return True
-    return pat.startswith("**/") and fnmatch.fnmatchcase(name, pat[3:])
+    if not pat.startswith("**/"):
+        return fnmatch.fnmatchcase(name, pat)
+    # `**/` is a depth prefix, not a path component: strip every one of them and
+    # match the rest against the entry's own name. Comparing the stripped form
+    # against the whole path instead let a directory satisfy the wildcard.
+    rest = pat
+    while rest.startswith("**/"):
+        rest = rest[3:]
+    return fnmatch.fnmatchcase(name.rsplit("/", 1)[-1], rest)
 
 
 @op("filesys_glob", kind="path_list", required=["pattern"], optional=["cwd", "base"])
