@@ -17,7 +17,7 @@ MODULES = [
     "ti.ops", "ti.ops.op_api", "ti.ops.cli", "ti.ops.decisions", "ti.ops.web.search", "ti.ops.web.fetch",
     "ti.ops.reddit.digest", "ti.ops.filesys.impl",
     "ti.planner", "ti.planner.inspector", "ti.planner.free", "ti.planner.shape",
-    "ti.planner.scope",
+    "ti.planner.scope", "ti.planner.pattern",
     "ti.planner.templates.research", "ti.planner.templates.reddit_digest",
     "ti.planner.templates.disk_lookup",
     "ti.context.packer", "ti.context.session_digest",

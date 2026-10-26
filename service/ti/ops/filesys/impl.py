@@ -5,6 +5,7 @@ in bench and in-session. P1 implements these (pure stdlib, no CLI needed).
 """
 from __future__ import annotations
 
+import fnmatch
 import os
 import re
 from dataclasses import dataclass
@@ -33,6 +34,29 @@ def _walk(root: str):
         yield dirpath, files
 
 
+def _matched(rel: str, pattern: str) -> bool:
+    """Glob semantics for a listing pattern, over a walk-relative path.
+
+    `**/` is a depth prefix that also matches zero directories, so a top-level
+    entry is a candidate for `**/bench_*`. Because fnmatch's `*` crosses `/`,
+    the prefix is stripped and the remainder matched against the entry's own
+    name: matching the whole relative path instead let a directory component
+    satisfy the wildcard and returned `bench_x/lane.py` for `**/bench_*`.
+    Matching is case-insensitive: a caller writing `dockerfile` means Dockerfile.
+    """
+    name = rel.replace(os.sep, "/").lower()
+    pat = pattern.replace(os.sep, "/").lower()
+    if not pat.startswith("**/"):
+        return fnmatch.fnmatchcase(name, pat)
+    # `**/` is a depth prefix, not a path component: strip every one of them and
+    # match the rest against the entry's own name. Comparing the stripped form
+    # against the whole path instead let a directory satisfy the wildcard.
+    rest = pat
+    while rest.startswith("**/"):
+        rest = rest[3:]
+    return fnmatch.fnmatchcase(name.rsplit("/", 1)[-1], rest)
+
+
 @op("filesys_glob", kind="path_list", required=["pattern"], optional=["cwd", "base"])
 def run(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
     cwd = params.get("cwd") or os.getcwd()
@@ -47,8 +71,7 @@ def run(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
             if f.startswith("."):
                 continue
             full = os.path.join(dirpath, f)
-            if re.match(params["pattern"].replace("**", ".*"),
-                        os.path.relpath(full, root)):
+            if _matched(os.path.relpath(full, root), params["pattern"]):
                 hits.append(os.path.relpath(full, frame))
     _ = store
     return "path_list", hits, 1.0
