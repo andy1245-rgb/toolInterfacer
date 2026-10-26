@@ -20,6 +20,7 @@ from ti.conf import load  # noqa: E402
 from ti.context import packer  # noqa: E402
 from ti.context.session_digest import TURN_CAP, TURN_CHARS, sanitize  # noqa: E402
 from ti.core.artifacts import ArtifactStore  # noqa: E402
+from ti.decide.cache import clear as clear_decisions  # noqa: E402
 from ti.ops import decisions  # noqa: E402
 from ti.service_entry import use_tool  # noqa: E402
 import ti.service_entry as service_entry  # noqa: E402
@@ -37,7 +38,23 @@ def budget_chars() -> int:
     return int(load()["context"]["state_max_tokens"]) * 4
 
 
-class ContextBoundTest(unittest.TestCase):
+class OfflineDecide(unittest.TestCase):
+    """Auto-mode cases run the loop, whose shipped choice backend is the live d1
+    model: pin the fixture backend and start from an empty decision cache."""
+
+    def setUp(self):
+        decide = load()["decide"]
+        self._choice = decide["backends_in_use"]["choice"]
+        decide["backends_in_use"]["choice"] = "fixture"
+        clear_decisions()
+        self.addCleanup(self._restore)
+
+    def _restore(self):
+        load()["decide"]["backends_in_use"]["choice"] = self._choice
+        clear_decisions()
+
+
+class ContextBoundTest(OfflineDecide):
     # (a) the regression guard: normal inputs must be untouched
     def test_normal_state_passes_through_identically(self):
         state = json.loads(json.dumps(NORMAL_STATE))
@@ -210,7 +227,7 @@ class DecideOpBoundTest(unittest.TestCase):
         self.assertLessEqual(len(state["candidates"]), packer.CANDIDATE_CAP)
 
 
-class IngressBoundTest(unittest.TestCase):
+class IngressBoundTest(OfflineDecide):
     def test_ingress_sanitizes_the_body_digest(self):
         seen = []
         real = service_entry.sanitize

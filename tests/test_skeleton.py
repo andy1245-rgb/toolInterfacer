@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT / "service"))
 MODULES = [
     "ti", "ti.conf", "ti.core.artifacts", "ti.core.budget", "ti.core.gates",
     "ti.core.runner", "ti.decide", "ti.decide.primitives", "ti.decide.resolve",
+    "ti.decide.cache",
     "ti.decide.backends.fixture", "ti.decide.backends.heuristic_micro",
     "ti.decide.backends.d1_systemone", "ti.decide.backends.rule_extract",
     "ti.ops", "ti.ops.op_api", "ti.ops.cli", "ti.ops.decisions", "ti.ops.web.search", "ti.ops.web.fetch",

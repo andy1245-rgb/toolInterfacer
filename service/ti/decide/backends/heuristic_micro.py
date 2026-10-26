@@ -1,8 +1,9 @@
 """heuristic_micro — pattern gate that keeps the decision model off trivial hops.
 
 Deliberately tiny: URL present → fetch; reddit scheme present → reddit;
-path-like token → filesys. Not a router. Phase 5 measures it; deleted if it
-does not pay.
+path-like token → filesys. Not a router: resolve.FastPathBackend runs it as the
+pre-gate in front of the decision model, and it abstains (None) unless one of the
+criteria is a key it recognised, which leaves most questions to the model.
 """
 from __future__ import annotations
 
