@@ -14,6 +14,7 @@ The decide backend is a counting fake pinned in the registry (the pattern
 test_loop and test_fast_path already use), so no case can reach the network and
 the call counts themselves are the evidence.
 """
+import os
 import pathlib
 import sys
 import tempfile
@@ -72,7 +73,9 @@ class ShapeCase(unittest.TestCase):
 
 class ListingShapeTest(ShapeCase):
     def test_a_listing_terminates_on_the_candidate_list(self):
-        out = use_tool({"intent": "what files are in the bench directory",
+        # no directory noun in the intent: with no name to scope to, the listing
+        # covers the digest cwd
+        out = use_tool({"intent": "list all the files in the repo",
                         "digest": {"cwd": str(ROOT)}})
         self.assertEqual(out["status"], "done", out)
         self.assertFalse(out["degraded"], out)
@@ -138,6 +141,113 @@ class AmbiguousIntentTest(ShapeCase):
         self.assertEqual(out["status"], "plan", out)
         self.assertEqual(out["final_key"], "content")
         self.assertEqual([s["op"] for s in out["steps"]], READ_OPS)
+
+
+class ListingScopeTest(ShapeCase):
+    """A listing must cover the directory the caller named, not the cwd.
+
+    The listing shape used to fire on the intent alone: a caller asking for
+    "the bench directory" got the cwd's 155 entries, 59 of them under bench/,
+    at conf 1.0 and with no assumption to suggest anything was off. A wrong but
+    confident answer is worse than a degraded one.
+    """
+
+    def test_params_path_roots_the_listing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            wanted = pathlib.Path(tmp, "wanted")
+            (wanted / "nested").mkdir(parents=True)
+            pathlib.Path(wanted, "nested", "hit.txt").write_text("x", encoding="utf-8")
+            pathlib.Path(tmp, "elsewhere.txt").write_text("x", encoding="utf-8")
+            out = use_tool({"intent": "list the files",
+                            "params": {"path": str(wanted)},
+                            "digest": {"cwd": tmp}})
+        self.assertEqual(out["status"], "done", out)
+        self.assertEqual(out["assumptions"], [])
+        self.assertEqual(sorted(out["result"]), ["wanted/nested/hit.txt"])
+        for rel in out["result"]:
+            resolved = os.path.join(tmp, rel)
+            self.assertTrue(resolved.startswith(str(wanted) + os.sep), resolved)
+
+    def test_a_relative_path_param_resolves_against_the_digest_cwd(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            bench = pathlib.Path(tmp, "bench")
+            bench.mkdir()
+            pathlib.Path(bench, "lane.sh").write_text("x", encoding="utf-8")
+            pathlib.Path(tmp, "top.txt").write_text("x", encoding="utf-8")
+            out = use_tool({"intent": "list the files",
+                            "params": {"path": "bench"},
+                            "digest": {"cwd": tmp}})
+        self.assertEqual(out["status"], "done", out)
+        self.assertEqual(sorted(out["result"]), ["bench/lane.sh"])
+
+    def test_a_directory_named_in_the_intent_scopes_the_listing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            bench = pathlib.Path(tmp, "bench")
+            bench.mkdir()
+            pathlib.Path(bench, "lane.sh").write_text("x", encoding="utf-8")
+            pathlib.Path(tmp, "top.txt").write_text("x", encoding="utf-8")
+            out = use_tool({"intent": "what files are in the bench directory",
+                            "digest": {"cwd": tmp}})
+        self.assertEqual(out["status"], "done", out)
+        self.assertEqual(sorted(out["result"]), ["bench/lane.sh"])
+        self.assertEqual(out["assumptions"], [])
+
+    def test_the_scoped_listing_keeps_the_glob_pattern(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            (pathlib.Path(tmp, "bench") / "sub").mkdir(parents=True)
+            pathlib.Path(tmp, "bench", "sub", "deep.txt").write_text("x", encoding="utf-8")
+            plan = use_tool({"intent": "list the files in the bench directory",
+                             "mode": "plan", "digest": {"cwd": tmp}})
+            out = use_tool({"intent": "list the files in the bench directory",
+                            "digest": {"cwd": tmp}})
+        step = plan["steps"][0]
+        self.assertEqual(step["op"], "filesys_glob")
+        self.assertEqual(step["params"]["pattern"], "**/*")
+        self.assertEqual(step["params"]["cwd"], str(pathlib.Path(tmp, "bench")))
+        # recursion is untouched: the deeper file is still a candidate
+        self.assertEqual(sorted(out["result"]), ["bench/sub/deep.txt"])
+
+    def test_a_named_but_missing_directory_is_reported_not_swapped(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            pathlib.Path(tmp, "top.txt").write_text("x", encoding="utf-8")
+            out = use_tool({"intent": "what files are in the ghost directory",
+                            "digest": {"cwd": tmp}})
+        self.assertEqual(out["status"], "done", out)
+        joined = " ".join(out["assumptions"])
+        self.assertIn("ghost", joined)
+        self.assertIn("cwd", joined)
+        # the cwd entries still come back — as a stated fallback, not as the answer
+        self.assertEqual(sorted(out["result"]), ["top.txt"])
+
+    def test_a_missing_path_param_is_reported_the_same_way(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            pathlib.Path(tmp, "top.txt").write_text("x", encoding="utf-8")
+            out = use_tool({"intent": "list the files",
+                            "params": {"path": str(pathlib.Path(tmp, "ghost"))},
+                            "digest": {"cwd": tmp}})
+        self.assertEqual(out["status"], "done", out)
+        self.assertIn("ghost", " ".join(out["assumptions"]))
+
+    def test_a_listing_that_names_no_directory_lists_the_cwd(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            pathlib.Path(tmp, "one.txt").write_text("x", encoding="utf-8")
+            out = use_tool({"intent": "list the files", "digest": {"cwd": tmp}})
+        self.assertEqual(out["status"], "done", out)
+        self.assertEqual(sorted(out["result"]), ["one.txt"])
+        self.assertEqual(out["assumptions"], [])
+
+    def test_a_read_intent_is_not_scoped(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            bench = pathlib.Path(tmp, "bench")
+            bench.mkdir()
+            out = use_tool({"intent": "read the file in the bench directory",
+                            "mode": "plan", "params": {"path": str(bench)},
+                            "digest": {"cwd": tmp}})
+        self.assertEqual(out["final_key"], "content", out)
+        self.assertEqual([s["op"] for s in out["steps"]], READ_OPS)
+        # the singular path's candidate set never moves: same cwd, no base frame
+        self.assertEqual(out["steps"][0]["params"]["cwd"], tmp)
+        self.assertNotIn("base", out["steps"][0]["params"])
 
 
 class NoDecisionCallTest(ShapeCase):

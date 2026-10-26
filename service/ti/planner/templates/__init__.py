@@ -18,10 +18,13 @@ FINAL_KEYS: dict[str, str] = {
 }
 
 
-def apply_template(name: str, intent: str, digest: dict[str, Any]) -> tuple[list[Step], str]:
+def apply_template(name: str, intent: str, digest: dict[str, Any],
+                   params: dict[str, Any] | None = None,
+                   ) -> tuple[list[Step], str, list[str]]:
+    """(steps, final artifact key, assumptions the plan itself establishes)."""
     if name == "disk_lookup":
         from .disk_lookup import build
-        return build(intent, digest)
+        return build(intent, digest, params)
     final_key = FINAL_KEYS.get(name)
     if final_key is None:
         raise KeyError(f"unknown template {name!r}")
@@ -31,4 +34,4 @@ def apply_template(name: str, intent: str, digest: dict[str, Any]) -> tuple[list
         from .reddit_digest import apply
     else:  # pragma: no cover — FINAL_KEYS gate keeps this unreachable
         raise KeyError(name)
-    return apply(intent, digest), final_key
+    return apply(intent, digest), final_key, []

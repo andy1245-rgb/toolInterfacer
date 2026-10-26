@@ -41,14 +41,14 @@ def use_tool(body: dict[str, Any], dry: bool = False, on_ask: Any = None) -> dic
         return _passthrough(params)
     if meta["template"] and meta["level"] == "L2":
         from .planner.templates import apply_template
-        steps, final_key = apply_template(meta["template"], intent, digest)
+        steps, final_key, notes = apply_template(meta["template"], intent, digest, params)
         return _run_steps(steps, {}, final_key, intent, params,
-                          on_ask=on_ask, log_hops=True)
+                          on_ask=on_ask, log_hops=True, pre_assumptions=notes)
     # L1 disk-slot-fill bridge
     from .planner.templates.disk_lookup import build
-    steps, final_key = build(intent, digest)
+    steps, final_key, notes = build(intent, digest, params)
     return _run_steps(steps, {}, final_key, intent, params,
-                      on_ask=on_ask, log_hops=True)
+                      on_ask=on_ask, log_hops=True, pre_assumptions=notes)
 
 
 def _passthrough(params: dict[str, Any]) -> dict[str, Any]:
@@ -74,7 +74,8 @@ def _passthrough(params: dict[str, Any]) -> dict[str, Any]:
 
 
 def _run_steps(steps: list[Step], llm_params: dict[str, Any], final_key: str,
-               intent: str, params: dict[str, Any], on_ask: Any, log_hops: bool) -> dict[str, Any]:
+               intent: str, params: dict[str, Any], on_ask: Any, log_hops: bool,
+               pre_assumptions: list[str] | None = None) -> dict[str, Any]:
     bcfg = load()["budget"]
     budget = Budget(max_hops=int(bcfg["max_hops"]), max_asks=int(bcfg["max_asks"]),
                     max_seconds=float(bcfg["max_seconds"]))
@@ -89,7 +90,8 @@ def _run_steps(steps: list[Step], llm_params: dict[str, Any], final_key: str,
 
     t0 = time.monotonic()
     res = run_plan(steps, {"intent_context": intent, **params}, budget, ask,
-                   _run_op_with_log(log), _noul_verifier, final_key=final_key)
+                   _run_op_with_log(log), _noul_verifier, final_key=final_key,
+                   pre_assumptions=pre_assumptions)
     ms = round((time.monotonic() - t0) * 1000, 1)
     out: dict[str, Any] = {
         "status": res.status, "result": res.result,
@@ -143,9 +145,9 @@ def _plan_view(meta: dict[str, Any], intent: str, params: dict[str, Any],
         steps = [Step(id="L0", op=str(params.get("tool", "?")), params=dict(params.get("args") or {}))]
         final_key = "L0"
     elif meta["template"]:
-        steps, final_key = apply_template(str(meta["template"]), intent, digest)
+        steps, final_key, _notes = apply_template(str(meta["template"]), intent, digest, params)
     else:
-        steps, final_key = build_disk(intent, digest)
+        steps, final_key, _notes = build_disk(intent, digest, params)
     return {"status": "plan",
             "meta": meta,
             "final_key": final_key,
