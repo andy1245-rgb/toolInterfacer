@@ -5,6 +5,7 @@ in bench and in-session. P1 implements these (pure stdlib, no CLI needed).
 """
 from __future__ import annotations
 
+import fnmatch
 import os
 import re
 from dataclasses import dataclass
@@ -33,6 +34,21 @@ def _walk(root: str):
         yield dirpath, files
 
 
+def _matched(rel: str, pattern: str) -> bool:
+    """Glob semantics for a listing pattern, over a walk-relative path.
+
+    `**` crosses directory separators and `**/` also matches zero directories, so
+    a top-level entry is a candidate for `**/bench_*`; fnmatch's `*` crosses `/`
+    but still needs one, which is why the stripped form is tried as well.
+    Matching is case-insensitive: a caller writing `dockerfile` means Dockerfile.
+    """
+    name = rel.replace(os.sep, "/").lower()
+    pat = pattern.replace(os.sep, "/").lower()
+    if fnmatch.fnmatchcase(name, pat):
+        return True
+    return pat.startswith("**/") and fnmatch.fnmatchcase(name, pat[3:])
+
+
 @op("filesys_glob", kind="path_list", required=["pattern"], optional=["cwd", "base"])
 def run(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
     cwd = params.get("cwd") or os.getcwd()
@@ -47,8 +63,7 @@ def run(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
             if f.startswith("."):
                 continue
             full = os.path.join(dirpath, f)
-            if re.match(params["pattern"].replace("**", ".*"),
-                        os.path.relpath(full, root)):
+            if _matched(os.path.relpath(full, root), params["pattern"]):
                 hits.append(os.path.relpath(full, frame))
     _ = store
     return "path_list", hits, 1.0

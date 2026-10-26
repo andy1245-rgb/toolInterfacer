@@ -1,0 +1,752 @@
+[
+ {
+  "utterance": "print the whole pyproject.toml for me",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "list every file ending in .toml anywhere in the repo",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "where is handle_stream defined?",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "out of the fetched pages, keep the two most useful",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "give me three phrasings of this question for the engine",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "look up the latest llama.cpp server flags",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "grab the page at https://ggml.ai/news",
+  "shape": "singular",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "what's hot on r/LocalLLaMA today?",
+  "shape": "singular",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "what's inside config/permissions.yaml?",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "which config files live in the conf/ directory?",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "find every call site of retry_with_backoff",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "which of these four candidates is the strongest match?",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "what keywords best capture what I'm after?",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "find out what changed in pytest 8.2",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "load https://docs.python.org/3/library/ssl.html",
+  "shape": "singular",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "grab the top threads in r/rust from this week",
+  "shape": "singular",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "open service/ti/registry.py",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "find all test fixtures under tests/fixtures",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "which modules import yaml.safe_load?",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "from the candidate list, choose one to fetch first",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "turn 'setup guides for llama quantization' into several distinct queries",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "any recent coverage of the torch.compile release?",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "open that blog post about the kv-cache fix",
+  "shape": "singular",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "summarize r/MLQuestions posts about fine-tuning",
+  "shape": "singular",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "check the top of CHANGELOG.md",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "names of all .proto files under api/",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "look for hardcoded timeout values in src/net",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "the browser returned ten hits \u2014 keep the best three",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "list the exact identifiers the user mentioned",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "search for benchmarks comparing q4 and q5 quants",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "get me the content of the huggingface model card",
+  "shape": "singular",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "catch me up on that quantization megathread on the sub",
+  "shape": "singular",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "give me the body of the root makefile",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "find every .sh under scripts/",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "grep the tree for deprecated",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "which of those two forum threads is more on-topic?",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "what should the search string be for this goal?",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "who ships a cpu-only ffmpeg build these days?",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "fetch the changelog at that docs link",
+  "shape": "singular",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "digest the comments on the llama.cpp release post",
+  "shape": "singular",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "read through requirements-dev.txt",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "do we have any dockerfile at the top level?",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "does anything in bin/ reference the legacy CLI?",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "narrow these eight matches down to the most relevant",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "write out the file names the request refers to",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "look up sdpa vs flash attention perf numbers",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "read https://github.com/ggml-org/llama.cpp/pull/1203",
+  "shape": "singular",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "skim r/programming and tell me the big stories",
+  "shape": "singular",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "how is the retry logic implemented in service/net/client.py?",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "how many .md docs are there in docs/guide?",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "locate each place we catch HTTPError",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "I have five candidate paths \u2014 tell me which to open",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "come up with alternate wordings for my lookup",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "find the official docs on httponly cookie flags",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "open the arxiv abs page for 2401.06919",
+  "shape": "singular",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "what are people in the machine learning sub asking?",
+  "shape": "singular",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "dump the schema block from models/registry.py",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "which files here start with bench_?",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "search the fixtures for api_token strings",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "sort these search hits by how well they fit the task",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "pull the topic keywords from my message",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "search the web for ggml backend api changes",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "show the page stored under the pending url",
+  "shape": "singular",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "pull up the flash attention discussion on the subreddit",
+  "shape": "singular",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "pull up the cron config for me",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "where do we keep the probe fixtures?",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "where do we define the hop budget?",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "of the results we just pulled, which one matters?",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "how would you phrase this ask for the engine?",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "anything out there on the new moka decode path?",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "get me whatever lives at that address",
+  "shape": "singular",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "what's the community saying about the llama 4 dump?",
+  "shape": "singular",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "what does the makefile actually do?",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "is there a migration script for the settings table?",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "does anything here still call the v1 endpoint?",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "several hits came back; I only care about one",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "what words should I throw at it to get hits?",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "any chatter elsewhere about the sigill crash?",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "click through to the pydantic settings guide",
+  "shape": "singular",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "check the boards for reactions to the new quant release",
+  "shape": "singular",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "walk me through middleware/auth.py",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "find the README",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "track down every use of the SignedHeaders helper",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "from what's in the queue, what should we actually visit?",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "name the dirs the request refers to",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "who else has hit this exact xformers error?",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "download the text of that advisory page",
+  "shape": "singular",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "did anyone respond on that thread about tool use?",
+  "shape": "singular",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "need the full text of cli/help.txt",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "which dotfiles did the setup leave behind?",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "any references to wallet.json left in the tree?",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "I got a pile of matches \u2014 point me at the right entry",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "give me some alternative ways to ask this",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "is there anything published about the tokenizer patch?",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "I want the body of the release page",
+  "shape": "singular",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "which files talk about the eviction policy?",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "which files have 'replay' in their name?",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "show ops/matcher.py on screen",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "among the files found, which one should we ship to the fetcher?",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "what search terms fit this ask?",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "extract the file paths mentioned in the last message",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "do any modules pull in pydantic here?",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "which functions call urllib in the test suite?",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "which of these three wordings fits the goal best?",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "how is r/LocalLLaMA reacting to the d1 weights?",
+  "shape": "singular",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "which files mention the scheduler hooks?",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "are there any .har files in the captures dir?",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "pull up the full listing of core/registry.py",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "of the dozen files that came up, which is the right one to open?",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "generate a few phrasings of the lookup before we hit the web",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "pull out the dirs the user pointed at",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "is fastapi referenced anywhere in the tree?",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "find any use of the requests module in src",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "of the two candidate queries on the table, which do we run?",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "any threads in r/MachineLearning about the kv cache trick?",
+  "shape": "singular",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "which files under src discuss the shard map?",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "files ending in .bak anywhere in the project?",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "what's written in prompts/system.txt?",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "among the earlier matches, pick the one answering the ask",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "turn this into three distinct ways to ask around",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "what literal paths show up in that instruction?",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "where does the codebase touch the stage registry?",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "where is the http client wired up in service/net?",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "sort the drafts and say which one to send",
+  "shape": "singular",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "pull the top comments off that r/cpp announcement post",
+  "shape": "singular",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "what files make use of the old env var?",
+  "shape": "singular",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "which files match the pattern used for backups?",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "turn the user's wording into the exact filenames to print",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "give me keyword variants for the upcoming lookup",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "list the matches for the pattern in the user's note",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "what's the retry flow inside bench/replay.py?",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "how do other projects do graceful shutdowns?",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "come up with five candidate titles from the brief",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "see what coverage the d1 launch is getting online",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "give me the gist of that thread in r/MachineLearning",
+  "shape": "singular",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "which ones in here end in .patch?",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "show what logging.yml actually contains",
+  "shape": "singular",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "carry on reading at the linked pytorch discussion",
+  "shape": "singular",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "what good names could we use for the search strings?",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "find chatter across the forums about the moka fork",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "open the linked post from the announcements board",
+  "shape": "singular",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "any config files lying around that look relevant?",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "before we dump anything, write out the paths it wants",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "work out the paths for every manifest under deploy/",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "find several angles on the kv cache debate",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "give me a fresh batch of angles to try",
+  "shape": "singular",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "give me the collection of test data files we have",
+  "shape": "enumerative",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "show me what's out there about speculative decoding",
+  "shape": "singular",
+  "label": "web_search"
+ },
+ {
+  "utterance": "load the full thread at that forum url",
+  "shape": "singular",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "look up alternate writeups of the mmap regression",
+  "shape": "singular",
+  "label": "web_search"
+ }
+]
