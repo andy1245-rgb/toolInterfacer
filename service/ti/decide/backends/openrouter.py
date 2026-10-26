@@ -6,10 +6,26 @@ other backend here: no SDK, no new dependency.
 
 The provider pin is the point of the file. ``decide.openrouter.provider`` is
 copied into the request body verbatim — the shipped config pins
-``{"order": ["Relace"], "allow_fallbacks": true}`` — so which upstream serves a
+``{"only": ["Relace"], "allow_fallbacks": true}`` — so which upstream serves a
 decision is a config edit (``order``, ``only``, ``ignore``, ``sort``,
 ``data_collection``), never a code change. OpenRouter owns that schema; nothing
-here validates it beyond it being a JSON object.
+here validates it beyond it being a JSON object. ``reasoning`` and ``user`` are
+passed through the same way for the same reason: they are per-request fields of
+OpenRouter's schema, and measuring their effect is a config edit, not a code
+change. ``reasoning: {"effort": "minimal"}`` is the one that matters for cost —
+70% of the baseline's completion tokens were reasoning tokens at output prices.
+
+Everything here is per request. Nothing in this module mutates global state: the
+pin, the reasoning effort, ``response_format`` and ``user`` live inside the body
+of one call, so unrelated traffic sharing the same account — a different agent,
+a different tool, the same key — is unaffected.
+
+The key is read from the environment variable named by
+``decide.openrouter.key_env`` (default ``TI_OPENROUTER_API_KEY``), read per call,
+and travels in the ``Authorization`` header only — it is never a config value, an
+attribute, or part of a message this module builds. Giving this backend its own
+variable is what keeps its spend and its rate limits separate from any other
+OpenRouter client sharing the machine.
 
 Because ``allow_fallbacks`` can route around the pin, the reply's ``provider``
 field — which upstream actually answered — is captured on ``last_provider`` and
@@ -93,6 +109,16 @@ class OpenRouterBackend(DecideBackend):
         self.timeout_s = float(cfg.get("timeout_s", 30))
         self.max_tokens = int(cfg.get("max_tokens", 64))
         self.json_object = bool(cfg.get("json_object", True))
+        self.key_env = str(cfg.get("key_env") or ENV_KEY)
+        reasoning = cfg.get("reasoning")
+        if reasoning is not None and not isinstance(reasoning, dict):
+            raise ValueError(
+                "openrouter: decide.openrouter.reasoning must be a JSON object, got "
+                f"{type(reasoning).__name__} — OpenRouter owns the schema, this backend "
+                "copies it into the request body unchanged")
+        self.reasoning = reasoning or {}
+        user = cfg.get("user")
+        self.user = str(user) if user else ""
         self.max_attempts = MAX_ATTEMPTS
         self.backoff_s = BACKOFF_S
         self.retry_after_cap_s = RETRY_AFTER_CAP_S
@@ -143,11 +169,15 @@ class OpenRouterBackend(DecideBackend):
         }
         if self.json_object:
             body["response_format"] = {"type": "json_object"}
+        if self.reasoning:
+            body["reasoning"] = self.reasoning  # passthrough, as with provider
+        if self.user:
+            body["user"] = self.user            # attribution only, no routing effect
         return body
 
     def _post(self, payload: dict[str, Any]) -> dict[str, Any]:
         """POST one payload; {} when the reply body was not a JSON object."""
-        key = _api_key()  # read per call: the key is environment state, not config
+        key = _api_key(self.key_env)  # per call: the key is environment state, not config
         url = self.base_url.rstrip("/") + ENDPOINT
         body = json.dumps(payload).encode()
         for attempt in range(1, self.max_attempts + 1):
@@ -209,12 +239,12 @@ class OpenRouterBackend(DecideBackend):
             log.debug("openrouter: reply carried no provider field; upstream unknown")
 
 
-def _api_key() -> str:
+def _api_key(env_name: str = ENV_KEY) -> str:
     """The key, read at call time so a test can set it after import."""
-    key = os.environ.get(ENV_KEY, "").strip()
+    key = os.environ.get(env_name, "").strip()
     if not key:
         raise OpenRouterError(
-            f"openrouter: {ENV_KEY} is not set — export it; it is read from the "
+            f"openrouter: {env_name} is not set — export it; it is read from the "
             "environment only and never stored in config")
     return key
 

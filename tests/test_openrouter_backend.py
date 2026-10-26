@@ -31,7 +31,7 @@ from ti.decide.backends.openrouter import (ENV_KEY, OpenRouterBackend,  # noqa: 
 from ti.decide.primitives import ChoiceAnswer, make_backend  # noqa: E402
 
 TEST_KEY = "sk-or-v1-0000000000000000000000000000000000000000000000000000000000000000"
-PIN = {"order": ["Relace"], "allow_fallbacks": True}
+PIN = {"only": ["Relace"], "allow_fallbacks": True}
 MODEL = "z-ai/glm-5.3-flash"
 INSTRUCTION = "which file should the read step open next?"
 STATE = {"intent_context": "read the file we discussed"}
@@ -129,7 +129,10 @@ class OpenRouterCase(unittest.TestCase):
         self.decide = load()["decide"]
         self._saved = self.decide["openrouter"]
         self.addCleanup(self._restore)
-        patcher = mock.patch.dict(os.environ, {ENV_KEY: TEST_KEY})
+        # The key variable is config-driven (decide.openrouter.key_env), so the suite
+        # patches whichever name the shipped config points at rather than assuming one.
+        env_name = str(self._saved.get("key_env") or ENV_KEY)
+        patcher = mock.patch.dict(os.environ, {ENV_KEY: TEST_KEY, env_name: TEST_KEY})
         patcher.start()
         self.addCleanup(patcher.stop)
 
@@ -402,3 +405,65 @@ class RegistrationTest(OpenRouterCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PerRequestScopeTest(OpenRouterCase):
+    """These settings live in one request body — they must not reach anything else.
+
+    The operator shares one OpenRouter account with other tools, so the pin, the
+    reasoning effort and the response format have to be per-call fields and the key
+    has to come from a variable this backend alone names. Anything global here would
+    silently reshape unrelated traffic.
+    """
+
+    def test_reasoning_and_user_travel_in_the_body(self):
+        with _Stub(_chat(json.dumps(ANSWER))) as stub:
+            self.backend(stub, reasoning={"effort": "minimal"},
+                         user="toolinterfacer").choice(STATE, INSTRUCTION, CRITERIA)
+        body = stub.requests[0]["body"]
+        self.assertEqual(body["reasoning"], {"effort": "minimal"})
+        self.assertEqual(body["user"], "toolinterfacer")
+
+    def test_reasoning_must_be_a_json_object(self):
+        with _Stub(_chat(json.dumps(ANSWER))) as stub:
+            with self.assertRaises(ValueError):
+                self.backend(stub, reasoning="minimal")
+
+    def test_absent_reasoning_and_user_send_no_such_field(self):
+        with _Stub(_chat(json.dumps(ANSWER))) as stub:
+            self.backend(stub, reasoning=None, user=None).choice(
+                STATE, INSTRUCTION, CRITERIA)
+        body = stub.requests[0]["body"]
+        self.assertNotIn("reasoning", body)
+        self.assertNotIn("user", body)
+
+    def test_key_env_selects_its_own_variable(self):
+        with _Stub(_chat(json.dumps(ANSWER))) as stub:
+            backend = self.backend(stub, key_env="TI_OPENROUTER_API_KEY")
+            with mock.patch.dict(os.environ, {"TI_OPENROUTER_API_KEY": TEST_KEY},
+                                 clear=True):
+                backend.choice(STATE, INSTRUCTION, CRITERIA)
+        self.assertEqual(stub.requests[0]["auth"], f"Bearer {TEST_KEY}")
+
+    def test_a_missing_key_names_the_configured_variable(self):
+        with _Stub(_chat(json.dumps(ANSWER))) as stub:
+            backend = self.backend(stub, key_env="TI_OPENROUTER_API_KEY")
+            with mock.patch.dict(os.environ, {}, clear=True):
+                with self.assertRaises(OpenRouterError) as caught:
+                    backend.choice(STATE, INSTRUCTION, CRITERIA)
+        self.assertIn("TI_OPENROUTER_API_KEY", str(caught.exception))
+
+    def test_constructing_a_backend_mutates_no_environment(self):
+        before = dict(os.environ)
+        with _Stub(_chat(json.dumps(ANSWER))) as stub:
+            self.backend(stub)
+        self.assertEqual(dict(os.environ), before)
+
+    def test_two_backends_do_not_share_their_pin(self):
+        with _Stub(_chat(json.dumps(ANSWER))) as stub:
+            self.backend(stub).choice(STATE, INSTRUCTION, CRITERIA)
+            self.backend(stub, provider={"only": ["GMICloud"]}).choice(
+                STATE, INSTRUCTION, CRITERIA)
+        self.assertEqual(stub.requests[0]["body"]["provider"], dict(PIN))
+        self.assertEqual(stub.requests[1]["body"]["provider"],
+                         {"only": ["GMICloud"]})
