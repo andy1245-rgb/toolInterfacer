@@ -398,8 +398,13 @@ class RegistrationTest(OpenRouterCase):
         self.assertEqual(backend.model, MODEL)
         self.assertEqual(backend.provider, PIN)
 
-    def test_default_routing_still_names_d1_systemone(self):
-        self.assertEqual(self.decide["backends_in_use"]["choice"], "d1_systemone")
+    def test_hosted_is_not_the_direct_default_route(self):
+        # The pair answers "choice" (local stage1, hosted stage2), so openrouter is
+        # reached by escalation rather than by being the map entry itself.
+        choice = self.decide["backends_in_use"]["choice"]
+        self.assertEqual(choice, "pair")
+        self.assertNotEqual(choice, "openrouter")
+        self.assertEqual(self.decide["pair"]["stage2"], "openrouter")
         self.assertEqual(self.decide["backends_in_use"]["noul"], "fixture")
 
 

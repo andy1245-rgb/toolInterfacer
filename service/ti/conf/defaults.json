@@ -39,9 +39,15 @@
       "json_object": true
     },
     "backends_in_use": {
-      "choice": "d1_systemone",
+      "choice": "pair",
       "noul": "fixture",
       "extract": "rule_extract"
+    },
+    "pair": {
+      "stage1": "d1_systemone",
+      "stage2": "openrouter",
+      "tau": 0.90,
+      "escalate_on_error": true
     },
     "cascade": {
       "enabled": false,
