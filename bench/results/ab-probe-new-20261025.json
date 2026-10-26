@@ -1,0 +1,4031 @@
+{
+  "harness": "bench/ab_probe.py",
+  "lane": "new",
+  "timestamp": "2026-10-26T00:21:53-0400",
+  "service_root": "/home/andrew/ti-worktrees/abharness",
+  "service_head": {
+    "commit": "98efee2",
+    "subject": "merge: a listing covers the directory it names, and a gated run reports the confidence it reached",
+    "dirty": true
+  },
+  "model": {
+    "path": "models/d1-3B-Q4_K_M.gguf",
+    "basename": "d1-3B-Q4_K_M.gguf",
+    "ftype": "Q4_K - Medium",
+    "build_info": "b1-f74e2fa",
+    "sha": "",
+    "size": null
+  },
+  "base_url": "http://127.0.0.1:8080",
+  "cwd": "/home/andrew/ti-worktrees/abharness",
+  "utterances": "/home/andrew/ti-worktrees/abharness/tests/data/utterances_v2.json",
+  "n_rows": 150,
+  "run_seconds": 598.5,
+  "in_process": true,
+  "aggregate": {
+    "by_label": {
+      "decide_extract": {
+        "n": 24,
+        "wall_mean": 4555.7,
+        "wall_p50": 4468.1,
+        "conf_mean": 0.237,
+        "degraded_rate": 0.9583,
+        "hops_mean": 3.875,
+        "listing": {
+          "n_glob": 0,
+          "respected": 0,
+          "violated": 0,
+          "no_constraint": 0,
+          "no_list": 0,
+          "empty_list": 0
+        }
+      },
+      "decide_pick": {
+        "n": 18,
+        "wall_mean": 4804.6,
+        "wall_p50": 4753.8,
+        "conf_mean": 0.2253,
+        "degraded_rate": 0.9444,
+        "hops_mean": 3.833,
+        "listing": {
+          "n_glob": 0,
+          "respected": 0,
+          "violated": 0,
+          "no_constraint": 0,
+          "no_list": 0,
+          "empty_list": 0
+        }
+      },
+      "filesys_glob": {
+        "n": 21,
+        "wall_mean": 3396.6,
+        "wall_p50": 3878.9,
+        "conf_mean": 0.6022,
+        "degraded_rate": 0.619,
+        "hops_mean": 2.952,
+        "listing": {
+          "n_glob": 21,
+          "respected": 0,
+          "violated": 5,
+          "no_constraint": 8,
+          "no_list": 8,
+          "empty_list": 0
+        }
+      },
+      "filesys_grep": {
+        "n": 22,
+        "wall_mean": 3516.5,
+        "wall_p50": 3779.0,
+        "conf_mean": 0.4504,
+        "degraded_rate": 0.8182,
+        "hops_mean": 3.455,
+        "listing": {
+          "n_glob": 0,
+          "respected": 0,
+          "violated": 0,
+          "no_constraint": 0,
+          "no_list": 0,
+          "empty_list": 0
+        }
+      },
+      "filesys_read": {
+        "n": 17,
+        "wall_mean": 4801.8,
+        "wall_p50": 4252.1,
+        "conf_mean": 0.4856,
+        "degraded_rate": 0.8235,
+        "hops_mean": 3.824,
+        "listing": {
+          "n_glob": 0,
+          "respected": 0,
+          "violated": 0,
+          "no_constraint": 0,
+          "no_list": 0,
+          "empty_list": 0
+        }
+      },
+      "reddit_digest": {
+        "n": 15,
+        "wall_mean": 1934.4,
+        "wall_p50": 0.4,
+        "conf_mean": 0.7391,
+        "degraded_rate": 0.4,
+        "hops_mean": 1.6,
+        "listing": {
+          "n_glob": 0,
+          "respected": 0,
+          "violated": 0,
+          "no_constraint": 0,
+          "no_list": 0,
+          "empty_list": 0
+        }
+      },
+      "web_fetch": {
+        "n": 15,
+        "wall_mean": 4683.7,
+        "wall_p50": 4325.8,
+        "conf_mean": 0.4669,
+        "degraded_rate": 0.9333,
+        "hops_mean": 3.933,
+        "listing": {
+          "n_glob": 0,
+          "respected": 0,
+          "violated": 0,
+          "no_constraint": 0,
+          "no_list": 0,
+          "empty_list": 0
+        }
+      },
+      "web_search": {
+        "n": 18,
+        "wall_mean": 4058.1,
+        "wall_p50": 3488.9,
+        "conf_mean": 0.4152,
+        "degraded_rate": 0.9444,
+        "hops_mean": 3.944,
+        "listing": {
+          "n_glob": 0,
+          "respected": 0,
+          "violated": 0,
+          "no_constraint": 0,
+          "no_list": 0,
+          "empty_list": 0
+        }
+      }
+    },
+    "by_band": {
+      "t1": {
+        "n": 64,
+        "wall_mean": 3662.7,
+        "wall_p50": 3527.9,
+        "conf_mean": 0.4735,
+        "degraded_rate": 0.7812,
+        "hops_mean": 3.391,
+        "listing": {
+          "n_glob": 8,
+          "respected": 0,
+          "violated": 3,
+          "no_constraint": 2,
+          "no_list": 3,
+          "empty_list": 0
+        }
+      },
+      "t2": {
+        "n": 31,
+        "wall_mean": 4802.5,
+        "wall_p50": 4305.1,
+        "conf_mean": 0.3409,
+        "degraded_rate": 0.9677,
+        "hops_mean": 3.968,
+        "listing": {
+          "n_glob": 4,
+          "respected": 0,
+          "violated": 0,
+          "no_constraint": 2,
+          "no_list": 2,
+          "empty_list": 0
+        }
+      },
+      "t3": {
+        "n": 55,
+        "wall_mean": 3912.3,
+        "wall_p50": 4235.7,
+        "conf_mean": 0.459,
+        "degraded_rate": 0.7636,
+        "hops_mean": 3.255,
+        "listing": {
+          "n_glob": 9,
+          "respected": 0,
+          "violated": 2,
+          "no_constraint": 4,
+          "no_list": 3,
+          "empty_list": 0
+        }
+      }
+    },
+    "all": {
+      "n": 150,
+      "wall_mean": 3989.8,
+      "wall_p50": 4054.8,
+      "conf_mean": 0.4408,
+      "degraded_rate": 0.8133,
+      "hops_mean": 3.46,
+      "listing": {
+        "n_glob": 21,
+        "respected": 0,
+        "violated": 5,
+        "no_constraint": 8,
+        "no_list": 8,
+        "empty_list": 0
+      }
+    }
+  },
+  "per_row": [
+    {
+      "idx": 0,
+      "utterance": "print the whole pyproject.toml for me",
+      "label": "filesys_read",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": false,
+      "confidence": 0.9800514996499543,
+      "n_hops": 3,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "filesys_read"
+      ],
+      "wall_ms": 3032.2,
+      "svc_wall_ms": 3024.5,
+      "result_type": "str",
+      "result_len": 344,
+      "error": null,
+      "assumptions": []
+    },
+    {
+      "idx": 1,
+      "utterance": "list every file ending in .toml anywhere in the repo",
+      "label": "filesys_glob",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 1,
+      "hop_ops": [
+        "filesys_glob"
+      ],
+      "wall_ms": 8.4,
+      "svc_wall_ms": 8.1,
+      "result_type": "list",
+      "result_len": 159,
+      "error": null,
+      "assumptions": [
+        "listing: no directory 'toml' here, so the listing covers the cwd (/home/andrew/ti-worktrees/abharness) instead"
+      ],
+      "listing_constraint": {
+        "kind": "ext",
+        "value": "toml",
+        "evidence": ".toml"
+      },
+      "listing_respected": false,
+      "returned_list": true,
+      "n_returned": 159,
+      "n_violations": 158,
+      "violation_samples": [
+        "README.md",
+        "docs/ops.md",
+        "docs/architecture.md",
+        "docs/research-model-sweep-q4.md",
+        "docs/serving-fix-qwen35.md"
+      ]
+    },
+    {
+      "idx": 2,
+      "utterance": "where is handle_stream defined?",
+      "label": "filesys_grep",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.491678404216896,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 2833.4,
+      "svc_wall_ms": 2833.2,
+      "result_type": "str",
+      "result_len": 344,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.49 below gate)"
+      ]
+    },
+    {
+      "idx": 3,
+      "utterance": "out of the fetched pages, keep the two most useful",
+      "label": "decide_pick",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.0636706576089586,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3421.7,
+      "svc_wall_ms": 3421.5,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.06 below gate)"
+      ]
+    },
+    {
+      "idx": 4,
+      "utterance": "give me three phrasings of this question for the engine",
+      "label": "decide_extract",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.15524006910824004,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3507.6,
+      "svc_wall_ms": 3507.5,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.16 below gate)"
+      ]
+    },
+    {
+      "idx": 5,
+      "utterance": "look up the latest llama.cpp server flags",
+      "label": "web_search",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": false,
+      "confidence": 0.7489741277741331,
+      "n_hops": 3,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "filesys_read"
+      ],
+      "wall_ms": 4466.2,
+      "svc_wall_ms": 4466.1,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": []
+    },
+    {
+      "idx": 6,
+      "utterance": "grab the page at https://ggml.ai/news",
+      "label": "web_fetch",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.47728205109280925,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 7015.0,
+      "svc_wall_ms": 7014.9,
+      "result_type": "str",
+      "result_len": 963,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.48 below gate)"
+      ]
+    },
+    {
+      "idx": 7,
+      "utterance": "what's hot on r/LocalLLaMA today?",
+      "label": "reddit_digest",
+      "band": "t1",
+      "tier_target": null,
+      "status": "error",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 0,
+      "hop_ops": [],
+      "wall_ms": 0.8,
+      "svc_wall_ms": 0.2,
+      "result_type": "none",
+      "result_len": null,
+      "error": "reddit-research CLI unavailable: no project directory found; tried:\n  /home/andrew/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  /home/andrew/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
+      "assumptions": []
+    },
+    {
+      "idx": 8,
+      "utterance": "what's inside config/permissions.yaml?",
+      "label": "filesys_read",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.18637965065147477,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4830.2,
+      "svc_wall_ms": 4830.0,
+      "result_type": "str",
+      "result_len": 10350,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.19 below gate)"
+      ]
+    },
+    {
+      "idx": 9,
+      "utterance": "which config files live in the conf/ directory?",
+      "label": "filesys_glob",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.3438683477575818,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 7235.7,
+      "svc_wall_ms": 7235.6,
+      "result_type": "str",
+      "result_len": 5744,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.34 below gate)"
+      ],
+      "listing_constraint": null,
+      "listing_respected": null,
+      "returned_list": false,
+      "n_returned": null,
+      "n_violations": null
+    },
+    {
+      "idx": 10,
+      "utterance": "find every call site of retry_with_backoff",
+      "label": "filesys_grep",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.17389579765272803,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 2734.9,
+      "svc_wall_ms": 2734.8,
+      "result_type": "str",
+      "result_len": 344,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.17 below gate)"
+      ]
+    },
+    {
+      "idx": 11,
+      "utterance": "which of these four candidates is the strongest match?",
+      "label": "decide_pick",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.08296129912739675,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3387.1,
+      "svc_wall_ms": 3387.0,
+      "result_type": "str",
+      "result_len": 962,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.08 below gate)"
+      ]
+    },
+    {
+      "idx": 12,
+      "utterance": "what keywords best capture what I'm after?",
+      "label": "decide_extract",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.16039261212979014,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3194.8,
+      "svc_wall_ms": 3194.7,
+      "result_type": "str",
+      "result_len": 1974,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.16 below gate)"
+      ]
+    },
+    {
+      "idx": 13,
+      "utterance": "find out what changed in pytest 8.2",
+      "label": "web_search",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.3825508066156751,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3214.9,
+      "svc_wall_ms": 3214.8,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.38 below gate)"
+      ]
+    },
+    {
+      "idx": 14,
+      "utterance": "load https://docs.python.org/3/library/ssl.html",
+      "label": "web_fetch",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.49413649972055296,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3645.6,
+      "svc_wall_ms": 3645.5,
+      "result_type": "str",
+      "result_len": 10350,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.49 below gate)"
+      ]
+    },
+    {
+      "idx": 15,
+      "utterance": "grab the top threads in r/rust from this week",
+      "label": "reddit_digest",
+      "band": "t1",
+      "tier_target": null,
+      "status": "error",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 0,
+      "hop_ops": [],
+      "wall_ms": 0.3,
+      "svc_wall_ms": 0.2,
+      "result_type": "none",
+      "result_len": null,
+      "error": "reddit-research CLI unavailable: no project directory found; tried:\n  /home/andrew/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  /home/andrew/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
+      "assumptions": []
+    },
+    {
+      "idx": 16,
+      "utterance": "open service/ti/registry.py",
+      "label": "filesys_read",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.5788521183497782,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4277.8,
+      "svc_wall_ms": 4277.7,
+      "result_type": "str",
+      "result_len": 86,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.58 below gate)"
+      ]
+    },
+    {
+      "idx": 17,
+      "utterance": "find all test fixtures under tests/fixtures",
+      "label": "filesys_glob",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.5176062461187488,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 7798.1,
+      "svc_wall_ms": 7797.9,
+      "result_type": "str",
+      "result_len": 12797,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.52 below gate)"
+      ],
+      "listing_constraint": null,
+      "listing_respected": null,
+      "returned_list": false,
+      "n_returned": null,
+      "n_violations": null
+    },
+    {
+      "idx": 18,
+      "utterance": "which modules import yaml.safe_load?",
+      "label": "filesys_grep",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.4008087363526835,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3861.5,
+      "svc_wall_ms": 3861.4,
+      "result_type": "str",
+      "result_len": 344,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.40 below gate)"
+      ]
+    },
+    {
+      "idx": 19,
+      "utterance": "from the candidate list, choose one to fetch first",
+      "label": "decide_pick",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 1,
+      "hop_ops": [
+        "filesys_glob"
+      ],
+      "wall_ms": 8.2,
+      "svc_wall_ms": 8.1,
+      "result_type": "list",
+      "result_len": 159,
+      "error": null,
+      "assumptions": []
+    },
+    {
+      "idx": 20,
+      "utterance": "turn 'setup guides for llama quantization' into several distinct queries",
+      "label": "decide_extract",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.32551008413451765,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 2535.0,
+      "svc_wall_ms": 2534.9,
+      "result_type": "str",
+      "result_len": 10350,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.33 below gate)"
+      ]
+    },
+    {
+      "idx": 21,
+      "utterance": "any recent coverage of the torch.compile release?",
+      "label": "web_search",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.4581404293752265,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3395.2,
+      "svc_wall_ms": 3395.1,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.46 below gate)"
+      ]
+    },
+    {
+      "idx": 22,
+      "utterance": "open that blog post about the kv-cache fix",
+      "label": "web_fetch",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": false,
+      "confidence": 0.8536595093191085,
+      "n_hops": 3,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "filesys_read"
+      ],
+      "wall_ms": 4947.8,
+      "svc_wall_ms": 4947.7,
+      "result_type": "str",
+      "result_len": 8131,
+      "error": null,
+      "assumptions": []
+    },
+    {
+      "idx": 23,
+      "utterance": "summarize r/MLQuestions posts about fine-tuning",
+      "label": "reddit_digest",
+      "band": "t1",
+      "tier_target": null,
+      "status": "error",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 0,
+      "hop_ops": [],
+      "wall_ms": 0.3,
+      "svc_wall_ms": 0.2,
+      "result_type": "none",
+      "result_len": null,
+      "error": "reddit-research CLI unavailable: no project directory found; tried:\n  /home/andrew/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  /home/andrew/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
+      "assumptions": []
+    },
+    {
+      "idx": 24,
+      "utterance": "check the top of CHANGELOG.md",
+      "label": "filesys_read",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": false,
+      "confidence": 0.922518549610863,
+      "n_hops": 3,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "filesys_read"
+      ],
+      "wall_ms": 3611.0,
+      "svc_wall_ms": 3610.9,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": []
+    },
+    {
+      "idx": 25,
+      "utterance": "names of all .proto files under api/",
+      "label": "filesys_glob",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 1,
+      "hop_ops": [
+        "filesys_glob"
+      ],
+      "wall_ms": 7.1,
+      "svc_wall_ms": 6.9,
+      "result_type": "list",
+      "result_len": 159,
+      "error": null,
+      "assumptions": [
+        "listing: no directory 'api' here, so the listing covers the cwd (/home/andrew/ti-worktrees/abharness) instead"
+      ],
+      "listing_constraint": {
+        "kind": "ext",
+        "value": "proto",
+        "evidence": ".proto"
+      },
+      "listing_respected": false,
+      "returned_list": true,
+      "n_returned": 159,
+      "n_violations": 159,
+      "violation_samples": [
+        "pyproject.toml",
+        "README.md",
+        "docs/ops.md",
+        "docs/architecture.md",
+        "docs/research-model-sweep-q4.md"
+      ]
+    },
+    {
+      "idx": 26,
+      "utterance": "look for hardcoded timeout values in src/net",
+      "label": "filesys_grep",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.21545261853760703,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3469.3,
+      "svc_wall_ms": 3469.2,
+      "result_type": "str",
+      "result_len": 2775,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.22 below gate)"
+      ]
+    },
+    {
+      "idx": 27,
+      "utterance": "the browser returned ten hits \u2014 keep the best three",
+      "label": "decide_pick",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.42760110542726204,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4128.4,
+      "svc_wall_ms": 4128.2,
+      "result_type": "str",
+      "result_len": 1974,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.43 below gate)"
+      ]
+    },
+    {
+      "idx": 28,
+      "utterance": "list the exact identifiers the user mentioned",
+      "label": "decide_extract",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 1,
+      "hop_ops": [
+        "filesys_glob"
+      ],
+      "wall_ms": 5.9,
+      "svc_wall_ms": 5.8,
+      "result_type": "list",
+      "result_len": 159,
+      "error": null,
+      "assumptions": []
+    },
+    {
+      "idx": 29,
+      "utterance": "search for benchmarks comparing q4 and q5 quants",
+      "label": "web_search",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.6905872509901569,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3446.1,
+      "svc_wall_ms": 3446.0,
+      "result_type": "str",
+      "result_len": 11723,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.69 below gate)"
+      ]
+    },
+    {
+      "idx": 30,
+      "utterance": "get me the content of the huggingface model card",
+      "label": "web_fetch",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.4657305107092375,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3514.3,
+      "svc_wall_ms": 3514.1,
+      "result_type": "str",
+      "result_len": 11473,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.47 below gate)"
+      ]
+    },
+    {
+      "idx": 31,
+      "utterance": "catch me up on that quantization megathread on the sub",
+      "label": "reddit_digest",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.2973119482485887,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3452.7,
+      "svc_wall_ms": 3452.5,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.30 below gate)"
+      ]
+    },
+    {
+      "idx": 32,
+      "utterance": "give me the body of the root makefile",
+      "label": "filesys_read",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.5977235138844256,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 6803.8,
+      "svc_wall_ms": 6803.6,
+      "result_type": "str",
+      "result_len": 344,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.60 below gate)"
+      ]
+    },
+    {
+      "idx": 33,
+      "utterance": "find every .sh under scripts/",
+      "label": "filesys_glob",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.6136160702641251,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3878.9,
+      "svc_wall_ms": 3878.7,
+      "result_type": "str",
+      "result_len": 3655,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.61 below gate)"
+      ],
+      "listing_constraint": {
+        "kind": "ext",
+        "value": "sh",
+        "evidence": ".sh"
+      },
+      "listing_respected": null,
+      "returned_list": false,
+      "n_returned": null,
+      "n_violations": null
+    },
+    {
+      "idx": 34,
+      "utterance": "grep the tree for deprecated",
+      "label": "filesys_grep",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.13769620881943131,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4014.8,
+      "svc_wall_ms": 4014.7,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.14 below gate)"
+      ]
+    },
+    {
+      "idx": 35,
+      "utterance": "which of those two forum threads is more on-topic?",
+      "label": "decide_pick",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.2167643563220289,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3401.3,
+      "svc_wall_ms": 3401.2,
+      "result_type": "str",
+      "result_len": 8131,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.22 below gate)"
+      ]
+    },
+    {
+      "idx": 36,
+      "utterance": "what should the search string be for this goal?",
+      "label": "decide_extract",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.15703267878139315,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4750.8,
+      "svc_wall_ms": 4750.7,
+      "result_type": "str",
+      "result_len": 7770,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.16 below gate)"
+      ]
+    },
+    {
+      "idx": 37,
+      "utterance": "who ships a cpu-only ffmpeg build these days?",
+      "label": "web_search",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.3432376493054068,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3187.4,
+      "svc_wall_ms": 3187.3,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.34 below gate)"
+      ]
+    },
+    {
+      "idx": 38,
+      "utterance": "fetch the changelog at that docs link",
+      "label": "web_fetch",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.13680750437324496,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 2374.0,
+      "svc_wall_ms": 2373.8,
+      "result_type": "str",
+      "result_len": 11473,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.14 below gate)"
+      ]
+    },
+    {
+      "idx": 39,
+      "utterance": "digest the comments on the llama.cpp release post",
+      "label": "reddit_digest",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.3782076960519428,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4472.9,
+      "svc_wall_ms": 4472.8,
+      "result_type": "str",
+      "result_len": 6366,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.38 below gate)"
+      ]
+    },
+    {
+      "idx": 40,
+      "utterance": "read through requirements-dev.txt",
+      "label": "filesys_read",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.3592265306059599,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4784.6,
+      "svc_wall_ms": 4784.5,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.36 below gate)"
+      ]
+    },
+    {
+      "idx": 41,
+      "utterance": "do we have any dockerfile at the top level?",
+      "label": "filesys_glob",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.5048944060278296,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3358.3,
+      "svc_wall_ms": 3358.1,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.50 below gate)"
+      ],
+      "listing_constraint": {
+        "kind": "name",
+        "value": "dockerfile",
+        "evidence": "dockerfile"
+      },
+      "listing_respected": null,
+      "returned_list": false,
+      "n_returned": null,
+      "n_violations": null
+    },
+    {
+      "idx": 42,
+      "utterance": "does anything in bin/ reference the legacy CLI?",
+      "label": "filesys_grep",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.484832457669782,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3603.5,
+      "svc_wall_ms": 3603.4,
+      "result_type": "str",
+      "result_len": 8205,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.48 below gate)"
+      ]
+    },
+    {
+      "idx": 43,
+      "utterance": "narrow these eight matches down to the most relevant",
+      "label": "decide_pick",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.08322669412436265,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3765.3,
+      "svc_wall_ms": 3765.1,
+      "result_type": "str",
+      "result_len": 962,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.08 below gate)"
+      ]
+    },
+    {
+      "idx": 44,
+      "utterance": "write out the file names the request refers to",
+      "label": "decide_extract",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.11130559199126633,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4727.5,
+      "svc_wall_ms": 4727.4,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.11 below gate)"
+      ]
+    },
+    {
+      "idx": 45,
+      "utterance": "look up sdpa vs flash attention perf numbers",
+      "label": "web_search",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.15453924761280338,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 2840.9,
+      "svc_wall_ms": 2840.8,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.15 below gate)"
+      ]
+    },
+    {
+      "idx": 46,
+      "utterance": "read https://github.com/ggml-org/llama.cpp/pull/1203",
+      "label": "web_fetch",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.6180566174037632,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 7548.9,
+      "svc_wall_ms": 7548.8,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.62 below gate)"
+      ]
+    },
+    {
+      "idx": 47,
+      "utterance": "skim r/programming and tell me the big stories",
+      "label": "reddit_digest",
+      "band": "t1",
+      "tier_target": null,
+      "status": "error",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 0,
+      "hop_ops": [],
+      "wall_ms": 0.4,
+      "svc_wall_ms": 0.2,
+      "result_type": "none",
+      "result_len": null,
+      "error": "reddit-research CLI unavailable: no project directory found; tried:\n  /home/andrew/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  /home/andrew/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
+      "assumptions": []
+    },
+    {
+      "idx": 48,
+      "utterance": "how is the retry logic implemented in service/net/client.py?",
+      "label": "filesys_read",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.5708255686950051,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5098.3,
+      "svc_wall_ms": 5098.2,
+      "result_type": "str",
+      "result_len": 8096,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.57 below gate)"
+      ]
+    },
+    {
+      "idx": 49,
+      "utterance": "how many .md docs are there in docs/guide?",
+      "label": "filesys_glob",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.07650352144559053,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3434.8,
+      "svc_wall_ms": 3434.6,
+      "result_type": "str",
+      "result_len": 11723,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.08 below gate)"
+      ],
+      "listing_constraint": {
+        "kind": "ext",
+        "value": "md",
+        "evidence": ".md"
+      },
+      "listing_respected": null,
+      "returned_list": false,
+      "n_returned": null,
+      "n_violations": null
+    },
+    {
+      "idx": 50,
+      "utterance": "locate each place we catch HTTPError",
+      "label": "filesys_grep",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.24861323264404595,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3143.4,
+      "svc_wall_ms": 3143.3,
+      "result_type": "str",
+      "result_len": 8131,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.25 below gate)"
+      ]
+    },
+    {
+      "idx": 51,
+      "utterance": "I have five candidate paths \u2014 tell me which to open",
+      "label": "decide_pick",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.28696110230811234,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3423.3,
+      "svc_wall_ms": 3423.1,
+      "result_type": "str",
+      "result_len": 2830,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.29 below gate)"
+      ]
+    },
+    {
+      "idx": 52,
+      "utterance": "come up with alternate wordings for my lookup",
+      "label": "decide_extract",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.3890331378329179,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3541.5,
+      "svc_wall_ms": 3541.4,
+      "result_type": "str",
+      "result_len": 3016,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.39 below gate)"
+      ]
+    },
+    {
+      "idx": 53,
+      "utterance": "find the official docs on httponly cookie flags",
+      "label": "web_search",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.272866192621622,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4436.6,
+      "svc_wall_ms": 4436.5,
+      "result_type": "str",
+      "result_len": 10350,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.27 below gate)"
+      ]
+    },
+    {
+      "idx": 54,
+      "utterance": "open the arxiv abs page for 2401.06919",
+      "label": "web_fetch",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.38348004724416906,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5440.5,
+      "svc_wall_ms": 5440.3,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.38 below gate)"
+      ]
+    },
+    {
+      "idx": 55,
+      "utterance": "what are people in the machine learning sub asking?",
+      "label": "reddit_digest",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.3843432788421326,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 6071.1,
+      "svc_wall_ms": 6070.9,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.38 below gate)"
+      ]
+    },
+    {
+      "idx": 56,
+      "utterance": "dump the schema block from models/registry.py",
+      "label": "filesys_read",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.39539187689018734,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 9598.8,
+      "svc_wall_ms": 9598.5,
+      "result_type": "str",
+      "result_len": 2481,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.40 below gate)"
+      ]
+    },
+    {
+      "idx": 57,
+      "utterance": "which files here start with bench_?",
+      "label": "filesys_glob",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 1,
+      "hop_ops": [
+        "filesys_glob"
+      ],
+      "wall_ms": 7.1,
+      "svc_wall_ms": 7.0,
+      "result_type": "list",
+      "result_len": 159,
+      "error": null,
+      "assumptions": [],
+      "listing_constraint": {
+        "kind": "prefix",
+        "value": "bench_",
+        "evidence": "start with bench_"
+      },
+      "listing_respected": false,
+      "returned_list": true,
+      "n_returned": 159,
+      "n_violations": 159,
+      "violation_samples": [
+        "pyproject.toml",
+        "README.md",
+        "docs/ops.md",
+        "docs/architecture.md",
+        "docs/research-model-sweep-q4.md"
+      ]
+    },
+    {
+      "idx": 58,
+      "utterance": "search the fixtures for api_token strings",
+      "label": "filesys_grep",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.12543327825208153,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4697.9,
+      "svc_wall_ms": 4697.7,
+      "result_type": "str",
+      "result_len": 1974,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.13 below gate)"
+      ]
+    },
+    {
+      "idx": 59,
+      "utterance": "sort these search hits by how well they fit the task",
+      "label": "decide_pick",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.16338430209849447,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5657.3,
+      "svc_wall_ms": 5657.1,
+      "result_type": "str",
+      "result_len": 7770,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.16 below gate)"
+      ]
+    },
+    {
+      "idx": 60,
+      "utterance": "pull the topic keywords from my message",
+      "label": "decide_extract",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.2699116924459419,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5288.8,
+      "svc_wall_ms": 5288.7,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.27 below gate)"
+      ]
+    },
+    {
+      "idx": 61,
+      "utterance": "search the web for ggml backend api changes",
+      "label": "web_search",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.691394195170976,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5606.7,
+      "svc_wall_ms": 5606.5,
+      "result_type": "str",
+      "result_len": 7770,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.69 below gate)"
+      ]
+    },
+    {
+      "idx": 62,
+      "utterance": "show the page stored under the pending url",
+      "label": "web_fetch",
+      "band": "t1",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.2567256433873586,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4464.2,
+      "svc_wall_ms": 4464.0,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.26 below gate)"
+      ]
+    },
+    {
+      "idx": 63,
+      "utterance": "pull up the flash attention discussion on the subreddit",
+      "label": "reddit_digest",
+      "band": "t1",
+      "tier_target": null,
+      "status": "error",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 0,
+      "hop_ops": [],
+      "wall_ms": 0.3,
+      "svc_wall_ms": 0.2,
+      "result_type": "none",
+      "result_len": null,
+      "error": "reddit-research CLI unavailable: no project directory found; tried:\n  /home/andrew/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  /home/andrew/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
+      "assumptions": []
+    },
+    {
+      "idx": 64,
+      "utterance": "pull up the cron config for me",
+      "label": "filesys_read",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.5200902899072352,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4127.2,
+      "svc_wall_ms": 4127.1,
+      "result_type": "str",
+      "result_len": 10350,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.52 below gate)"
+      ]
+    },
+    {
+      "idx": 65,
+      "utterance": "where do we keep the probe fixtures?",
+      "label": "filesys_glob",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": false,
+      "confidence": 0.7202692872431001,
+      "n_hops": 3,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "filesys_read"
+      ],
+      "wall_ms": 5080.9,
+      "svc_wall_ms": 5080.8,
+      "result_type": "str",
+      "result_len": 7624,
+      "error": null,
+      "assumptions": [],
+      "listing_constraint": null,
+      "listing_respected": null,
+      "returned_list": false,
+      "n_returned": null,
+      "n_violations": null
+    },
+    {
+      "idx": 66,
+      "utterance": "where do we define the hop budget?",
+      "label": "filesys_grep",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.2709621458051966,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3688.0,
+      "svc_wall_ms": 3687.8,
+      "result_type": "str",
+      "result_len": 1107,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.27 below gate)"
+      ]
+    },
+    {
+      "idx": 67,
+      "utterance": "of the results we just pulled, which one matters?",
+      "label": "decide_pick",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.11893569682108458,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 6699.4,
+      "svc_wall_ms": 6699.3,
+      "result_type": "str",
+      "result_len": 64343,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.12 below gate)"
+      ]
+    },
+    {
+      "idx": 68,
+      "utterance": "how would you phrase this ask for the engine?",
+      "label": "decide_extract",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.21090882271407463,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3813.3,
+      "svc_wall_ms": 3813.2,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.21 below gate)"
+      ]
+    },
+    {
+      "idx": 69,
+      "utterance": "anything out there on the new moka decode path?",
+      "label": "web_search",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.2018708968808191,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4289.3,
+      "svc_wall_ms": 4289.1,
+      "result_type": "str",
+      "result_len": 11125,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.20 below gate)"
+      ]
+    },
+    {
+      "idx": 70,
+      "utterance": "get me whatever lives at that address",
+      "label": "web_fetch",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.21229909019514323,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4325.8,
+      "svc_wall_ms": 4325.7,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.21 below gate)"
+      ]
+    },
+    {
+      "idx": 71,
+      "utterance": "what's the community saying about the llama 4 dump?",
+      "label": "reddit_digest",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.4392888846275924,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3521.8,
+      "svc_wall_ms": 3521.6,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.44 below gate)"
+      ]
+    },
+    {
+      "idx": 72,
+      "utterance": "what does the makefile actually do?",
+      "label": "filesys_read",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.2952265580684568,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4005.8,
+      "svc_wall_ms": 4005.7,
+      "result_type": "str",
+      "result_len": 10350,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.30 below gate)"
+      ]
+    },
+    {
+      "idx": 73,
+      "utterance": "is there a migration script for the settings table?",
+      "label": "filesys_glob",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.35537222544573605,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4925.9,
+      "svc_wall_ms": 4925.7,
+      "result_type": "str",
+      "result_len": 3655,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.36 below gate)"
+      ],
+      "listing_constraint": null,
+      "listing_respected": null,
+      "returned_list": false,
+      "n_returned": null,
+      "n_violations": null
+    },
+    {
+      "idx": 74,
+      "utterance": "does anything here still call the v1 endpoint?",
+      "label": "filesys_grep",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.11756971727777883,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4491.8,
+      "svc_wall_ms": 4491.7,
+      "result_type": "str",
+      "result_len": 10350,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.12 below gate)"
+      ]
+    },
+    {
+      "idx": 75,
+      "utterance": "several hits came back; I only care about one",
+      "label": "decide_pick",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.13890856898796652,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 9101.8,
+      "svc_wall_ms": 9101.7,
+      "result_type": "str",
+      "result_len": 1914,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.14 below gate)"
+      ]
+    },
+    {
+      "idx": 76,
+      "utterance": "what words should I throw at it to get hits?",
+      "label": "decide_extract",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.24866233640022678,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 6613.1,
+      "svc_wall_ms": 6613.0,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.25 below gate)"
+      ]
+    },
+    {
+      "idx": 77,
+      "utterance": "any chatter elsewhere about the sigill crash?",
+      "label": "web_search",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.32880181311783924,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3531.7,
+      "svc_wall_ms": 3531.5,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.33 below gate)"
+      ]
+    },
+    {
+      "idx": 78,
+      "utterance": "click through to the pydantic settings guide",
+      "label": "web_fetch",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.3121887408939497,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5606.3,
+      "svc_wall_ms": 5606.1,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.31 below gate)"
+      ]
+    },
+    {
+      "idx": 79,
+      "utterance": "check the boards for reactions to the new quant release",
+      "label": "reddit_digest",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.36906678677233595,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 8977.2,
+      "svc_wall_ms": 8977.0,
+      "result_type": "str",
+      "result_len": 7349,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.37 below gate)"
+      ]
+    },
+    {
+      "idx": 80,
+      "utterance": "walk me through middleware/auth.py",
+      "label": "filesys_read",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.44183729606774463,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3875.5,
+      "svc_wall_ms": 3875.3,
+      "result_type": "str",
+      "result_len": 3613,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.44 below gate)"
+      ]
+    },
+    {
+      "idx": 81,
+      "utterance": "find the README",
+      "label": "filesys_glob",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.5613112791452901,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 7259.4,
+      "svc_wall_ms": 7259.3,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.56 below gate)"
+      ],
+      "listing_constraint": {
+        "kind": "name",
+        "value": "readme",
+        "evidence": "README"
+      },
+      "listing_respected": null,
+      "returned_list": false,
+      "n_returned": null,
+      "n_violations": null
+    },
+    {
+      "idx": 82,
+      "utterance": "track down every use of the SignedHeaders helper",
+      "label": "filesys_grep",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.34685883208176604,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4661.4,
+      "svc_wall_ms": 4661.3,
+      "result_type": "str",
+      "result_len": 344,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.35 below gate)"
+      ]
+    },
+    {
+      "idx": 83,
+      "utterance": "from what's in the queue, what should we actually visit?",
+      "label": "decide_pick",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.5275930157387672,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5318.9,
+      "svc_wall_ms": 5318.7,
+      "result_type": "str",
+      "result_len": 10350,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.53 below gate)"
+      ]
+    },
+    {
+      "idx": 84,
+      "utterance": "name the dirs the request refers to",
+      "label": "decide_extract",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.12924598305759227,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5294.3,
+      "svc_wall_ms": 5294.2,
+      "result_type": "str",
+      "result_len": 3613,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.13 below gate)"
+      ]
+    },
+    {
+      "idx": 85,
+      "utterance": "who else has hit this exact xformers error?",
+      "label": "web_search",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.19819903819980708,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 2806.3,
+      "svc_wall_ms": 2806.2,
+      "result_type": "str",
+      "result_len": 10350,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.20 below gate)"
+      ]
+    },
+    {
+      "idx": 86,
+      "utterance": "download the text of that advisory page",
+      "label": "web_fetch",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.45248624420766226,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4305.1,
+      "svc_wall_ms": 4305.0,
+      "result_type": "str",
+      "result_len": 171,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.45 below gate)"
+      ]
+    },
+    {
+      "idx": 87,
+      "utterance": "did anyone respond on that thread about tool use?",
+      "label": "reddit_digest",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.2177992060827977,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 2517.1,
+      "svc_wall_ms": 2517.0,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.22 below gate)"
+      ]
+    },
+    {
+      "idx": 88,
+      "utterance": "need the full text of cli/help.txt",
+      "label": "filesys_read",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.47378084131751635,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3867.4,
+      "svc_wall_ms": 3867.2,
+      "result_type": "str",
+      "result_len": 8920,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.47 below gate)"
+      ]
+    },
+    {
+      "idx": 89,
+      "utterance": "which dotfiles did the setup leave behind?",
+      "label": "filesys_glob",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.34655916700863604,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3386.4,
+      "svc_wall_ms": 3386.2,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.35 below gate)"
+      ],
+      "listing_constraint": {
+        "kind": "dotfile",
+        "value": ".",
+        "evidence": "dotfiles"
+      },
+      "listing_respected": null,
+      "returned_list": false,
+      "n_returned": null,
+      "n_violations": null
+    },
+    {
+      "idx": 90,
+      "utterance": "any references to wallet.json left in the tree?",
+      "label": "filesys_grep",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.5016150293050635,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 8040.0,
+      "svc_wall_ms": 8039.9,
+      "result_type": "str",
+      "result_len": 4336,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.50 below gate)"
+      ]
+    },
+    {
+      "idx": 91,
+      "utterance": "I got a pile of matches \u2014 point me at the right entry",
+      "label": "decide_pick",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.2778292573445186,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4777.0,
+      "svc_wall_ms": 4776.8,
+      "result_type": "str",
+      "result_len": 8096,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.28 below gate)"
+      ]
+    },
+    {
+      "idx": 92,
+      "utterance": "give me some alternative ways to ask this",
+      "label": "decide_extract",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.16038988081123023,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 2591.0,
+      "svc_wall_ms": 2590.9,
+      "result_type": "str",
+      "result_len": 10350,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.16 below gate)"
+      ]
+    },
+    {
+      "idx": 93,
+      "utterance": "is there anything published about the tokenizer patch?",
+      "label": "web_search",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.4155414982314427,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3195.9,
+      "svc_wall_ms": 3195.8,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.42 below gate)"
+      ]
+    },
+    {
+      "idx": 94,
+      "utterance": "I want the body of the release page",
+      "label": "web_fetch",
+      "band": "t2",
+      "tier_target": null,
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.6562536723392197,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4181.7,
+      "svc_wall_ms": 4181.6,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.66 below gate)"
+      ]
+    },
+    {
+      "idx": 95,
+      "utterance": "which files talk about the eviction policy?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "tier_target": "filesys_glob",
+      "status": "done",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 1,
+      "hop_ops": [
+        "filesys_glob"
+      ],
+      "wall_ms": 5.7,
+      "svc_wall_ms": 5.6,
+      "result_type": "list",
+      "result_len": 159,
+      "error": null,
+      "assumptions": []
+    },
+    {
+      "idx": 96,
+      "utterance": "which files have 'replay' in their name?",
+      "label": "filesys_glob",
+      "band": "t3",
+      "tier_target": "filesys_grep",
+      "status": "done",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 1,
+      "hop_ops": [
+        "filesys_glob"
+      ],
+      "wall_ms": 7.6,
+      "svc_wall_ms": 7.4,
+      "result_type": "list",
+      "result_len": 159,
+      "error": null,
+      "assumptions": [],
+      "listing_constraint": {
+        "kind": "substring",
+        "value": "replay",
+        "evidence": "have 'replay' in their name"
+      },
+      "listing_respected": false,
+      "returned_list": true,
+      "n_returned": 159,
+      "n_violations": 158,
+      "violation_samples": [
+        "pyproject.toml",
+        "README.md",
+        "docs/ops.md",
+        "docs/architecture.md",
+        "docs/research-model-sweep-q4.md"
+      ]
+    },
+    {
+      "idx": 97,
+      "utterance": "show ops/matcher.py on screen",
+      "label": "filesys_read",
+      "band": "t3",
+      "tier_target": "decide_extract",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.24522128543861987,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4421.4,
+      "svc_wall_ms": 4421.3,
+      "result_type": "str",
+      "result_len": 2241,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.25 below gate)"
+      ]
+    },
+    {
+      "idx": 98,
+      "utterance": "among the files found, which one should we ship to the fetcher?",
+      "label": "decide_pick",
+      "band": "t3",
+      "tier_target": "filesys_glob",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.06453752882671115,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 6023.2,
+      "svc_wall_ms": 6023.1,
+      "result_type": "str",
+      "result_len": 57744,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.06 below gate)"
+      ]
+    },
+    {
+      "idx": 99,
+      "utterance": "what search terms fit this ask?",
+      "label": "decide_extract",
+      "band": "t3",
+      "tier_target": "web_search",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.18939877944017908,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 6413.0,
+      "svc_wall_ms": 6412.8,
+      "result_type": "str",
+      "result_len": 1974,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.19 below gate)"
+      ]
+    },
+    {
+      "idx": 100,
+      "utterance": "extract the file paths mentioned in the last message",
+      "label": "decide_extract",
+      "band": "t3",
+      "tier_target": "filesys_glob",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.08044060526016208,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5920.1,
+      "svc_wall_ms": 5920.0,
+      "result_type": "str",
+      "result_len": 2135,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.08 below gate)"
+      ]
+    },
+    {
+      "idx": 101,
+      "utterance": "do any modules pull in pydantic here?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "tier_target": "filesys_read",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.5617435898639384,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5344.6,
+      "svc_wall_ms": 5344.5,
+      "result_type": "str",
+      "result_len": 344,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.56 below gate)"
+      ]
+    },
+    {
+      "idx": 102,
+      "utterance": "which functions call urllib in the test suite?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "tier_target": "web_fetch",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.1725980538726953,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4109.0,
+      "svc_wall_ms": 4108.9,
+      "result_type": "str",
+      "result_len": 12797,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.17 below gate)"
+      ]
+    },
+    {
+      "idx": 103,
+      "utterance": "which of these three wordings fits the goal best?",
+      "label": "decide_pick",
+      "band": "t3",
+      "tier_target": "decide_extract",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.08421792557096507,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4730.5,
+      "svc_wall_ms": 4730.4,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.08 below gate)"
+      ]
+    },
+    {
+      "idx": 104,
+      "utterance": "how is r/LocalLLaMA reacting to the d1 weights?",
+      "label": "reddit_digest",
+      "band": "t3",
+      "tier_target": "web_search",
+      "status": "error",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 0,
+      "hop_ops": [],
+      "wall_ms": 0.3,
+      "svc_wall_ms": 0.2,
+      "result_type": "none",
+      "result_len": null,
+      "error": "reddit-research CLI unavailable: no project directory found; tried:\n  /home/andrew/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  /home/andrew/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
+      "assumptions": []
+    },
+    {
+      "idx": 105,
+      "utterance": "which files mention the scheduler hooks?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "tier_target": "filesys_glob",
+      "status": "done",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 1,
+      "hop_ops": [
+        "filesys_glob"
+      ],
+      "wall_ms": 7.3,
+      "svc_wall_ms": 7.2,
+      "result_type": "list",
+      "result_len": 159,
+      "error": null,
+      "assumptions": []
+    },
+    {
+      "idx": 106,
+      "utterance": "are there any .har files in the captures dir?",
+      "label": "filesys_glob",
+      "band": "t3",
+      "tier_target": "filesys_grep",
+      "status": "done",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 1,
+      "hop_ops": [
+        "filesys_glob"
+      ],
+      "wall_ms": 7.4,
+      "svc_wall_ms": 7.3,
+      "result_type": "list",
+      "result_len": 159,
+      "error": null,
+      "assumptions": [
+        "listing: no directory 'captures' here, so the listing covers the cwd (/home/andrew/ti-worktrees/abharness) instead"
+      ],
+      "listing_constraint": {
+        "kind": "ext",
+        "value": "har",
+        "evidence": ".har"
+      },
+      "listing_respected": false,
+      "returned_list": true,
+      "n_returned": 159,
+      "n_violations": 159,
+      "violation_samples": [
+        "pyproject.toml",
+        "README.md",
+        "docs/ops.md",
+        "docs/architecture.md",
+        "docs/research-model-sweep-q4.md"
+      ]
+    },
+    {
+      "idx": 107,
+      "utterance": "pull up the full listing of core/registry.py",
+      "label": "filesys_read",
+      "band": "t3",
+      "tier_target": "decide_extract",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.33370724171824295,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4225.8,
+      "svc_wall_ms": 4225.7,
+      "result_type": "str",
+      "result_len": 1233,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.33 below gate)"
+      ]
+    },
+    {
+      "idx": 108,
+      "utterance": "of the dozen files that came up, which is the right one to open?",
+      "label": "decide_pick",
+      "band": "t3",
+      "tier_target": "filesys_glob",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.09370878768498099,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5102.7,
+      "svc_wall_ms": 5102.5,
+      "result_type": "str",
+      "result_len": 1974,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.09 below gate)"
+      ]
+    },
+    {
+      "idx": 109,
+      "utterance": "generate a few phrasings of the lookup before we hit the web",
+      "label": "decide_extract",
+      "band": "t3",
+      "tier_target": "web_search",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.17467189547466633,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4883.8,
+      "svc_wall_ms": 4883.7,
+      "result_type": "str",
+      "result_len": 1974,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.17 below gate)"
+      ]
+    },
+    {
+      "idx": 110,
+      "utterance": "pull out the dirs the user pointed at",
+      "label": "decide_extract",
+      "band": "t3",
+      "tier_target": "filesys_glob",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.12794494654294064,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5427.8,
+      "svc_wall_ms": 5427.7,
+      "result_type": "str",
+      "result_len": 344,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.13 below gate)"
+      ]
+    },
+    {
+      "idx": 111,
+      "utterance": "is fastapi referenced anywhere in the tree?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "tier_target": "filesys_read",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.25668864402376557,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 6055.8,
+      "svc_wall_ms": 6055.6,
+      "result_type": "str",
+      "result_len": 344,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.26 below gate)"
+      ]
+    },
+    {
+      "idx": 112,
+      "utterance": "find any use of the requests module in src",
+      "label": "filesys_grep",
+      "band": "t3",
+      "tier_target": "web_search",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.254893626613445,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4235.7,
+      "svc_wall_ms": 4235.6,
+      "result_type": "str",
+      "result_len": 2775,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.25 below gate)"
+      ]
+    },
+    {
+      "idx": 113,
+      "utterance": "of the two candidate queries on the table, which do we run?",
+      "label": "decide_pick",
+      "band": "t3",
+      "tier_target": "decide_extract",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.11957400407428478,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5635.9,
+      "svc_wall_ms": 5635.8,
+      "result_type": "str",
+      "result_len": 2830,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.12 below gate)"
+      ]
+    },
+    {
+      "idx": 114,
+      "utterance": "any threads in r/MachineLearning about the kv cache trick?",
+      "label": "reddit_digest",
+      "band": "t3",
+      "tier_target": "web_search",
+      "status": "error",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 0,
+      "hop_ops": [],
+      "wall_ms": 0.3,
+      "svc_wall_ms": 0.2,
+      "result_type": "none",
+      "result_len": null,
+      "error": "reddit-research CLI unavailable: no project directory found; tried:\n  /home/andrew/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  /home/andrew/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
+      "assumptions": []
+    },
+    {
+      "idx": 115,
+      "utterance": "which files under src discuss the shard map?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "tier_target": "filesys_glob",
+      "status": "done",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 1,
+      "hop_ops": [
+        "filesys_glob"
+      ],
+      "wall_ms": 7.8,
+      "svc_wall_ms": 7.6,
+      "result_type": "list",
+      "result_len": 159,
+      "error": null,
+      "assumptions": [
+        "listing: no directory 'src' here, so the listing covers the cwd (/home/andrew/ti-worktrees/abharness) instead"
+      ]
+    },
+    {
+      "idx": 116,
+      "utterance": "files ending in .bak anywhere in the project?",
+      "label": "filesys_glob",
+      "band": "t3",
+      "tier_target": "filesys_grep",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.2664702664451707,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5346.6,
+      "svc_wall_ms": 5346.5,
+      "result_type": "str",
+      "result_len": 37,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.27 below gate)"
+      ],
+      "listing_constraint": {
+        "kind": "ext",
+        "value": "bak",
+        "evidence": ".bak"
+      },
+      "listing_respected": null,
+      "returned_list": false,
+      "n_returned": null,
+      "n_violations": null
+    },
+    {
+      "idx": 117,
+      "utterance": "what's written in prompts/system.txt?",
+      "label": "filesys_read",
+      "band": "t3",
+      "tier_target": "decide_extract",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.19128180673949682,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 7412.1,
+      "svc_wall_ms": 7412.0,
+      "result_type": "str",
+      "result_len": 962,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.19 below gate)"
+      ]
+    },
+    {
+      "idx": 118,
+      "utterance": "among the earlier matches, pick the one answering the ask",
+      "label": "decide_pick",
+      "band": "t3",
+      "tier_target": "filesys_glob",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.20614026372399946,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 7287.6,
+      "svc_wall_ms": 7287.5,
+      "result_type": "str",
+      "result_len": 57744,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.21 below gate)"
+      ]
+    },
+    {
+      "idx": 119,
+      "utterance": "turn this into three distinct ways to ask around",
+      "label": "decide_extract",
+      "band": "t3",
+      "tier_target": "web_search",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.17275663191572457,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3158.9,
+      "svc_wall_ms": 3158.8,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.17 below gate)"
+      ]
+    },
+    {
+      "idx": 120,
+      "utterance": "what literal paths show up in that instruction?",
+      "label": "decide_extract",
+      "band": "t3",
+      "tier_target": "filesys_glob",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.3098370187737067,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3772.4,
+      "svc_wall_ms": 3772.2,
+      "result_type": "str",
+      "result_len": 2135,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.31 below gate)"
+      ]
+    },
+    {
+      "idx": 121,
+      "utterance": "where does the codebase touch the stage registry?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "tier_target": "filesys_read",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.48119045348712114,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3696.5,
+      "svc_wall_ms": 3696.4,
+      "result_type": "str",
+      "result_len": 2481,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.48 below gate)"
+      ]
+    },
+    {
+      "idx": 122,
+      "utterance": "where is the http client wired up in service/net?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "tier_target": "web_fetch",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.6670648030143167,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4653.9,
+      "svc_wall_ms": 4653.8,
+      "result_type": "str",
+      "result_len": 60,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.67 below gate)"
+      ]
+    },
+    {
+      "idx": 123,
+      "utterance": "sort the drafts and say which one to send",
+      "label": "decide_pick",
+      "band": "t3",
+      "tier_target": "decide_extract",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.09961909744858571,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4614.1,
+      "svc_wall_ms": 4614.0,
+      "result_type": "str",
+      "result_len": 2830,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.10 below gate)"
+      ]
+    },
+    {
+      "idx": 124,
+      "utterance": "pull the top comments off that r/cpp announcement post",
+      "label": "reddit_digest",
+      "band": "t3",
+      "tier_target": "web_fetch",
+      "status": "error",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 0,
+      "hop_ops": [],
+      "wall_ms": 0.3,
+      "svc_wall_ms": 0.2,
+      "result_type": "none",
+      "result_len": null,
+      "error": "reddit-research CLI unavailable: no project directory found; tried:\n  /home/andrew/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  /home/andrew/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
+      "assumptions": []
+    },
+    {
+      "idx": 125,
+      "utterance": "what files make use of the old env var?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "tier_target": "filesys_glob",
+      "status": "done",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 1,
+      "hop_ops": [
+        "filesys_glob"
+      ],
+      "wall_ms": 7.6,
+      "svc_wall_ms": 7.5,
+      "result_type": "list",
+      "result_len": 159,
+      "error": null,
+      "assumptions": []
+    },
+    {
+      "idx": 126,
+      "utterance": "which files match the pattern used for backups?",
+      "label": "filesys_glob",
+      "band": "t3",
+      "tier_target": "decide_pick",
+      "status": "done",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 1,
+      "hop_ops": [
+        "filesys_glob"
+      ],
+      "wall_ms": 7.1,
+      "svc_wall_ms": 7.0,
+      "result_type": "list",
+      "result_len": 159,
+      "error": null,
+      "assumptions": [],
+      "listing_constraint": null,
+      "listing_respected": null,
+      "returned_list": true,
+      "n_returned": 159,
+      "n_violations": null
+    },
+    {
+      "idx": 127,
+      "utterance": "turn the user's wording into the exact filenames to print",
+      "label": "decide_extract",
+      "band": "t3",
+      "tier_target": "filesys_read",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.11041876444854737,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5426.4,
+      "svc_wall_ms": 5426.3,
+      "result_type": "str",
+      "result_len": 962,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.11 below gate)"
+      ]
+    },
+    {
+      "idx": 128,
+      "utterance": "give me keyword variants for the upcoming lookup",
+      "label": "decide_extract",
+      "band": "t3",
+      "tier_target": "web_search",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.08870779601768497,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4934.8,
+      "svc_wall_ms": 4934.6,
+      "result_type": "str",
+      "result_len": 962,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.09 below gate)"
+      ]
+    },
+    {
+      "idx": 129,
+      "utterance": "list the matches for the pattern in the user's note",
+      "label": "filesys_glob",
+      "band": "t3",
+      "tier_target": "decide_extract",
+      "status": "done",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 1,
+      "hop_ops": [
+        "filesys_glob"
+      ],
+      "wall_ms": 7.5,
+      "svc_wall_ms": 7.3,
+      "result_type": "list",
+      "result_len": 159,
+      "error": null,
+      "assumptions": [
+        "listing: no directory 'user' here, so the listing covers the cwd (/home/andrew/ti-worktrees/abharness) instead"
+      ],
+      "listing_constraint": null,
+      "listing_respected": null,
+      "returned_list": true,
+      "n_returned": 159,
+      "n_violations": null
+    },
+    {
+      "idx": 130,
+      "utterance": "what's the retry flow inside bench/replay.py?",
+      "label": "filesys_read",
+      "band": "t3",
+      "tier_target": "filesys_grep",
+      "status": "done",
+      "degraded": false,
+      "confidence": 0.9748689395973494,
+      "n_hops": 3,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "filesys_read"
+      ],
+      "wall_ms": 3407.2,
+      "svc_wall_ms": 3407.1,
+      "result_type": "str",
+      "result_len": 1933,
+      "error": null,
+      "assumptions": []
+    },
+    {
+      "idx": 131,
+      "utterance": "how do other projects do graceful shutdowns?",
+      "label": "web_search",
+      "band": "t3",
+      "tier_target": "filesys_grep",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.5474038929400445,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 2641.2,
+      "svc_wall_ms": 2641.0,
+      "result_type": "str",
+      "result_len": 10350,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.55 below gate)"
+      ]
+    },
+    {
+      "idx": 132,
+      "utterance": "come up with five candidate titles from the brief",
+      "label": "decide_extract",
+      "band": "t3",
+      "tier_target": "decide_pick",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.261018724669872,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 11960.6,
+      "svc_wall_ms": 11960.5,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.26 below gate)"
+      ]
+    },
+    {
+      "idx": 133,
+      "utterance": "see what coverage the d1 launch is getting online",
+      "label": "web_search",
+      "band": "t3",
+      "tier_target": "reddit_digest",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.2725138048996857,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 9920.5,
+      "svc_wall_ms": 9920.4,
+      "result_type": "str",
+      "result_len": 10350,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.27 below gate)"
+      ]
+    },
+    {
+      "idx": 134,
+      "utterance": "give me the gist of that thread in r/MachineLearning",
+      "label": "reddit_digest",
+      "band": "t3",
+      "tier_target": "web_fetch",
+      "status": "error",
+      "degraded": false,
+      "confidence": 1.0,
+      "n_hops": 0,
+      "hop_ops": [],
+      "wall_ms": 0.3,
+      "svc_wall_ms": 0.2,
+      "result_type": "none",
+      "result_len": null,
+      "error": "reddit-research CLI unavailable: no project directory found; tried:\n  /home/andrew/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  /home/andrew/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
+      "assumptions": []
+    },
+    {
+      "idx": 135,
+      "utterance": "which ones in here end in .patch?",
+      "label": "filesys_glob",
+      "band": "t3",
+      "tier_target": "decide_pick",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.18704963139682862,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4509.0,
+      "svc_wall_ms": 4508.9,
+      "result_type": "str",
+      "result_len": 2678,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.19 below gate)"
+      ],
+      "listing_constraint": {
+        "kind": "ext",
+        "value": "patch",
+        "evidence": ".patch"
+      },
+      "listing_respected": null,
+      "returned_list": false,
+      "n_returned": null,
+      "n_violations": null
+    },
+    {
+      "idx": 136,
+      "utterance": "show what logging.yml actually contains",
+      "label": "filesys_read",
+      "band": "t3",
+      "tier_target": "filesys_grep",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.18828152777778595,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4252.1,
+      "svc_wall_ms": 4251.9,
+      "result_type": "str",
+      "result_len": 344,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.19 below gate)"
+      ]
+    },
+    {
+      "idx": 137,
+      "utterance": "carry on reading at the linked pytorch discussion",
+      "label": "web_fetch",
+      "band": "t3",
+      "tier_target": "filesys_grep",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.6074161875657228,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3858.9,
+      "svc_wall_ms": 3858.8,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.61 below gate)"
+      ]
+    },
+    {
+      "idx": 138,
+      "utterance": "what good names could we use for the search strings?",
+      "label": "decide_extract",
+      "band": "t3",
+      "tier_target": "decide_pick",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.18587053298467054,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3807.5,
+      "svc_wall_ms": 3807.3,
+      "result_type": "str",
+      "result_len": 7770,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.19 below gate)"
+      ]
+    },
+    {
+      "idx": 139,
+      "utterance": "find chatter across the forums about the moka fork",
+      "label": "web_search",
+      "band": "t3",
+      "tier_target": "reddit_digest",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.5426729160474825,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3250.9,
+      "svc_wall_ms": 3250.8,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.54 below gate)"
+      ]
+    },
+    {
+      "idx": 140,
+      "utterance": "open the linked post from the announcements board",
+      "label": "web_fetch",
+      "band": "t3",
+      "tier_target": "reddit_digest",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.44017122370909106,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5190.9,
+      "svc_wall_ms": 5190.8,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.44 below gate)"
+      ]
+    },
+    {
+      "idx": 141,
+      "utterance": "any config files lying around that look relevant?",
+      "label": "filesys_glob",
+      "band": "t3",
+      "tier_target": "decide_pick",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.1695405856489596,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5158.8,
+      "svc_wall_ms": 5158.7,
+      "result_type": "str",
+      "result_len": 344,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.17 below gate)"
+      ],
+      "listing_constraint": null,
+      "listing_respected": null,
+      "returned_list": false,
+      "n_returned": null,
+      "n_violations": null
+    },
+    {
+      "idx": 142,
+      "utterance": "before we dump anything, write out the paths it wants",
+      "label": "decide_extract",
+      "band": "t3",
+      "tier_target": "filesys_read",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.20166313067875077,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4208.7,
+      "svc_wall_ms": 4208.5,
+      "result_type": "str",
+      "result_len": 2135,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.20 below gate)"
+      ]
+    },
+    {
+      "idx": 143,
+      "utterance": "work out the paths for every manifest under deploy/",
+      "label": "filesys_glob",
+      "band": "t3",
+      "tier_target": "decide_extract",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.5391644654598711,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 5371.7,
+      "svc_wall_ms": 5371.5,
+      "result_type": "str",
+      "result_len": 344,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.54 below gate)"
+      ],
+      "listing_constraint": {
+        "kind": "name",
+        "value": "manifest",
+        "evidence": "manifest"
+      },
+      "listing_respected": null,
+      "returned_list": false,
+      "n_returned": null,
+      "n_violations": null
+    },
+    {
+      "idx": 144,
+      "utterance": "find several angles on the kv cache debate",
+      "label": "web_search",
+      "band": "t3",
+      "tier_target": "decide_extract",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.38216149391751797,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4753.7,
+      "svc_wall_ms": 4753.6,
+      "result_type": "str",
+      "result_len": 5645,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.38 below gate)"
+      ]
+    },
+    {
+      "idx": 145,
+      "utterance": "give me a fresh batch of angles to try",
+      "label": "decide_extract",
+      "band": "t3",
+      "tier_target": "decide_pick",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.46758228037132793,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3559.6,
+      "svc_wall_ms": 3559.5,
+      "result_type": "str",
+      "result_len": 3613,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.47 below gate)"
+      ]
+    },
+    {
+      "idx": 146,
+      "utterance": "give me the collection of test data files we have",
+      "label": "filesys_glob",
+      "band": "t3",
+      "tier_target": "decide_extract",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.4445880550331344,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4532.8,
+      "svc_wall_ms": 4532.6,
+      "result_type": "str",
+      "result_len": 4336,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.44 below gate)"
+      ],
+      "listing_constraint": null,
+      "listing_respected": null,
+      "returned_list": false,
+      "n_returned": null,
+      "n_violations": null
+    },
+    {
+      "idx": 147,
+      "utterance": "show me what's out there about speculative decoding",
+      "label": "web_search",
+      "band": "t3",
+      "tier_target": "decide_extract",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.5312493090942138,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3967.8,
+      "svc_wall_ms": 3967.6,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.53 below gate)"
+      ]
+    },
+    {
+      "idx": 148,
+      "utterance": "load the full thread at that forum url",
+      "label": "web_fetch",
+      "band": "t3",
+      "tier_target": "reddit_digest",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.6365950278573808,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 3837.1,
+      "svc_wall_ms": 3837.0,
+      "result_type": "str",
+      "result_len": 1359,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.64 below gate)"
+      ]
+    },
+    {
+      "idx": 149,
+      "utterance": "look up alternate writeups of the mmap regression",
+      "label": "web_search",
+      "band": "t3",
+      "tier_target": "decide_extract",
+      "status": "done",
+      "degraded": true,
+      "confidence": 0.3117024892928871,
+      "n_hops": 4,
+      "hop_ops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "wall_ms": 4094.7,
+      "svc_wall_ms": 4094.5,
+      "result_type": "str",
+      "result_len": 12815,
+      "error": null,
+      "assumptions": [
+        "content: gate unresolved, using the best guess (artifact 'picked_file' conf 0.31 below gate)"
+      ]
+    }
+  ]
+}

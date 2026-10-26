@@ -8,6 +8,11 @@
   aborts before any probe traffic on a mismatch (warns loudly if omitted).
 - `model_guard.py` — the `/props` served-model assertion (shared by
   `live_probe.py` and `lane.sh`); pure check plus a small CLI.
+- `ab_probe.py` — one process per library root: imports the `ti` package named by
+  `--service-root`, runs every `utterances_v2` row through `use_tool()` in-process,
+  and records plan shape (hop ops, status, confidence) plus a listing-quality
+  diagnostic for `filesys_glob` rows. Two lanes then compare with
+  `--report-only --compare <other.json>`.
 - `serve_lane.py` + `lanes.json` — argv-safe llama-server launcher for a lane;
   builds the serve argv in-process so a `--chat-template-kwargs` JSON value
   never crosses a shell command line. `--print-argv` emits the argv as JSON.
