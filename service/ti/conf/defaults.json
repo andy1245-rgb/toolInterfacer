@@ -6,6 +6,14 @@
     "d1_systemone": {"base_url": "http://127.0.0.1:8080", "timeout_s": 30},
     "logit_read": {"base_url": "http://127.0.0.1:8080", "model": "jev-style", "timeout_s": 30},
     "fixture": {"fixture_path": "", "default_choice_conf": 0.95, "default_noul": 0.9},
+    "openrouter": {
+      "base_url": "https://openrouter.ai/api/v1",
+      "model": "z-ai/glm-5.3-flash",
+      "provider": {"order": ["Relace"], "allow_fallbacks": true},
+      "timeout_s": 30,
+      "max_tokens": 64,
+      "json_object": true
+    },
     "backends_in_use": {"choice": "d1_systemone", "noul": "fixture", "extract": "rule_extract"},
     "cascade": {
       "enabled": false,
