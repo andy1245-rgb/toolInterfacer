@@ -1,6 +1,7 @@
 {
   "decide": {
     "routing": "heuristic_micro_then_d1",
+    "max_candidates": 6,
     "cache": {"enabled": true, "max_entries": 256},
     "d1_systemone": {"base_url": "http://127.0.0.1:8080", "timeout_s": 30},
     "logit_read": {"base_url": "http://127.0.0.1:8080", "model": "jev-style", "timeout_s": 30},

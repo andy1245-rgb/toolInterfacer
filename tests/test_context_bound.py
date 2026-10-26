@@ -187,9 +187,11 @@ class _Recorder:
 
     def __init__(self) -> None:
         self.states = []
+        self.criteria = []
 
     def choice(self, state, instructions, criteria):
         self.states.append(state)
+        self.criteria.append(criteria)
         return prim.ChoiceAnswer(next(iter(criteria)),
                                  {k: 1.0 / len(criteria) for k in criteria}, 0.9)
 
@@ -223,8 +225,9 @@ class DecideOpBoundTest(unittest.TestCase):
         self.assertEqual(len(rec.states), 1)
         state = rec.states[0]
         self.assertLessEqual(len(str(state)), budget_chars())
-        self.assertEqual(set(state), {"intent_context", "candidates", "source_kind"})
-        self.assertLessEqual(len(state["candidates"]), packer.CANDIDATE_CAP)
+        self.assertEqual(set(state), {"intent_context", "source_kind"})
+        # The candidate list travels once, as criteria — not duplicated in the state.
+        self.assertLessEqual(len(rec.criteria[0]), decisions._max_candidates())
 
 
 class IngressBoundTest(OfflineDecide):
