@@ -69,6 +69,18 @@ def run_plan(steps: list[Step], llm_params: dict[str, Any], budget: Budget,
             assumptions.append(f"budget stop: {be.what}")
             return finish("need_input" if not hops else "done")
 
+        # Pre-gate: a blocked step with no ask-back left still runs, degraded. A
+        # best-guess artifact has information value; an empty result does not
+        # (spec §4). Only a resolved ask-back retries the step.
+        try:
+            check_pre(step.gate, step.id, store)
+        except GateBlocked as gb:
+            handled = _handle_block(gb, step, store, hops, assumptions, on_ask)
+            if handled is True:
+                continue  # the ask-back filled the gap; retry the same step
+            degraded = True
+            assumptions.append(f"{step.id}: gate unresolved, using the best guess ({gb.what})")
+
         try:
             conforms: dict[str, Any] = dict(step.params)
             for pname, art_key in step.inject.items():
@@ -87,7 +99,6 @@ def run_plan(steps: list[Step], llm_params: dict[str, Any], budget: Budget,
             merged = {**step.params, **llm_params, **conforms}
             args, soft = validate_params(step.op, merged)
             opdef = get_op(step.op)
-            check_pre(step.gate, step.id, store)
 
             t0 = time.monotonic()
             kind, data, conf = run_op_fn(step.op, opdef, args, store, soft)
@@ -95,16 +106,6 @@ def run_plan(steps: list[Step], llm_params: dict[str, Any], budget: Budget,
             art = store.put(step.id, step.op, kind, data, conf)
             hops.append({"step": step.id, "op": step.op, "ms": ms, "conf": conf,
                          "artifact_summary": _summarize(kind, data)})
-        except GateBlocked as gb:
-            handled = _handle_block(gb, step, store, hops, assumptions, on_ask)
-            if handled is True:
-                continue  # same step runs again after ask-back filled the gap
-            if handled is False:
-                degraded = True
-                assumptions.append(f"{step.id}: gate unresolved, skipped ({gb.what})")
-                cur += 1
-                continue
-            raise
         except Exception as exc:  # noqa: BLE001 — runner converts op errors into structured status
             return finish("error", str(exc))
 

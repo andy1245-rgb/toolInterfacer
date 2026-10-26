@@ -447,13 +447,18 @@ class LoopIntegrationTest(unittest.TestCase):
         self.assertAlmostEqual(out["confidence"],
                                cascade_mod.DEFAULT_PATH_CONF["agreement"])
 
-    def test_deferral_blocks_into_ask_back(self):
+    def test_deferral_asks_back_then_falls_back_to_a_best_guess(self):
         stage1 = _FixedBackend("s1", "README.md", _flat(0.30))
         out = self._run_with(lambda: CascadeBackend([stage1],
                                                     cfg={"enabled": True, "tau_hi": 0.46}))
         self.assertTrue(out["degraded"], out)
         self.assertIn("gate unresolved", " ".join(out["assumptions"]))
-        self.assertEqual(out["hops"][-1]["op"], "askback")
+        # The deferral still raises the question ...
+        self.assertIn("askback", [h["op"] for h in out["hops"]])
+        # ... but with no answer available the step runs on the best guess instead
+        # of returning nothing (spec §4: a degraded result has value, an abort does not).
+        self.assertIn("content", [h["step"] for h in out["hops"]])
+        self.assertIsNotNone(out["result"])
 
 
 class ResolvePrecedenceTest(unittest.TestCase):

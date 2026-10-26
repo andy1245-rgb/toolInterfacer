@@ -19,9 +19,17 @@ class FileHit:
     excerpt: str
 
 
+# Vendored, generated, and binary trees: never a sensible answer to "read the
+# file we discussed", and they dominate the candidate list (extern/llama.cpp/build
+# alone contributes thousands of .d files, which then cost decision-model prefill).
+SKIP_DIRS = frozenset({"build", "dist", "extern", "models", "node_modules",
+                       "venv", ".venv", "__pycache__", ".git", ".mypy_cache",
+                       ".pytest_cache", ".ruff_cache"})
+
+
 def _walk(root: str):
     for dirpath, dirs, files in os.walk(root):
-        dirs[:] = [d for d in dirs if not d.startswith(".") and d != "__pycache__"]
+        dirs[:] = [d for d in dirs if not d.startswith(".") and d not in SKIP_DIRS]
         yield dirpath, files
 
 
