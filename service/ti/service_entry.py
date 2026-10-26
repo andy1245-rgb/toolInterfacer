@@ -45,8 +45,9 @@ def use_tool(body: dict[str, Any], dry: bool = False, on_ask: Any = None) -> dic
         return _run_steps(steps, {}, final_key, intent, params,
                           on_ask=on_ask, log_hops=True)
     # L1 disk-slot-fill bridge
-    from .planner.templates.disk_lookup import apply
-    return _run_steps(apply(intent, digest), {}, "content", intent, params,
+    from .planner.templates.disk_lookup import build
+    steps, final_key = build(intent, digest)
+    return _run_steps(steps, {}, final_key, intent, params,
                       on_ask=on_ask, log_hops=True)
 
 
@@ -137,14 +138,14 @@ def _noul_verifier(name: str, artifact: Any) -> float | None:
 def _plan_view(meta: dict[str, Any], intent: str, params: dict[str, Any],
                digest: dict[str, Any]) -> dict[str, Any]:
     from .planner.templates import apply_template
-    from .planner.templates.disk_lookup import apply as apply_disk
+    from .planner.templates.disk_lookup import build as build_disk
     if meta["level"] == "L0":
         steps = [Step(id="L0", op=str(params.get("tool", "?")), params=dict(params.get("args") or {}))]
         final_key = "L0"
     elif meta["template"]:
         steps, final_key = apply_template(str(meta["template"]), intent, digest)
     else:
-        steps, final_key = apply_disk(intent, digest), "content"
+        steps, final_key = build_disk(intent, digest)
     return {"status": "plan",
             "meta": meta,
             "final_key": final_key,
