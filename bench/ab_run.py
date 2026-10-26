@@ -926,7 +926,12 @@ def emit(raw: dict[str, Any], args: argparse.Namespace, *,
                    if k in ("arms", "mcnemar", "escalation_prediction", "recommendation")}
         analysis_path.write_text(json.dumps(
             {"derived_from": display_path(Path(args.summarize or args.out)),
-             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "analysis": derived},
+             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+             "note": "derived from that run's per_row by the committed analysis code. "
+                     "Where a key appears both here and in the run file's own derived "
+                     "block, this file is the later derivation of the two: the run "
+                     "file's block is what the analysis code said at measurement time.",
+             "analysis": derived},
             indent=2))
         print(f"wrote {display_path(analysis_path)} (derived, no new measurement)")
     return summary

@@ -1,6 +1,7 @@
 {
   "derived_from": "bench/results/ab-three-arm-30rows.json",
-  "timestamp": "2026-10-26T03:04:36-0400",
+  "timestamp": "2026-10-26T03:07:32-0400",
+  "note": "derived from that run's per_row by the committed analysis code. Where a key appears both here and in the run file's own derived block, this file is the later derivation of the two: the run file's block is what the analysis code said at measurement time.",
   "analysis": {
     "arms": {
       "pair": {
