@@ -33,18 +33,23 @@ def _walk(root: str):
         yield dirpath, files
 
 
-@op("filesys_glob", kind="path_list", required=["pattern"], optional=["cwd"])
+@op("filesys_glob", kind="path_list", required=["pattern"], optional=["cwd", "base"])
 def run(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
     cwd = params.get("cwd") or os.getcwd()
     root = os.path.expanduser(cwd)
+    # `base` only changes the frame hits are reported in: a scoped listing walks
+    # the directory it was given but still speaks the caller's cwd. The walk root
+    # and the pattern both stay where they are.
+    frame = os.path.expanduser(params["base"]) if params.get("base") else root
     hits: list[str] = []
     for dirpath, files in _walk(root):
         for f in files:
             if f.startswith("."):
                 continue
-            rel = os.path.relpath(os.path.join(dirpath, f), root)
-            if re.match(params["pattern"].replace("**", ".*"), rel):
-                hits.append(rel)
+            full = os.path.join(dirpath, f)
+            if re.match(params["pattern"].replace("**", ".*"),
+                        os.path.relpath(full, root)):
+                hits.append(os.path.relpath(full, frame))
     _ = store
     return "path_list", hits, 1.0
 

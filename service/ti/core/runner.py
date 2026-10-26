@@ -35,7 +35,8 @@ class RunResult:
 
 def run_plan(steps: list[Step], llm_params: dict[str, Any], budget: Budget,
              on_ask: on_ask_t, run_op_fn: run_op_t, run_verifier_fn: run_verifier_t,
-             final_key: str | None = None) -> RunResult:
+             final_key: str | None = None,
+             pre_assumptions: list[str] | None = None) -> RunResult:
     """Execute a linear plan: op → artifact → gates → next step.
 
     run_op_fn(op_name, args=dict, intent_ctx=dict, store) -> (kind, data, conf)
@@ -45,7 +46,9 @@ def run_plan(steps: list[Step], llm_params: dict[str, Any], budget: Budget,
     """
     store = ArtifactStore()
     hops: list[dict[str, Any]] = []
-    assumptions: list[str] = []
+    # Facts the plan establishes before the first step (e.g. the directory a
+    # listing could not be scoped to) belong in the same record as the rest.
+    assumptions: list[str] = list(pre_assumptions or [])
     degraded = False
 
     def finish(status: str, error: str | None = None) -> RunResult:
