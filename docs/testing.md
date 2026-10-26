@@ -37,3 +37,20 @@ Do not hardcode machine-specific absolute paths in source, config, tests, or doc
 fails the suite if one appears. Machine-specific bench paths belong in
 `bench/lane.env` (gitignored) — see `bench/lane.env.example`. Recorded evidence
 under `bench/results/` is exempt: those files are the proof of what ran where.
+
+## Running the stack locally (CPU-only box)
+
+Two processes, both lightweight enough to leave resident:
+
+```
+bash bench/serve_local.sh            # decision model on 127.0.0.1:8080 (text-only, no mmproj)
+PYTHONPATH=service python3 -m ti.http.api   # service on 127.0.0.1:1113 (extension spawns it if down)
+```
+
+Text-only serving drops ~850 MB and a second of init; routing never needs the
+vision projector. Measured here: model ready in ~3 s, ~2.9 GB RSS.
+
+Latency on this box (d1-3B Q4, CPU): **~1.7 s per routing decision**, ~50 ms on a
+decision-cache hit. Prefill is ~19 ms/token, so *state size is the latency knob* —
+which is why `decide.max_candidates` defaults to 6 and the candidate list is sent
+once (criteria), never duplicated into the state. Raising it to 64 costs ~31 s.
