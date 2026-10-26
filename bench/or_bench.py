@@ -16,6 +16,8 @@ Usage:
   export OPENROUTER_API_KEY=...        # from your funBot .env
   python bench/or_bench.py [--models z-ai/glm-5.3-flash,...] [--limit N]
                            [--concurrency 8] [--latency-n 20]
+                           [--model-max-tokens MODEL=N ...]
+                           [--model-budget-usd 0.50] [--budget-usd 2.00]
                            [--out bench/results/or-bench-<date>.json]
 
 The key is read only from the environment; it is never logged, written, or
@@ -30,6 +32,7 @@ import random
 import re
 import statistics
 import sys
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -44,13 +47,19 @@ from live_probe import INSTRUCTIONS, OP_DESCRIPTIONS, percentile  # noqa: E402
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 KEY_ENV = "OPENROUTER_API_KEY"
 
-# USD per 1M tokens, resolved against the live OpenRouter catalog.
+# USD per 1M tokens, resolved against the live OpenRouter catalog. Multi-endpoint
+# models are quoted at their worst case, so these are only a fallback for rows
+# where the provider reported no cost — the reported `usage.cost` always wins.
 MODELS = {
     "z-ai/glm-5.3-flash": {"in": 0.15, "out": 0.50},
     "deepseek/deepseek-v4-flash": {"in": 0.091, "out": 0.182},
     "deepseek/deepseek-v4.1-flash": {"in": 0.02, "out": 1.00},
     "qwen/qwen3.8-flash": {"in": 0.15, "out": 0.47},
     "qwen/qwen3.8-27b": {"in": 0.20, "out": 2.50},
+    "openai/gpt-6-luna": {"in": 0.10, "out": 0.50},
+    "meta/muse-spark-1.3": {"in": 1.25, "out": 4.25},
+    "meta/muse-glimmer-30b": {"in": 0.30, "out": 1.20},
+    "meta/muse-wonder": {"in": 4.00, "out": 20.00},
 }
 
 LABELS = list(OP_DESCRIPTIONS)
@@ -61,6 +70,39 @@ SUFFIX_TO_LABEL = {label.split("_", 1)[1]: label for label in LABELS}
 JSON_HINT = re.compile(r"response_?format|json|structured", re.I)
 
 
+class Ledger:
+    """Provider-reported spend, so a run can stop before it overruns a budget.
+
+    The per-model cap exists because a multi-dollar-per-Mtok model can burn a
+    whole allowance inside one accuracy pass; the check happens before every
+    request, so an over-budget model keeps the rows it paid for.
+    """
+
+    def __init__(self, model_cap: float, total_cap: float):
+        self.model_cap = model_cap
+        self.total_cap = total_cap
+        self.model_spent = 0.0
+        self.total_spent = 0.0
+        self._lock = threading.Lock()
+
+    def charge(self, cost: object) -> None:
+        if not isinstance(cost, (int, float)):
+            return
+        with self._lock:
+            self.model_spent += float(cost)
+            self.total_spent += float(cost)
+
+    def stop_reason(self) -> str | None:
+        with self._lock:
+            if self.model_cap and self.model_spent >= self.model_cap:
+                return (f"per-model budget ${self.model_cap:.2f} reached "
+                        f"(${self.model_spent:.4f} spent)")
+            if self.total_cap and self.total_spent >= self.total_cap:
+                return (f"run budget ${self.total_cap:.2f} reached "
+                        f"(${self.total_spent:.4f} spent)")
+        return None
+
+
 def build_system_prompt() -> str:
     ops = "\n".join(f"- {name}: {desc}" for name, desc in OP_DESCRIPTIONS.items())
     return (
@@ -69,6 +111,12 @@ def build_system_prompt() -> str:
         "Answer with strict JSON only, no prose:\n"
         '{"choice": "<one operation label above>", "confidence": <number 0-1>}'
     )
+
+
+def max_tokens_for(args, model: str) -> int:
+    """Per-model override, else the run default. Reasoning models need headroom
+    for the reasoning tokens before any content is emitted."""
+    return args.max_tokens_by_model.get(model, args.max_tokens)
 
 
 def build_payload(model: str, utterance: str, max_tokens: int, json_mode: bool) -> dict:
@@ -182,20 +230,24 @@ def resolve_label(raw: object) -> tuple[str | None, str]:
 
 def ask(model: str, utterance: str, key: str, args, state: dict) -> dict:
     """One decision. Never raises; a bad reply comes back as ok=False."""
+    cap = max_tokens_for(args, model)
     t0 = time.perf_counter()
-    body, err = post(build_payload(model, utterance, args.max_tokens, state["json_mode"]),
+    body, err = post(build_payload(model, utterance, cap, state["json_mode"]),
                      key, args.timeout)
     if err and state["json_mode"] and err.get("status") == 400 and JSON_HINT.search(err["error"]):
         state["json_mode"] = False  # provider refused response_format — fall back to text
         t0 = time.perf_counter()
-        body, err = post(build_payload(model, utterance, args.max_tokens, False), key, args.timeout)
+        body, err = post(build_payload(model, utterance, cap, False), key, args.timeout)
     latency_ms = (time.perf_counter() - t0) * 1000
     if err:
         return {"ok": False, "latency_ms": latency_ms, "error": err,
                 "choice": None, "choice_raw": None, "confidence": 0.0,
-                "prompt_tokens": 0, "completion_tokens": 0, "cost": None}
+                "prompt_tokens": 0, "completion_tokens": 0, "cost": None,
+                "provider": None, "reasoning_tokens": 0, "finish_reason": ""}
 
     usage = body.get("usage") or {}
+    details = usage.get("completion_tokens_details") or {}
+    state["ledger"].charge(usage.get("cost"))
     text = message_text(body)
     raw_choice, raw_conf, how = parse_reply(text)
     label, resolution = resolve_label(raw_choice)
@@ -216,12 +268,29 @@ def ask(model: str, utterance: str, key: str, args, state: dict) -> dict:
         "prompt_tokens": int(usage.get("prompt_tokens") or 0),
         "completion_tokens": int(usage.get("completion_tokens") or 0),
         "cost": usage.get("cost"),
-        "provider_model": body.get("model"),
+        "provider": body.get("provider") or "unknown",
+        "reasoning_tokens": int(details.get("reasoning_tokens") or 0),
+        "model_returned": body.get("model"),
         "finish_reason": finish_reason(body),
     }
 
 
 def run_row(model: str, idx: int, row: dict, key: str, args, state: dict) -> dict:
+    stop = state["ledger"].stop_reason()
+    if stop:
+        return {
+            "idx": idx,
+            "utterance": row["utterance"],
+            "label": row["label"],
+            "band": row.get("band"),
+            "tier_target": row.get("tier_target"),
+            "choice": None, "choice_raw": None, "resolution": None,
+            "correct": False, "confidence": 0.0, "latency_ms": 0.0,
+            "prompt_tokens": 0, "completion_tokens": 0, "cost": None,
+            "ok": False, "finish_reason": None,
+            "error": {"status": None, "error": f"budget stop: {stop}"},
+            "skipped": True,
+        }
     ans = ask(model, row["utterance"], key, args, state)
     return {
         "idx": idx,
@@ -237,6 +306,8 @@ def run_row(model: str, idx: int, row: dict, key: str, args, state: dict) -> dic
         "latency_ms": round(ans["latency_ms"], 1),
         "prompt_tokens": ans["prompt_tokens"],
         "completion_tokens": ans["completion_tokens"],
+        "reasoning_tokens": ans.get("reasoning_tokens"),
+        "provider": ans.get("provider"),
         "cost": ans.get("cost"),
         "ok": ans["ok"],
         "finish_reason": ans.get("finish_reason"),
@@ -272,26 +343,47 @@ def cost_of(rows: list[dict], pricing: dict) -> dict:
 
 
 def aggregate(rows: list[dict], latency_rows: list[dict], pricing: dict) -> dict:
-    n = len(rows)
-    correct = [r for r in rows if r["correct"]]
+    attempted = [r for r in rows if not r.get("skipped")]
+    n = len(attempted)
+    correct = [r for r in attempted if r["correct"]]
     by_band: dict[str, dict] = {}
     by_label: dict[str, dict] = {}
-    for r in rows:
+    for r in attempted:
         for bucket, key in ((by_band, r["band"]), (by_label, r["label"])):
             slot = bucket.setdefault(key, {"n": 0, "correct": 0})
             slot["n"] += 1
             slot["correct"] += int(r["correct"])
+    providers: dict[str, dict] = {}
+    for r in rows:
+        if r.get("skipped"):
+            continue
+        name = r.get("provider") or "unknown"
+        slot = providers.setdefault(name, {"n": 0, "cost_usd": 0.0})
+        slot["n"] += 1
+        slot["cost_usd"] += float(r.get("cost") or 0)
+    total_reported = sum(v["cost_usd"] for v in providers.values())
     lat = sorted(r["latency_ms"] for r in latency_rows if r["ok"])
     cost = cost_of(rows + latency_rows, pricing)  # every request we paid for counts
     spend = cost["measured_usd"] or cost["computed_usd"]
     n_correct = len(correct)
     return {
-        "n_rows": n,
+        "n_rows": len(rows),
+        "n_attempted": n,
+        "skipped": len(rows) - n,
         "accuracy": round(n_correct / n, 4) if n else 0.0,
-        "malformed": sum(1 for r in rows if not r["ok"]),
-        "truncated": sum(1 for r in rows if r.get("finish_reason") == "length"),
-        "failures": sum(1 for r in rows if r["error"] and r["error"].get("status") not in (200,)),
-        "alias_resolutions": sum(1 for r in rows if r.get("resolution") == "alias"),
+        "malformed": sum(1 for r in attempted if not r["ok"]),
+        "truncated": sum(1 for r in attempted if r.get("finish_reason") == "length"),
+        "failures": sum(1 for r in attempted if r["error"] and r["error"].get("status") not in (200,)),
+        "alias_resolutions": sum(1 for r in attempted if r.get("resolution") == "alias"),
+        "reasoning_tokens_median": (
+            round(statistics.median([r.get("reasoning_tokens") or 0 for r in attempted]), 1)
+            if attempted else None),
+        "providers": {name: {"n": v["n"],
+                             "share": round(v["n"] / n, 4) if n else 0.0,
+                             "cost_usd": round(v["cost_usd"], 6),
+                             "cost_share": round(v["cost_usd"] / total_reported, 4)
+                             if total_reported else 0.0}
+                      for name, v in sorted(providers.items(), key=lambda kv: -kv[1]["n"])},
         "accuracy_by_band": {k: {"n": v["n"], "accuracy": round(v["correct"] / v["n"], 4)}
                              for k, v in sorted(by_band.items())},
         "accuracy_by_label": {k: {"n": v["n"], "accuracy": round(v["correct"] / v["n"], 4)}
@@ -364,10 +456,13 @@ def print_report(summary: dict) -> None:
         p50 = m["latency_ms"]["p50"]
         p95 = m["latency_ms"]["p95"]
         lat = f"{p50:>7.0f}m{p95:>7.0f}m" if p50 is not None else f"{'-':>7}{'-':>7}"
-        print(f"{name:<30}{m['accuracy']:>6.1%}{f('t1'):>7}{f('t2'):>7}{f('t3'):>7}"
+        acc = f"{m['accuracy']:>6.1%}" if m["n_attempted"] == m["n_rows"] else \
+            f"{m['accuracy']:>5.1%}*"
+        print(f"{name:<30}{acc}{f('t1'):>7}{f('t2'):>7}{f('t3'):>7}"
               f"{lat}"
               f"{m['cost']['total_usd']:>9.5f}{m['cost']['per_1k_decisions_usd'] or 0:>8.4f}"
-              f"{m['cost']['per_1k_correct_usd'] or 0:>9.4f}{m['malformed']:>5}{m['failures']:>5}")
+              f"{m['cost']['per_1k_correct_usd'] or 0:>9.4f}{m['malformed']:>5}{m['failures']:>5}"
+              f"   ({m['n_attempted']}/{m['n_rows']} rows)")
     base = summary["baselines"]["local_d1_3B_Q4"]
     print(f"\nbaseline {base['model']}: {base['accuracy']:.1%} acc, p50 {base['p50_ms']} ms, $0 (local)")
 
@@ -386,6 +481,14 @@ def print_report(summary: dict) -> None:
     print(f"  strictly dominated:                {r['pareto_vs_cost']['dominated']}")
     print(f"Pareto frontier vs p50 latency:      {r['pareto_vs_latency']['on_frontier']}")
     print(f"  strictly dominated:                {r['pareto_vs_latency']['dominated']}")
+    print("\nserving provider(s) per model:")
+    for name, m in models.items():
+        dist = ", ".join(f"{p} {v['n']} ({v['share']:.0%}, ${v['cost_usd']:.5f})"
+                         for p, v in m["providers"].items()) or "-"
+        extra = f"  [budget stop: {m['budget_stop']}]" if m.get("budget_stop") else ""
+        skip = f"  [skipped {m['skipped']} rows]" if m.get("skipped") else ""
+        trunc = f"  [truncated {m['truncated']} rows]" if m.get("truncated") else ""
+        print(f"  {name:<30} {dist}{extra}{skip}{trunc}")
     print(f"\nwall time: {summary['wall_time_s']}s   "
           f"total cost incurred: ${summary['total_cost_usd']:.5f}   "
           f"(accuracy pass x{summary['concurrency']} concurrent; "
@@ -406,18 +509,31 @@ def pick_output(out: Path) -> Path:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--models", default="", help="comma-separated model ids (default: all 5)")
+    ap.add_argument("--models", default="", help="comma-separated model ids (default: all known)")
     ap.add_argument("--utterances", default=str(ROOT / "tests/data/utterances_v2.json"))
     ap.add_argument("--limit", type=int, default=0, help="run only the first N rows")
     ap.add_argument("--concurrency", type=int, default=8, help="max requests in flight (accuracy pass)")
     ap.add_argument("--latency-n", type=int, default=20, help="sequential latency rows per model")
     ap.add_argument("--max-tokens", type=int, default=2048)
+    ap.add_argument("--model-max-tokens", action="append", default=[], metavar="MODEL=N",
+                    help="per-model max_tokens override, repeatable (reasoning models "
+                         "truncate their JSON answer at a cap tuned for non-reasoning ones)")
+    ap.add_argument("--model-budget-usd", type=float, default=0.50,
+                    help="stop a model once provider-reported spend reaches this (0 = no cap)")
+    ap.add_argument("--budget-usd", type=float, default=2.00,
+                    help="stop the whole run once total spend reaches this (0 = no cap)")
     ap.add_argument("--timeout", type=float, default=45.0)
     ap.add_argument("--out", default="", help="result file (default bench/results/or-bench-<date>.json)")
     ap.add_argument("--no-latency-run", action="store_true")
     ap.add_argument("--dry-run", action="store_true", help="print the prompt, send nothing")
     ap.add_argument("--key-env", default=KEY_ENV, help="environment variable holding the key")
     args = ap.parse_args()
+    args.max_tokens_by_model = {}
+    for spec in args.model_max_tokens:
+        name, _, cap = spec.partition("=")
+        if not name or not cap.isdigit():
+            raise SystemExit(f"--model-max-tokens wants MODEL=N, got {spec!r}")
+        args.max_tokens_by_model[name.strip()] = int(cap)
 
     rows = json.loads(Path(args.utterances).read_text())
     if args.limit:
@@ -456,8 +572,10 @@ def main() -> None:
                         "row_indices": [] if args.no_latency_run else [i for i, _ in latency_picks]},
         "prompt_source": "bench/live_probe.py INSTRUCTIONS + OP_DESCRIPTIONS (verbatim import)",
         "request": {"temperature": 0, "max_tokens": args.max_tokens,
+                    "max_tokens_by_model": args.max_tokens_by_model,
                     "response_format": '{"type":"json_object"} with plain-text JSON fallback',
                     "usage_include": True},
+        "budget": {"per_model_usd": args.model_budget_usd, "total_usd": args.budget_usd},
         "baselines": {
             "local_d1_3B_Q4": {"model": "d1-3B-Q4_K_M (local llama.cpp)",
                                "accuracy": 0.74, "p50_ms": 147.9,
@@ -471,8 +589,10 @@ def main() -> None:
 
     for model in wanted:
         pricing = MODELS[model]
-        state = {"json_mode": True}
-        print(f"[{model}] accuracy pass: {len(rows)} rows, {args.concurrency} in flight", flush=True)
+        ledger = Ledger(args.model_budget_usd, args.budget_usd)
+        state = {"json_mode": True, "ledger": ledger}
+        print(f"[{model}] accuracy pass: {len(rows)} rows, {args.concurrency} in flight, "
+              f"max_tokens={max_tokens_for(args, model)}", flush=True)
         t_model = time.perf_counter()
         acc_rows = run_concurrent(model, rows, key, args, state)
         latency_rows: list[dict] = []
@@ -482,12 +602,16 @@ def main() -> None:
             latency_rows = run_sequential(model, latency_picks, key, args, state)
         entry = aggregate(acc_rows, latency_rows, pricing)
         entry["pricing_usd_per_mtok"] = pricing
+        entry["max_tokens"] = max_tokens_for(args, model)
         entry["json_mode"] = "accepted" if state["json_mode"] else "rejected, text parse used"
+        entry["budget_stop"] = ledger.stop_reason()
         entry["wall_time_s"] = round(time.perf_counter() - t_model, 1)
         summary["models"][model] = entry
         print(f"[{model}] acc={entry['accuracy']:.1%} "
               f"p50={entry['latency_ms']['p50']}ms malformed={entry['malformed']} "
-              f"failures={entry['failures']} cost=${entry['cost']['total_usd']:.5f}", flush=True)
+              f"truncated={entry['truncated']} skipped={entry['skipped']} "
+              f"failures={entry['failures']} cost=${entry['cost']['total_usd']:.5f} "
+              f"providers={ {k: v['n'] for k, v in entry['providers'].items()} }", flush=True)
 
     summary["wall_time_s"] = round(time.perf_counter() - started, 1)
     summary["total_cost_usd"] = round(
