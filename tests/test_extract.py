@@ -214,7 +214,7 @@ class WiringTest(EnvCase):
     def test_the_other_kinds_are_untouched(self):
         from ti.decide.resolve import load_backends_in_use
         mapping = load_backends_in_use()
-        self.assertEqual(mapping.get("choice"), "fixture")
+        self.assertEqual(mapping.get("choice"), "d1_systemone")
         self.assertEqual(mapping.get("noul"), "fixture")
 
     def test_it_refuses_the_primitives_it_does_not_serve(self):

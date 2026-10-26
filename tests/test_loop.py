@@ -1,4 +1,9 @@
-"""P1 basic-loop tests: full engine, fixture decide backend, zero network."""
+"""P1 basic-loop tests: full engine, fixture decide backend, zero network.
+
+The shipped decide.backends_in_use.choice is the live d1 model, which these
+cases must not reach: each one pins the map at the fixture backend and starts
+from an empty decision cache (both are process-global).
+"""
 import pathlib
 import sys
 import tempfile
@@ -7,10 +12,23 @@ import unittest
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "service"))
 
+from ti.conf import load  # noqa: E402
+from ti.decide.cache import clear as clear_decisions  # noqa: E402
 from ti.service_entry import use_tool  # noqa: E402
 
 
 class LoopTest(unittest.TestCase):
+    def setUp(self):
+        self._decide = load()["decide"]
+        self._choice = self._decide["backends_in_use"]["choice"]
+        self._decide["backends_in_use"]["choice"] = "fixture"
+        clear_decisions()
+        self.addCleanup(self._restore)
+
+    def _restore(self):
+        self._decide["backends_in_use"]["choice"] = self._choice
+        clear_decisions()
+
     def test_plan_mode_returns_steps(self):
         out = use_tool({"intent": "read the file we discussed",
                         "mode": "plan",
