@@ -45,6 +45,46 @@ MISSED_POSITIVES = (
     "which config files live in the conf/ directory?",
 )
 
+# A semantic question that names a file set: every row asks about the contents of
+# the set, not its extent, and every row was routed to the listing shape by the
+# loose `which <file set>` rule, which terminated at the candidate list with no
+# gate to stop it. The predicate is what tells them apart, and content predicates
+# cannot be enumerated, so the rule is gated on the inventory vocabulary instead.
+SEMANTIC_WH = (
+    "which files do I need to change",
+    "which docs should I read first",
+    "which scripts run at boot",
+    "which paths does the loader walk",
+    "show me the files the deploy step writes",
+    "which files are involved",
+    "which files are read at startup",
+    "which files implement the rate limiter",
+    "which files handle the websocket upgrade",
+    "which scripts does the cron job invoke",
+    "which docs explain the shard layout",
+    "which paths hit the legacy conversion",
+    "which files get rewritten by the formatter",
+    "which files should be deleted",
+    "which files use the deprecated helper",
+    "which files hold the migration order",
+    "which docs mention the capacity plan",
+    "which scripts back up the database",
+    "which paths need the new permission",
+    "which files cache the parsed config",
+    "which docs are stale",
+    "which scripts validate the schema",
+)
+
+# The same wh-frame asking what exists: stative predicate, no clause after it.
+INVENTORY_WH = (
+    "which config files live in the conf/ directory?",
+    "which directories live under service/",
+    "which files are in the bench directory",
+    "what files sit in conf/",
+    "what json files exist in the config dir",
+    "which fixtures are under tests/data",
+)
+
 # Phrasings the listing shape shipped with: they must keep reaching it.
 LISTING_PHRASES = (
     "ls",
@@ -144,6 +184,55 @@ class InventoryGateTest(unittest.TestCase):
         self.assertEqual(shape.classify("how many .md docs are there in docs/guide?"),
                          shape.ENUMERATIVE)
         self.assertEqual(shape.classify("how many lines does the main file have"),
+                         shape.SINGULAR)
+
+
+class InventoryFrameTest(unittest.TestCase):
+    """A wh-word plus a file-set noun is not yet an inventory question.
+
+    The shape decides where the plan terminates, and a listing has no gate after
+    it: it returns confidence 1.0 whatever the set is asked to mean. So the
+    ambiguous reading has to be SINGULAR by default and ENUMERATIVE only when the
+    wording is asking what exists.
+    """
+
+    def test_a_semantic_which_question_is_not_an_inventory(self):
+        for intent in SEMANTIC_WH:
+            with self.subTest(intent=intent):
+                self.assertEqual(shape.classify(intent), shape.SINGULAR)
+
+    def test_a_stative_predicate_is_what_admits_a_which_question(self):
+        for intent in INVENTORY_WH:
+            with self.subTest(intent=intent):
+                self.assertEqual(shape.classify(intent), shape.ENUMERATIVE)
+                self.assertEqual(shape.rule_for(intent), "R6_EXISTENTIAL_INVENTORY")
+
+    def test_a_clause_between_wh_word_and_noun_is_not_an_object(self):
+        # the file set is the object of the wh-word or it is the subject of a
+        # clause; only the first is an inventory
+        self.assertEqual(shape.rule_for("which config files live in conf/"),
+                         "R6_EXISTENTIAL_INVENTORY")
+        self.assertIsNone(shape.rule_for("which files do we keep in conf/"))
+
+    def test_a_relative_clause_after_the_object_is_not_a_bare_command(self):
+        # "show me the files" is the request; "show me the files the deploy step
+        # writes" is a question about three files' worth of reading
+        self.assertEqual(shape.rule_for("show me the files"),
+                         "R5_IMPLIED_OBJECT_COMMAND")
+        self.assertEqual(shape.classify("show me the files the deploy step writes"),
+                         shape.SINGULAR)
+        self.assertEqual(shape.classify("list the files the build touches"),
+                         shape.SINGULAR)
+        for intent in ("show me the files in the bench dir",
+                       "show all files prefixed with sync_",
+                       "show the contents of the templates dir"):
+            with self.subTest(intent=intent):
+                self.assertEqual(shape.classify(intent), shape.ENUMERATIVE)
+
+    def test_a_prefix_frame_needs_the_prefix(self):
+        self.assertEqual(shape.classify("find files that begin with test_"),
+                         shape.ENUMERATIVE)
+        self.assertEqual(shape.classify("which documentation should I start with"),
                          shape.SINGULAR)
 
 

@@ -158,10 +158,11 @@ class ListingScopeTest(ShapeCase):
             (wanted / "nested").mkdir(parents=True)
             pathlib.Path(wanted, "nested", "hit.txt").write_text("x", encoding="utf-8")
             pathlib.Path(tmp, "elsewhere.txt").write_text("x", encoding="utf-8")
-            out = use_tool({"intent": "list the files",
+            out = use_tool({"intent": "list the .txt files",
                             "params": {"path": str(wanted)},
                             "digest": {"cwd": tmp}})
         self.assertEqual(out["status"], "done", out)
+        # the intent states its name criterion, so nothing about it is assumed
         self.assertEqual(out["assumptions"], [])
         self.assertEqual(sorted(out["result"]), ["wanted/nested/hit.txt"])
         for rel in out["result"]:
@@ -190,22 +191,53 @@ class ListingScopeTest(ShapeCase):
                             "digest": {"cwd": tmp}})
         self.assertEqual(out["status"], "done", out)
         self.assertEqual(sorted(out["result"]), ["bench/lane.sh"])
-        self.assertEqual(out["assumptions"], [])
+        # the directory resolved, so the only assumption is the wide name glob
+        self.assertEqual(len(out["assumptions"]), 1, out["assumptions"])
+        self.assertIn("no name constraint", out["assumptions"][0])
 
-    def test_the_scoped_listing_keeps_the_glob_pattern(self):
+    def test_the_scoped_listing_carries_the_built_pattern(self):
+        """scope owns the directory, pattern owns the names, shape owns the branch.
+
+        The glob used to be hardcoded `**/*` at every site, so pattern.build()
+        never ran on the plan: "find every .sh under scripts/" walked the right
+        directory and handed back the .py file next to the .sh it was asked for.
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            bench = pathlib.Path(tmp, "bench")
+            (bench / "sub").mkdir(parents=True)
+            pathlib.Path(bench, "lane.sh").write_text("x", encoding="utf-8")
+            pathlib.Path(bench, "sub", "deep.sh").write_text("x", encoding="utf-8")
+            pathlib.Path(bench, "notes.txt").write_text("x", encoding="utf-8")
+            intent = "list the .sh files in the bench directory"
+            plan = use_tool({"intent": intent, "mode": "plan", "digest": {"cwd": tmp}})
+            out = use_tool({"intent": intent, "digest": {"cwd": tmp}})
+        step = plan["steps"][0]
+        self.assertEqual(step["op"], "filesys_glob")
+        self.assertEqual(step["params"]["pattern"], "**/*.sh")
+        self.assertEqual(step["params"]["cwd"], str(bench))
+        # `base` is the reporting frame, separate from the directory walked
+        self.assertEqual(step["params"]["base"], tmp)
+        self.assertEqual(out["assumptions"], [])
+        # recursion is untouched and the non-.sh entry is gone
+        self.assertEqual(sorted(out["result"]), ["bench/lane.sh", "bench/sub/deep.sh"])
+
+    def test_a_listing_with_no_name_criterion_keeps_the_wide_glob(self):
         with tempfile.TemporaryDirectory() as tmp:
             (pathlib.Path(tmp, "bench") / "sub").mkdir(parents=True)
             pathlib.Path(tmp, "bench", "sub", "deep.txt").write_text("x", encoding="utf-8")
+            pathlib.Path(tmp, "bench", "lane.py").write_text("x", encoding="utf-8")
             plan = use_tool({"intent": "list the files in the bench directory",
                              "mode": "plan", "digest": {"cwd": tmp}})
             out = use_tool({"intent": "list the files in the bench directory",
                             "digest": {"cwd": tmp}})
         step = plan["steps"][0]
-        self.assertEqual(step["op"], "filesys_glob")
         self.assertEqual(step["params"]["pattern"], "**/*")
         self.assertEqual(step["params"]["cwd"], str(pathlib.Path(tmp, "bench")))
         # recursion is untouched: the deeper file is still a candidate
-        self.assertEqual(sorted(out["result"]), ["bench/sub/deep.txt"])
+        self.assertEqual(sorted(out["result"]), ["bench/lane.py", "bench/sub/deep.txt"])
+        # and the wide glob is stated, not silently wide
+        self.assertEqual(len(out["assumptions"]), 1, out["assumptions"])
+        self.assertIn("no name constraint", out["assumptions"][0])
 
     def test_a_named_but_missing_directory_is_reported_not_swapped(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -234,7 +266,8 @@ class ListingScopeTest(ShapeCase):
             out = use_tool({"intent": "list the files", "digest": {"cwd": tmp}})
         self.assertEqual(out["status"], "done", out)
         self.assertEqual(sorted(out["result"]), ["one.txt"])
-        self.assertEqual(out["assumptions"], [])
+        self.assertEqual(len(out["assumptions"]), 1, out["assumptions"])
+        self.assertIn("no name constraint", out["assumptions"][0])
 
     def test_a_read_intent_is_not_scoped(self):
         with tempfile.TemporaryDirectory() as tmp:

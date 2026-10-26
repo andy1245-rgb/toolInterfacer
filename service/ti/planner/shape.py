@@ -33,6 +33,18 @@ anything published about the tokenizer patch?") turns into a listing. Its "how
 many" clause is narrowed so the counted noun is the file set itself, which keeps
 "how many lines does the main file have" singular.
 
+R6's `which`/`what` clause carries a second gate, because a file-set noun alone
+says nothing about what is being asked: "which config files live in conf/" wants
+the set of names, and "which files need updating" wants an answer per file, read
+from the contents. Both name a file set, so the noun cannot decide it — the
+predicate does. An inventory predicate is stative (where the set lives, whether
+it exists); a content predicate is dynamic and unbounded (need, run, write,
+walk, own, describe), which is why it is refused rather than enumerated: the
+vocabulary of content predicates cannot be closed, so anything outside the
+inventory vocabulary falls to SINGULAR. The same reasoning refuses a subject or
+an auxiliary between the wh-word and the noun: `which files do I ...` is a
+clause, not an object, and its predicate is never the inventory one.
+
 Rule-first and lexical only: no model call, no network, no added latency. Anything
 unrecognised is SINGULAR, the shape shipped before the split — the classifier is
 only allowed to move an intent off the read path when the wording says listing.
@@ -138,12 +150,14 @@ _R3_PRIOR_SET_REFERENCE = _clauses(
 )
 
 # R4 — the intent states a criterion on the names themselves.
+# A prefix frame needs the prefix: "files that start with bench_" states one,
+# "which docs should I start with" does not, and the second is a choice.
 _R4_SIMPLE = _clauses(
     r"\bend(?:s|ing)?\s+(?:in|with)\s+\." + EXT + r"\b",
     r"\b(?:all|every|each|any)\s+\." + EXT + r"\b",
     r"\." + EXT + r"\s+(?:files?|docs?|entries|scripts?|ones?)\b",
     r"\." + EXT + r"\s+(?:under|in|inside|anywhere|across|at)\b",
-    r"\bstart(?:s|ing)?\s+with\b|\bbegin(?:s|ning)?\s+with\b|\bprefixed?\s+with\b",
+    r"\b(?:start(?:s|ing)?|begin(?:s|ning)?|prefixed?)\s+with\s+['\"`]?[\w.-]",
     r"\bin\s+(?:their|its)\s+names?\b|\bwhose\s+names?\b",
     r"\bthe\s+pattern\b",
 )
@@ -165,12 +179,36 @@ def _name_criterion(text: str) -> bool:
 
 
 # R5 — a command whose object is implied: the listing itself is the request.
-_R5_SIMPLE = _clauses(
+_R5_BARE = _clauses(
     r"^\s*ls\b",
     r"\benumerat\w*",
-    r"\blist\s+(?:of\s+|all\s+|every\s+|each\s+|the\s+)?" + FILESET_PL + r"\b",
-    r"\bshow\s+(?:me\s+)?(?:all\s+)?(?:the\s+)?" + FILESET_PL + r"\b",
 )
+
+# The two clauses that take the file set as their object. What follows the
+# object decides the reading: "show me the files" is the whole request, while
+# "show me the files the deploy step writes" names a clause after the object, so
+# the object is a set to be read to answer it, not a set to hand back.
+_R5_OBJECT = re.compile(
+    r"(?:\blist\s+(?:of\s+|all\s+|every\s+|each\s+|the\s+)?"
+    r"|\bshow\s+(?:me\s+)?(?:all\s+)?(?:the\s+)?)" + FILESET_PL + r"\b")
+
+# What may follow the object in a bare command: the end of the request, or a
+# phrase that still qualifies the names (where they are, what they start with,
+# what they are called). A determiner or a verb is a relative clause. Matched at
+# the position the object ended, never against a slice, so the scan stays linear
+# in the intent's length.
+_OBJECT_TAIL = re.compile(
+    r"\s*(?:$|[,;:.!?)]"
+    r"|(?:in|inside|under|within|at|on|of|from|available|here|there\b)"
+    r"|(?:end(?:s|ing)?|start(?:s|ing)?|begin(?:s|ning)?|prefixed?)\s+(?:in|with)\b"
+    r"|whose\s+names?\b)")
+
+
+def _bare_object(text: str) -> bool:
+    if _R5_BARE(text):
+        return True
+    return any(_OBJECT_TAIL.match(text, m.end())
+               for m in _R5_OBJECT.finditer(text))
 
 # "what's in this directory" — the container noun is what makes it a listing;
 # "what's in README.md" has none and stays singular.
@@ -179,7 +217,7 @@ _CONTAINER = re.compile(r"\b(?:dir|dirs|directory|directories|folder|folders|tre
 
 
 def _implied_object_command(text: str) -> bool:
-    return bool(_R5_SIMPLE(text)
+    return bool(_bare_object(text)
                 or (_WHAT_IS_IN.search(text) and _CONTAINER.search(text)))
 
 
@@ -191,8 +229,6 @@ _R6_SIMPLE = _clauses(
     r"\bcollection\s+of\b|\bbatch\s+of\b|\blist\s+of\b|\bcount\b",
     r"\b(?:is|are)\s+there\b",
     r"\bdo\s+we\s+have\b|\bhave\s+we\s+got\b",
-    r"\bwhich\b(?:\s+\w+){0,2}\s+" + FILESET + r"\b",
-    r"\bwhat\s+" + FILESET + r"\b",
     r"\b(?:all|every|each|any)\b(?:\s+\w+){0,3}\s+" + FILESET + r"\b",
     r"\bwhere\b.{0,30}\b(?:keep|kept|live|lives|store[ds]?|sit|sits)\b",
     r"\blying\s+around\b|\bleft\s+behind\b",
@@ -201,6 +237,47 @@ _R6_SIMPLE = _clauses(
 )
 
 _OBJECT_GATE = re.compile(r"\b" + FILESET + r"\b|\." + EXT + r"\b")
+
+
+# R6's inventory predicate, and nothing else: where the set lives or that it
+# exists. Interpolated rather than raw because the alternations are built up
+# from named pieces.
+_STATIVE_ADVERB = (r"(?:all|also|still|only|just|already|currently|now|usually"
+                   r"|normally|typically)")
+_LOCATIVE = (r"(?:in|inside|under|within|below|there|here|left\s+behind"
+             r"|lying\s+around|available|present|kept|stored|located)")
+_EXISTENCE_VERB = r"(?:exist|exists|live|lives|sit|sits|stand|stands|remain|remains)"
+
+_INVENTORY_TAIL = re.compile(
+    r"\s*(?:(?:is|are|was|were)\s+(?:" + _STATIVE_ADVERB + r"\s+){0,2}"
+    + _LOCATIVE + r"\b|" + _EXISTENCE_VERB + r"\b)")
+
+# "which <file set>": the file set has to be the wh-word's own object, with only
+# attributive words between them ("which config files"). A subject pronoun or an
+# auxiliary there means the sentence has a clause in that slot. Anchored on the
+# noun rather than scanned forward, because a file-set word can also be the
+# attributive one and the predicate belongs to the noun that ends the phrase:
+# "which config files live in conf/" is about the files, not about "config".
+# Both the look-behind and the look-ahead are bounded windows: a file-set word
+# can occur many times in a long intent, so anything quadratic here is a stall.
+_WH_BEFORE_NOUN = re.compile(r"\b(?:which|what)\b((?:\s+[\w.'-]{1,30}){0,2})\s*$")
+_WH_WINDOW = 60
+_CLAUSE_MARKER = re.compile(
+    r"\b(?:do|does|did|done|should|would|could|will|can|must|may|might|shall"
+    r"|have|has|had|to|i|we|you|they|he|she|it)\b")
+_FILESET_NOUN = re.compile(r"\b" + FILESET + r"\b")
+
+
+def _wh_inventory(text: str) -> bool:
+    """A wh-word whose object is the file set and whose predicate is stative."""
+    for noun in _FILESET_NOUN.finditer(text):
+        head = _WH_BEFORE_NOUN.search(
+            text[max(noun.start() - _WH_WINDOW, 0):noun.start()])
+        if head is None or _CLAUSE_MARKER.search(head.group(1)):
+            continue
+        if _INVENTORY_TAIL.match(text, noun.end()):
+            return True
+    return False
 
 
 def _gated(inner: Callable[[str], bool]) -> Callable[[str], bool]:
@@ -213,7 +290,8 @@ _RULES: tuple[tuple[str, str, Callable[[str], bool]], ...] = (
     ("R3_PRIOR_SET_REFERENCE", SINGULAR, _R3_PRIOR_SET_REFERENCE),
     ("R4_NAME_CRITERION", ENUMERATIVE, _name_criterion),
     ("R5_IMPLIED_OBJECT_COMMAND", ENUMERATIVE, _implied_object_command),
-    ("R6_EXISTENTIAL_INVENTORY", ENUMERATIVE, _gated(_R6_SIMPLE)),
+    ("R6_EXISTENTIAL_INVENTORY", ENUMERATIVE,
+     _gated(lambda text: bool(_R6_SIMPLE(text) or _wh_inventory(text)))),
 )
 
 
