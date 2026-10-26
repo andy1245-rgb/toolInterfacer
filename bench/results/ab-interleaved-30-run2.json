@@ -1,0 +1,2313 @@
+{
+  "pair": {
+    "n": 30,
+    "accuracy": 0.9,
+    "correct": 27,
+    "errors": 0,
+    "latency_ms": {
+      "n": 30,
+      "p50": 3117.7,
+      "p90": 4768.0,
+      "p99": 8054.6,
+      "min": 1741.1,
+      "max": 8726.5
+    },
+    "per_row_ms": {
+      "0": 3019.3,
+      "1": 2813.4,
+      "2": 3817.3,
+      "3": 1766.1,
+      "4": 3106.1,
+      "5": 2341.8,
+      "6": 2132.0,
+      "7": 4599.8,
+      "11": 4368.6,
+      "12": 2161.5,
+      "64": 2964.2,
+      "65": 3129.4,
+      "66": 2727.6,
+      "67": 2391.8,
+      "68": 3734.8,
+      "69": 2558.0,
+      "70": 3225.8,
+      "71": 3413.0,
+      "74": 2818.1,
+      "76": 6409.6,
+      "77": 6282.0,
+      "95": 8726.5,
+      "96": 3072.4,
+      "97": 3622.3,
+      "98": 2833.4,
+      "99": 3554.7,
+      "104": 4503.9,
+      "106": 1741.1,
+      "131": 3163.0,
+      "137": 3162.6
+    },
+    "split": {
+      "local_commit": {
+        "n": 8,
+        "latency_ms": {
+          "n": 8,
+          "p50": 2366.8,
+          "p90": 3035.3,
+          "p99": 3068.7,
+          "min": 1741.1,
+          "max": 3072.4
+        },
+        "accuracy": 1.0
+      },
+      "escalated": {
+        "n": 22,
+        "latency_ms": {
+          "n": 22,
+          "p50": 3319.4,
+          "p90": 6113.8,
+          "p99": 8240.0,
+          "min": 2161.5,
+          "max": 8726.5
+        },
+        "accuracy": 0.8636,
+        "reasons": {
+          "low_confidence": 22
+        }
+      },
+      "gap_ms": -910.9,
+      "escalation_rate": 0.7333
+    }
+  },
+  "openrouter": {
+    "n": 30,
+    "accuracy": 0.9333,
+    "correct": 28,
+    "errors": 0,
+    "latency_ms": {
+      "n": 30,
+      "p50": 826.6,
+      "p90": 2021.3,
+      "p99": 4706.1,
+      "min": 616.6,
+      "max": 5678.0
+    },
+    "per_row_ms": {
+      "0": 852.9,
+      "1": 737.0,
+      "2": 925.1,
+      "3": 737.6,
+      "4": 824.7,
+      "5": 1060.8,
+      "6": 657.9,
+      "7": 669.8,
+      "11": 1936.3,
+      "12": 641.8,
+      "64": 828.5,
+      "65": 627.2,
+      "66": 616.6,
+      "67": 717.1,
+      "68": 779.5,
+      "69": 650.8,
+      "70": 2015.2,
+      "71": 755.6,
+      "74": 1051.3,
+      "76": 2326.7,
+      "77": 885.5,
+      "95": 2076.6,
+      "96": 5678.0,
+      "97": 1120.9,
+      "98": 1547.1,
+      "99": 1382.8,
+      "104": 681.3,
+      "106": 723.4,
+      "131": 1421.7,
+      "137": 711.2
+    }
+  },
+  "d1_systemone": {
+    "n": 30,
+    "accuracy": 0.7333,
+    "correct": 22,
+    "errors": 0,
+    "latency_ms": {
+      "n": 30,
+      "p50": 2261.1,
+      "p90": 2901.4,
+      "p99": 3301.8,
+      "min": 1801.2,
+      "max": 3427.9
+    },
+    "per_row_ms": {
+      "0": 2414.4,
+      "1": 2414.2,
+      "2": 2359.0,
+      "3": 2300.4,
+      "4": 2306.6,
+      "5": 2177.6,
+      "6": 2349.2,
+      "7": 2383.6,
+      "11": 1801.2,
+      "12": 1963.5,
+      "64": 2167.8,
+      "65": 2165.7,
+      "66": 1956.2,
+      "67": 2190.3,
+      "68": 2380.9,
+      "69": 2190.9,
+      "70": 1956.9,
+      "71": 2239.6,
+      "74": 1838.1,
+      "76": 2893.9,
+      "77": 3427.9,
+      "95": 2832.3,
+      "96": 2993.0,
+      "97": 2969.7,
+      "98": 1946.4,
+      "99": 1976.2,
+      "104": 2230.7,
+      "106": 2382.5,
+      "131": 1988.7,
+      "137": 2282.6
+    }
+  },
+  "escalation": {
+    "tau": 0.9,
+    "observed_rate_30": 0.7333,
+    "predicted_rate_150_offline": 0.72,
+    "predicted_rate_on_selected_rows": 0.7333,
+    "stage1_pmax_on_selected": {
+      "n": 30,
+      "p50": 0.7,
+      "p90": 1.0,
+      "p99": 1.0,
+      "min": 0.3,
+      "max": 1.0
+    },
+    "stage1_pmax_offline_all": {
+      "n": 150,
+      "p50": 0.8,
+      "p90": 1.0,
+      "p99": 1.0,
+      "min": 0.2,
+      "max": 1.0
+    },
+    "offline_n": 150,
+    "n_stage1_error": 0
+  },
+  "mcnemar": {
+    "pair_vs_openrouter": {
+      "b": 0,
+      "c": 1,
+      "n_discordant": 1,
+      "p_value": 1.0,
+      "pair_only_correct": 0,
+      "x_only_correct": 1,
+      "both_correct": 27,
+      "neither_correct": 2,
+      "n_rows": 30
+    },
+    "pair_vs_d1_systemone": {
+      "b": 7,
+      "c": 2,
+      "n_discordant": 9,
+      "p_value": 0.1797,
+      "pair_only_correct": 7,
+      "x_only_correct": 2,
+      "both_correct": 20,
+      "neither_correct": 1,
+      "n_rows": 30
+    },
+    "openrouter_vs_d1_systemone": {
+      "b": 8,
+      "c": 2,
+      "n_discordant": 10,
+      "p_value": 0.1094,
+      "pair_only_correct": 8,
+      "x_only_correct": 2,
+      "both_correct": 20,
+      "neither_correct": 0,
+      "n_rows": 30
+    }
+  },
+  "providers": {
+    "Relace": 30
+  },
+  "spend_usd": 0.003139,
+  "elapsed_s": 214.4,
+  "selection_idx": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    11,
+    12,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    74,
+    76,
+    77,
+    95,
+    96,
+    97,
+    98,
+    99,
+    104,
+    106,
+    131,
+    137
+  ],
+  "selection": [
+    {
+      "idx": 0,
+      "band": "t1",
+      "label": "filesys_read",
+      "utterance": "print the whole pyproject.toml for me"
+    },
+    {
+      "idx": 1,
+      "band": "t1",
+      "label": "filesys_glob",
+      "utterance": "list every file ending in .toml anywhere in the repo"
+    },
+    {
+      "idx": 2,
+      "band": "t1",
+      "label": "filesys_grep",
+      "utterance": "where is handle_stream defined?"
+    },
+    {
+      "idx": 3,
+      "band": "t1",
+      "label": "decide_pick",
+      "utterance": "out of the fetched pages, keep the two most useful"
+    },
+    {
+      "idx": 4,
+      "band": "t1",
+      "label": "decide_extract",
+      "utterance": "give me three phrasings of this question for the engine"
+    },
+    {
+      "idx": 5,
+      "band": "t1",
+      "label": "web_search",
+      "utterance": "look up the latest llama.cpp server flags"
+    },
+    {
+      "idx": 6,
+      "band": "t1",
+      "label": "web_fetch",
+      "utterance": "grab the page at https://ggml.ai/news"
+    },
+    {
+      "idx": 7,
+      "band": "t1",
+      "label": "reddit_digest",
+      "utterance": "what's hot on r/LocalLLaMA today?"
+    },
+    {
+      "idx": 11,
+      "band": "t1",
+      "label": "decide_pick",
+      "utterance": "which of these four candidates is the strongest match?"
+    },
+    {
+      "idx": 12,
+      "band": "t1",
+      "label": "decide_extract",
+      "utterance": "what keywords best capture what I'm after?"
+    },
+    {
+      "idx": 64,
+      "band": "t2",
+      "label": "filesys_read",
+      "utterance": "pull up the cron config for me"
+    },
+    {
+      "idx": 65,
+      "band": "t2",
+      "label": "filesys_glob",
+      "utterance": "where do we keep the probe fixtures?"
+    },
+    {
+      "idx": 66,
+      "band": "t2",
+      "label": "filesys_grep",
+      "utterance": "where do we define the hop budget?"
+    },
+    {
+      "idx": 67,
+      "band": "t2",
+      "label": "decide_pick",
+      "utterance": "of the results we just pulled, which one matters?"
+    },
+    {
+      "idx": 68,
+      "band": "t2",
+      "label": "decide_extract",
+      "utterance": "how would you phrase this ask for the engine?"
+    },
+    {
+      "idx": 69,
+      "band": "t2",
+      "label": "web_search",
+      "utterance": "anything out there on the new moka decode path?"
+    },
+    {
+      "idx": 70,
+      "band": "t2",
+      "label": "web_fetch",
+      "utterance": "get me whatever lives at that address"
+    },
+    {
+      "idx": 71,
+      "band": "t2",
+      "label": "reddit_digest",
+      "utterance": "what's the community saying about the llama 4 dump?"
+    },
+    {
+      "idx": 74,
+      "band": "t2",
+      "label": "filesys_grep",
+      "utterance": "does anything here still call the v1 endpoint?"
+    },
+    {
+      "idx": 76,
+      "band": "t2",
+      "label": "decide_extract",
+      "utterance": "what words should I throw at it to get hits?"
+    },
+    {
+      "idx": 77,
+      "band": "t2",
+      "label": "web_search",
+      "utterance": "any chatter elsewhere about the sigill crash?"
+    },
+    {
+      "idx": 95,
+      "band": "t3",
+      "label": "filesys_grep",
+      "utterance": "which files talk about the eviction policy?"
+    },
+    {
+      "idx": 96,
+      "band": "t3",
+      "label": "filesys_glob",
+      "utterance": "which files have 'replay' in their name?"
+    },
+    {
+      "idx": 97,
+      "band": "t3",
+      "label": "filesys_read",
+      "utterance": "show ops/matcher.py on screen"
+    },
+    {
+      "idx": 98,
+      "band": "t3",
+      "label": "decide_pick",
+      "utterance": "among the files found, which one should we ship to the fetcher?"
+    },
+    {
+      "idx": 99,
+      "band": "t3",
+      "label": "decide_extract",
+      "utterance": "what search terms fit this ask?"
+    },
+    {
+      "idx": 104,
+      "band": "t3",
+      "label": "reddit_digest",
+      "utterance": "how is r/LocalLLaMA reacting to the d1 weights?"
+    },
+    {
+      "idx": 106,
+      "band": "t3",
+      "label": "filesys_glob",
+      "utterance": "are there any .har files in the captures dir?"
+    },
+    {
+      "idx": 131,
+      "band": "t3",
+      "label": "web_search",
+      "utterance": "how do other projects do graceful shutdowns?"
+    },
+    {
+      "idx": 137,
+      "band": "t3",
+      "label": "web_fetch",
+      "utterance": "carry on reading at the linked pytorch discussion"
+    }
+  ],
+  "records": [
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 3019.341892002558,
+      "choice": "filesys_read",
+      "confidence": 0.9124334640814812,
+      "probs": {
+        "filesys_read": 0.923379,
+        "filesys_glob": 0.02022,
+        "filesys_grep": 0.006817,
+        "decide_pick": 0.003155,
+        "decide_extract": 0.002859,
+        "web_search": 0.002663,
+        "web_fetch": 0.03922,
+        "reddit_digest": 0.001687
+      },
+      "last_stage": "stage1",
+      "last_escalated": false,
+      "last_reason": "confident",
+      "last_stage1_conf": 0.923379,
+      "utt_idx": 0,
+      "label": "filesys_read",
+      "band": "t1",
+      "utterance": "print the whole pyproject.toml for me",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 852.9158419987652,
+      "choice": "filesys_read",
+      "confidence": 0.95,
+      "probs": {
+        "filesys_read": 0.95
+      },
+      "last_provider": "Relace",
+      "utt_idx": 0,
+      "label": "filesys_read",
+      "band": "t1",
+      "utterance": "print the whole pyproject.toml for me",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2414.444868998544,
+      "choice": "filesys_read",
+      "confidence": 0.9124334640814812,
+      "probs": {
+        "filesys_read": 0.923379,
+        "filesys_glob": 0.02022,
+        "filesys_grep": 0.006817,
+        "decide_pick": 0.003155,
+        "decide_extract": 0.002859,
+        "web_search": 0.002663,
+        "web_fetch": 0.03922,
+        "reddit_digest": 0.001687
+      },
+      "utt_idx": 0,
+      "label": "filesys_read",
+      "band": "t1",
+      "utterance": "print the whole pyproject.toml for me",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 737.0496730000013,
+      "choice": "filesys_glob",
+      "confidence": 0.98,
+      "probs": {
+        "filesys_glob": 0.98
+      },
+      "last_provider": "Relace",
+      "utt_idx": 1,
+      "label": "filesys_glob",
+      "band": "t1",
+      "utterance": "list every file ending in .toml anywhere in the repo",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2414.1791770016425,
+      "choice": "filesys_glob",
+      "confidence": 0.9747567186992069,
+      "probs": {
+        "filesys_read": 0.00363,
+        "filesys_glob": 0.977912,
+        "filesys_grep": 0.003992,
+        "decide_pick": 0.003412,
+        "decide_extract": 0.004329,
+        "web_search": 0.003456,
+        "web_fetch": 0.00172,
+        "reddit_digest": 0.001549
+      },
+      "utt_idx": 1,
+      "label": "filesys_glob",
+      "band": "t1",
+      "utterance": "list every file ending in .toml anywhere in the repo",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 2813.423651001358,
+      "choice": "filesys_glob",
+      "confidence": 0.9747567186992069,
+      "probs": {
+        "filesys_read": 0.00363,
+        "filesys_glob": 0.977912,
+        "filesys_grep": 0.003992,
+        "decide_pick": 0.003412,
+        "decide_extract": 0.004329,
+        "web_search": 0.003456,
+        "web_fetch": 0.00172,
+        "reddit_digest": 0.001549
+      },
+      "last_stage": "stage1",
+      "last_escalated": false,
+      "last_reason": "confident",
+      "last_stage1_conf": 0.977912,
+      "utt_idx": 1,
+      "label": "filesys_glob",
+      "band": "t1",
+      "utterance": "list every file ending in .toml anywhere in the repo",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2358.963151003991,
+      "choice": "web_fetch",
+      "confidence": 0.48581994196861367,
+      "probs": {
+        "filesys_read": 0.094124,
+        "filesys_glob": 0.052038,
+        "filesys_grep": 0.086676,
+        "decide_pick": 0.057076,
+        "decide_extract": 0.086917,
+        "web_search": 0.057551,
+        "web_fetch": 0.550092,
+        "reddit_digest": 0.015526
+      },
+      "utt_idx": 2,
+      "label": "filesys_grep",
+      "band": "t1",
+      "utterance": "where is handle_stream defined?",
+      "order_pos": 0,
+      "correct": false
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 3817.341422000027,
+      "choice": "filesys_grep",
+      "confidence": 0.95,
+      "probs": {
+        "filesys_grep": 0.95
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.550092,
+      "utt_idx": 2,
+      "label": "filesys_grep",
+      "band": "t1",
+      "utterance": "where is handle_stream defined?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 925.069185999746,
+      "choice": "filesys_grep",
+      "confidence": 0.9,
+      "probs": {
+        "filesys_grep": 0.9
+      },
+      "last_provider": "Relace",
+      "utt_idx": 2,
+      "label": "filesys_grep",
+      "band": "t1",
+      "utterance": "where is handle_stream defined?",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 1766.141404004884,
+      "choice": "decide_pick",
+      "confidence": 0.8935196776671315,
+      "probs": {
+        "filesys_read": 0.003982,
+        "filesys_glob": 0.006398,
+        "filesys_grep": 0.00686,
+        "decide_pick": 0.90683,
+        "decide_extract": 0.004991,
+        "web_search": 0.023384,
+        "web_fetch": 0.045468,
+        "reddit_digest": 0.002088
+      },
+      "last_stage": "stage1",
+      "last_escalated": false,
+      "last_reason": "confident",
+      "last_stage1_conf": 0.90683,
+      "utt_idx": 3,
+      "label": "decide_pick",
+      "band": "t1",
+      "utterance": "out of the fetched pages, keep the two most useful",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 737.5548730051378,
+      "choice": "decide_pick",
+      "confidence": 0.95,
+      "probs": {
+        "decide_pick": 0.95
+      },
+      "last_provider": "Relace",
+      "utt_idx": 3,
+      "label": "decide_pick",
+      "band": "t1",
+      "utterance": "out of the fetched pages, keep the two most useful",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2300.376965999021,
+      "choice": "decide_pick",
+      "confidence": 0.8935196776671315,
+      "probs": {
+        "filesys_read": 0.003982,
+        "filesys_glob": 0.006398,
+        "filesys_grep": 0.00686,
+        "decide_pick": 0.90683,
+        "decide_extract": 0.004991,
+        "web_search": 0.023384,
+        "web_fetch": 0.045468,
+        "reddit_digest": 0.002088
+      },
+      "utt_idx": 3,
+      "label": "decide_pick",
+      "band": "t1",
+      "utterance": "out of the fetched pages, keep the two most useful",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 824.6610799978953,
+      "choice": "decide_extract",
+      "confidence": 0.6,
+      "probs": {
+        "decide_extract": 0.6
+      },
+      "last_provider": "Relace",
+      "utt_idx": 4,
+      "label": "decide_extract",
+      "band": "t1",
+      "utterance": "give me three phrasings of this question for the engine",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2306.6273130025365,
+      "choice": "web_search",
+      "confidence": 0.436895190329549,
+      "probs": {
+        "filesys_read": 0.009503,
+        "filesys_glob": 0.028064,
+        "filesys_grep": 0.047592,
+        "decide_pick": 0.052183,
+        "decide_extract": 0.291978,
+        "web_search": 0.507283,
+        "web_fetch": 0.055625,
+        "reddit_digest": 0.007771
+      },
+      "utt_idx": 4,
+      "label": "decide_extract",
+      "band": "t1",
+      "utterance": "give me three phrasings of this question for the engine",
+      "order_pos": 1,
+      "correct": false
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 3106.1166130020865,
+      "choice": "decide_extract",
+      "confidence": 0.9,
+      "probs": {
+        "decide_extract": 0.9
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.507283,
+      "utt_idx": 4,
+      "label": "decide_extract",
+      "band": "t1",
+      "utterance": "give me three phrasings of this question for the engine",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2177.633498002251,
+      "choice": "web_search",
+      "confidence": 0.8970402840472641,
+      "probs": {
+        "filesys_read": 0.006582,
+        "filesys_glob": 0.008335,
+        "filesys_grep": 0.007603,
+        "decide_pick": 0.008974,
+        "decide_extract": 0.020863,
+        "web_search": 0.90991,
+        "web_fetch": 0.03398,
+        "reddit_digest": 0.003753
+      },
+      "utt_idx": 5,
+      "label": "web_search",
+      "band": "t1",
+      "utterance": "look up the latest llama.cpp server flags",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 2341.8155960025615,
+      "choice": "web_search",
+      "confidence": 0.8970402840472641,
+      "probs": {
+        "filesys_read": 0.006582,
+        "filesys_glob": 0.008335,
+        "filesys_grep": 0.007603,
+        "decide_pick": 0.008974,
+        "decide_extract": 0.020863,
+        "web_search": 0.90991,
+        "web_fetch": 0.03398,
+        "reddit_digest": 0.003753
+      },
+      "last_stage": "stage1",
+      "last_escalated": false,
+      "last_reason": "confident",
+      "last_stage1_conf": 0.90991,
+      "utt_idx": 5,
+      "label": "web_search",
+      "band": "t1",
+      "utterance": "look up the latest llama.cpp server flags",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 1060.8074140036479,
+      "choice": "web_search",
+      "confidence": 0.95,
+      "probs": {
+        "web_search": 0.95
+      },
+      "last_provider": "Relace",
+      "utt_idx": 5,
+      "label": "web_search",
+      "band": "t1",
+      "utterance": "look up the latest llama.cpp server flags",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 2132.02688099409,
+      "choice": "web_fetch",
+      "confidence": 0.9744460402754485,
+      "probs": {
+        "filesys_read": 0.002154,
+        "filesys_glob": 0.002404,
+        "filesys_grep": 0.001746,
+        "decide_pick": 0.002135,
+        "decide_extract": 0.00347,
+        "web_search": 0.007844,
+        "web_fetch": 0.97764,
+        "reddit_digest": 0.002607
+      },
+      "last_stage": "stage1",
+      "last_escalated": false,
+      "last_reason": "confident",
+      "last_stage1_conf": 0.97764,
+      "utt_idx": 6,
+      "label": "web_fetch",
+      "band": "t1",
+      "utterance": "grab the page at https://ggml.ai/news",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 657.9012099973625,
+      "choice": "web_fetch",
+      "confidence": 1.0,
+      "probs": {
+        "web_fetch": 1.0
+      },
+      "last_provider": "Relace",
+      "utt_idx": 6,
+      "label": "web_fetch",
+      "band": "t1",
+      "utterance": "grab the page at https://ggml.ai/news",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2349.1774149952107,
+      "choice": "web_fetch",
+      "confidence": 0.9744460402754485,
+      "probs": {
+        "filesys_read": 0.002154,
+        "filesys_glob": 0.002404,
+        "filesys_grep": 0.001746,
+        "decide_pick": 0.002135,
+        "decide_extract": 0.00347,
+        "web_search": 0.007844,
+        "web_fetch": 0.97764,
+        "reddit_digest": 0.002607
+      },
+      "utt_idx": 6,
+      "label": "web_fetch",
+      "band": "t1",
+      "utterance": "grab the page at https://ggml.ai/news",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 669.8045689990977,
+      "choice": "reddit_digest",
+      "confidence": 0.95,
+      "probs": {
+        "reddit_digest": 0.95
+      },
+      "last_provider": "Relace",
+      "utt_idx": 7,
+      "label": "reddit_digest",
+      "band": "t1",
+      "utterance": "what's hot on r/LocalLLaMA today?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2383.593070997449,
+      "choice": "reddit_digest",
+      "confidence": 0.8588524593671719,
+      "probs": {
+        "filesys_read": 0.002913,
+        "filesys_glob": 0.003506,
+        "filesys_grep": 0.003631,
+        "decide_pick": 0.015442,
+        "decide_extract": 0.019059,
+        "web_search": 0.066968,
+        "web_fetch": 0.011984,
+        "reddit_digest": 0.876496
+      },
+      "utt_idx": 7,
+      "label": "reddit_digest",
+      "band": "t1",
+      "utterance": "what's hot on r/LocalLLaMA today?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 4599.823502998333,
+      "choice": "reddit_digest",
+      "confidence": 0.95,
+      "probs": {
+        "reddit_digest": 0.95
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.876496,
+      "utt_idx": 7,
+      "label": "reddit_digest",
+      "band": "t1",
+      "utterance": "what's hot on r/LocalLLaMA today?",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 1801.2037910011713,
+      "choice": "decide_pick",
+      "confidence": 0.8565397244956678,
+      "probs": {
+        "filesys_read": 0.008687,
+        "filesys_glob": 0.022768,
+        "filesys_grep": 0.02006,
+        "decide_pick": 0.874472,
+        "decide_extract": 0.034356,
+        "web_search": 0.027168,
+        "web_fetch": 0.00994,
+        "reddit_digest": 0.002549
+      },
+      "utt_idx": 11,
+      "label": "decide_pick",
+      "band": "t1",
+      "utterance": "which of these four candidates is the strongest match?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 4368.564028998662,
+      "choice": "decide_pick",
+      "confidence": 0.95,
+      "probs": {
+        "decide_pick": 0.95
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.874472,
+      "utt_idx": 11,
+      "label": "decide_pick",
+      "band": "t1",
+      "utterance": "which of these four candidates is the strongest match?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 1936.2698909972096,
+      "choice": "decide_pick",
+      "confidence": 0.95,
+      "probs": {
+        "decide_pick": 0.95
+      },
+      "last_provider": "Relace",
+      "utt_idx": 11,
+      "label": "decide_pick",
+      "band": "t1",
+      "utterance": "which of these four candidates is the strongest match?",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 2161.496079999779,
+      "choice": "decide_extract",
+      "confidence": 0.85,
+      "probs": {
+        "decide_extract": 0.85
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.472147,
+      "utt_idx": 12,
+      "label": "decide_extract",
+      "band": "t1",
+      "utterance": "what keywords best capture what I'm after?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 641.7515040011494,
+      "choice": "decide_extract",
+      "confidence": 0.85,
+      "probs": {
+        "decide_extract": 0.85
+      },
+      "last_provider": "Relace",
+      "utt_idx": 12,
+      "label": "decide_extract",
+      "band": "t1",
+      "utterance": "what keywords best capture what I'm after?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 1963.4806169997319,
+      "choice": "web_search",
+      "confidence": 0.3967389735230485,
+      "probs": {
+        "filesys_read": 0.007331,
+        "filesys_glob": 0.036274,
+        "filesys_grep": 0.027457,
+        "decide_pick": 0.279495,
+        "decide_extract": 0.141996,
+        "web_search": 0.472147,
+        "web_fetch": 0.030193,
+        "reddit_digest": 0.005107
+      },
+      "utt_idx": 12,
+      "label": "decide_extract",
+      "band": "t1",
+      "utterance": "what keywords best capture what I'm after?",
+      "order_pos": 2,
+      "correct": false
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 828.4700419972069,
+      "choice": "filesys_read",
+      "confidence": 0.7,
+      "probs": {
+        "filesys_read": 0.7
+      },
+      "last_provider": "Relace",
+      "utt_idx": 64,
+      "label": "filesys_read",
+      "band": "t2",
+      "utterance": "pull up the cron config for me",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2167.750104003062,
+      "choice": "filesys_read",
+      "confidence": 0.8735776847391118,
+      "probs": {
+        "filesys_read": 0.88938,
+        "filesys_glob": 0.038126,
+        "filesys_grep": 0.020865,
+        "decide_pick": 0.007711,
+        "decide_extract": 0.020041,
+        "web_search": 0.005874,
+        "web_fetch": 0.016156,
+        "reddit_digest": 0.001847
+      },
+      "utt_idx": 64,
+      "label": "filesys_read",
+      "band": "t2",
+      "utterance": "pull up the cron config for me",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 2964.1980539963697,
+      "choice": "filesys_read",
+      "confidence": 0.7,
+      "probs": {
+        "filesys_read": 0.7
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.88938,
+      "utt_idx": 64,
+      "label": "filesys_read",
+      "band": "t2",
+      "utterance": "pull up the cron config for me",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2165.73576600058,
+      "choice": "filesys_glob",
+      "confidence": 0.5987247283629912,
+      "probs": {
+        "filesys_read": 0.018242,
+        "filesys_glob": 0.648884,
+        "filesys_grep": 0.019005,
+        "decide_pick": 0.145698,
+        "decide_extract": 0.060738,
+        "web_search": 0.088725,
+        "web_fetch": 0.011999,
+        "reddit_digest": 0.006709
+      },
+      "utt_idx": 65,
+      "label": "filesys_glob",
+      "band": "t2",
+      "utterance": "where do we keep the probe fixtures?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 3129.3821400031447,
+      "choice": "filesys_glob",
+      "confidence": 0.6,
+      "probs": {
+        "filesys_glob": 0.6
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.648884,
+      "utt_idx": 65,
+      "label": "filesys_glob",
+      "band": "t2",
+      "utterance": "where do we keep the probe fixtures?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 627.1512620005524,
+      "choice": "filesys_glob",
+      "confidence": 0.6,
+      "probs": {
+        "filesys_glob": 0.6
+      },
+      "last_provider": "Relace",
+      "utt_idx": 65,
+      "label": "filesys_glob",
+      "band": "t2",
+      "utterance": "where do we keep the probe fixtures?",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 2727.631340996595,
+      "choice": "filesys_grep",
+      "confidence": 0.8,
+      "probs": {
+        "filesys_grep": 0.8
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.310251,
+      "utt_idx": 66,
+      "label": "filesys_grep",
+      "band": "t2",
+      "utterance": "where do we define the hop budget?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 616.6162189983879,
+      "choice": "filesys_grep",
+      "confidence": 0.8,
+      "probs": {
+        "filesys_grep": 0.8
+      },
+      "last_provider": "Relace",
+      "utt_idx": 66,
+      "label": "filesys_grep",
+      "band": "t2",
+      "utterance": "where do we define the hop budget?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 1956.2025690029259,
+      "choice": "decide_extract",
+      "confidence": 0.21171538559661465,
+      "probs": {
+        "filesys_read": 0.057925,
+        "filesys_glob": 0.029872,
+        "filesys_grep": 0.13723,
+        "decide_pick": 0.06858,
+        "decide_extract": 0.310251,
+        "web_search": 0.307312,
+        "web_fetch": 0.07616,
+        "reddit_digest": 0.012669
+      },
+      "utt_idx": 66,
+      "label": "filesys_grep",
+      "band": "t2",
+      "utterance": "where do we define the hop budget?",
+      "order_pos": 2,
+      "correct": false
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 717.1102419961244,
+      "choice": "decide_pick",
+      "confidence": 0.9,
+      "probs": {
+        "decide_pick": 0.9
+      },
+      "last_provider": "Relace",
+      "utt_idx": 67,
+      "label": "decide_pick",
+      "band": "t2",
+      "utterance": "of the results we just pulled, which one matters?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2190.2654519944917,
+      "choice": "decide_pick",
+      "confidence": 0.9280143355022862,
+      "probs": {
+        "filesys_read": 0.006845,
+        "filesys_glob": 0.010506,
+        "filesys_grep": 0.016252,
+        "decide_pick": 0.937013,
+        "decide_extract": 0.013512,
+        "web_search": 0.008329,
+        "web_fetch": 0.005666,
+        "reddit_digest": 0.001877
+      },
+      "utt_idx": 67,
+      "label": "decide_pick",
+      "band": "t2",
+      "utterance": "of the results we just pulled, which one matters?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 2391.821060999064,
+      "choice": "decide_pick",
+      "confidence": 0.9280143355022862,
+      "probs": {
+        "filesys_read": 0.006845,
+        "filesys_glob": 0.010506,
+        "filesys_grep": 0.016252,
+        "decide_pick": 0.937013,
+        "decide_extract": 0.013512,
+        "web_search": 0.008329,
+        "web_fetch": 0.005666,
+        "reddit_digest": 0.001877
+      },
+      "last_stage": "stage1",
+      "last_escalated": false,
+      "last_reason": "confident",
+      "last_stage1_conf": 0.937013,
+      "utt_idx": 67,
+      "label": "decide_pick",
+      "band": "t2",
+      "utterance": "of the results we just pulled, which one matters?",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2380.8602529970813,
+      "choice": "decide_extract",
+      "confidence": 0.25236780986586743,
+      "probs": {
+        "filesys_read": 0.044069,
+        "filesys_glob": 0.044285,
+        "filesys_grep": 0.128785,
+        "decide_pick": 0.197269,
+        "decide_extract": 0.345822,
+        "web_search": 0.164325,
+        "web_fetch": 0.063029,
+        "reddit_digest": 0.012416
+      },
+      "utt_idx": 68,
+      "label": "decide_extract",
+      "band": "t2",
+      "utterance": "how would you phrase this ask for the engine?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 3734.832671994809,
+      "choice": "decide_extract",
+      "confidence": 0.6,
+      "probs": {
+        "decide_extract": 0.6
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.345822,
+      "utt_idx": 68,
+      "label": "decide_extract",
+      "band": "t2",
+      "utterance": "how would you phrase this ask for the engine?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 779.5010959962383,
+      "choice": "decide_extract",
+      "confidence": 0.6,
+      "probs": {
+        "decide_extract": 0.6
+      },
+      "last_provider": "Relace",
+      "utt_idx": 68,
+      "label": "decide_extract",
+      "band": "t2",
+      "utterance": "how would you phrase this ask for the engine?",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 2558.0244029988535,
+      "choice": "web_search",
+      "confidence": 0.85,
+      "probs": {
+        "web_search": 0.85
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.46315,
+      "utt_idx": 69,
+      "label": "web_search",
+      "band": "t2",
+      "utterance": "anything out there on the new moka decode path?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 650.7954389962833,
+      "choice": "web_search",
+      "confidence": 0.8,
+      "probs": {
+        "web_search": 0.8
+      },
+      "last_provider": "Relace",
+      "utt_idx": 69,
+      "label": "web_search",
+      "band": "t2",
+      "utterance": "anything out there on the new moka decode path?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2190.9132349974243,
+      "choice": "web_search",
+      "confidence": 0.3864568132130061,
+      "probs": {
+        "filesys_read": 0.030311,
+        "filesys_glob": 0.275949,
+        "filesys_grep": 0.043085,
+        "decide_pick": 0.022774,
+        "decide_extract": 0.070168,
+        "web_search": 0.46315,
+        "web_fetch": 0.085883,
+        "reddit_digest": 0.008681
+      },
+      "utt_idx": 69,
+      "label": "web_search",
+      "band": "t2",
+      "utterance": "anything out there on the new moka decode path?",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 2015.1777760038385,
+      "choice": "web_fetch",
+      "confidence": 0.8,
+      "probs": {
+        "web_fetch": 0.8
+      },
+      "last_provider": "Relace",
+      "utt_idx": 70,
+      "label": "web_fetch",
+      "band": "t2",
+      "utterance": "get me whatever lives at that address",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 1956.9152260010014,
+      "choice": "web_search",
+      "confidence": 0.4429437853796,
+      "probs": {
+        "filesys_read": 0.013031,
+        "filesys_glob": 0.043434,
+        "filesys_grep": 0.014379,
+        "decide_pick": 0.050014,
+        "decide_extract": 0.313416,
+        "web_search": 0.512576,
+        "web_fetch": 0.046048,
+        "reddit_digest": 0.007103
+      },
+      "utt_idx": 70,
+      "label": "web_fetch",
+      "band": "t2",
+      "utterance": "get me whatever lives at that address",
+      "order_pos": 1,
+      "correct": false
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 3225.765350005531,
+      "choice": "web_fetch",
+      "confidence": 0.8,
+      "probs": {
+        "web_fetch": 0.8
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.512576,
+      "utt_idx": 70,
+      "label": "web_fetch",
+      "band": "t2",
+      "utterance": "get me whatever lives at that address",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2239.604667003732,
+      "choice": "reddit_digest",
+      "confidence": 0.47471985864459676,
+      "probs": {
+        "filesys_read": 0.015423,
+        "filesys_glob": 0.056195,
+        "filesys_grep": 0.009883,
+        "decide_pick": 0.010169,
+        "decide_extract": 0.032664,
+        "web_search": 0.28831,
+        "web_fetch": 0.046977,
+        "reddit_digest": 0.54038
+      },
+      "utt_idx": 71,
+      "label": "reddit_digest",
+      "band": "t2",
+      "utterance": "what's the community saying about the llama 4 dump?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 3412.9996949995984,
+      "choice": "web_search",
+      "confidence": 0.85,
+      "probs": {
+        "web_search": 0.85
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.54038,
+      "utt_idx": 71,
+      "label": "reddit_digest",
+      "band": "t2",
+      "utterance": "what's the community saying about the llama 4 dump?",
+      "order_pos": 1,
+      "correct": false
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 755.5960789977689,
+      "choice": "web_search",
+      "confidence": 0.85,
+      "probs": {
+        "web_search": 0.85
+      },
+      "last_provider": "Relace",
+      "utt_idx": 71,
+      "label": "reddit_digest",
+      "band": "t2",
+      "utterance": "what's the community saying about the llama 4 dump?",
+      "order_pos": 2,
+      "correct": false
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 2818.145867000567,
+      "choice": "filesys_grep",
+      "confidence": 0.95,
+      "probs": {
+        "filesys_grep": 0.95
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.315301,
+      "utt_idx": 74,
+      "label": "filesys_grep",
+      "band": "t2",
+      "utterance": "does anything here still call the v1 endpoint?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 1051.2508650062955,
+      "choice": "filesys_grep",
+      "confidence": 0.95,
+      "probs": {
+        "filesys_grep": 0.95
+      },
+      "last_provider": "Relace",
+      "utt_idx": 74,
+      "label": "filesys_grep",
+      "band": "t2",
+      "utterance": "does anything here still call the v1 endpoint?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 1838.1098180034314,
+      "choice": "web_fetch",
+      "confidence": 0.21748737577676813,
+      "probs": {
+        "filesys_read": 0.027807,
+        "filesys_glob": 0.149529,
+        "filesys_grep": 0.059591,
+        "decide_pick": 0.064118,
+        "decide_extract": 0.18927,
+        "web_search": 0.181998,
+        "web_fetch": 0.315301,
+        "reddit_digest": 0.012385
+      },
+      "utt_idx": 74,
+      "label": "filesys_grep",
+      "band": "t2",
+      "utterance": "does anything here still call the v1 endpoint?",
+      "order_pos": 2,
+      "correct": false
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 2326.698524004314,
+      "choice": "decide_extract",
+      "confidence": 0.6,
+      "probs": {
+        "decide_extract": 0.6
+      },
+      "last_provider": "Relace",
+      "utt_idx": 76,
+      "label": "decide_extract",
+      "band": "t2",
+      "utterance": "what words should I throw at it to get hits?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2893.8596150037483,
+      "choice": "web_search",
+      "confidence": 0.3004231593384663,
+      "probs": {
+        "filesys_read": 0.015655,
+        "filesys_glob": 0.029701,
+        "filesys_grep": 0.19559,
+        "decide_pick": 0.193906,
+        "decide_extract": 0.100558,
+        "web_search": 0.38787,
+        "web_fetch": 0.066411,
+        "reddit_digest": 0.010309
+      },
+      "utt_idx": 76,
+      "label": "decide_extract",
+      "band": "t2",
+      "utterance": "what words should I throw at it to get hits?",
+      "order_pos": 1,
+      "correct": false
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 6409.601063001901,
+      "choice": "web_search",
+      "confidence": 0.85,
+      "probs": {
+        "web_search": 0.85
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.38787,
+      "utt_idx": 76,
+      "label": "decide_extract",
+      "band": "t2",
+      "utterance": "what words should I throw at it to get hits?",
+      "order_pos": 2,
+      "correct": false
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 3427.9308710029,
+      "choice": "web_search",
+      "confidence": 0.5817882871460878,
+      "probs": {
+        "filesys_read": 0.007853,
+        "filesys_glob": 0.034242,
+        "filesys_grep": 0.014068,
+        "decide_pick": 0.011197,
+        "decide_extract": 0.10062,
+        "web_search": 0.634065,
+        "web_fetch": 0.037423,
+        "reddit_digest": 0.160531
+      },
+      "utt_idx": 77,
+      "label": "web_search",
+      "band": "t2",
+      "utterance": "any chatter elsewhere about the sigill crash?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 6282.043429004261,
+      "choice": "filesys_grep",
+      "confidence": 0.7,
+      "probs": {
+        "filesys_grep": 0.7
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.634065,
+      "utt_idx": 77,
+      "label": "web_search",
+      "band": "t2",
+      "utterance": "any chatter elsewhere about the sigill crash?",
+      "order_pos": 1,
+      "correct": false
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 885.5179530000896,
+      "choice": "filesys_grep",
+      "confidence": 0.7,
+      "probs": {
+        "filesys_grep": 0.7
+      },
+      "last_provider": "Relace",
+      "utt_idx": 77,
+      "label": "web_search",
+      "band": "t2",
+      "utterance": "any chatter elsewhere about the sigill crash?",
+      "order_pos": 2,
+      "correct": false
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 8726.54319400317,
+      "choice": "filesys_grep",
+      "confidence": 0.95,
+      "probs": {
+        "filesys_grep": 0.95
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.523271,
+      "utt_idx": 95,
+      "label": "filesys_grep",
+      "band": "t3",
+      "utterance": "which files talk about the eviction policy?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 2076.5565440015052,
+      "choice": "filesys_grep",
+      "confidence": 0.95,
+      "probs": {
+        "filesys_grep": 0.95
+      },
+      "last_provider": "Relace",
+      "utt_idx": 95,
+      "label": "filesys_grep",
+      "band": "t3",
+      "utterance": "which files talk about the eviction policy?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2832.2543609974673,
+      "choice": "filesys_grep",
+      "confidence": 0.4551673382380607,
+      "probs": {
+        "filesys_read": 0.052361,
+        "filesys_glob": 0.326575,
+        "filesys_grep": 0.523271,
+        "decide_pick": 0.046142,
+        "decide_extract": 0.019134,
+        "web_search": 0.022237,
+        "web_fetch": 0.006542,
+        "reddit_digest": 0.003737
+      },
+      "utt_idx": 95,
+      "label": "filesys_grep",
+      "band": "t3",
+      "utterance": "which files talk about the eviction policy?",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 5677.972320998379,
+      "choice": "filesys_glob",
+      "confidence": 0.98,
+      "probs": {
+        "filesys_glob": 0.98
+      },
+      "last_provider": "Relace",
+      "utt_idx": 96,
+      "label": "filesys_glob",
+      "band": "t3",
+      "utterance": "which files have 'replay' in their name?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2993.0430989988963,
+      "choice": "filesys_glob",
+      "confidence": 0.946770380244063,
+      "probs": {
+        "filesys_read": 0.005458,
+        "filesys_glob": 0.953424,
+        "filesys_grep": 0.01935,
+        "decide_pick": 0.00689,
+        "decide_extract": 0.005681,
+        "web_search": 0.00506,
+        "web_fetch": 0.002307,
+        "reddit_digest": 0.00183
+      },
+      "utt_idx": 96,
+      "label": "filesys_glob",
+      "band": "t3",
+      "utterance": "which files have 'replay' in their name?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 3072.3776910017477,
+      "choice": "filesys_glob",
+      "confidence": 0.946770380244063,
+      "probs": {
+        "filesys_read": 0.005458,
+        "filesys_glob": 0.953424,
+        "filesys_grep": 0.01935,
+        "decide_pick": 0.00689,
+        "decide_extract": 0.005681,
+        "web_search": 0.00506,
+        "web_fetch": 0.002307,
+        "reddit_digest": 0.00183
+      },
+      "last_stage": "stage1",
+      "last_escalated": false,
+      "last_reason": "confident",
+      "last_stage1_conf": 0.953424,
+      "utt_idx": 96,
+      "label": "filesys_glob",
+      "band": "t3",
+      "utterance": "which files have 'replay' in their name?",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2969.714651000686,
+      "choice": "filesys_read",
+      "confidence": 0.638079210921747,
+      "probs": {
+        "filesys_read": 0.683319,
+        "filesys_glob": 0.128188,
+        "filesys_grep": 0.093059,
+        "decide_pick": 0.016347,
+        "decide_extract": 0.048816,
+        "web_search": 0.005586,
+        "web_fetch": 0.021835,
+        "reddit_digest": 0.002851
+      },
+      "utt_idx": 97,
+      "label": "filesys_read",
+      "band": "t3",
+      "utterance": "show ops/matcher.py on screen",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 3622.3367950005922,
+      "choice": "filesys_read",
+      "confidence": 0.95,
+      "probs": {
+        "filesys_read": 0.95
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.683319,
+      "utt_idx": 97,
+      "label": "filesys_read",
+      "band": "t3",
+      "utterance": "show ops/matcher.py on screen",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 1120.9190640001907,
+      "choice": "filesys_read",
+      "confidence": 0.95,
+      "probs": {
+        "filesys_read": 0.95
+      },
+      "last_provider": "Relace",
+      "utt_idx": 97,
+      "label": "filesys_read",
+      "band": "t3",
+      "utterance": "show ops/matcher.py on screen",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 2833.4101459986414,
+      "choice": "decide_pick",
+      "confidence": 0.9,
+      "probs": {
+        "decide_pick": 0.9
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.690046,
+      "utt_idx": 98,
+      "label": "decide_pick",
+      "band": "t3",
+      "utterance": "among the files found, which one should we ship to the fetcher?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 1547.1458219981287,
+      "choice": "decide_pick",
+      "confidence": 0.95,
+      "probs": {
+        "decide_pick": 0.95
+      },
+      "last_provider": "Relace",
+      "utt_idx": 98,
+      "label": "decide_pick",
+      "band": "t3",
+      "utterance": "among the files found, which one should we ship to the fetcher?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 1946.4222129972768,
+      "choice": "decide_pick",
+      "confidence": 0.6457670488198108,
+      "probs": {
+        "filesys_read": 0.02142,
+        "filesys_glob": 0.22838,
+        "filesys_grep": 0.016098,
+        "decide_pick": 0.690046,
+        "decide_extract": 0.033073,
+        "web_search": 0.005341,
+        "web_fetch": 0.00366,
+        "reddit_digest": 0.001982
+      },
+      "utt_idx": 98,
+      "label": "decide_pick",
+      "band": "t3",
+      "utterance": "among the files found, which one should we ship to the fetcher?",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 1382.8312719997484,
+      "choice": "decide_extract",
+      "confidence": 0.9,
+      "probs": {
+        "decide_extract": 0.9
+      },
+      "last_provider": "Relace",
+      "utt_idx": 99,
+      "label": "decide_extract",
+      "band": "t3",
+      "utterance": "what search terms fit this ask?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 1976.1549979957636,
+      "choice": "web_search",
+      "confidence": 0.6507204052047123,
+      "probs": {
+        "filesys_read": 0.005508,
+        "filesys_glob": 0.04632,
+        "filesys_grep": 0.034281,
+        "decide_pick": 0.012922,
+        "decide_extract": 0.182591,
+        "web_search": 0.69438,
+        "web_fetch": 0.019517,
+        "reddit_digest": 0.004482
+      },
+      "utt_idx": 99,
+      "label": "decide_extract",
+      "band": "t3",
+      "utterance": "what search terms fit this ask?",
+      "order_pos": 1,
+      "correct": false
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 3554.728561997763,
+      "choice": "decide_extract",
+      "confidence": 0.9,
+      "probs": {
+        "decide_extract": 0.9
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.69438,
+      "utt_idx": 99,
+      "label": "decide_extract",
+      "band": "t3",
+      "utterance": "what search terms fit this ask?",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2230.686060996959,
+      "choice": "reddit_digest",
+      "confidence": 0.7806361179021142,
+      "probs": {
+        "filesys_read": 0.005454,
+        "filesys_glob": 0.009457,
+        "filesys_grep": 0.008186,
+        "decide_pick": 0.011876,
+        "decide_extract": 0.04385,
+        "web_search": 0.095489,
+        "web_fetch": 0.017632,
+        "reddit_digest": 0.808057
+      },
+      "utt_idx": 104,
+      "label": "reddit_digest",
+      "band": "t3",
+      "utterance": "how is r/LocalLLaMA reacting to the d1 weights?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 4503.883586003212,
+      "choice": "reddit_digest",
+      "confidence": 0.95,
+      "probs": {
+        "reddit_digest": 0.95
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.808057,
+      "utt_idx": 104,
+      "label": "reddit_digest",
+      "band": "t3",
+      "utterance": "how is r/LocalLLaMA reacting to the d1 weights?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 681.3179799937643,
+      "choice": "reddit_digest",
+      "confidence": 0.95,
+      "probs": {
+        "reddit_digest": 0.95
+      },
+      "last_provider": "Relace",
+      "utt_idx": 104,
+      "label": "reddit_digest",
+      "band": "t3",
+      "utterance": "how is r/LocalLLaMA reacting to the d1 weights?",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 1741.1164849982015,
+      "choice": "filesys_glob",
+      "confidence": 0.9609371233099565,
+      "probs": {
+        "filesys_read": 0.005428,
+        "filesys_glob": 0.96582,
+        "filesys_grep": 0.006279,
+        "decide_pick": 0.005994,
+        "decide_extract": 0.007219,
+        "web_search": 0.004779,
+        "web_fetch": 0.002081,
+        "reddit_digest": 0.002399
+      },
+      "last_stage": "stage1",
+      "last_escalated": false,
+      "last_reason": "confident",
+      "last_stage1_conf": 0.96582,
+      "utt_idx": 106,
+      "label": "filesys_glob",
+      "band": "t3",
+      "utterance": "are there any .har files in the captures dir?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 723.3749719962361,
+      "choice": "filesys_glob",
+      "confidence": 0.98,
+      "probs": {
+        "filesys_glob": 0.98
+      },
+      "last_provider": "Relace",
+      "utt_idx": 106,
+      "label": "filesys_glob",
+      "band": "t3",
+      "utterance": "are there any .har files in the captures dir?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2382.488748000469,
+      "choice": "filesys_glob",
+      "confidence": 0.9609371233099565,
+      "probs": {
+        "filesys_read": 0.005428,
+        "filesys_glob": 0.96582,
+        "filesys_grep": 0.006279,
+        "decide_pick": 0.005994,
+        "decide_extract": 0.007219,
+        "web_search": 0.004779,
+        "web_fetch": 0.002081,
+        "reddit_digest": 0.002399
+      },
+      "utt_idx": 106,
+      "label": "filesys_glob",
+      "band": "t3",
+      "utterance": "are there any .har files in the captures dir?",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 1421.6567390030832,
+      "choice": "web_search",
+      "confidence": 0.9,
+      "probs": {
+        "web_search": 0.9
+      },
+      "last_provider": "Relace",
+      "utt_idx": 131,
+      "label": "web_search",
+      "band": "t3",
+      "utterance": "how do other projects do graceful shutdowns?",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 1988.7178770004539,
+      "choice": "web_search",
+      "confidence": 0.40647388840513893,
+      "probs": {
+        "filesys_read": 0.028362,
+        "filesys_glob": 0.044931,
+        "filesys_grep": 0.039719,
+        "decide_pick": 0.136693,
+        "decide_extract": 0.201724,
+        "web_search": 0.480665,
+        "web_fetch": 0.041171,
+        "reddit_digest": 0.026736
+      },
+      "utt_idx": 131,
+      "label": "web_search",
+      "band": "t3",
+      "utterance": "how do other projects do graceful shutdowns?",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 3162.9586909984937,
+      "choice": "web_search",
+      "confidence": 0.9,
+      "probs": {
+        "web_search": 0.9
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.480665,
+      "utt_idx": 131,
+      "label": "web_search",
+      "band": "t3",
+      "utterance": "how do other projects do graceful shutdowns?",
+      "order_pos": 2,
+      "correct": true
+    },
+    {
+      "arm": "d1_systemone",
+      "error": null,
+      "wall_ms": 2282.628164997732,
+      "choice": "web_fetch",
+      "confidence": 0.8614907150505806,
+      "probs": {
+        "filesys_read": 0.034527,
+        "filesys_glob": 0.010255,
+        "filesys_grep": 0.0156,
+        "decide_pick": 0.00751,
+        "decide_extract": 0.012783,
+        "web_search": 0.026909,
+        "web_fetch": 0.878804,
+        "reddit_digest": 0.013613
+      },
+      "utt_idx": 137,
+      "label": "web_fetch",
+      "band": "t3",
+      "utterance": "carry on reading at the linked pytorch discussion",
+      "order_pos": 0,
+      "correct": true
+    },
+    {
+      "arm": "pair",
+      "error": null,
+      "wall_ms": 3162.5543010013644,
+      "choice": "web_fetch",
+      "confidence": 0.85,
+      "probs": {
+        "web_fetch": 0.85
+      },
+      "last_stage": "stage2",
+      "last_escalated": true,
+      "last_reason": "low_confidence",
+      "last_stage1_conf": 0.878804,
+      "utt_idx": 137,
+      "label": "web_fetch",
+      "band": "t3",
+      "utterance": "carry on reading at the linked pytorch discussion",
+      "order_pos": 1,
+      "correct": true
+    },
+    {
+      "arm": "openrouter",
+      "error": null,
+      "wall_ms": 711.1622570009786,
+      "choice": "web_fetch",
+      "confidence": 0.85,
+      "probs": {
+        "web_fetch": 0.85
+      },
+      "last_provider": "Relace",
+      "utt_idx": 137,
+      "label": "web_fetch",
+      "band": "t3",
+      "utterance": "carry on reading at the linked pytorch discussion",
+      "order_pos": 2,
+      "correct": true
+    }
+  ],
+  "warmup_discarded_ms": {
+    "pair": 3073.1,
+    "openrouter": 647.3,
+    "d1_systemone": 2966.9
+  },
+  "method": "make_backend() per arm, resolve() bypassed (no decision cache, no heuristic pre-gate); arms interleaved per utterance with rotating lead arm; prompt imported verbatim from bench/live_probe.py"
+}
