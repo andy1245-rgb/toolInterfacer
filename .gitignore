@@ -15,3 +15,6 @@ extern/
 
 # machine-specific bench env (see bench/lane.env.example)
 bench/lane.env
+
+# distill pipeline output: generated rows, labels, audit CSVs (never committed)
+var/
