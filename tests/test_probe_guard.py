@@ -1,18 +1,25 @@
-"""Probe guard tests — served-model assertion logic. Stub /props dicts, no network."""
+"""Probe guard tests — served-model assertion logic, the shared token, and the
+artifact loader. Stub dicts and a stub socket, no model and no service."""
 import contextlib
 import io
 import json
+import os
 import pathlib
 import sys
 import tempfile
+import threading
 import unittest
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "bench"))
 sys.path.insert(0, str(ROOT / "service"))
 
+import live_e2e as probe  # noqa: E402
 import live_probe  # noqa: E402
 import model_guard  # noqa: E402
+from ti import conf  # noqa: E402
+from ti.http import auth  # noqa: E402
 
 D1_PATH = r"C:\models\d1bench\models\d1-3B-Q4_K_M.gguf"
 QWEN_PATH = r"D:\models\Qwen3.5-4B-Q4_K_M.gguf"
@@ -180,6 +187,194 @@ class ServeLaneArgvTest(unittest.TestCase):
         cfg = self._cfg()
         cfg["lanes"]["d1"]["model"] = "D:/abs/d1-3B-Q4_K_M.gguf"
         self.assertEqual(serve_lane.build_argv(cfg, "d1", "C:/models")[1], "D:/abs/d1-3B-Q4_K_M.gguf")
+
+
+class _TokenSocket(BaseHTTPRequestHandler):
+    """A service that keeps what it was sent and can refuse like the real one."""
+
+    def do_POST(self) -> None:
+        seen = str(self.headers.get(probe.TOKEN_HEADER) or "")
+        if self.path == "/refuse":
+            self._reply(401, {"error": "unauthenticated"})
+            return
+        self._reply(200, {"seen": seen})
+
+    def _reply(self, code: int, payload: dict) -> None:
+        blob = json.dumps(payload).encode()
+        self.send_response(code)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(blob)))
+        self.end_headers()
+        self.wfile.write(blob)
+
+    def log_message(self, *args) -> None:  # a test socket has nothing to log
+        pass
+
+
+class TokenResolutionTest(unittest.TestCase):
+    """The probe must resolve the token in `service/ti/http/auth.py`'s order.
+
+    Post-auth, `bench/live_e2e.py` sent no token at all and every POST came back
+    401, which the run reported as `0/4 cases passed` — a worse number than the
+    code deserved. These cases pin the order (environment, then the runtime
+    file), the header, and the loud 401.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.path = pathlib.Path(self.tmp.name, "state", "token")
+        self._environ = dict(os.environ)
+        self.addCleanup(self._restore)
+        for name in ("TI_HTTP_TOKEN", "TI_HTTP_TOKEN_FILE", "TI_CONF_OVERLAY"):
+            os.environ.pop(name, None)
+        os.environ["TI_HTTP_TOKEN_FILE"] = str(self.path)
+        auth.reset()
+
+    def _restore(self):
+        os.environ.clear()
+        os.environ.update(self._environ)
+        conf.reload()
+        auth.reset()
+
+    def _write_file(self, value: str) -> None:
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(value + "\n", encoding="utf-8")
+        self.path.chmod(0o600)
+        auth.reset()
+
+    def test_the_environment_wins_over_the_runtime_file(self):
+        self._write_file("file-token")
+        os.environ["TI_HTTP_TOKEN"] = "env-token"
+        resolved = probe.resolve_token()
+        self.assertEqual(resolved.value, "env-token")
+        self.assertEqual(resolved.source, "$TI_HTTP_TOKEN")
+        # the service's own resolution has to pick the same one
+        self.assertEqual(resolved.value, auth.token())
+
+    def test_the_runtime_file_answers_when_the_environment_is_empty(self):
+        self._write_file("file-token")
+        resolved = probe.resolve_token()
+        self.assertEqual(resolved.value, "file-token")
+        self.assertEqual(resolved.source, str(self.path))
+        self.assertEqual(resolved.value, auth.token())
+
+    def test_the_variable_name_is_the_one_the_conf_declares(self):
+        overlay = pathlib.Path(self.tmp.name, "overlay.json")
+        overlay.write_text(json.dumps({"http": {"token_env": "TI_BENCH_TOKEN"}}),
+                           encoding="utf-8")
+        os.environ["TI_CONF_OVERLAY"] = str(overlay)
+        conf.reload()
+        os.environ["TI_BENCH_TOKEN"] = "conf-token"
+        resolved = probe.resolve_token()
+        self.assertEqual(probe.token_env_name(), "TI_BENCH_TOKEN")
+        self.assertEqual(resolved.value, "conf-token")
+        self.assertEqual(resolved.value, auth.token())
+
+    def test_an_explicit_token_comes_first(self):
+        self._write_file("file-token")
+        os.environ["TI_HTTP_TOKEN"] = "env-token"
+        self.assertEqual(probe.resolve_token("cli-token"), probe.Token("cli-token", "--token"))
+
+    def test_the_header_cannot_drift_from_the_service_or_the_extension(self):
+        self.assertEqual(probe.TOKEN_HEADER, auth.TOKEN_HEADER)
+        self.assertEqual(probe.TOKEN_HEADER, "X-TI-Token")
+        # the client half names the constant it mirrors
+        source = (ROOT / "pi-extension" / "src" / "token.ts").read_text(encoding="utf-8")
+        self.assertIn(f'TOKEN_HEADER = "{probe.TOKEN_HEADER}"', source)
+
+    def test_a_refused_token_is_an_error_that_names_the_cause(self):
+        server = ThreadingHTTPServer(("127.0.0.1", 0), _TokenSocket)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        self.addCleanup(self._stop, server, thread)
+        base = f"http://127.0.0.1:{server.server_address[1]}"
+        token = probe.Token("abc", "$TI_HTTP_TOKEN")
+        self.assertEqual(probe.http_json(f"{base}/echo", {"intent": "x"}, 10, token),
+                         {"seen": "abc"})
+        with self.assertRaises(probe.Unauthenticated) as caught:
+            probe.http_json(f"{base}/refuse", {"intent": "x"}, 10, token)
+        message = str(caught.exception)
+        self.assertIn("401", message)
+        self.assertIn("$TI_HTTP_TOKEN", message)      # what was sent, and where from
+        self.assertIn("--token", message)            # what to do about it
+        self.assertIn("auth.py", message)
+
+    def test_a_refusal_is_not_scored_as_a_failed_case(self):
+        def transport(body, timeout):
+            raise probe.Unauthenticated("the service refused this probe's credentials")
+        with self.assertRaises(probe.Unauthenticated):
+            probe.run_cases([probe.cases(False, 60.0)[0]], probe.Ctx(), [], transport)
+
+    def test_a_degraded_run_says_so_in_its_summary(self):
+        rows = [probe.Row(case=case) for case in probe.cases(False, 60.0)[:2]]
+        rows[0].body = {"degraded": True}
+        rows[1].body = {"degraded": False}
+        notes = probe.summary_notes(rows, "d1-3B-Q4_K_M.gguf", False)
+        self.assertEqual(len(notes), 1)
+        self.assertIn(rows[0].case.name, notes[0])
+        self.assertIn("1 of 2", notes[0])
+        # no served-model assertion is its own disclaimer, even with no degraded case
+        self.assertTrue(probe.summary_notes(rows[1:], "", False))
+        self.assertEqual(probe.summary_notes(rows[1:], "d1-3B-Q4_K_M.gguf", False), [])
+
+    def _stop(self, server, thread):
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=10)
+
+
+class ClassicalLoaderTest(unittest.TestCase):
+    """A malformed recorded artifact is named and skipped — it never ends the run."""
+
+    def setUp(self):
+        import classical_baseline
+        self.baseline = classical_baseline
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = pathlib.Path(self.tmp.name)
+
+    def _write(self, name: str, text: str) -> pathlib.Path:
+        path = self.root / name
+        path.write_text(text, encoding="utf-8")
+        return path
+
+    def test_a_malformed_artifact_is_reported_by_name_and_skipped(self):
+        good = self._write("good.json", json.dumps({"per_row": [
+            {"choice": "filesys_read", "ms": 1.0, "correct": True},
+            {"choice": "filesys_glob", "ms": 2.0, "correct": False}]}))
+        # the shape `e523336` left behind: a Windows path with unescaped backslashes
+        bad = self._write("bad.json", r'{"model": {"path": "C:\models\d1.gguf"}}')
+        runs, problems = self.baseline.load_runs([bad, good], 2)
+        self.assertEqual(len(runs), 1)                       # the good one survived
+        self.assertEqual(len(problems), 1)
+        self.assertEqual(problems[0]["file"], bad.name)
+        self.assertIn("JSONDecodeError", problems[0]["problem"])
+        self.assertEqual(len(runs[0]["per_row"]), 2)
+        self.assertNotIn(good.name, [p["file"] for p in problems])
+
+    def test_a_misaligned_artifact_is_skipped_rather_than_paired(self):
+        # pairing rows positionally against a short file would mislabel every row
+        # and report a worse accuracy, which is not the same as a missing file
+        path = self._write("short.json", json.dumps({"per_row": [
+            {"choice": "filesys_read", "ms": 1.0, "correct": True}]}))
+        runs, problems = self.baseline.load_runs([path], 2)
+        self.assertEqual(runs, [])
+        self.assertIn("1 per_row entries, expected 2", problems[0]["problem"])
+
+    def test_an_artifact_missing_a_field_the_sweep_reads_is_skipped(self):
+        path = self._write("nofield.json", json.dumps({"per_row": [
+            {"choice": "filesys_read", "ms": 1.0, "correct": True},
+            {"choice": "filesys_glob", "ms": 1.0}]}))
+        runs, problems = self.baseline.load_runs([path], 2)
+        self.assertEqual(runs, [])
+        self.assertIn("per_row[1]", problems[0]["problem"])
+
+    def test_a_directory_of_only_bad_artifacts_loads_nothing_and_says_why(self):
+        path = self._write("bad.json", "{not json")
+        runs, problems = self.baseline.load_runs([path], 150)
+        self.assertEqual(runs, [])
+        self.assertEqual(len(problems), 1)
 
 
 if __name__ == "__main__":
