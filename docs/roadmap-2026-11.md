@@ -89,3 +89,42 @@ on a fixed task list.
 - No hardcoded personal absolute paths (`tests/test_no_personal_paths.py`).
 - No pushes, no tags without an explicit go-ahead.
 - A number is quoted with its n and its source file, or it is not quoted.
+
+---
+
+## Findings that changed the plan
+
+Recorded as the recon landed, because two of them move the goalposts.
+
+**1. The classical baseline may be the whole answer.** The sibling-project survey
+(`docs/assets-inventory.md`) found a six-backend head-to-head on 382 rows / 18
+classes: TF-IDF + LinearSVC **93.19% at 0.61 ms**, d1-3B **91.36% at 242.7 ms**,
+MiniLM + logistic 86.65% at 57.8 ms, needle3 59.42%. That is a 400x latency gap
+at equal-or-better accuracy. Either the linear number is in-sample (the original
+script fitted and scored on the same rows, which is the first thing to check) or
+the project's premise -- a neural decision model behind the `choice` primitive --
+is the wrong instrument. `ov-classical` exists to settle it.
+
+**2. Every accuracy claim in `docs/` is underpowered.** Per
+`decisionModelTuning/03-evaluation-and-calibration.md` section 3, detecting two
+points unpaired needs ~5,000 rows per arm; paired with McNemar at 10%
+discordance, ~1,960. At n=300 the 95% interval is +/-4.0 points. This repo reports
+74.0% vs 58.0% on n=150 and 90.0% vs 93.3% on n=30 -- both are directional,
+neither is a result. Any public claim needs the interval printed beside it, and
+the frozen set needs to grow before it can support a comparison. That is
+`ov-distill`'s job and it reorders Phase 2 ahead of Phase 1.
+
+**3. Needle is a measured no for routing and an unmeasured maybe for `extract`.**
+1.07 GB of local evidence says needle3 scores 59.4% node-fixed and a local LoRA
+fine-tune dropped it from 26% to 6% against an 81% majority baseline. But
+`resolve("extract")` raises `KeyError` today -- the `extract` primitive has **no
+backend at all** -- and needle's contract (one call-acceptance scalar, no
+distribution over tools) makes it structurally unsuitable for `choice` while
+being the right shape for `extract`. Worth one spike, not an adoption.
+
+**4. The bar to beat is higher than this repo thinks.** The incumbent d1-3B
+number in `docs/` is 74.0% on the 150-row v2 set, but the same model scores
+**91.4% with none-detection 1.00** on the 382-row set. The v2 set's bands (t1
+literal / t2 veiled / t3 compound) are harder than the 382 set's task. Any
+comparison across the two is invalid; the harness must name which set it scored
+or the number is meaningless.
