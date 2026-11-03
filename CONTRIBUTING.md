@@ -85,5 +85,15 @@ python3 -m build --wheel        # build the wheel; CI then asserts the service
                                 # modules it names are inside it
 ```
 
+## Releasing and publishing
+
+Green tests are the bar for a merge; a release has its own runbook —
+[`RELEASE.md`](RELEASE.md): the pre-flight that must exit 0, the wheel built and installed
+before anything is tagged, the annotated tag, TestPyPI before PyPI, and the rollback order.
+Before a first public push, read [`docs/pre-publish-audit.md`](docs/pre-publish-audit.md) —
+it audits what a stranger can see and infer from the clone (committed history, not only the
+working tree), and its Resolution appendix records which findings were closed and which are
+still the owner's decision.
+
 See [`docs/`](docs/) for the architecture, the ops CLI contract, the testing
 notes and the measured decision-backend sweeps.

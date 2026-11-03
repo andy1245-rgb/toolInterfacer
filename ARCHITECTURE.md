@@ -173,9 +173,8 @@ The service is a local HTTP endpoint that reads files on behalf of whoever asks,
 
 - **No model decides the plan.** Intent classification is keyword frames; the decision model
   is used *inside* a plan. Spec §2 calls the model-planned version L3 and lists it as not
-  built; the label **P2** for the routed replacement comes from
-  `service/ti/planner/inspector.py`, not from the spec, whose P2 is the "d1-3B live" phase
-  (§8).
+  built; the **P2** label the code carries for that work is not the spec's phase of the same
+  name — see [`spec/1.0-spec.md`](spec/1.0-spec.md#divergences-from-this-spec)'s §8 row.
 - **No destructive tools.** `bash`/`write`/`edit` stay native; the v1 domain is read-only
   plus the web stack.
 - **No orchestration.** This schedules one call. Multi-agent coordination is a different

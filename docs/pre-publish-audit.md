@@ -7,6 +7,13 @@
 | method | history and index queries only (`git log`, `git grep`, `git rev-list`); no filesystem walks |
 | branches | `main` = 110 commits; all refs = 117 commits across 54 branches |
 
+**Dated snapshot.** Everything below describes the tree at `ca7ffec`, 2026-11-03 15:37 EST,
+and every number in it is that tree's. Two of its findings were closed 24 minutes later in
+`7113ef8` — §2.2 and §7 item 1, the guard's blind spot to the bare `/home/<name>` form — and
+§2.3 carries the status of both. The **Resolution** appendix at the end records which
+findings closed in which commit and which are still the owner's decision; read it before
+acting on §7.
+
 This document records exposure, not blame. Where I call something *deliberate* I mean the
 author clearly chose to publish it; *accidental* means it is a by-product that the author
 most likely did not intend to hand to a stranger. Both are inventory, not judgement.

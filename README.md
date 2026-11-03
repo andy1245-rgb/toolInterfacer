@@ -134,10 +134,10 @@ These are not wired, and the README would be lying if it did not say so:
   local — which is wider than the two words (`"research"`, `"compare"`) it shipped with
   and is still a rule list. The decision model is used *inside* a plan — candidate
   selection, slot fill, verification — not to choose the plan. Spec §2 calls the
-  model-planned version **L3** and marks it *not built*, which is what this is; the label
-  **P2** for the routed replacement is `planner/inspector.py`'s own and collides with the
-  phase name "P2 — d1-3B live" in spec §8. `tests/test_route_real_traffic.py` is the table
-  that holds the rules to the hop log.
+  model-planned version **L3** and marks it *not built*, which is what this is; the code's
+  **P2** label for that work is not the spec's phase of the same name
+  ([`spec/1.0-spec.md`](spec/1.0-spec.md#divergences-from-this-spec), §8 row).
+  `tests/test_route_real_traffic.py` is the table that holds the rules to the hop log.
 - **Ask-back works over HTTP, but only as a second call.** The transport has no channel
   mid-request, so `use_tool(..., ask_via_response=True)` returns `status: "need_input"`
   with the candidate list as answerable options, and the caller resolves it by calling
@@ -402,6 +402,10 @@ behaviour, never latency.
 | [`docs/model-sweep-consolidated.md`](docs/model-sweep-consolidated.md) | the backend sweep, per band, with its correction |
 | [`docs/serving-fix-qwen35.md`](docs/serving-fix-qwen35.md) | why qwen35 lanes serve CPU-class in server contexts |
 | [`docs/research-model-sweep-q4.md`](docs/research-model-sweep-q4.md) | the 4B-class model scout |
+| [`RELEASE.md`](RELEASE.md) | the release runbook: the pre-flight that must exit 0, the wheel built *and installed* before anything is tagged, TestPyPI before PyPI, and the rollback order |
+| [`docs/pre-publish-audit.md`](docs/pre-publish-audit.md) | the gate before a public push: what a stranger can see, download and infer from the clone — history, secrets, licence, tracked tree — with a Resolution appendix saying which findings were closed and which are still the owner's call |
+| [`docs/audit-2026-11-03.md`](docs/audit-2026-11-03.md) | the implementation audited against [`spec/1.0-spec.md`](spec/1.0-spec.md), module by module, with the three publish blockers that started the repair branches (all three since closed — [`docs/roadmap-2026-11.md`](docs/roadmap-2026-11.md)'s Outcome has the table) |
+| [`docs/review-2026-11-03.md`](docs/review-2026-11-03.md) and [`docs/review2-2026-11-03.md`](docs/review2-2026-11-03.md) | two independent reviews: the first names five blockers B1–B5 with the evidence for each; the second, written after the repair merges, gives the status of each one and what is still open |
 
 ## Layout
 
