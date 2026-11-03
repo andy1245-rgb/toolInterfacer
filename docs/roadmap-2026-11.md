@@ -6,9 +6,9 @@ executed, not when its code exists.
 
 ## Where the project actually stands
 
-*(As of 2026-11-03, the start of this run. Superseded numbers: the suite is 715 tests,
-159→349 subtests, and the hop log is 1398 records — `README.md` and
-`docs/dataset-status.md` carry the current ones. The rest of this file is the record of that
+*(As of 2026-11-03, the start of this run. Every figure below is that night's and is
+superseded: the README's Test suite row carries the current test count and
+`docs/dataset-status.md` the current hop log. The rest of this file is the record of that
 night's plan and is not rewritten.)*
 
 - Service, planner, four decide backends (d1 `/v1/systemone`, Jev-style
@@ -155,7 +155,7 @@ security ones were re-probed live against a running service:
 | a one-entry probability vector read as `p_max 1.0`, so `tau` could never fire | K<2 raises instead; a 0.02 answer no longer reports 0.87 |
 | the L2 research template named ops that do not exist — every "research" intent errored at step 0 | the template runs: extract → search → pick → fetch (gated, per-page `noul`) → assemble |
 | `pip install .` shipped 2 of 53 modules | 53 modules, console script, CI wheel check |
-| `tsc` reported 66 errors, the extension could not load | `tsc` exit 0, contract check 11/11 |
+| `tsc` reported 66 errors, the extension could not load | `tsc` exit 0, contract check green |
 | seven web-research intents routed to `filesys_glob` in production | an explicit research verb outranks `r/`; real-log regression table |
 
 **588 → 626 tests.** The suite grew by the regressions that would have caught

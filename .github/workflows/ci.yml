@@ -43,8 +43,8 @@ jobs:
       # sys.path itself, the decision backends are recorded answers, and the web
       # CLIs are replaced by tests/data/fake_cli.py. They run in this job rather
       # than alongside the suite because both start a real service on an
-      # ephemeral port, and a runner that is also running 715 tests is not the
-      # machine a stranger has.
+      # ephemeral port, and a runner that is also running the full test suite is
+      # not the machine a stranger has.
       - name: The harness scores, validates and compares, all offline
         run: python3 bench/run.py selftest
       - name: The demo answers all three scenes

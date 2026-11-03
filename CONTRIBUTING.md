@@ -6,10 +6,12 @@
 python3 -m pytest tests/ -q
 ```
 
-That is the whole suite: 715 tests, 349 subtests, no network, no model, no CLI.
-It runs from a fresh clone with nothing installed — each test file puts
-`service/` on `sys.path` itself. Installing the package (`pip install -e
-".[dev]"`) also works and is what CI does.
+That is the whole suite: 700+ tests, no network, no model, no CLI. Run it and the last line
+prints the exact count; the README's [Test suite row](README.md#what-works-today) is the
+only place that number is written down, so it is the one to trust and the one to update. It
+runs from a fresh clone with nothing installed — each test file puts `service/` on
+`sys.path` itself. Installing the package (`pip install -e ".[dev]"`) also works and is
+what CI does.
 
 Every test is a `unittest` case, so either runner is fine:
 
