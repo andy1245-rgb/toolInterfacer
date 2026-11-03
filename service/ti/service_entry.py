@@ -61,13 +61,15 @@ def _passthrough(params: dict[str, Any]) -> dict[str, Any]:
     try:
         args, soft = validate_params(str(tool), args_in)
         opdef = get_op(str(tool))
-        _kind, data, _conf = opdef.run(args, None)
+        _kind, data, op_conf = opdef.run(args, None)
+        # No `confidence` in this envelope: L0 is the caller's own op and args, so
+        # the service made no routing decision to be confident about. What the op
+        # measured about its own result stays on the hop, where it is attributed.
         return {"status": "done", "result": data,
                 "degraded": False, "assumptions": list(soft),
-                "confidence": 1.0,
                 "hops": [{"step": "L0", "op": str(tool),
                           "ms": round((time.monotonic() - t0) * 1000, 1),
-                          "conf": 1.0,
+                          "conf": op_conf,
                           "artifact_summary": str(data)[:120]}]}
     except Exception as exc:  # noqa: BLE001
         return {"status": "error", "error": str(exc), "hops": []}
@@ -93,14 +95,19 @@ def _run_steps(steps: list[Step], llm_params: dict[str, Any], final_key: str,
                    _run_op_with_log(log), _noul_verifier, final_key=final_key,
                    pre_assumptions=pre_assumptions)
     ms = round((time.monotonic() - t0) * 1000, 1)
+    # `confidence` describes the delivered result, so it is attached only to a
+    # result: an error run (or a run that stopped to ask) reports none, however
+    # much it measured before it stopped.
+    conf = _route_conf(res.hops) if res.status == "done" else None
     out: dict[str, Any] = {
         "status": res.status, "result": res.result,
         "degraded": res.degraded, "assumptions": res.assumptions,
-        "confidence": _route_conf(res.hops),
         "hops": res.hops, "wall_ms": ms,
         "meta": {"level": inspect(intent, params, {})["level"],
                  "route_gate": gate_route()},
     }
+    if conf is not None:
+        out["confidence"] = conf
     if res.error is not None:
         out["error"] = res.error
     if res.status == "need_input" and on_ask is None and not res.degraded:
@@ -108,33 +115,44 @@ def _run_steps(steps: list[Step], llm_params: dict[str, Any], final_key: str,
     return out
 
 
-def _route_conf(hops: list[dict[str, Any]]) -> float:
-    """The run's confidence: the min over hops that carry a measurement.
+def _route_conf(hops: list[dict[str, Any]]) -> float | None:
+    """The run's confidence: the min over hops that carry a measurement, or None.
+
+    `confidence` is `Type.Optional` in the contract for exactly this case: a run
+    that measured nothing reports *no* number. Returning 1.0 here made an error
+    run with no hops (and every L1 listing, and every L0 passthrough) read as
+    maximally certain, which is the one interpretation the evidence cannot
+    support — an absent field is the honest encoding of an absent measurement.
 
     The `askback` hop is written before the ask is attempted, so its conf 0.0 is
     a placeholder rather than a measurement — ask-back is not wired into the
     HTTP path at all (use_tool is called without on_ask), which would make every
     gated run report 0.0 and destroy the decide confidence it did reach. Only a
-    resolved ask-back counts: `askback.resolved` (conf 0.9, the LLM-trusted
+    resolved ask-back counts: `askback.resolved` (ASKBACK_CONF, the LLM-trusted
     answer) supersedes the hop for the artifact it re-wrote, because that hop
     scored a proposal the gate rejected, not the answer that was delivered.
     A solicited but unanswered ask-back (no channel, asks exhausted, or an
     answer that did not apply) measures nothing either, so it is left out and
     the run reports the real decide signal as its lower bound; the gap is
     stated by `degraded` + assumptions[], not by a fabricated 0.0.
+
+    A decide hop whose op reported no confidence (rule_extract measures none)
+    contributes nothing: an op that made no measurement must not be guessed at.
     """
     superseded = {h["resolves"] for h in hops
                   if h["op"] == "askback.resolved" and h.get("resolves")}
     signal = [h["conf"] for h in hops
-              if h["op"] == "askback.resolved"
-              or (h["op"].startswith("decide") and h["step"] not in superseded)]
+              if h["conf"] is not None
+              and (h["op"] == "askback.resolved"
+                   or (h["op"].startswith("decide") and h["step"] not in superseded))]
     if not signal:
-        return 1.0
+        return None
     return max(0.0, min(signal))
 
 
 def _run_op_with_log(log: HopLog | None):
-    def run(op_name: str, opdef: Any, args: dict[str, Any], store: Any, soft: dict[str, Any]) -> tuple[str, Any, float]:
+    def run(op_name: str, opdef: Any, args: dict[str, Any], store: Any,
+            soft: dict[str, Any]) -> tuple[str, Any, "float | None"]:
         t0 = time.monotonic()
         kind, data, conf = opdef.run(args, store)
         if log:

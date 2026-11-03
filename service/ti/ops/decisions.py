@@ -6,6 +6,12 @@ via recorded map; d1 extract lands in P2/P4).
 
 decide_pick — choose top_k items from a source artifact. Uses `choice` with
 criteria built from the candidates (id + description lines preferred).
+
+Both ops report the confidence their backend measured, and None when it measured
+none: `run_extract` defaults to no number (the shipped rule_extract matches
+patterns, it does not score them) rather than to a plausible-looking constant,
+and the runner, the artifacts and the run-level `confidence` all carry that
+absence through instead of substituting one.
 """
 from __future__ import annotations
 
@@ -90,16 +96,31 @@ def _describe(candidates: list[Any]) -> dict[str, str]:
 
 
 @op("decide_extract", kind="value_list", required=["instructions"], optional=["source_artifact", "count"])
-def run_extract(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
+def run_extract(params: dict[str, Any], store: Any) -> tuple[str, Any, float | None]:
     src = params.get("source_artifact")
     ctx = store.try_get(src).data if (src and store.try_get(src)) else {}
     backend = resolve_backend("extract")
     state = guard_state({"context": ctx, "instructions": params["instructions"]})
     values = backend.extract(state,
                              {"type": "value_list", "count": int(params.get("count", 4))})
-    conf = float(values.get("conf", 0.7)) if isinstance(values, dict) else 0.7
+    conf = _measured_conf(values)
     data = values.get("values", values) if isinstance(values, dict) else values
     return "value_list", data, conf
+
+
+def _measured_conf(values: Any) -> float | None:
+    """The conf the extract backend measured, or None when it measured none.
+
+    Absent is the normal case: a rule (or any non-probabilistic) extractor has no
+    distribution to report, and the 0.7 this used to fall back to was a number
+    nobody computed standing in for a measurement that did not happen.
+    """
+    if not isinstance(values, dict):
+        return None
+    raw = values.get("conf")
+    if isinstance(raw, bool) or not isinstance(raw, (int, float)):
+        return None
+    return float(raw)
 
 
 @op("decide_pick", kind="picked_items",

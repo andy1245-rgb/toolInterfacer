@@ -16,6 +16,32 @@ This module is pure and stdlib-only. It defines both formulas, and a dispatcher
 that normalizes either backend's confidence onto the common peak-probability
 (p_max) scale. Nothing here is wired into a default path yet — it is a helper
 callers opt into.
+
+WHAT EACH FUNCTION MEANS
+
+  pmax_from_probs(p) = max(p). The peak probability of a distribution over K
+alternatives. Monotone non-decreasing in the peak, and its range is [1/K, 1] for
+a normalized vector — it can never exceed 1, and it never reaches 1 for a
+non-degenerate vector.
+
+  d1_conf(p_max, K) = max(0, (p_max - 1/K) / (1 - 1/K)). The *excess* over the
+uniform baseline, rescaled to [0, 1]: 0 at a uniform vector, 1 at a point mass,
+monotone increasing in p_max for fixed K, and monotone increasing in the uniform
+baseline as K falls. The K < 2 branch returning 1.0 is the decision server's own
+sentinel for a degenerate question (server-decision.cpp returns 1.0 there
+because there is no alternative to have failed to be chosen) — it is reproduced
+for bit-fidelity with the server, and it is NOT a measurement: do not gate on it
+(see pair._require_choice / cascade._common, which require a distribution).
+
+  entropy_conf(p) = 1 - H(p)/ln K. logit_read's reparameterized entropy, monotone
+*decreasing* in entropy, so 0 at the uniform vector, 1 at a point mass, and
+identical in range to d1_conf but not in shape: it is not a function of p_max
+alone. Floored at 0 and capped at 1 so that floating-point noise on a uniform
+vector cannot report a negative confidence or an above-certainty one. Needs K >=
+2, because 1 - H/ln 1 is undefined: one option expresses no distribution.
+
+Neither confidence formula can exceed 1 for a normalized vector: d1_conf's
+numerator is p_max - 1/K <= 1 - 1/K and entropy_conf's H is >= 0.
 """
 from __future__ import annotations
 
@@ -26,15 +52,37 @@ _BACKENDS = ("d1_systemone", "logit_read")
 
 
 def pmax_from_probs(probs: Sequence[float]) -> float:
-    """Peak probability of a (normalized) distribution."""
+    """Peak probability of a (normalized) distribution.
+
+    The peak of an empty vector is not a number, so that raises. A *single*-entry
+    vector has a perfectly well-defined max and a meaningless one: use
+    `common_conf` where the result will be thresholded.
+    """
+    if not probs:
+        raise ValueError("conf_scale: p_max of an empty probability vector is undefined")
     return max(probs)
+
+
+def common_conf(probs: Sequence[float]) -> float:
+    """p_max of a distribution a *gate* will threshold, or ValueError.
+
+    The gate-side entry point: unlike d1_conf's K<2 sentinel, there is no number
+    to return for a stage that expressed no distribution over alternatives, so
+    the caller is told rather than handed a maximal value.
+    """
+    if len(probs) < 2:
+        raise ValueError("conf_scale: p_max needs a distribution over >= 2 options, "
+                         f"got {len(probs)}")
+    return pmax_from_probs(probs)
 
 
 def d1_conf(pmax: float, k: int) -> float:
     """d1 / TypeSafe linear confidence, as the server computes it.
 
     Mirrors ``decision_confidence_choice`` (server-decision.cpp:1121-1128):
-    degenerate (<2 options) returns 1.0 and the result is floored at 0.
+    degenerate (<2 options) returns 1.0 and the result is floored at 0. The K<2
+    branch is the server's sentinel, not a measurement — `common_conf` is what a
+    gate uses, and it refuses that shape.
     """
     if k < 2:
         return 1.0
@@ -43,9 +91,16 @@ def d1_conf(pmax: float, k: int) -> float:
 
 
 def entropy_conf(probs: Sequence[float]) -> float:
-    """``1 - H(p) / ln K`` — logit_read's reparameterized entropy confidence."""
+    """``1 - H(p) / ln K`` — logit_read's reparameterized entropy confidence.
+
+    0 for a uniform vector, 1 for a point mass, monotone decreasing in entropy.
+    K < 2 is rejected: there is no distribution and ln 1 = 0.
+    """
+    if len(probs) < 2:
+        raise ValueError("conf_scale: entropy_conf needs a distribution over >= 2 "
+                         f"options, got {len(probs)}")
     h = -sum(p * math.log(p) for p in probs if p > 0)
-    return float(1.0 - h / math.log(len(probs)))
+    return float(min(1.0, max(0.0, 1.0 - h / math.log(len(probs)))))
 
 
 def to_common_scale(name: str, probs: Sequence[float]) -> float:
@@ -56,8 +111,14 @@ def to_common_scale(name: str, probs: Sequence[float]) -> float:
     p_max alone; like the research note's worked example, we assume the
     non-peak mass is spread uniformly and recover the p_max that reproduces the
     same entropy.
+
+    The output is meant to be thresholded, so a single-option vector is refused
+    here rather than normalized to 1.0.
     """
     k = len(probs)
+    if k < 2:
+        raise ValueError(f"conf_scale: {name} needs a distribution over >= 2 options to "
+                         f"normalize, got {k}")
     if name == "d1_systemone":
         return _pmax_from_d1_conf(d1_conf(pmax_from_probs(probs), k), k)
     if name == "logit_read":

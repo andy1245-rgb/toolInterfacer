@@ -13,6 +13,8 @@ interface Case {
 }
 
 const hop = { step: "candidates", op: "filesys_glob", ms: 3.1, conf: 1.0, artifact_summary: "['a.md', 'b.md']" };
+// An op that measured nothing reports no number: `conf: null`, not 1.0.
+const unmeasuredHop = { step: "queries", op: "decide_extract", ms: 0.4, conf: null, artifact_summary: "value_list[4]  e.g. 'llama quantize cpu'" };
 const gateCond = { artifact: "picked_file", kind: "conf_gte", min: 0.7 };
 
 const cases: Case[] = [
@@ -38,8 +40,22 @@ const cases: Case[] = [
 			result: "file contents",
 			degraded: false,
 			assumptions: [],
-			confidence: 1.0,
+			// no `confidence`: the caller named the op and the args, so the service
+			// made no routing decision to be confident about
 			hops: [{ step: "L0", op: "filesys_read", ms: 0.5, conf: 1.0, artifact_summary: "file contents" }],
+		},
+	},
+	{
+		name: 'mode:"auto" → done, an unmeasured decide hop (rule_extract)',
+		valid: true,
+		body: {
+			status: "done",
+			result: ["a.md"],
+			degraded: false,
+			assumptions: [],
+			hops: [unmeasuredHop, hop],
+			wall_ms: 9.1,
+			meta: { level: "L2", route_gate: 0.7 },
 		},
 	},
 	{

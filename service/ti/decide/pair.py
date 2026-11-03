@@ -21,6 +21,15 @@ vector is in hand. It is never applied to stage2: stage2 answers one *choice*,
 and the answer handed back carries its own confidence, which is the number the
 slot gate (policy.gate_slot via core/gates.check_pre) judges.
 
+A p_max needs a distribution to be the peak *of*. Two or more probabilities over
+the offered options is a distribution over alternatives and p_max is measurable;
+single-option answers carry no distribution (K = 1 always sums to 1, and every
+value of it is a peak), so the gate cannot score them. Stage1 answering with one
+probability is therefore a stage error — the same class as answering with no
+probability — and escalates under the rules below. Stage2 is not gated, so its
+single-point answer is accepted: 'this option, and I say 0.6' is a usable
+decision, it is just an asserted number rather than a measured peak.
+
 Policy, in this order:
 
   1. p_max(stage1) >= tau  -> stage1's answer, unchanged, and stage2 is not
@@ -38,10 +47,10 @@ a hard error. stage1's own confidence travels with the answer, so a degraded
 answer still asks back downstream when it should — the gate, not this module,
 decides whether it is good enough.
 
-A stage that produces nothing (None, an answer with no choice, or one with no
-probabilities) produced no decision and is treated as a stage error: None must
-never reach ops/decisions.run_pick. When neither stage produces one, choice()
-raises.
+A stage that produces nothing (None, an answer with no choice, one with no
+probabilities, or — for stage1 — one probability where a distribution was
+needed) produced no decision and is treated as a stage error: None must never
+reach ops/decisions.run_pick. When neither stage produces one, choice() raises.
 
 ``noul`` has no p_max — one probability for one question is not a distribution
 over candidates — so tau does not apply to it and it never escalates on a
@@ -140,7 +149,8 @@ class PairBackend(DecideBackend):
         # A stage is a network call: any failure to answer is a fallback trigger, not
         # just the transport's own error class, so the catch below is deliberately broad.
         try:
-            first = _require_choice(self._stages[0].choice(state, instructions, criteria), STAGE1)
+            first = _require_choice(self._stages[0].choice(state, instructions, criteria),
+                                    STAGE1, needs_distribution=True)
             c1 = _common(first)
         except Exception as exc:
             if not self.escalate_on_error:
@@ -180,6 +190,8 @@ class PairBackend(DecideBackend):
                   detail: str = "") -> ChoiceAnswer:
         """Call stage2, falling back to `stage1`'s answer when there is one (rule 5)."""
         try:
+            # Stage2 is terminal: tau never reads its p_max, so a single-point answer
+            # (what a chat completion is) needs no distribution here.
             second = _require_choice(self._stages[1].choice(state, instructions, criteria),
                                      STAGE2)
         except Exception as exc:
@@ -219,16 +231,34 @@ def _configured_stages(cfg: dict[str, Any]) -> list[DecideBackend]:
     return [make_backend(str(name)) for name in (stage1, stage2)]
 
 
-def _require_choice(answer: ChoiceAnswer | None, stage: str) -> ChoiceAnswer:
-    """The answer, or ValueError when the stage produced no usable decision."""
+def _require_choice(answer: ChoiceAnswer | None, stage: str,
+                    *, needs_distribution: bool = False) -> ChoiceAnswer:
+    """The answer, or ValueError when the stage produced no usable decision.
+
+    `needs_distribution` is the gate's requirement, not the answer's: a stage
+    whose answer is scored against p_max must express a distribution over the
+    alternatives it was offered. One probability entry means it expressed none,
+    which is not a decision to gate on (conf_scale.d1_conf's K<2 -> 1.0 is the
+    server's sentinel for a degenerate question, and reading it as certainty is
+    how a 0.02 answer cleared tau).
+    """
     if answer is None or not answer.choice or not answer.probabilities:
         raise ValueError(f"pair: {stage} produced no decision")
+    if needs_distribution and len(answer.probabilities) < 2:
+        raise ValueError(f"pair: {stage} expressed no distribution over alternatives "
+                         f"({len(answer.probabilities)} probability entry), so p_max "
+                         f"is undefined and tau cannot score it")
     return answer
 
 
 def _common(answer: ChoiceAnswer) -> float:
-    """A stage answer's confidence on the common p_max axis (conf_scale)."""
-    probs = list(answer.probabilities.values())
-    if len(probs) == 1:
-        return 1.0  # single option owns all mass; conf_scale.d1_conf uses the same K<2 rule
-    return conf_scale.pmax_from_probs(probs)
+    """A stage answer's confidence on the common p_max axis (conf_scale).
+
+    conf_scale.common_conf is the gate-side p_max: it requires two or more
+    probabilities, because p_max needs a distribution to be the peak of. One
+    probability entry means no distribution was expressed, which is not a
+    decision to gate on (conf_scale.d1_conf's K<2 -> 1.0 is the decision
+    server's sentinel for a degenerate question, and reading it as certainty is
+    how a 0.02 answer cleared tau).
+    """
+    return conf_scale.common_conf(list(answer.probabilities.values()))

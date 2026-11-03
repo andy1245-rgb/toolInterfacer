@@ -15,14 +15,18 @@ class Artifact:
     src_step: str
     kind: str                   # free-form: "url_list", "page", "file_content", ...
     data: Any                   # structured payload; steps agree on shapes per op
-    conf: float = 1.0           # decision confidence if a decide step produced it
+    # A measurement when the producing op made one, None when nothing was
+    # measured. Defaulting to 1.0 made "no measurement" indistinguishable from
+    # "certain", so a conf_gte gate passed every artifact whose op forgot a conf.
+    conf: float | None = None
 
 
 class ArtifactStore:
     def __init__(self) -> None:
         self._items: dict[str, Artifact] = {}
 
-    def put(self, key: str, src_step: str, kind: str, data: Any, conf: float = 1.0) -> Artifact:
+    def put(self, key: str, src_step: str, kind: str, data: Any,
+            conf: float | None = None) -> Artifact:
         art = Artifact(key=key, src_step=src_step, kind=kind, data=data, conf=conf)
         self._items[key] = art
         return art
