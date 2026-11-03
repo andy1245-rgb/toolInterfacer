@@ -121,8 +121,8 @@ Verified by running it, not by reading the spec:
 | Decide backends and the pre-gate → cache → backend fast path | works — `heuristic_micro` pre-gate and the 256-entry decision cache are on by default |
 | `pair` (local, escalating to hosted) and `openrouter` | implemented and measured by the author; running them needs a local llama.cpp server, and the hosted stage needs `TI_OPENROUTER_API_KEY` — [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md) |
 | Bounded decision state (structural, not conventional) | works — digest ≤ 8 turns × 240 chars, state ≤ `conf.context.state_max_tokens` |
-| pi extension: `useTool`, `/ti` command, service spawn on session start | complete — `npm ci && npx tsc --noEmit` exits 0, and the contract check passes 11/11 schema cases plus 10/10 through a stubbed transport; see [`pi-extension/README.md`](pi-extension/README.md) |
-| Test suite | 715 tests, 349 subtests, no network, no model |
+| pi extension: `useTool`, `/ti` command, service spawn on session start | complete — `npm ci && npx tsc --noEmit` exits 0, and `contract-check` passes every schema case plus the live leg against a stub service on a loopback port; the case counts and the case-by-case enumeration live in [`pi-extension/README.md`](pi-extension/README.md) |
+| Test suite | **722 tests, 388 subtests**, no network, no model. This row is the only place the current count is written — every other document links here, tells you to run `pytest`, or states a floor (`700+`), so a track that adds tests edits one line |
 
 ### Honest gaps
 
@@ -295,8 +295,10 @@ notes are in [`pi-extension/README.md`](pi-extension/README.md).
 
 ```sh
 python3 -m pytest tests/ -q
-# 715 passed, 349 subtests passed
 ```
+
+The last line prints the count, and the [Test suite row](#what-works-today) above is the
+only place it is written down — there is nothing to update here when the suite grows.
 
 Runs from a fresh clone with nothing installed: each test file puts `service/` on
 `sys.path` itself. No network, no model, no CLI — the choice decision is the `fixture`

@@ -7,8 +7,11 @@ commit in `git log` or to a document under `docs/`.
 
 ## [0.1.0] — 2026-11-03
 
-First public release: 104 commits from 2026-10-17 to 2026-11-03, 715 tests and 349
-subtests, 62 modules in 16 packages, no runtime dependencies.
+First public release: 104 commits from 2026-10-17 to 2026-11-03, a suite of 700+ tests, 62
+modules in 16 packages, no runtime dependencies.
+
+*(Test counts in this file are floors, not readings. The current one is on the README's
+Test suite row, which is the only place it is written down.)*
 
 ### Added
 
@@ -121,7 +124,7 @@ subtests, 62 modules in 16 packages, no runtime dependencies.
   service and a real d1-3B over `/v1/systemone`, having found 10 defects on the way.
   Caveat: `openrouter` had no API key, so every escalation was exercised through its
   degraded path rather than a live hosted call (`docs/live-e2e-2026-11-03.md`).
-- **The suite needs nothing.** 715 tests and 349 subtests with no network, no model and no
+- **The suite needs nothing.** 700+ tests with no network, no model and no
   CLI: the choice decision is the `fixture` backend and the subprocess ops run against
   `tests/data/fake_cli.py`.
 
@@ -140,4 +143,4 @@ dataset snapshot. In one place:
 | iGPU 2.72× slower | **artifact only** | the gguf is on the box (`models/d1-3B-Q4_K_M.gguf`, 1.67 GB) and `vulkaninfo` still reports the ADL GT2, but no `build-vk/` exists, so re-measuring means rebuilding llama.cpp through the `glslc` shim first |
 | hop log → 14 records | **moved with the log**: 5,243 lines now yield 15, all still `filesys_glob` | the snapshot is live, machine-local and gitignored; the conclusion holds |
 | live 5/5 | **not reproducible**: `0/4`, HTTP 401 | `bench/live_e2e.py` sends no service token, and auth landed in `5dc537f` nine minutes after the recorded run |
-| 679 tests / 349 subtests | **349 subtests hold; 679 does not** (715 at HEAD) | 679 was right at the release commit `1b4563b`; the README quoted it as current |
+| 679 tests / 349 subtests | **neither is current** | 679 was right at the release commit `1b4563b` and the README went on quoting it after the suite had moved; the count at HEAD is the README's Test suite row |

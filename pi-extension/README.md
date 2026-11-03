@@ -134,6 +134,10 @@ node scripts/contract-check.ts --live                  # + 10/10 against a stubb
 node scripts/capture-check.ts                          # 22/22 capture cases
 ```
 
+Each script prints its own `n/n` line, so re-running is the check. These three figures are
+the only place the extension's case totals are written down — the top-level README and the
+enumeration below both defer to them, so a new case edits this block and nothing else.
+
 `node_modules/` is gitignored and installed from the committed
 `package-lock.json`; do not symlink it to pi's own install tree — that would
 bypass the pinned versions and `tsc` would no longer resolve the SDK.
@@ -172,9 +176,12 @@ adapter.
 ## Verified
 
 - `tsc --noEmit` (TS 5.5.4 and 5.7.3, strict `noEmit`): clean on `src/` + `scripts/`.
-- `node scripts/contract-check.ts`: 11/11 — auto (`done`, L0 passthrough, an
-  unmeasured decide hop), `need_input`, `error`, plan with and without `hops`, plus 4
-  malformed bodies that must be rejected.
+- `node scripts/contract-check.ts`: every case passes — five `auto` cases (`done` through
+  `service_entry._run_steps`, `done` by L0 passthrough, `done` from an unmeasured decide hop
+  through `rule_extract`, `need_input` from a runner ask-back, `error` from the `api.py`
+  handler), two `plan` cases (the current service with `hops: []`, and a service predating
+  `hops`), and four malformed bodies that must be rejected (unknown status, truncated hop,
+  `null`, non-object). The enumeration totals what the Development block above reports.
 - Live service on a spare port: `mode:"auto"` → `done` (3 hops, conf 0.95),
   `mode:"plan"` → `plan` (3 steps, `hops: []`), empty intent → `error`, and a
   1ms timeout → `ServiceError{kind:"timeout"}`.

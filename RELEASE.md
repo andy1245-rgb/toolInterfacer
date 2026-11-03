@@ -51,7 +51,7 @@ git pull --ff-only origin main
 git status --porcelain          # must print NOTHING. Rule 2.
 
 # the suite, offline: no network, no model, no CLI
-python3 -m pytest tests/ -q     # expect: 715 passed, 349 subtests passed
+python3 -m pytest tests/ -q     # expect: all pass — the count is on the README's Test suite row
 
 # the benchmark harness, offline, end to end
 python3 bench/run.py selftest   # expect: "selftest PASSED — harness path is offline-clean"
@@ -61,7 +61,7 @@ python3 bench/demo.py           # expect: exit 0, three scenes, all "status done
 ```
 
 `bench/demo.py` starts a real service on an ephemeral port. Run it on an otherwise idle
-box: one `RemoteDisconnected` in scene 2 has been observed while the full 715-test suite
+box: one `RemoteDisconnected` in scene 2 has been observed while the full test suite
 was running concurrently, and not reproduced in 13 subsequent runs (10 solo, 3 concurrent).
 If it fails, re-run it alone before assuming the tree is bad.
 
@@ -89,7 +89,7 @@ cd /tmp/ti-rel
 
 python3 -m venv .venv && . .venv/bin/activate
 python3 -m pip install -e ".[dev]"
-python3 -m pytest tests/ -q         # expect: 715 passed
+python3 -m pytest tests/ -q         # expect: all pass, same count as the pre-flight run
 python3 bench/run.py selftest       # expect: exit 0
 python3 bench/demo.py               # expect: exit 0
 ```
