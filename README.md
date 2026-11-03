@@ -132,11 +132,33 @@ curl -s http://127.0.0.1:1113/health
 # {"status": "ok", "ops": ["decide_extract", ..., "web_search"], "conf": true}
 ```
 
+### The service token
+
+The service reads the operator's files on behalf of whoever asks, and anything on the box
+can open a loopback socket — so every POST carries a shared token, checked before the body
+is read. `/health` stays open: it is how the extension decides whether a service is already
+running.
+
+The token comes from `TI_HTTP_TOKEN` if it is set, else from the runtime file at
+`http.token_file` (default `~/.local/state/ti/http.token`, mode 0600, created on first boot
+if absent — and refused if group or other can read it). There is no "no token" mode: with
+neither a usable environment token nor a usable file, the service refuses to start rather
+than serving unauthenticated requests.
+
+```sh
+export TI_HTTP_TOKEN="$(cat ~/.local/state/ti/http.token)"
+```
+
+The extension resolves the same token in `pi-extension/src/token.ts` — environment first,
+then the runtime file — and `bridge.ts` sends it as `X-TI-Token` on every POST. A service
+the extension spawned is one it can authenticate to.
+
 Run a real operation through it — L0 passthrough, no model involved:
 
 ```sh
 curl -s -X POST http://127.0.0.1:1113/v1/useTool \
-  -H 'Content-Type: application/json' \
+  -H "Content-Type: application/json" \
+  -H "X-TI-Token: $TI_HTTP_TOKEN" \
   -d '{"intent":"list the pyproject file",
        "params":{"tool":"filesys_glob",
                  "args":{"pattern":"pyproject.toml","cwd":"."}}}'
@@ -144,14 +166,20 @@ curl -s -X POST http://127.0.0.1:1113/v1/useTool \
 #  "hops": [{"step": "L0", "op": "filesys_glob", "ms": 2.5, ...}]}
 ```
 
+L0 may only name the ops in `http.allowed_ops` (the three `filesys_*` mirrors by default),
+and every path they touch is confined to the run's cwd — the body's `digest.cwd`, which
+must itself resolve inside `ops.filesys.roots`. `..`, an absolute path outside the run, a
+symlink out of it, and a cwd outside the policy all come back `403`.
+
 Ask what a compound intent *would* do, without running it:
 
 ```sh
 curl -s -X POST http://127.0.0.1:1113/v1/plan \
-  -H 'Content-Type: application/json' \
+  -H "Content-Type: application/json" \
+  -H "X-TI-Token: $TI_HTTP_TOKEN" \
   -d '{"intent":"research local inference latency"}'
 # {"status": "plan", "meta": {"level": "L2", "template": "research"},
-#  "steps": [{"id": "queries", "op": "__decide_extract__", ...}, ...]}
+#  "steps": [{"id": "queries", "op": "decide_extract", ...}, ...]}
 ```
 
 ### A pipeline that actually decides something
@@ -200,6 +228,8 @@ ln -s "$(pwd)/pi-extension/src" ~/.pi/agent/extensions/toolinterfacer
 |---|---|
 | `TI_BASE_URL` | service base URL (default `http://127.0.0.1:1113`) |
 | `TI_SERVICE_DIR` | cwd for the spawned service (default: the repo root) |
+| `TI_HTTP_TOKEN` | the service token a POST must carry (inherited by the spawned service) |
+| `TI_HTTP_TOKEN_FILE` | where the runtime token lives (default `~/.local/state/ti/http.token`) |
 | `TI_PYTHON` | interpreter for the spawn (default `python3`) |
 | `TI_DEV=1` | never spawn; print the exact command line instead, and trailer every result with the raw response |
 
@@ -210,7 +240,7 @@ notes are in [`pi-extension/README.md`](pi-extension/README.md).
 
 ```sh
 python3 -m pytest tests/ -q
-# 326 passed, 159 subtests passed
+# 454 passed, 261 subtests passed
 ```
 
 Runs from a fresh clone with nothing installed: each test file puts `service/` on

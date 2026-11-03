@@ -1,5 +1,6 @@
 import { Value } from "typebox/value";
 import { UseToolResponseSchema, type UseToolRequest, type UseToolResponse } from "./contract.ts";
+import { serviceToken, TOKEN_HEADER } from "./token.ts";
 
 export interface ServiceHealth {
 	status?: string;
@@ -39,7 +40,7 @@ export async function call(req: UseToolRequest, signal?: AbortSignal, timeoutMs 
 	try {
 		resp = await fetch(`${base()}/v1/useTool`, {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/json", [TOKEN_HEADER]: serviceToken() },
 			body: JSON.stringify(req),
 			signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
 		});
@@ -54,6 +55,16 @@ export async function call(req: UseToolRequest, signal?: AbortSignal, timeoutMs 
 	}
 	if (!resp.ok) {
 		const text = (await resp.text().catch(() => "")).slice(0, 200);
+		if (resp.status === 401) {
+			// The one failure whose cause is not in the response: the service is up
+			// and refused us. Say which knob fixes it instead of echoing 401.
+			throw new ServiceError(
+				"http",
+				"the service refused the request (401): no token. Export TI_HTTP_TOKEN, " +
+					"or let the service write its token file — see service/ti/http/auth.py",
+				401,
+			);
+		}
 		throw new ServiceError("http", `${resp.status} ${resp.statusText}${text ? ` — ${text}` : ""}`, resp.status);
 	}
 	let body: unknown;

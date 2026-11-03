@@ -93,15 +93,19 @@ class LoopTest(unittest.TestCase):
     def test_runner_error_is_surfaced_in_response(self):
         # A one-file dir whose file is picked and then cannot be read — the op raises,
         # the runner converts it to status "error" carrying the message, and
-        # service_entry must forward that message. The entry is a dangling symlink so
-        # the read fails for its own reason: a picked relative path now resolves
-        # against the digest cwd (ops/filesys/impl.py), which is the caller's frame,
-        # so "relative and therefore unreadable" is no longer a way to make this fail.
+        # service_entry must forward that message. (The file used to be readable and
+        # the read failed only because a relative path resolved from the process cwd
+        # rather than the run root; confinement now resolves it against the run root,
+        # so the case pins a real unreadable file instead.)
         with tempfile.TemporaryDirectory() as tmp:
-            pathlib.Path(tmp, "errprop_missing_xyz.txt").symlink_to(
-                pathlib.Path(tmp, "errprop_gone_xyz.txt"))
-            out = use_tool({"intent": "read the file we discussed",
-                            "digest": {"cwd": tmp}})
+            unreadable = pathlib.Path(tmp, "errprop_missing_xyz.txt")
+            unreadable.write_text("x", encoding="utf-8")
+            unreadable.chmod(0)
+            try:
+                out = use_tool({"intent": "read the file we discussed",
+                                "digest": {"cwd": tmp}})
+            finally:
+                unreadable.chmod(0o600)
         self.assertEqual(out["status"], "error", out)
         self.assertEqual([h["step"] for h in out["hops"]], ["candidates", "picked_file"], out)
         self.assertIn("error", out)

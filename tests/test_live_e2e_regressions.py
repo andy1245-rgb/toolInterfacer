@@ -22,6 +22,7 @@ Model-free throughout: a counting/fixed backend is pinned in the registry and th
 decision cache is cleared, the way test_loop and test_conf_degraded do it.
 """
 import json
+import os
 import pathlib
 import sys
 import tempfile
@@ -69,6 +70,18 @@ class _Pick(DecideBackend):
 class PinTestCase(unittest.TestCase):
     """Pins decide.backends_in_use.choice at a registered fake; clears the cache."""
 
+    def setUp(self) -> None:
+        # Every case here runs a fake decision in a temp directory, so the file
+        # policy has to permit that directory: `ops.filesys.roots` defaults to
+        # `["~"]`, which is the shipped confinement and refuses a run root under
+        # /tmp by design (tests/test_http_bounds.py pins that refusal). This
+        # suite is about routing, ask-back and the transport, not about path
+        # policy, so it widens the policy for its own run and restores it.
+        filesys = load()["ops"]["filesys"]
+        previous = filesys.get("roots")
+        filesys["roots"] = [os.path.expanduser("~"), tempfile.gettempdir()]
+        self.addCleanup(filesys.__setitem__, "roots", previous)
+
     def pin(self, backend: DecideBackend) -> None:
         import_all()
         prim._REGISTRY[backend.name] = lambda: backend
@@ -109,12 +122,23 @@ class L1ReadFrameTest(PinTestCase):
                          ["filesys_glob", "decide_pick", "filesys_read"])
 
     def test_an_absolute_path_is_left_alone(self):
+        # An absolute path does not consult the caller's frame — that is what the
+        # `cwd` argument is ignored for. Under confinement it still has to be
+        # inside the run root, so the root is set the way `use_tool` sets it and
+        # this case keeps measuring frame-independence rather than path policy
+        # (an absolute path *outside* the root is a 403, tested in
+        # tests/test_filesys_bounds.py).
+        from ti.ops.filesys import confine
         self.pin(_Pick("notes.md", 0.95))
         with tempfile.TemporaryDirectory() as tmp:
             path = pathlib.Path(tmp, "abs.md")
             path.write_text("absolute\n", encoding="utf-8")
-            kind, data, _conf = get_op("filesys_read").run(
-                {"path": str(path), "cwd": "/nonexistent-should-be-ignored"}, None)
+            token = confine.set_root(tmp)
+            try:
+                kind, data, _conf = get_op("filesys_read").run(
+                    {"path": str(path), "cwd": "/nonexistent-should-be-ignored"}, None)
+            finally:
+                confine.reset_root(token)
         self.assertEqual((kind, data), ("file_content", "absolute\n"))
 
 
@@ -231,7 +255,12 @@ class HttpRouteTest(PinTestCase):
     """/v1/useTool must be the transport that carries the ask-back (not a guess)."""
 
     def setUp(self):
+        super().setUp()
         from ti.http.api import Handler
+        from ti.ops.op_api import import_all
+        # `main()` imports the op modules before it binds; a Handler built by hand
+        # has to do the same or /health reports a two-op registry.
+        import_all()
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
@@ -248,8 +277,12 @@ class HttpRouteTest(PinTestCase):
             return json.loads(resp.read())
 
     def _post(self, path, body):
+        # The service authenticates every POST (service/ti/http/auth.py); /health
+        # stays open because ensureService() polls it before it spawns.
+        from ti.http import auth
         req = urllib.request.Request(self.base + path, data=json.dumps(body).encode(),
-                                     headers={"Content-Type": "application/json"})
+                                     headers={"Content-Type": "application/json",
+                                              auth.TOKEN_HEADER: auth.require_token()})
         with urllib.request.urlopen(req, timeout=30) as resp:
             return json.loads(resp.read())
 
