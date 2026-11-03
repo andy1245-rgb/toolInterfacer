@@ -89,7 +89,11 @@ class Service:
         path = self.tmp / "overlay.json"
         path.write_text(json.dumps(overlay), encoding="utf-8")
         env = {**os.environ, "PYTHONPATH": "service",
-               "TI_CONF_OVERLAY": str(path), "TI_HTTP_TOKEN": self.token}
+               "TI_CONF_OVERLAY": str(path), "TI_HTTP_TOKEN": self.token,
+               # tests/data/fake_cli.py writes its artifact into `$FAKE_CLI_OUT`,
+               # defaulting to the cwd — which is this repo, so an unset value
+               # leaves a `combined.json` behind on every run.
+               "FAKE_CLI_OUT": str(self.tmp / "cli")}
         self.proc = subprocess.Popen([sys.executable, "-m", "ti.http.api"], cwd=str(ROOT),
                                      env=env, stdout=subprocess.DEVNULL,
                                      stderr=subprocess.DEVNULL, start_new_session=True)
