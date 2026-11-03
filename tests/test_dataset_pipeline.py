@@ -335,14 +335,14 @@ class ExportTest(unittest.TestCase):
                     C.ROUTING_OPS, C.letter_for(C.ROUTING_OPS, row["label"])))
 
     def test_op_descriptions_still_match_the_bench_harness(self):
-        tree = ast.parse((ROOT / "bench" / "live_probe.py").read_text(encoding="utf-8"))
+        tree = ast.parse((ROOT / "bench" / "ti_bench" / "prompts.py").read_text(encoding="utf-8"))
         found = None
         for node in tree.body:
             if isinstance(node, ast.Assign) and any(
                     isinstance(t, ast.Name) and t.id == "OP_DESCRIPTIONS"
                     for t in node.targets):
                 found = ast.literal_eval(node.value)
-        self.assertIsNotNone(found, "bench/live_probe.py no longer defines OP_DESCRIPTIONS")
+        self.assertIsNotNone(found, "bench/ti_bench/prompts.py no longer defines OP_DESCRIPTIONS")
         self.assertEqual(found, C.OP_DESCRIPTIONS,
                          "the dataset's option text has drifted from what the harness sends")
 
