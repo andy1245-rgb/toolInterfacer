@@ -102,11 +102,17 @@ class TheLogRowsTest(unittest.TestCase):
                 self.assertEqual(meta["rule"], "DISK_DEFAULT", meta)
 
     def test_the_plan_is_where_the_misroute_showed(self):
-        # the log's evidence is the *op that ran*, so the assertion is the plan
+        # the log's evidence is the *op that ran*, so the assertion is the plan.
+        # The first op is asserted by registry membership rather than by name:
+        # the template used to open with the unregistered `__decide_extract__`,
+        # which is why every research intent errored (docs/review B1). Pinning
+        # that string here would have re-pinned the bug.
+        from ti.ops.op_api import all_ops
         for intent in RESEARCH_TRAFFIC:
             with self.subTest(kind="research", intent=intent):
                 ops = _plan(intent)
-                self.assertEqual(ops[0], "__decide_extract__", ops)
+                self.assertIn(ops[0], all_ops(), ops)
+                self.assertEqual(ops[0], "decide_extract", ops)
                 self.assertIn("web_search", ops, ops)
                 self.assertEqual(set(ops) & DISK_OPS, set(), ops)
         for intent in DISK_TRAFFIC:
@@ -124,8 +130,7 @@ class CollisionTest(unittest.TestCase):
     verb that "look up" sits next to.
     """
 
-    def test_a_read_with_a_downstream_pick_is_a_read(self):
-        # "read the service logs live.jsonl and summarize the last few records"
+    def test_a_read_with_a_downstream_pick_is_a_read(self):        # "read the service logs live.jsonl and summarize the last few records"
         # ran filesys_glob -> decide_pick -> filesys_read: the glob is candidate
         # discovery and the answer is the read of the picked file. The route and
         # the shape were both right; only the label the dataset put on the hop
@@ -259,6 +264,46 @@ class UnseenPhrasingTest(unittest.TestCase):
                        "Search The Web For esp32 benchmarks"):
             with self.subTest(intent=intent):
                 self.assertEqual(inspect(intent, {}, {})["template"], "research")
+
+
+class ExplicitResearchVerbTest(unittest.TestCase):
+    """An explicit research verb outranks the reddit route, and only that.
+
+    "research what r/X says about Y" is research *about* a community: the plan
+    is the research one and the subreddit is its optional cross-check step
+    (spec §7.6). Routing it to `reddit_digest` alone turns the community into the
+    whole answer, and that template hard-errors when the CLI is absent — by
+    design, because an empty digest would read as a community with nothing to
+    say. So the verb decides the plan and the mention decides the source.
+
+    "what does r/rust say about X" has no research verb and stays a digest.
+    "research the repo for X" names a local tree and stays a disk lookup.
+    """
+
+    def test_a_research_verb_plus_a_subreddit_is_research(self):
+        for intent in (
+            "research what r/MechanicalKeyboards says about hall effect switches",
+            "research how people rate the DW3000 ranging accuracy",
+            "research the literature on tool poisoning benchmarks",
+        ):
+            with self.subTest(intent=intent):
+                meta = inspect(intent, {}, {})
+                self.assertEqual((meta["level"], meta["template"], meta["rule"]),
+                                 ("L2", "research", "RESEARCH_VERB"), meta)
+
+    def test_a_subreddit_without_a_research_verb_is_still_a_digest(self):
+        meta = inspect("what does r/rust say about async runtimes", {}, {})
+        self.assertEqual((meta["template"], meta["rule"]),
+                         ("reddit_digest", "REDDIT_ROUTE"), meta)
+
+    def test_a_research_verb_over_a_local_tree_stays_a_disk_lookup(self):
+        for intent in ("research the repo for the retry cap",
+                       "research the codebase for handle_stream",
+                       "research our files for the config loader"):
+            with self.subTest(intent=intent):
+                meta = inspect(intent, {}, {})
+                self.assertEqual((meta["template"], meta["rule"]),
+                                 ("disk_lookup", "DISK_DEFAULT"), meta)
 
 
 if __name__ == "__main__":

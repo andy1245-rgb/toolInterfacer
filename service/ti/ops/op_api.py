@@ -66,4 +66,5 @@ def import_all() -> None:
     from . import decisions  # noqa: F401  (registration)
     from .web import fetch as _wf, search as _ws  # noqa: F401
     from .reddit import digest as _rd  # noqa: F401
+    from .research import assemble as _ra  # noqa: F401
     from .filesys import impl as _fi  # noqa: F401

@@ -100,9 +100,13 @@
     ],
     "pick_top_k": 4,
     "good_pages_target": 4,
+    "reddit_cross_check": "auto",
     "backends": [
       "free-search"
-    ]
+    ],
+    "digest": {
+      "claim_chars": 360
+    }
   },
   "reddit": {
     "use_backend": "reddit-research",

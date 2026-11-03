@@ -39,6 +39,12 @@ LLM ──useTool(intent, params)──▶ pi extension ──HTTP──▶ deci
    `{op, params, gate}` — abstract, no hardcoded k loops or thresholds. All
    tunables live in `conf/defaults.json`, so template files only publish the
    *shape* of a pipeline while config publishes its *degree*.
+   A step may also declare `over` (run once per item of an artifact, each with
+   its own post-gate verdict) and `stop_after` (end the loop once that many items
+   verified) — the mechanism behind `research`'s per-page relevance check and its
+   k-good-pages stop. Both are degrees of the step, so the numbers still come
+   from config; the research knob table is in
+   `service/ti/planner/templates/research.py`.
 
 ## Bounded context (the two-line guarantee)
 

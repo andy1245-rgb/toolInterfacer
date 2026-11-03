@@ -4,6 +4,12 @@ decide_extract — fill a list of literal values (queries, candidate keys) from
 the intent + context. Uses the backend's extract primitive (fixture replayable
 via recorded map; d1 extract lands in P2/P4).
 
+The mined payload is `source_artifact` when a step names one, else
+`intent_context` — the intent text is the context a first-step extractor has,
+and a step that mines nothing would answer ([], 0.1) on every research run.
+Instructions steer the *ask* (queries vs urls vs paths); the payload supplies
+the words.
+
 decide_pick — choose top_k items from a source artifact. Uses `choice` with
 criteria built from the candidates (id + description lines preferred).
 
@@ -95,10 +101,12 @@ def _describe(candidates: list[Any]) -> dict[str, str]:
     return out
 
 
-@op("decide_extract", kind="value_list", required=["instructions"], optional=["source_artifact", "count"])
+@op("decide_extract", kind="value_list", required=["instructions"],
+    optional=["source_artifact", "count", "intent_context"])
 def run_extract(params: dict[str, Any], store: Any) -> tuple[str, Any, float | None]:
     src = params.get("source_artifact")
-    ctx = store.try_get(src).data if (src and store.try_get(src)) else {}
+    source = store.try_get(src) if src else None
+    ctx = source.data if source is not None else (params.get("intent_context") or "")
     backend = resolve_backend("extract")
     state = guard_state({"context": ctx, "instructions": params["instructions"]})
     values = backend.extract(state,
@@ -131,6 +139,12 @@ def run_pick(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
         raise ValueError("decide_pick: source artifact missing")
     candidates = art.data
     raw = candidates if isinstance(candidates, list) else [candidates]
+    if not raw:
+        # No candidate is not the same answer as "this one": picking would hand
+        # the next step a fabricated id ("__none__") that no op can run, and the
+        # failure would surface one step later as a nonsense URL or path.
+        raise ValueError(f"decide_pick: nothing to pick from — artifact "
+                         f"{params['source_artifact']!r} is empty")
     chosen = _rank(raw, params.get("intent_context"))[:_max_candidates()]
     criteria = _describe(chosen)
     backend = resolve_backend("choice")

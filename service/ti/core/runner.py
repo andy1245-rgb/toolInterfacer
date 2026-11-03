@@ -28,6 +28,14 @@ class Step:
     params: dict[str, Any] = field(default_factory=dict)   # spec-side params (config-resolved)
     inject: dict[str, str] = field(default_factory=dict)   # step-param -> artifact key to feed in
     gate: Gate = field(default_factory=Gate)
+    #: param -> artifact key: run the op once per list item instead of once for
+    #: the whole list. Each item gets its own artifact, hop and post-gate verdict,
+    #: so a `noul` check decides per page rather than per batch.
+    over: dict[str, str] = field(default_factory=dict)
+    #: end a `over` loop as soon as this many items cleared their post-gate (0 = run all)
+    stop_after: int = 0
+    #: a failure here is recorded as an assumption and the plan continues
+    optional: bool = False
 
 
 @dataclass
@@ -92,36 +100,32 @@ def run_plan(steps: list[Step], llm_params: dict[str, Any], budget: Budget,
             assumptions.append(f"{step.id}: gate unresolved, using the best guess ({gb.what})")
 
         try:
-            conforms: dict[str, Any] = dict(step.params)
-            for pname, art_key in step.inject.items():
-                injected = store.try_get(art_key)
-                if injected is None:
-                    assumptions.append(f"{step.id}: missing injected artifact {art_key!r}")
-                    conforms[pname] = "(missing)"
-                    continue
-                data = injected.data
-                # top-1 picks feed singular params (e.g. a single path);
-                # multi-picks feed list params (e.g. urls batch)
-                if injected.kind == "picked_items" and isinstance(data, list) and len(data) == 1:
-                    data = data[0]
-                conforms[pname] = data
-            # LLM params matching the op's schema land as args; the rest soften
-            merged = {**step.params, **llm_params, **conforms}
-            args, soft = validate_params(step.op, merged)
-            opdef = get_op(step.op)
-
-            t0 = time.monotonic()
-            kind, data, conf = run_op_fn(step.op, opdef, args, store, soft)
-            ms = round((time.monotonic() - t0) * 1000, 1)
-            art = store.put(step.id, step.op, kind, data, conf)
-            hops.append({"step": step.id, "op": step.op, "ms": ms, "conf": conf,
-                         "artifact_summary": _summarize(kind, data)})
+            if step.over:
+                # the loop verifies each of its items itself; there is no single
+                # artifact left for a post-check to judge
+                art, usable = _run_over(step, llm_params, store, hops, assumptions,
+                                        budget, run_op_fn, run_verifier_fn)
+                if not usable:
+                    degraded = True
+                cur += 1
+                continue
+            art = _run_one(step, llm_params, store, hops, assumptions, run_op_fn)
         except Exception as exc:  # noqa: BLE001 — runner converts op errors into structured status
-            return finish("error", str(exc))
+            if not step.optional:
+                return finish("error", str(exc))
+            degraded = True
+            assumptions.append(f"{step.id}: optional step {step.op!r} failed ({exc})")
+            cur += 1
+            continue
 
         try:
             check_post(step.gate, step.id, art, run_verifier_fn)
         except GateBlocked as gb:
+            if step.optional:
+                degraded = True
+                assumptions.append(f"{step.id}: optional step {step.op!r} unverified ({gb.what})")
+                cur += 1
+                continue
             handled = _handle_block(gb, step, store, hops, assumptions, on_ask)
             if handled is True:
                 continue
@@ -134,6 +138,133 @@ def run_plan(steps: list[Step], llm_params: dict[str, Any], budget: Budget,
         cur += 1
 
     return finish("done")
+
+
+def _run_one(step: Step, llm_params: dict[str, Any], store: ArtifactStore,
+             hops: list[dict[str, Any]], assumptions: list[str],
+             run_op_fn: run_op_t) -> Any:
+    """Execute a step once over its injected artifacts (the plain path)."""
+    args, soft = _merged_args(step, _injected(step, store, assumptions), llm_params)
+    kind, data, conf, ms = _call(step, args, soft, store, run_op_fn)
+    art = store.put(step.id, step.op, kind, data, conf)
+    hops.append({"step": step.id, "op": step.op, "ms": ms, "conf": conf,
+                 "artifact_summary": _summarize(kind, data)})
+    return art
+
+
+def _run_over(step: Step, llm_params: dict[str, Any], store: ArtifactStore,
+              hops: list[dict[str, Any]], assumptions: list[str], budget: Budget,
+              run_op_fn: run_op_t, run_verifier_fn: run_verifier_t,
+              ) -> tuple[Any, bool]:
+    """One execution per item of the artifact the step iterates.
+
+    Each item is bound to its param, executed, and verified on its own — the
+    per-page `noul` verdict of spec §7.5 needs one page per decision, not one
+    decision over a batch. A rejected item is dropped with an assumption naming
+    the measurement; it is not an error, because "this page is not relevant" is
+    the answer the check exists to give. `stop_after` ends the loop once enough
+    items have verified, so a run that already has what it came for does not keep
+    paying for CLI calls.
+
+    Returns the aggregate artifact (the surviving items, in input order) and
+    whether anything survived at all — an empty aggregate is a degraded result,
+    not a successful one.
+    """
+    (pname, src), = step.over.items()
+    source = store.try_get(src)
+    if source is None:
+        assumptions.append(f"{step.id}: missing loop artifact {src!r}")
+        items: list[Any] = []
+    else:
+        items = source.data if isinstance(source.data, list) else [source.data]
+
+    kept: list[Any] = []
+    kept_conf: list[float] = []
+    for index, item in enumerate(items):
+        try:
+            budget.use_hop()
+            budget.tick_clock()
+        except BudgetExceeded as be:
+            assumptions.append(f"{step.id}: loop stopped after {index} of {len(items)} "
+                               f"({be.what})")
+            break
+        args, soft = _merged_args(step, {pname: item}, llm_params)
+        kind, data, conf, ms = _call(step, args, soft, store, run_op_fn)
+        item_key = f"{step.id}#{index}"
+        item_art = store.put(item_key, step.op, kind, data, conf)
+        hop = {"step": item_key, "op": step.op, "ms": ms, "conf": conf,
+               "artifact_summary": _summarize(kind, data)}
+        hops.append(hop)
+        try:
+            check_post(step.gate, item_key, item_art, run_verifier_fn)
+        except GateBlocked as gb:
+            hop["verified"] = False
+            hop["gate"] = gb.what
+            assumptions.append(f"{item_key}: dropped ({gb.what})")
+            continue
+        hop["verified"] = True
+        kept.append(data)
+        kept_conf.append(conf)
+        if step.stop_after and len(kept) >= step.stop_after:
+            break
+
+    if step.stop_after and len(kept) < step.stop_after:
+        assumptions.append(f"{step.id}: {len(kept)} of {len(items)} items verified, "
+                           f"target {step.stop_after}")
+    aggregate = store.put(step.id, step.op, get_op(step.op).kind, _collect(kept),
+                          sum(kept_conf) / len(kept_conf) if kept_conf else 0.0)
+    return aggregate, bool(kept)
+
+
+def _injected(step: Step, store: ArtifactStore,
+              assumptions: list[str]) -> dict[str, Any]:
+    """Resolve `inject` against the store: step-param -> that artifact's data."""
+    bound: dict[str, Any] = {}
+    for pname, art_key in step.inject.items():
+        injected = store.try_get(art_key)
+        if injected is None:
+            assumptions.append(f"{step.id}: missing injected artifact {art_key!r}")
+            bound[pname] = "(missing)"
+            continue
+        data = injected.data
+        # top-1 picks feed singular params (e.g. a single path);
+        # multi-picks feed list params (e.g. urls batch)
+        if injected.kind == "picked_items" and isinstance(data, list) and len(data) == 1:
+            data = data[0]
+        bound[pname] = data
+    return bound
+
+
+def _merged_args(step: Step, bound: dict[str, Any],
+                 llm_params: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Args for one execution: template values, then artifacts, then caller hints.
+
+    A step's own params are the template's spec-side values and outrank a caller
+    hint of the same name; an injected or looped artifact outranks both. Keys
+    matching the op's schema land as args, the rest ride along as soft context.
+    """
+    merged = {**step.params, **llm_params}
+    merged.update(step.params)
+    merged.update(bound)
+    return validate_params(step.op, merged)
+
+
+def _call(step: Step, args: dict[str, Any], soft: dict[str, Any], store: ArtifactStore,
+          run_op_fn: run_op_t) -> tuple[str, Any, float, float]:
+    t0 = time.monotonic()
+    kind, data, conf = run_op_fn(step.op, get_op(step.op), args, store, soft)
+    return kind, data, conf, round((time.monotonic() - t0) * 1000, 1)
+
+
+def _collect(datas: list[Any]) -> list[Any]:
+    """Concatenate per-item lists into one flat aggregate (op data stays a list)."""
+    out: list[Any] = []
+    for data in datas:
+        if isinstance(data, list):
+            out.extend(data)
+        else:
+            out.append(data)
+    return out
 
 
 def _handle_block(gb: GateBlocked, step: Step, store: ArtifactStore,

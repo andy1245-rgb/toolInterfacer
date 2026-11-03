@@ -73,13 +73,13 @@ Verified by running it, not by reading the spec:
 | HTTP service: `GET /health`, `POST /v1/useTool`, `POST /v1/plan` | works — see the quickstart below |
 | L0 passthrough (caller fully specifies the op) | works — validates params, executes, returns in ~3 ms |
 | L1 disk slot-fill (glob candidates → `decide_pick` → read) | works end to end model-free via `bench/replay.py` |
-| L2 templates: `research` (search → pick → fetch) and `reddit_digest` | wired; `research` needs a configured search CLI, `reddit_digest` needs the reddit project (see gaps) |
-| Eight registered ops | `decide_extract`, `decide_pick`, `filesys_glob`, `filesys_grep`, `filesys_read`, `reddit_digest`, `web_fetch`, `web_search` |
+| L2 templates: `research` (queries → search → pick → fetch+verify loop → optional reddit cross-check → digest) and `reddit_digest` | `research` runs end to end model-free via `bench/replay.py` and returns a sourced digest; `reddit_digest` needs the reddit project (see gaps) |
+| Nine registered ops | `decide_extract`, `decide_pick`, `digest_assemble`, `filesys_glob`, `filesys_grep`, `filesys_read`, `reddit_digest`, `web_fetch`, `web_search` |
 | Decide backends and the pre-gate → cache → backend fast path | works — `heuristic_micro` pre-gate and the 256-entry decision cache are on by default |
 | `pair` (local, escalating to hosted) and `openrouter` | implemented and measured by the author; running them needs a local llama.cpp server, and the hosted stage needs `TI_OPENROUTER_API_KEY` — [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md) |
 | Bounded decision state (structural, not conventional) | works — digest ≤ 8 turns × 240 chars, state ≤ `conf.context.state_max_tokens` |
 | pi extension: `useTool`, `/ti` command, service spawn on session start | complete; its own checks are in [`pi-extension/README.md`](pi-extension/README.md) (not re-run in this pass) |
-| Test suite | 326 tests, 159 subtests, no network, no model |
+| Test suite | 433 tests, 276 subtests, no network, no model |
 
 ### Honest gaps
 

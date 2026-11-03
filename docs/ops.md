@@ -135,8 +135,9 @@ A failed page keeps its entry with `content: ""` and its `error` — "this page
 failed" and "this URL was never fetched" must not look alike, and a consumer
 that wants to skip failures skips on empty content. The CLI marks total failure
 by *omitting* `text`, not by setting `error`; `degraded` (a meta-description
-shell instead of the page) is passed through. conf is the mean over URLs of 1.0
-/ 0.5 (degraded) / 0.0.
+shell instead of the page) travels as a `degraded` flag on the page and as half
+conf, because a digest that grades its sources needs the fact after the conf has
+been averaged away. conf is the mean over URLs of 1.0 / 0.5 (degraded) / 0.0.
 
 ### `reddit_digest` — `thread_digest`
 

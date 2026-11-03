@@ -17,6 +17,7 @@ the filesystem for a file named after the subject.
 Ordered rules, first match wins — the order between them is the design:
 
     R1 EXPLICIT_OP        -> L0                (the caller resolved the op)
+    R1.5 RESEARCH_VERB    -> L2 research       (the caller said "research")
     R2 REDDIT_ROUTE       -> L2 reddit_digest
     R3 WEB_CHANNEL        -> L2 research       (never gated)
     R4 EXTERNAL_SOURCE    -> L2 research       (gated on no local artefact)
@@ -64,6 +65,7 @@ from .shape import FILECLASS
 
 EXPLICIT_OP = "EXPLICIT_OP"
 REDDIT_ROUTE = "REDDIT_ROUTE"
+RESEARCH_VERB = "RESEARCH_VERB"
 WEB_CHANNEL = "WEB_CHANNEL"
 EXTERNAL_SOURCE = "EXTERNAL_SOURCE"
 RESEARCH_FRAME = "RESEARCH_FRAME"
@@ -79,6 +81,14 @@ def _clauses(*patterns: str) -> Callable[[str], bool]:
 # R2 — a reddit request has its own L2 plan; it is not a search that happens to
 # name one. `r/<name>` is the same route said shorter.
 _REDDIT = re.compile(r"reddit|\br/")
+
+# R1.5 — the caller asked for research by name. Deliberately narrow: the bare
+# word "research" also names a directory ("research/notes.md"), so the verb form
+# is what is matched, and "research the repo for" stays a disk lookup.
+_RESEARCH_VERB = re.compile(
+    r"^\s*research\b(?!\s+(?:the|this|that|our|my)\s+(?:repo|repository|code|codebase|files|tree|dir|directory|folder))"
+    r"|\bresearch\s+(?:what|how|whether|why|which)\b"
+    r"|\bresearch\s+(?:the\s+)?(?:literature|papers|state of the art)\b", re.I)
 
 
 # R3 — the caller named the channel.
@@ -160,6 +170,15 @@ def _fire(intent: str, params: dict[str, Any]) -> tuple[str, str, str | None]:
     text = (intent or "").lower()
     if params.get("tool"):
         return EXPLICIT_OP, "L0", None
+    if _RESEARCH_VERB.search(text):
+        # R1.5 — an explicit research verb outranks the reddit route, because
+        # what the caller asked for is research and the community is a *source*
+        # for it, not the whole plan. This is exactly the case spec §7.6 exists
+        # for: "research what r/X says about Y" builds the research plan and
+        # adds the reddit cross-check as its optional step, whereas routing it
+        # to `reddit_digest` alone hard-errors when the CLI is unavailable
+        # (that template's error is deliberate — see its docstring).
+        return RESEARCH_VERB, "L2", "research"
     if _REDDIT.search(text):
         return REDDIT_ROUTE, "L2", "reddit_digest"
     if _WEB_CHANNEL(text):
