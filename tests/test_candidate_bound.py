@@ -4,6 +4,13 @@ The decision model's prefill dominates latency on a CPU-only box (~19 ms/token
 measured on the Lenovo: 4 candidates = ~2 s, 64 = ~31 s). `_rank` keeps the most
 relevant candidates so `decide.max_candidates` can stay small without hiding the
 right answer.
+
+There are two bounds, and neither alone is enough: `max_candidates` bounds *how
+many* candidates reach the model, `max_criteria_chars` bounds how much text each
+one carries. Until the second existed, `guard_state` bounded the state and the
+option set travelled unbounded beside it -- docs/review-2026-11-03.md B5 measured
+12,000,144 characters (~3,000,036 tokens at 4 chars/token) reaching a backend
+configured for 2000 tokens.
 """
 import pathlib
 import sys
@@ -70,6 +77,72 @@ class PickBoundTest(unittest.TestCase):
 
     def test_small_lists_are_untouched(self):
         self.assertEqual(self._run(["a.py", "b.py"], "a"), 2)
+
+
+class _CriteriaRecording(_Recording):
+    """Keeps the criteria dict itself, not just its length."""
+
+    def choice(self, state, instructions, criteria):
+        self.seen["criteria"] = criteria
+        return super().choice(state, instructions, criteria)
+
+
+class CriteriaBoundTest(unittest.TestCase):
+    def _criteria(self, candidates):
+        store = ArtifactStore()
+        store.put("cand", "web_search", "candidate_list", candidates, 1.0)
+        rec = _CriteriaRecording()
+        original = decisions.resolve_backend
+        decisions.resolve_backend = lambda kind: rec
+        try:
+            decisions.run_pick({"source_artifact": "cand", "instructions": "pick one",
+                                "top_k": 1}, store)
+        finally:
+            decisions.resolve_backend = original
+        return rec.seen["criteria"]
+
+    def test_a_huge_snippet_is_clipped(self):
+        cap = decisions._max_desc_chars()
+        criteria = self._criteria(
+            [{"title": f"f{i}.py", "snippet": "x" * 2_000_000} for i in range(6)])
+        self.assertTrue(criteria)
+        for desc in criteria.values():
+            self.assertLessEqual(len(desc), cap)
+
+    def test_the_measured_12MB_case_is_bounded(self):
+        criteria = self._criteria(
+            [{"title": "t", "snippet": "y" * 2_000_000} for _ in range(6)])
+        total = sum(len(v) for v in criteria.values())
+        self.assertLess(total, 10_000, f"criteria carried {total} chars")
+
+    def test_a_normal_description_is_untouched(self):
+        criteria = self._criteria([{"title": "a.py", "snippet": "the config loader"}])
+        self.assertEqual(criteria, {"a.py": "a.py :: the config loader"})
+
+    def test_ids_are_not_clipped_because_the_pick_maps_back_through_them(self):
+        # An id is the label the model answers with and run_pick maps that answer
+        # back to the source item; truncating a key would silently drop the pick.
+        long_id = "d" * (decisions._max_desc_chars() + 50)
+        criteria = self._criteria([{"id": long_id, "title": "t"}])
+        self.assertIn(long_id, criteria)
+
+    def test_the_criteria_cap_is_a_latency_knob_not_a_wall(self):
+        # 200 chars x 6 candidates ~= 300 tokens, inside the 2000-token state budget.
+        self.assertLessEqual(decisions._max_desc_chars() * decisions._max_candidates(),
+                             2000)
+
+    def test_a_broken_conf_key_falls_back_to_the_default(self):
+        from ti import conf
+        original = conf.load
+        try:
+            conf.load = lambda: {"decide": {"max_criteria_chars": "nonsense"}}
+            self.assertEqual(decisions._max_desc_chars(),
+                             decisions.DEFAULT_MAX_DESC_CHARS)
+            conf.load = lambda: {"decide": {}}
+            self.assertEqual(decisions._max_desc_chars(),
+                             decisions.DEFAULT_MAX_DESC_CHARS)
+        finally:
+            conf.load = original
 
 
 if __name__ == "__main__":

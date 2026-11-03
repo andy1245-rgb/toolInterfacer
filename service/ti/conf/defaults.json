@@ -2,6 +2,7 @@
   "decide": {
     "routing": "heuristic_micro_then_d1",
     "max_candidates": 6,
+    "max_criteria_chars": 200,
     "cache": {
       "enabled": true,
       "max_entries": 256
@@ -46,7 +47,7 @@
     "pair": {
       "stage1": "d1_systemone",
       "stage2": "openrouter",
-      "tau": 0.90,
+      "tau": 0.9,
       "escalate_on_error": true
     },
     "cascade": {

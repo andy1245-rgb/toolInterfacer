@@ -22,6 +22,21 @@ from .op_api import op
 # _rank keeps the most relevant ones so the cap costs no accuracy.
 DEFAULT_MAX_CANDIDATES = 6
 
+# The number of characters of each candidate description that reach the decision
+# model. `guard_state` bounds the state but not the criteria, so without this a
+# single candidate carrying a multi-megabyte snippet is a wedged service, not a
+# slow decision (docs/review-2026-11-03.md B5 measured 12 MB -> ~3M tokens).
+DEFAULT_MAX_DESC_CHARS = 200
+
+
+def _max_desc_chars() -> int:
+    from ..conf import load
+    try:
+        return max(1, int(load()["decide"].get("max_criteria_chars",
+                                               DEFAULT_MAX_DESC_CHARS)))
+    except (KeyError, TypeError, ValueError):
+        return DEFAULT_MAX_DESC_CHARS
+
 
 def _max_candidates() -> int:
     from ..conf import load
@@ -50,7 +65,19 @@ def _rank(items: list[Any], intent: str | None) -> list[Any]:
 
 
 def _describe(candidates: list[Any]) -> dict[str, str]:
-    """maps candidate -> {id: desc}. Handles path strings and {title, snippet} dicts."""
+    """maps candidate -> {id: desc}. Handles path strings and {title, snippet} dicts.
+
+    Each description is clipped to `decide.max_criteria_chars`. The option set is
+    the one part of a decision payload that does not pass through
+    `guard_state`, so the clip is what keeps a candidate's snippet from
+    deciding the latency (or the survival) of the call.
+
+    Ids are deliberately *not* clipped: an id is the label the model answers
+    with, and `run_pick` maps that answer back to the source item, so truncating
+    a key would silently drop the pick. They are path/title/url-shaped and
+    bounded by whatever produced the artifact.
+    """
+    cap = _max_desc_chars()
     out: dict[str, str] = {}
     for c in candidates:
         if isinstance(c, dict):
@@ -58,7 +85,7 @@ def _describe(candidates: list[Any]) -> dict[str, str]:
             desc = str(c.get("title") or "") + " :: " + str(c.get("snippet") or c.get("desc") or "")
         else:
             cid, desc = str(c), ""
-        out[cid] = desc.strip(" :")
+        out[cid] = desc.strip(" :")[:cap]
     return out
 
 
