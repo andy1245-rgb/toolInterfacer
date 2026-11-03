@@ -52,6 +52,12 @@ def main() -> None:
         if de_chops:
             print(f"decide-max conf={max(de_chops):.2f} "
                   f"(gate={load()['policy']['gate_route']})")
+    # A run that failed is not a successful run. Without this the script answered
+    # exit 0 for `status: error`, so a wrapper, a CI job or a `&&` chain read it as
+    # a pass (found by the first-contact review,
+    # docs/quickstart-stranger-2026-11-03.md §3).
+    if out["status"] == "error":
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

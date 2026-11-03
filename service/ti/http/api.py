@@ -33,6 +33,7 @@ thread pool is bounded so a flood refuses instead of exhausting the process.
 """
 from __future__ import annotations
 
+import errno
 import ipaddress
 import json
 from http.server import BaseHTTPRequestHandler
@@ -258,7 +259,20 @@ def serve(host: str | None = None, port: int | None = None) -> None:
 def main() -> None:
     try:
         serve()
-    except (auth.TokenUnavailable, OSError, ValueError) as exc:
+    except (auth.TokenUnavailable, ValueError) as exc:
+        raise SystemExit(f"ti: {exc}") from exc
+    except OSError as exc:
+        host = (load().get("http") or {}).get("host") or "127.0.0.1"
+        port = (load().get("http") or {}).get("port")
+        # "Address already in use" is the ordinary way to meet a forgotten or
+        # second instance, and the bare errno named no knob (first-contact review,
+        # docs/quickstart-stranger-2026-11-03.md §2).
+        if getattr(exc, "errno", None) in (errno.EADDRINUSE, errno.EACCES):
+            raise SystemExit(
+                f"ti: cannot bind {host}:{port} — {exc.strerror}. Another service may "
+                f"already be running (`curl {host}:{port}/health`); otherwise set "
+                f"conf.http.port or conf.http.host with TI_CONF_OVERLAY."
+            ) from exc
         raise SystemExit(f"ti: {exc}") from exc
 
 

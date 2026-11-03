@@ -116,6 +116,7 @@ Python 3.10+ is the only requirement. The service is stdlib-only — no dependen
 ```sh
 git clone https://github.com/andy1245-rgb/toolInterfacer.git
 cd toolInterfacer
+python3 -m venv .venv && . .venv/bin/activate   # Debian/Ubuntu also need `python3-venv`
 python3 -m pip install -e ".[dev]"
 ```
 
@@ -171,10 +172,10 @@ and every path they touch is confined to the run's cwd — the body's `digest.cw
 must itself resolve inside `ops.filesys.roots`. `..`, an absolute path outside the run, a
 symlink out of it, and a cwd outside the policy all come back `403`.
 
-`ops.filesys.roots` defaults to `["~"]`, so the example above returns `done` only when
-the clone sits under your home directory. Cloned into `/tmp`, `/opt` or another mount, the
-same call answers `{"error": "scope_refused", ...}` and needs `roots` widened through
-`TI_CONF_OVERLAY` (below).
+`ops.filesys.roots` defaults to `["~", "."]` — your home directory plus the directory
+the service was started in — so the example above works from a clone wherever it lives. A
+run root outside both answers `{"error": "scope_refused", ...}` and needs `roots` widened
+through `TI_CONF_OVERLAY` (below).
 
 Ask what a compound intent *would* do, without running it:
 
@@ -267,11 +268,28 @@ subpackage.
 
 | script | what it does |
 |---|---|
+| `bench/run.py` | score any decide arm on a frozen set, and compare two reports (McNemar exact + a latency delta); `selftest` runs the whole path offline |
 | `bench/replay.py` | runs one plan through the real engine — zero network once `TI_CONF_OVERLAY` points the choice decision at `fixture` (see the Quickstart); the script itself uses the configured backend |
 | `bench/live_probe.py` | routing probe over the frozen utterance set against a live llama.cpp server; `--expect-model <gguf>` asserts `/props` before any probe traffic |
 | `bench/model_guard.py` | the `/props` served-model assertion on its own |
 | `bench/serve_lane.py`, `bench/lane.sh`, `bench/lanes.json` | argv-safe llama-server lane launch, serve → assert → probe → teardown |
 | `bench/band_summary.py` | per-band accuracy join over `bench/results/` |
+
+### Corpora (`tools/`)
+
+Two stdlib-only pipelines that produce the training and evaluation data. Both are
+derived-data producers: their output goes to `var/`, which is git-ignored.
+
+| tool | what it does |
+|---|---|
+| `python3 -m tools.dataset {ingest,validate,split,export,stats}` | normalises the runtime hop logs plus the frozen utterance sets into one validated record schema, with a leakage-aware split and an SFT export |
+| `python3 tools/distill/utterances.py` | generates band-labelled routing rows beyond the frozen 150, with a similarity check that refuses anything restating the eval set |
+| `python3 tools/distill/label.py` | labels those rows with the hosted teacher, resumably, under a cost gate; refuses a row whose reply is not schema-valid |
+| `python3 tools/distill/audit.py` / `stats.py` | the human-check sample, and per-band counts with the teacher's own calibration |
+
+The hop log is *not* a decision log — see `docs/dataset-status.md` for the measured
+count (14 trainable records out of 1398 hops, all one label), which is why the fine-tune
+corpus is distilled rather than harvested.
 
 ### Measured, with their n
 
