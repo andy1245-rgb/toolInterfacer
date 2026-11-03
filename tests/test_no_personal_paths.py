@@ -13,8 +13,13 @@ import re
 import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-SKIP_DIRS = {"bench/results", "extern", "service/logs", ".git", "node_modules",
-             "__pycache__", ".venv"}
+# Directory *names* skipped wherever they appear, and path *prefixes* skipped
+# only at the repo root. `node_modules` was previously matched as a prefix, so
+# only a top-level one was skipped and `pi-extension/node_modules` was scanned
+# as portable source — which is how the extension's own dependency tree made
+# this guard fail on files nobody wrote.
+SKIP_DIR_NAMES = {"node_modules", "__pycache__", ".venv", ".git"}
+SKIP_PREFIXES = {"bench/results", "extern", "service/logs"}
 SKIP_FILES = {pathlib.Path(__file__).resolve()}
 SUFFIXES = {".py", ".ts", ".json", ".sh", ".md", ".toml", ".yml", ".yaml"}
 
@@ -25,7 +30,9 @@ _USERS = re.compile(r"[A-Za-z]:[\\/]+" + "Us" + r"ers[\\/]+[A-Za-z0-9_.-]+")
 
 def _skipped(rel: pathlib.Path) -> bool:
     s = rel.as_posix()
-    return any(s == d or s.startswith(d + "/") for d in SKIP_DIRS)
+    if any(s == d or s.startswith(d + "/") for d in SKIP_PREFIXES):
+        return True
+    return any(part in SKIP_DIR_NAMES for part in rel.parts[:-1])
 
 
 class NoPersonalPathsTest(unittest.TestCase):
