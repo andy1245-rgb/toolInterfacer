@@ -85,9 +85,9 @@ globbing the filesystem for a song title. Those seven are fixed and pinned by
 still keywords.
 
 - [ ] **Route the plan choice through the decision model** — spec §2's **L3**, not the
-      spec's P2 (that phase name in §8 means "d1-3B live"; the `P2` label for the routed
-      replacement is `planner/inspector.py`'s own). The rules become the fallback, not the
-      mechanism. **next**
+      spec's P2; which label is which is resolved in
+      [`spec/1.0-spec.md`](spec/1.0-spec.md#divergences-from-this-spec)'s §8 row. The rules
+      become the fallback, not the mechanism. **next**
 - [ ] **A grep intent is answered as a file read.** Found in the round-trip run
       (`l1_symbol`): the disk template returns a file reference where grep hits were asked
       for. One task, one defect, still open — reproduced while this file was being audited

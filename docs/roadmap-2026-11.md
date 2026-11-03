@@ -4,6 +4,12 @@ Working plan for an overnight run. Each phase ends with a commit and a measured
 result. Nothing here is a claim; a phase is done when its acceptance criterion is
 executed, not when its code exists.
 
+**The run is over.** The plan below is the plan as it was written, kept as the record.
+What is new is a closing verdict under each phase heading and one corrected deliverable
+in the Phase 0 table. The **Outcome — what was executed, and what it measured** section
+at the end is the account of what the run actually produced, including the parts it did
+not reach.
+
 ## Where the project actually stands
 
 *(As of 2026-11-03, the start of this run. Every figure below is that night's and is
@@ -13,7 +19,8 @@ night's plan and is not rewritten.)*
 
 - Service, planner, four decide backends (d1 `/v1/systemone`, Jev-style
   `logit_read`, `pair`, `openrouter`) and the ops wall exist and are covered:
-  `python3 -m pytest tests/ -q` → 326 passed, 159 subtests.
+  `python3 -m pytest tests/ -q` → 326 passed, 159 subtests *(that night's count; the
+  README's Test suite row carries the current one)*.
 - The incumbent decision backend is **d1-3B Q4_K_M**: 74.0% overall on the frozen
   150-row v2 set at p50 163 ms (`docs/model-sweep-consolidated.md`). Qwen3.5-4B
   Q4 scores 58.0% on the same set — the "4B is better" assumption does not hold.
@@ -27,9 +34,12 @@ night's plan and is not rewritten.)*
 
 ### Phase 0 — Recon (parallel, 6 tracks)
 
+**Closed, all six committed.** One deliverable is corrected in place: the recall track's
+answer is the assets survey, not a document of its own — see the row below.
+
 | Track | Question | Deliverable |
 |---|---|---|
-| recall | What has already been decided, measured and abandoned across toolInterfacer, jevResearch, localAlexa, cactus/needle, decision-model tuning? | `docs/session-recall.md` |
+| recall | What has already been decided, measured and abandoned across toolInterfacer, jevResearch, localAlexa, cactus/needle, decision-model tuning? | [`docs/assets-inventory.md`](assets-inventory.md) — the survey answers it for every one of those projects. No separate recall document was ever written; this row pointed at `docs/session-recall.md`, which is in no commit on any branch |
 | audit | Which modules are real, which are stubs, and what blocks a stranger's first clone? | `docs/audit-2026-11-03.md` |
 | assets | What can be imported instead of rebuilt from the sibling projects? | `docs/assets-inventory.md` |
 | publish | LICENSE, packaging, CI, a README that states what is true. | repo root + `.github/` |
@@ -50,6 +60,12 @@ Driven by the audit. Two streams, disjoint files:
 Acceptance: a live end-to-end probe script that fails loudly when the stack is
 down, plus green tests.
 
+**Closed.** Repair is the blocker table in the Outcome. Integration is
+`bench/live_e2e.py`, which drives ingress → plan → decide → ops against a live
+llama-server and now sends the service token; the run recorded in
+[`docs/live-e2e-2026-11-03.md`](live-e2e-2026-11-03.md) predates auth and reads 0/4
+for it.
+
 ### Phase 2 — Data and the fine-tune question
 
 The decision-model line only pays off if there is a dataset. The hop logs may not
@@ -68,6 +84,10 @@ Budget: **$1.50 of rented GPU**, cheapest card that fits a 3B QLoRA. If the
 number is not achievable inside that, the honest deliverable is the measured
 throughput plus a costed plan, not a half-run.
 
+**Half closed.** The distillation pipeline exists and ran — `tools/distill/`, 414
+rows, 199 teacher-labelled, $0.002 — and the LoRA run did not. That is the *Still
+open* item at the end of this document.
+
 ### Phase 3 — Applications
 
 A tool layer that is not applied is a library with no users. Pick avenues the
@@ -81,11 +101,25 @@ against the LLM doing the tool calls natively:
 Acceptance: per avenue, a before/after count of model round trips and wall time
 on a fixed task list.
 
+**Partly closed.** Avenue 2 is measured in
+[`docs/roundtrips-2026-11-03.md`](roundtrips-2026-11-03.md): nine fixed tasks, two
+arms, 2 of 14 round trips removed and 7.5 s slower at the headline pass cost.
+Avenues 1 and 3 were not wired — no op, template or bench in the tree reads an
+mcm-portal checkout or a market corpus.
+
 ### Phase 4 — Review and publish
 
 - Independent code review of everything merged tonight, findings fixed or filed.
 - README/docs reconciled with what the code does.
 - Tag `v0.1.0`.
+
+**Partly closed.** Both reviews ran ([`docs/review-2026-11-03.md`](review-2026-11-03.md),
+[`docs/review2-2026-11-03.md`](review2-2026-11-03.md)) and their findings are fixed or
+filed; the reconciliation they asked for is still running
+([`docs/doc-review-2026-11-03.md`](doc-review-2026-11-03.md)). No tag was cut:
+publication waits on the history decision in
+[`docs/pre-publish-audit.md`](pre-publish-audit.md), and [`RELEASE.md`](../RELEASE.md) is
+the runbook for the day it is taken.
 
 ## Rules for every track
 
@@ -158,7 +192,8 @@ security ones were re-probed live against a running service:
 | `tsc` reported 66 errors, the extension could not load | `tsc` exit 0, contract check green |
 | seven web-research intents routed to `filesys_glob` in production | an explicit research verb outranks `r/`; real-log regression table |
 
-**588 → 626 tests.** The suite grew by the regressions that would have caught
+**588 → 626 tests** *(the count at the end of that night; the README's Test suite row
+carries the current one)*. The suite grew by the regressions that would have caught
 each item above.
 
 ### What the measurements changed
