@@ -153,7 +153,9 @@ class GuardTest(unittest.TestCase):
         self.addCleanup(self.server.server_close)
         self.addCleanup(self.server.shutdown)
         self.url = f"http://127.0.0.1:{self.server.server_address[1]}"
-        self.tmp = pathlib.Path(tempfile.mkdtemp(prefix="ti-bench-test-"))
+        self._tmp = tempfile.TemporaryDirectory(prefix="ti-bench-test-")
+        self.addCleanup(self._tmp.cleanup)
+        self.tmp = pathlib.Path(self._tmp.name)
         spec = {"arms": {"stub": {"backend": "fixture", "requires": ["llama-server"],
                                   "endpoint": "decide.d1_systemone.base_url",
                                   "expect_model": D1}}}
@@ -228,7 +230,9 @@ def _preflight_at(arm: arms.Arm, url: str, **kwargs) -> dict:
 
 class NoClobberTest(unittest.TestCase):
     def setUp(self):
-        self.tmp = pathlib.Path(tempfile.mkdtemp(prefix="ti-bench-clobber-"))
+        self._tmp = tempfile.TemporaryDirectory(prefix="ti-bench-clobber-")
+        self.addCleanup(self._tmp.cleanup)
+        self.tmp = pathlib.Path(self._tmp.name)
         self.report = scoring.score(arms.get_arm("fixture"), sets.load("v2")[:6], warmup=0)
 
     def test_a_second_write_is_refused(self):

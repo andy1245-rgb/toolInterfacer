@@ -34,8 +34,13 @@
   `llama-server` · `hosted`), the `expect_model` gguf basename the server must be
   serving, the `endpoint` conf path `--base-url` repoints, and `override` (dotted
   conf paths) so a variant is a named arm instead of an unrecorded flag.
-- `replay.py` (P1) — runs a plan end-to-end through the fixture-player backend
-  with zero network; prints hops, confidences, wall time.
+- `replay.py` (P1) — runs one plan through the real engine and prints its hops,
+  confidences and wall time. It uses the **configured** backend, which defaults
+  to `pair`, so "no decision model" holds only once `TI_CONF_OVERLAY` points the
+  choice decision at `fixture` (README Quickstart); and *zero network* holds
+  only for a plan with no web op — an L2 `research` plan still runs the real
+  `web_search` / `web_fetch` CLIs and fetches live pages, which takes minutes,
+  not milliseconds. The fixture overlay replaces decision-making, not the ops.
 - `live_probe.py` (P2) — routing probe over held-out pi-tool utterances
   against a live d1 server; writes per-row timing + conf to stdout/JSONL.
   `--expect-model <gguf-basename>` asserts the served model via `/props` and
