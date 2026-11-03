@@ -67,14 +67,16 @@ decoration: `docs/model-sweep-consolidated.md` exists because a lane was
 mislabelled, and the `/props` capture under `results/dell/props/` is what proved
 it. Do not edit a number in them.
 
-The **machine-identifying prefixes are redacted**, and only those:
+The **machine-identifying path prefixes are redacted down to the model basename**, and
+nothing else:
 
 | recorded as | was | why it is safe to change |
 |---|---|---|
 | `$HOME/…` | an operator's home path | the gguf *basename* is what proved the mislabel, and that is untouched |
-| `C:\Users\<user>\…` | a Windows profile path | same |
+| `<workspace>\models\<model>.gguf` | a Windows profile path under `Documents\…`, with the sibling-project tree in front of it | same — the basename is the evidence, and the directory tree around it says nothing about the run |
 | `bench-host` | a hostname | names the box for a reader; the date and the build id pin the run |
 
 The numbers, timings, build ids, model basenames and `/props` bodies are
 byte-identical to what was recorded. `tests/test_no_personal_paths.py` covers
-`results/` now, so a new run cannot reintroduce a personal path into the repo.
+`results/` now, so a new run cannot reintroduce a personal path — or a captured
+Windows directory tree — into the repo.

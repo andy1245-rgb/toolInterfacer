@@ -5,7 +5,7 @@
   "base_url": "ssh-tunnel 18080 -> bench-host 127.0.0.1:8080",
   "server_threads": 8,
   "model": {
-    "path": "C:\Users\<user>\Documents\\PersonalCodingProjects\\personal\\Research\\jevResearch\\lab\\models\\qwen3.5-0.8b-Q8_0.gguf",
+    "path": "<workspace>\\models\\qwen3.5-0.8b-Q8_0.gguf",
     "ftype": "Q8_0",
     "build_info": "b11512-a11f57ba9"
   },

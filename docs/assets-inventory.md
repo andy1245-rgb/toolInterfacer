@@ -8,7 +8,7 @@ Method: every claim below comes from a file I opened in this session. Numbers ar
 quoted with the file they came from. Where a directory was too large to read
 usefully I say so rather than guessing at its contents. Scopes were addressed with
 non-recursive `ls` plus `grep` scoped to a single named directory; nothing
-recursive was run over `/home/andrew` or the sshfs mount.
+recursive was run over `$HOME` or the sshfs mount.
 
 **Headline:** the operator has already run most of this. Two complete measured
 pipelines exist — a needle (Cactus) fine-tune with a LoRA adapter, a `.cact`
