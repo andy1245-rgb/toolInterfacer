@@ -79,7 +79,7 @@ Verified by running it, not by reading the spec:
 | `pair` (local, escalating to hosted) and `openrouter` | implemented and measured by the author; running them needs a local llama.cpp server, and the hosted stage needs `TI_OPENROUTER_API_KEY` — [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md) |
 | Bounded decision state (structural, not conventional) | works — digest ≤ 8 turns × 240 chars, state ≤ `conf.context.state_max_tokens` |
 | pi extension: `useTool`, `/ti` command, service spawn on session start | complete; its own checks are in [`pi-extension/README.md`](pi-extension/README.md) (not re-run in this pass) |
-| Test suite | 433 tests, 276 subtests, no network, no model |
+| Test suite | 588 tests, 349 subtests, no network, no model |
 
 ### Honest gaps
 
@@ -162,14 +162,19 @@ curl -s -X POST http://127.0.0.1:1113/v1/useTool \
   -d '{"intent":"list the pyproject file",
        "params":{"tool":"filesys_glob",
                  "args":{"pattern":"pyproject.toml","cwd":"."}}}'
-# {"status": "done", "result": ["pyproject.toml"], "confidence": 1.0,
-#  "hops": [{"step": "L0", "op": "filesys_glob", "ms": 2.5, ...}]}
+# {"status": "done", "result": ["pyproject.toml"], "degraded": false,
+#  "assumptions": [], "hops": [{"step": "L0", "op": "filesys_glob", "ms": 2.5, ...}]}
 ```
 
 L0 may only name the ops in `http.allowed_ops` (the three `filesys_*` mirrors by default),
 and every path they touch is confined to the run's cwd — the body's `digest.cwd`, which
 must itself resolve inside `ops.filesys.roots`. `..`, an absolute path outside the run, a
 symlink out of it, and a cwd outside the policy all come back `403`.
+
+`ops.filesys.roots` defaults to `["~"]`, so the example above returns `done` only when
+the clone sits under your home directory. Cloned into `/tmp`, `/opt` or another mount, the
+same call answers `{"error": "scope_refused", ...}` and needs `roots` widened through
+`TI_CONF_OVERLAY` (below).
 
 Ask what a compound intent *would* do, without running it:
 
@@ -240,7 +245,7 @@ notes are in [`pi-extension/README.md`](pi-extension/README.md).
 
 ```sh
 python3 -m pytest tests/ -q
-# 454 passed, 261 subtests passed
+# 588 passed, 349 subtests passed
 ```
 
 Runs from a fresh clone with nothing installed: each test file puts `service/` on
@@ -262,7 +267,7 @@ subpackage.
 
 | script | what it does |
 |---|---|
-| `bench/replay.py` | runs one plan through the real engine with the fixture backend — zero network |
+| `bench/replay.py` | runs one plan through the real engine — zero network once `TI_CONF_OVERLAY` points the choice decision at `fixture` (see the Quickstart); the script itself uses the configured backend |
 | `bench/live_probe.py` | routing probe over the frozen utterance set against a live llama.cpp server; `--expect-model <gguf>` asserts `/props` before any probe traffic |
 | `bench/model_guard.py` | the `/props` served-model assertion on its own |
 | `bench/serve_lane.py`, `bench/lane.sh`, `bench/lanes.json` | argv-safe llama-server lane launch, serve → assert → probe → teardown |
