@@ -136,7 +136,7 @@ dataset snapshot. In one place:
 |---|---|---|
 | round trips 2/14 | **not reproducible without a decision backend** | arm B needs `d1_systemone`; with none reachable every L1/L2 task answers in one round trip and is wrong (B 3/9) |
 | routing accuracy 74.0% | **reproduces from the recorded per-row data** (111/150 × 2, bands 81.2 / 71.0 / 67.3) | re-measuring needs d1-3B and a `llama-server`; the gitignored `models/` and `extern/` are outside a fresh worktree |
-| classical 93.19% / 66.23% / 62.7% | **reproduces exactly**, fingerprint and all | but `python3 bench/classical_baseline.py` now *crashes*: every `bench/results/dell/*.json` is invalid JSON after the `C:\Users\<user>` redaction in `e523336`, so the documented command exits at its d1 load |
+| classical 93.19% / 66.23% / 62.7% | **reproduces exactly**, fingerprint and all | but `python3 bench/classical_baseline.py` now *crashes*: 37 of the 40 files in `bench/results/dell/` are invalid JSON after the `C:\Users\<user>` redaction in `e523336`, so the documented command exits at its d1 load |
 | iGPU 2.72× slower | **artifact only** | the gguf is on the box (`models/d1-3B-Q4_K_M.gguf`, 1.67 GB) and `vulkaninfo` still reports the ADL GT2, but no `build-vk/` exists, so re-measuring means rebuilding llama.cpp through the `glslc` shim first |
 | hop log → 14 records | **moved with the log**: 5,243 lines now yield 15, all still `filesys_glob` | the snapshot is live, machine-local and gitignored; the conclusion holds |
 | live 5/5 | **not reproducible**: `0/4`, HTTP 401 | `bench/live_e2e.py` sends no service token, and auth landed in `5dc537f` nine minutes after the recorded run |

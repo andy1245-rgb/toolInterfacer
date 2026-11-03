@@ -287,7 +287,9 @@ json.decoder.JSONDecodeError: Invalid \escape: line 8 column 16 (char 193)
     d1_runs = [json.loads(p.read_text()) for p in sorted(
 ```
 
-because all 36 files under `bench/results/dell/` are **invalid JSON**. Commit `e523336`
+because 37 of the 40 result files under `bench/results/dell/` are **invalid JSON** — every
+one that carries a `model` block; the three `heuristic_micro` files, which carry none, still
+parse. Commit `e523336`
 redacted the personal prefix to `C:\Users\<user>` by string substitution and left the
 remaining backslashes unescaped, so every one of them fails `json.loads` at its
 `model.path` line. The 382-row half is written before line 332, so `classical_382.json`
