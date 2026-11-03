@@ -31,7 +31,7 @@ export interface CaptureCall {
 	status: string;
 	degraded: boolean;
 	confidence?: number;
-	hops: readonly { op: string; ms: number; conf: number }[];
+	hops: readonly { op: string; ms: number; conf: number | null }[];
 	wallMs: number;
 	error?: string;
 	questionKind?: string;
@@ -48,7 +48,7 @@ export interface CaptureRecord {
 	status: string;
 	degraded: boolean;
 	confidence: number | null;
-	hops: { op: string; ms: number; conf: number }[];
+	hops: { op: string; ms: number; conf: number | null }[];
 	wall_ms: number;
 	error: string | null;
 	question_kind: string | null;

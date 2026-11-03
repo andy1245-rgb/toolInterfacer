@@ -112,11 +112,16 @@ class LoopTest(unittest.TestCase):
         self.assertIsNone(out.get("error"))
 
     def test_runresult_schema(self):
+        # L0 = the caller named the op and its args, so the service made no routing
+        # decision: there is no confidence to report. This assertion used to pin the
+        # fabricated 1.0 (review B2) — an L0 read of README.md is not "100% certain".
         out = use_tool({"intent": "write a file", "params": {"tool": "filesys_read",
                                                              "args": {"path": "README.md"}}})
         self.assertEqual(out["status"], "done")
         self.assertEqual(out["hops"][0]["op"], "filesys_read")
-        self.assertEqual(out["confidence"], 1.0)
+        self.assertNotIn("confidence", out)
+        # the op's own conf still travels on the hop, where it is attributed
+        self.assertIn("conf", out["hops"][0])
 
 
 if __name__ == "__main__":

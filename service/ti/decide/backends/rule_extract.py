@@ -6,18 +6,41 @@ stopword ranking, no model call, no network, no sampling — so `decide_extract`
 is replayable and instant, and the two real uses (research queries, the literal
 paths/urls a request names) work before any extractor model exists.
 
-STATE / SCHEMA CONTRACT (unchanged by this file)
+STATE / SCHEMA CONTRACT
     state  = {"context": <caller ctx: dict | list | str>, "instructions": str}
     schema = {"type": "value_list", "count": N}
-    return = {"values": [str, ...], "conf": float in [0, 1]}
+    return = {"values": [str, ...], "basis": <how they were produced>}
+
+NO CONFIDENCE, AND WHY
+A rule extractor has no distribution to report: it matched a pattern or it did
+not. The rubric this module used to return (0.92 urls, 0.72 queries, 0.30 for a
+literal ask that found nothing, ...) was a set of hand-picked constants dressed
+as measurements, and `decide_extract`'s conf is gated downstream, so a caller
+that thresholds 0.92 against the slot gate is thresholding a number nobody
+measured. So the backend reports `basis` instead: the pattern class that produced
+the values, which is a fact about what happened.
+
+    url_literals          http(s) literals, in text order
+    path_literals         path-like tokens, in text order
+    query_phrases         ranked keyword phrases
+    quoted_spans          generic pass: quoted spans (+ distinctiveness fill)
+    distinctive_tokens    generic pass: salient tokens only
+    none                  nothing extractable — an honest empty answer
+
+A basis that names a different class than the ask named is the degraded case the
+old 0.30 cap encoded: "extract the urls" answered by `distinctive_tokens` is a
+guess, and now it says so instead of pricing itself at 0.3.
 
 SEAM FOR A MODEL-BACKED EXTRACTOR
 Any backend registered as a DecideBackend whose `extract` takes that same state
-and schema and returns that same {"values", "conf"} dict is a drop-in
-replacement: name it in conf.decide.backends_in_use["extract"]
-("rule_extract" -> e.g. "d1_systemone") and nothing above the primitive wall
-moves — ops/decisions.py `run_extract` only ever reads values and conf. Keep the
-rule backend registered as the offline/fixture lane for bench and tests.
+and schema and returns `{"values", ...}` is a drop-in replacement: name it in
+conf.decide.backends_in_use["extract"] ("rule_extract" -> e.g. "d1_systemone")
+and nothing above the primitive wall moves — ops/decisions.py `run_extract`
+reads values, and reads `conf` only when the backend measured one. A model-backed
+extractor that really does produce a distribution can return `conf`; one that
+cannot should omit it rather than invent it, and the run then reports no
+confidence for that step. Keep the rule backend registered as the
+offline/fixture lane for bench and tests.
 
 MODE SELECTION (instructions name the ask; context supplies the payload)
     url      the ask names urls/links     -> http(s) literals, in text order
@@ -28,10 +51,11 @@ MODE SELECTION (instructions name the ask; context supplies the payload)
 
 A literal ask outranks a verb in a tie, because naming a literal type is the
 stronger signal ("list the urls to search" is a url ask, not a query ask). A
-literal ask that finds nothing degrades to the generic pass with conf capped at
-0.3 rather than returning an empty list silently. A URL in the ask counts as a
-literal too (unambiguous); a slash in the ask usually is prose, so paths are
-only mined from the context.
+literal ask that finds nothing degrades to the generic pass rather than
+returning an empty list silently; the basis says which class produced the
+values, so the degradation is visible. A URL in the ask counts as a literal too
+(unambiguous); a slash in the ask usually is prose, so paths are only mined from
+the context.
 
 QUERY GENERATION (count clamped to 3..6; the shipped conf.research.query_count
 is [3, 6] for the same reason — one query is not a search). Salient terms are
@@ -39,16 +63,6 @@ dropped through a stopword list, ranked by frequency then first occurrence (both
 stable, so identical input gives identical output), and then recombined into
 keyword phrases: the leading trigram, its bigram and head term, ranked-term
 pairs, and document-order windows. Every phrase is distinct by construction.
-
-CONFIDENCE RUBRIC (documented, since callers gate on it)
-    0.92   urls found for a url ask / an unstructured payload that carries urls
-    0.90   paths found for a path ask / ... carrying paths
-    0.72   queries: >= 3 distinct phrases
-    0.50   queries: fewer than 3 phrases (thin payload, few salient terms)
-    0.50   generic pass that found quoted spans
-    0.35   generic pass that only found distinctive tokens
-    0.30   literal ask with no literals present (generic guess, capped)
-    0.10   nothing extractable at all — ([], 0.1) is an honest empty answer
 """
 from __future__ import annotations
 
@@ -127,28 +141,28 @@ class RuleExtractBackend(DecideBackend):
             context, instructions = state, ""
         payload = _flatten(context)
         count = _query_count(schema)
-        values, conf = _run(payload, instructions, count)
-        return {"values": values, "conf": round(conf, 3)}
+        values, basis = _run(payload, instructions, count)
+        return {"values": values, "basis": basis}
 
 
-def _run(payload: str, instructions: str, count: int) -> tuple[list[str], float]:
-    """Extract by mode. Every branch returns (values, conf); none returns junk silently."""
+def _run(payload: str, instructions: str, count: int) -> tuple[list[str], str]:
+    """Extract by mode. Every branch returns (values, basis); none invents a number."""
     mode = _ask_mode(instructions) or _infer_mode(payload)
     if mode == "url":
         urls = _urls(payload, instructions)
         if urls:
-            return urls, 0.92
-        return _generic(payload, count, ceiling=0.3)
+            return urls, "url_literals"
+        return _generic(payload, count)
     if mode == "path":
         paths = _paths(payload)
         if paths:
-            return paths, 0.90
-        return _generic(payload, count, ceiling=0.3)
+            return paths, "path_literals"
+        return _generic(payload, count)
     if mode == "query":
         phrases = _queries(payload, count)
         if phrases:
-            return phrases, (0.72 if len(phrases) >= 3 else 0.5)
-        return [], 0.1
+            return phrases, "query_phrases"
+        return [], "none"
     return _generic(payload, count)
 
 
@@ -306,9 +320,8 @@ def _phrases(order: list[str], ranked: list[str], count: int) -> list[str]:
     return phrases[:count]
 
 
-def _generic(payload: str, count: int, ceiling: float | None = None
-             ) -> tuple[list[str], float]:
-    """Quoted spans first, then distinctive tokens; nothing at all -> ([], 0.1)."""
+def _generic(payload: str, count: int) -> tuple[list[str], str]:
+    """Quoted spans first, then distinctive tokens; nothing at all -> ([], 'none')."""
     values: list[str] = []
     for match in _QUOTED_RE.finditer(payload):
         span = next((g for g in match.groups() if g), "").strip()
@@ -326,8 +339,5 @@ def _generic(payload: str, count: int, ceiling: float | None = None
             values.append(term)
 
     if not values:
-        return [], 0.1
-    conf = 0.5 if quoted else 0.35
-    if ceiling is not None:
-        conf = min(conf, ceiling)
-    return values, conf
+        return [], "none"
+    return values, ("quoted_spans" if quoted else "distinctive_tokens")

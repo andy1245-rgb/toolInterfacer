@@ -10,7 +10,9 @@ export const HopsSchema = Type.Object({
 	step: Type.String(),
 	op: Type.String(),
 	ms: Type.Number(),
-	conf: Type.Number(),
+	// null = the op measured nothing (rule extraction, and any op that returns no
+	// number); a number here is a measurement. See docs/confidence-sources.md.
+	conf: Type.Union([Type.Number(), Type.Null()]),
 	artifact_summary: Type.String(),
 });
 export type Hops = Static<typeof HopsSchema>;

@@ -119,13 +119,29 @@ class ConfidentStage1Test(unittest.TestCase):
                          "opt1")
         self.assertEqual(stage2.calls, 1)
 
-    def test_a_single_option_vector_owns_all_mass(self):
-        # K < 2 reads as p_max 1.0, the same rule conf_scale.d1_conf applies.
-        stage1 = _Stage("stage1", answer=ChoiceAnswer("opt0", {"opt0": 0.30}, 0.30))
+    def test_a_single_option_vector_is_not_a_distribution_to_gate_on(self):
+        # A one-entry vector always sums to 1, so every value of it is a "peak":
+        # reading it as p_max 1.0 turned "the stage expressed no distribution" into
+        # "maximum certainty" and cleared tau at any confidence (a 0.02 answer
+        # committed). It is a stage error, and stage1 errors escalate.
+        stage1 = _Stage("stage1", answer=ChoiceAnswer("opt0", {"opt0": 0.02}, 0.02))
         stage2 = _Stage("stage2", answer=_answer("opt1"))
-        self.assertEqual(_pair(stage1, stage2).choice(STATE, INSTRUCTION, CRITERIA).choice,
-                         "opt0")
-        self.assertEqual(stage2.calls, 0)
+        pair = _pair(stage1, stage2)
+        got = pair.choice(STATE, INSTRUCTION, CRITERIA)
+        self.assertEqual(got.choice, "opt1")
+        self.assertEqual(stage2.calls, 1, "no distribution on stage1 is a reason to ask stage2")
+        self.assertEqual(pair.last_reason, STAGE1_ERROR)
+        self.assertTrue(pair.last_escalated)
+        self.assertEqual(pair.last_stage1_conf, 0.0, "nothing was measured on stage1")
+
+    def test_a_single_option_stage1_with_no_fallback_raises(self):
+        # The degenerate answer must not be handed back as a decision either: with
+        # stage2 unavailable there is nothing to return, and rule 5 has no stage1
+        # answer to degrade to because stage1 never produced a decision.
+        stage1 = _Stage("stage1", answer=ChoiceAnswer("only", {"only": 0.02}, 0.02))
+        stage2 = _Stage("stage2", error=_Boom("no key"))
+        with self.assertRaises(RuntimeError):
+            _pair(stage1, stage2).choice(STATE, INSTRUCTION, CRITERIA)
 
 
 class EscalationTest(unittest.TestCase):

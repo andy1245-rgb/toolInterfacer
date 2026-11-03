@@ -34,7 +34,15 @@ def check_pre(gate: Gate, step: str, artifacts: Any) -> None:
         art = artifacts.try_get(cond["artifact"])
         if art is None:
             raise GateBlocked(step, f"missing artifact {cond['artifact']!r}", cond)
-        if cond.get("kind") == "conf_gte" and art.conf < float(cond.get("min", 0.0)):
+        if cond.get("kind") != "conf_gte":
+            continue
+        # An unmeasured artifact cannot satisfy a confidence gate: "no number"
+        # is not "above the threshold". The block routes to ask-back like any
+        # other gap in the evidence.
+        if art.conf is None:
+            raise GateBlocked(step, f"artifact {cond['artifact']!r} carries no confidence "
+                                    f"measurement to compare against the gate", cond)
+        if art.conf < float(cond.get("min", 0.0)):
             raise GateBlocked(step, f"artifact {cond['artifact']!r} conf {art.conf:.2f} below gate", cond)
 
 

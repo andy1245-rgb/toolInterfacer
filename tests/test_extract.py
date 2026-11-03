@@ -73,15 +73,18 @@ class QueryTest(EnvCase):
         self.assertNotIn("search", terms)
         self.assertNotIn("queries", terms)
 
-    def test_query_confidence_is_moderate(self):
+    def test_query_values_are_reported_as_query_phrases(self):
+        # The rubric this used to price at 0.72 is gone: a rule extractor matched a
+        # pattern, it did not measure a probability. What it reports now is which
+        # pattern produced the values (see the module docstring).
         out = extract({"intent": "kafka consumer lag diagnosis"}, RESEARCH)
-        self.assertTrue(0.5 <= out["conf"] < 0.9, out["conf"])
+        self.assertEqual(out["basis"], "query_phrases")
+        self.assertNotIn("conf", out)
 
     def test_a_thin_payload_still_returns_what_it_has(self):
         out = extract({"intent": "quantization"}, RESEARCH)
         self.assertEqual(out["values"], ["quantization"])
-        self.assertLessEqual(out["conf"], 0.5)
-        self.assertGreater(out["conf"], 0.1)
+        self.assertEqual(out["basis"], "query_phrases")
 
 
 class UrlTest(EnvCase):
@@ -91,7 +94,7 @@ class UrlTest(EnvCase):
         out = extract(context, "list the urls")
         self.assertEqual(out["values"], ["https://example.com/a",
                                          "https://docs.python.org/3/library/asyncio.html"])
-        self.assertGreaterEqual(out["conf"], 0.9)
+        self.assertEqual(out["basis"], "url_literals")
 
     def test_a_url_in_the_ask_is_a_literal_too(self):
         out = extract({}, "fetch https://example.com/docs")
@@ -108,7 +111,7 @@ class PathTest(EnvCase):
                       "extract the file paths mentioned in the last message")
         self.assertEqual(out["values"], ["./service/ti/ops/matcher.py",
                                          "/tmp/x/file.ext"])
-        self.assertGreaterEqual(out["conf"], 0.9)
+        self.assertEqual(out["basis"], "path_literals")
 
     def test_a_bare_filename_counts_only_when_the_ask_names_files(self):
         self.assertEqual(extract({"files": ["matcher.py"]},
@@ -134,26 +137,26 @@ class MixedTest(EnvCase):
     def test_no_ask_at_all_follows_the_payload_structure(self):
         out = extract(self.CONTEXT, "")
         self.assertEqual(out["values"], ["https://a.example/b"])
-        self.assertGreaterEqual(out["conf"], 0.9)
+        self.assertEqual(out["basis"], "url_literals")
 
     def test_prose_with_no_literals_falls_back_to_distinctive_tokens(self):
         out = extract("the migration notes need a rewrite before friday",
                       "pull out what matters")
         self.assertIn("migration", out["values"])
-        self.assertLessEqual(out["conf"], 0.5)
+        self.assertEqual(out["basis"], "distinctive_tokens")
 
     def test_quoted_spans_beat_bare_tokens_in_the_fallback(self):
         out = extract('the note says "run the tests first" otherwise ignore it',
                       "pull out what matters")
         self.assertEqual(out["values"][0], "run the tests first")
-        self.assertGreaterEqual(out["conf"], 0.4)
+        self.assertEqual(out["basis"], "quoted_spans")
 
 
 class EmptyAndDegradedTest(EnvCase):
     def test_empty_context_is_an_honest_empty_answer(self):
         out = extract({}, RESEARCH)
         self.assertEqual(out["values"], [])
-        self.assertLessEqual(out["conf"], 0.1)
+        self.assertEqual(out["basis"], "none")
 
     def test_no_source_artifact_does_not_crash(self):
         # run_extract passes {} when the step carries no source artifact
@@ -165,7 +168,9 @@ class EmptyAndDegradedTest(EnvCase):
     def test_a_literal_ask_that_finds_nothing_degrades_instead_of_lying(self):
         out = extract("nothing useful in here at all", "list the urls")
         self.assertTrue(out["values"], "never return nothing silently")
-        self.assertLessEqual(out["conf"], 0.3)
+        # a url ask answered by distinctive tokens is the degraded case the old
+        # 0.30 cap encoded; the basis names it instead of pricing it
+        self.assertEqual(out["basis"], "distinctive_tokens")
 
 
 class CountTest(EnvCase):
@@ -243,11 +248,11 @@ class OpSmokeTest(EnvCase):
             {"instructions": RESEARCH, "source_artifact": "ctx", "count": 4}, self.store)
         self.assertEqual(kind, "value_list")
         self.assertTrue(3 <= len(data) <= 6, data)
-        self.assertTrue(0.0 <= conf <= 1.0)
+        self.assertIsNone(conf, "a rule extraction measures nothing; the op must say so")
 
     def test_op_without_a_source_artifact_still_runs(self):
         kind, data, conf = self.op.run({"instructions": RESEARCH, "count": 3}, self.store)
-        self.assertEqual((kind, data, conf), ("value_list", [], 0.1))
+        self.assertEqual((kind, data, conf), ("value_list", [], None))
 
     def test_op_extracts_paths_for_a_filesys_handoff(self):
         self.store.put("note", "step", "digest", {"note": "the file is ./service/ti/conf/defaults.json"})
@@ -256,7 +261,7 @@ class OpSmokeTest(EnvCase):
             self.store)
         self.assertEqual(kind, "value_list")
         self.assertEqual(data, ["./service/ti/conf/defaults.json"])
-        self.assertGreaterEqual(conf, 0.9)
+        self.assertIsNone(conf)
 
 
 if __name__ == "__main__":

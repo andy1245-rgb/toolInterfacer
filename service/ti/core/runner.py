@@ -9,9 +9,16 @@ from ..core.budget import Budget, BudgetExceeded
 from ..core.gates import Gate, GateBlocked, check_post, check_pre
 from ..ops.op_api import get as get_op, validate_params
 
-run_op_t = Callable[..., tuple[str, Any, float]]
+run_op_t = Callable[..., tuple[str, Any, "float | None"]]
 run_verifier_t = Callable[..., "float | None"]
 on_ask_t = Callable[..., Any]
+
+# What a resolved ask-back writes over the artifact a gate rejected. It is a
+# policy prior — a stated trust in the answering party's statement — not a
+# measurement, and it exists because the retry has to clear the same threshold
+# that blocked it. It is the one assigned confidence left on the reporting path;
+# see docs/confidence-sources.md.
+ASKBACK_CONF = 0.9
 
 
 @dataclass
@@ -164,9 +171,10 @@ def _handle_block(gb: GateBlocked, step: Step, store: ArtifactStore,
     if isinstance(answer, dict):
         pick = answer.get("choice") or answer.get("text")
     if pick is not None and isinstance(gb.detail, dict) and gb.detail.get("artifact"):
-        store.put(str(gb.detail["artifact"]), "askback", "picked_items", [str(pick)], 0.9)
+        store.put(str(gb.detail["artifact"]), "askback", "picked_items", [str(pick)],
+                  ASKBACK_CONF)
         hops.append({"step": step.id, "op": "askback.resolved", "ms": 0.0,
-                     "conf": 0.9, "ask_available": True,
+                     "conf": ASKBACK_CONF, "ask_available": True,
                      "resolves": str(gb.detail["artifact"]),
                      "artifact_summary": str(pick)[:120]})
         return True

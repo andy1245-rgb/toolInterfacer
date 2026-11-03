@@ -41,13 +41,16 @@ def main() -> None:
 
     print(json.dumps(out, indent=2, default=str)[:4000])
     if out["status"] == "done" and not args.plan:
-        de_chops = [h for h in out["hops"] if str(h["op"]).startswith("decide") or h["op"] == "askback"]
+        de_chops = [h["conf"] for h in out["hops"]
+                    if (str(h["op"]).startswith("decide") or h["op"] == "askback")
+                    and h["conf"] is not None]
         print("\n== summary ==")
         print(f"status={out['status']} wall_ms={out.get('wall_ms', wall):.1f} hops={len(out['hops'])}")
         for h in out["hops"]:
-            print(f"  {h['op']:<14} {h['ms']:>7.1f}ms conf={h['conf']:.2f}  {str(h['artifact_summary'])[:90]}")
+            conf = "n/a" if h["conf"] is None else f"{h['conf']:.2f}"
+            print(f"  {h['op']:<14} {h['ms']:>7.1f}ms conf={conf:<5}  {str(h['artifact_summary'])[:90]}")
         if de_chops:
-            print(f"decide-max conf={max(h['conf'] for h in de_chops):.2f} "
+            print(f"decide-max conf={max(de_chops):.2f} "
                   f"(gate={load()['policy']['gate_route']})")
 
 

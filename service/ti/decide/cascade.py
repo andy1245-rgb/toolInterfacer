@@ -27,6 +27,14 @@ a conf scalar survives, and on the stored lanes it overstates logit_read's
 p_max by 0.09 on average (0.27 worst case) — gating on it would move the
 operating point the thresholds were fit for.
 
+Both stages are scored against a p_max threshold, so both must express a
+distribution over the options they were offered. A stage answering with one
+probability expressed none, and there is no peak to read: that is a stage error
+(see _common), not a maximum. conf_scale.d1_conf's K<2 -> 1.0 is the decision
+server's sentinel for a degenerate question and stays there; importing it into
+a gate turned "no distribution" into "certain", which cleared tau_hi without a
+single stage2 call.
+
 The answer handed back to the loop is on that same p_max axis:
 
   * commit -> the measured precision of the commit path (decide.cascade.path_conf).
@@ -182,10 +190,11 @@ def _configured_stages(cfg: dict[str, Any]) -> list[DecideBackend]:
 
 
 def _common(answer: ChoiceAnswer) -> float:
-    """A stage answer's confidence on the common p_max axis (conf_scale)."""
-    probs = list(answer.probabilities.values())
-    if not probs:
-        raise ValueError("cascade: stage returned no probabilities; p_max is undefined")
-    if len(probs) == 1:
-        return 1.0  # single option owns all mass; conf_scale.d1_conf uses the same K<2 rule
-    return conf_scale.pmax_from_probs(probs)
+    """A stage answer's confidence on the common p_max axis (conf_scale).
+
+    conf_scale.common_conf is the gate-side p_max: it requires two or more
+    probabilities, because K < 2 is "the stage expressed no distribution over
+    alternatives" — a stage error, not a maximum. (The K<2 -> 1.0 rule belongs
+    to the decision server's own sentinel, conf_scale.d1_conf, not to this gate.)
+    """
+    return conf_scale.common_conf(list(answer.probabilities.values()))

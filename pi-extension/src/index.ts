@@ -65,7 +65,7 @@ function truncate(text: string): string {
 }
 
 function hopLine(resp: UseToolResponse): string {
-	const hops = (resp.hops ?? []).slice(0, HOPS_SHOWN).map((h) => `${h.op} ${h.ms}ms conf ${h.conf.toFixed(2)}`);
+	const hops = (resp.hops ?? []).slice(0, HOPS_SHOWN).map((h) => `${h.op} ${h.ms}ms conf ${h.conf === null ? "n/a" : h.conf.toFixed(2)}`);
 	const meta = resp.confidence !== undefined ? ` — route conf ${resp.confidence.toFixed(2)}` : "";
 	return `hops: ${hops.length ? hops.join(" | ") : "none"}${meta}`;
 }

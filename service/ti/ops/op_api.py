@@ -1,17 +1,18 @@
 """Op registration + step-param schema validation.
 
-An op is a function `run(params, store) -> (kind, data, conf)`.
-Templates reference ops by name; the runner resolves names through
-`registry.get()`. Every op declares a param schema the runner validates before
-calling — LLM-injected params that match the schema land as real args, the
-rest ride along as soft context.
+An op is a function `run(params, store) -> (kind, data, conf)` where `conf` is a
+measurement in [0, 1] or None when the op measured nothing. Templates reference
+ops by name; the runner resolves names through `registry.get()`. Every op
+declares a param schema the runner validates before calling — LLM-injected
+params that match the schema land as real args, the rest ride along as soft
+context.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Callable
 
-RunFn = Callable[..., tuple[str, Any, float]]
+RunFn = Callable[..., tuple[str, Any, "float | None"]]
 
 
 @dataclass

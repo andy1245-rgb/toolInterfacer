@@ -86,7 +86,9 @@ class ListingShapeTest(ShapeCase):
         # strictly fewer hops than the read path, and no decision call at all
         self.assertLess(len(out["hops"]), len(READ_OPS))
         self.assertEqual(self.counter.calls, 0)
-        self.assertEqual(out["confidence"], 1.0)
+        # ...and therefore no confidence: a listing measures no decision, and the
+        # 1.0 this used to report was the absence masquerading as certainty (B2).
+        self.assertNotIn("confidence", out)
 
     def test_a_listing_returns_exactly_the_directory_entries(self):
         entries = ("alpha.txt", "beta.txt", "notes.md")
