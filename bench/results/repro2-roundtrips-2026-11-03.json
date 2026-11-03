@@ -1,0 +1,654 @@
+{
+ "generated": "2026-11-03T15:42:28.234859-05:00",
+ "finished": "2026-11-03T15:43:37.877053-05:00",
+ "commit": "ca7ffec",
+ "branch": "p2-numbers",
+ "service": {
+  "base": "http://127.0.0.1:1121",
+  "decide": {
+   "choice": "pair",
+   "noul": "fixture",
+   "extract": "rule_extract"
+  },
+  "started_by_bench": true
+ },
+ "machine": {
+  "cpus": 12,
+  "loadavg_start": [
+   1.7,
+   1.82,
+   1.79
+  ],
+  "loadavg_end": [
+   1.35,
+   1.71,
+   1.75
+  ]
+ },
+ "cost_model": {
+  "pass_ms_assumed": 2000.0,
+  "project_decide_ms": 250.0,
+  "sweep_ms": [
+   250.0,
+   500.0,
+   1000.0,
+   2000.0,
+   5000.0,
+   10000.0
+  ],
+  "local_pass_anchor": {
+   "ms": null
+  },
+  "definition": "a round trip is one agent-model inference that issues a tool call; the final answer pass is excluded from both arms"
+ },
+ "tasks": [
+  {
+   "id": "l0_read",
+   "shape": "L0 read (caller names the path)",
+   "intent": "read the file I named",
+   "native": {
+    "round_trips": 1,
+    "exec_ms": 0.3,
+    "steps": [
+     {
+      "tool": "filesys_read",
+      "ms": 0.3,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "87cadab33f21"
+   },
+   "service": {
+    "round_trips": 1,
+    "wall_ms": 22.0,
+    "hops": 1,
+    "hop_ops": [
+     "filesys_read"
+    ],
+    "decide_hops": 0,
+    "decide_ms": 0,
+    "status": "done",
+    "asked": "",
+    "error": "",
+    "result_digest": "87cadab33f21"
+   },
+   "correct": {
+    "a": true,
+    "b": true,
+    "a_detail": "",
+    "b_detail": "",
+    "agree": true
+   },
+   "note": "the shape the layer cannot improve: one tool call either way"
+  },
+  {
+   "id": "l0_grep",
+   "shape": "L0 grep (caller names the pattern)",
+   "intent": "search the planner templates for the build entry points",
+   "native": {
+    "round_trips": 1,
+    "exec_ms": 0.6,
+    "steps": [
+     {
+      "tool": "filesys_grep",
+      "ms": 0.6,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "1c96bbf71d3e"
+   },
+   "service": {
+    "round_trips": 1,
+    "wall_ms": 2.6,
+    "hops": 1,
+    "hop_ops": [
+     "filesys_grep"
+    ],
+    "decide_hops": 0,
+    "decide_ms": 0,
+    "status": "done",
+    "asked": "",
+    "error": "",
+    "result_digest": "1c96bbf71d3e"
+   },
+   "correct": {
+    "a": true,
+    "b": true,
+    "a_detail": "a grep hit on disk_lookup.py (got 3 hits)",
+    "b_detail": "a grep hit on disk_lookup.py (got 3 hits)",
+    "agree": true
+   },
+   "note": "a resolved pattern is one round trip natively; the service adds only a hop"
+  },
+  {
+   "id": "l1_list",
+   "shape": "L1 listing",
+   "intent": "list the .py files in the tests directory",
+   "native": {
+    "round_trips": 1,
+    "exec_ms": 8.2,
+    "steps": [
+     {
+      "tool": "filesys_glob",
+      "ms": 8.2,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "bae03ec9ec3b"
+   },
+   "service": {
+    "round_trips": 1,
+    "wall_ms": 9.9,
+    "hops": 1,
+    "hop_ops": [
+     "filesys_glob"
+    ],
+    "decide_hops": 0,
+    "decide_ms": 0,
+    "status": "done",
+    "asked": "",
+    "error": "",
+    "result_digest": "bae03ec9ec3b"
+   },
+   "correct": {
+    "a": true,
+    "b": true,
+    "a_detail": "the 37 tests/*.py paths",
+    "b_detail": "the 37 tests/*.py paths",
+    "agree": true
+   },
+   "note": "listing terminates on candidates: one glob either way"
+  },
+  {
+   "id": "l1_read",
+   "shape": "L1 read (slot fill over 3 files)",
+   "intent": "read the notes file",
+   "native": {
+    "round_trips": 2,
+    "exec_ms": 0.5,
+    "steps": [
+     {
+      "tool": "filesys_glob",
+      "ms": 0.3,
+      "conf": 1.0,
+      "error": null
+     },
+     {
+      "tool": "filesys_read",
+      "ms": 0.1,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "4a101e9be720"
+   },
+   "service": {
+    "round_trips": 1,
+    "wall_ms": 10.7,
+    "hops": 1,
+    "hop_ops": [
+     "filesys_glob"
+    ],
+    "decide_hops": 0,
+    "decide_ms": 0,
+    "status": "error",
+    "asked": "",
+    "error": "pair: no stage produced a choice",
+    "result_digest": "6eef6648406c"
+   },
+   "correct": {
+    "a": true,
+    "b": false,
+    "a_detail": "",
+    "b_detail": "the bytes of notes.md",
+    "agree": false
+   },
+   "note": "the service globs and picks inside one round trip"
+  },
+  {
+   "id": "l1_ask",
+   "shape": "L1 ambiguous -> ask-back",
+   "intent": "read the report file",
+   "native": {
+    "round_trips": 3,
+    "exec_ms": 0.3,
+    "steps": [
+     {
+      "tool": "filesys_glob",
+      "ms": 0.2,
+      "conf": 1.0,
+      "error": null
+     },
+     {
+      "tool": "ask_user",
+      "ms": 0.0,
+      "error": null
+     },
+     {
+      "tool": "filesys_read",
+      "ms": 0.1,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "c34688c88a38"
+   },
+   "service": {
+    "round_trips": 1,
+    "wall_ms": 2.9,
+    "hops": 1,
+    "hop_ops": [
+     "filesys_glob"
+    ],
+    "decide_hops": 0,
+    "decide_ms": 0,
+    "status": "error",
+    "asked": "",
+    "error": "pair: no stage produced a choice",
+    "result_digest": "6eef6648406c"
+   },
+   "correct": {
+    "a": true,
+    "b": false,
+    "a_detail": "",
+    "b_detail": "the bytes of report-v1.md",
+    "agree": false
+   },
+   "note": "five equal candidates: both arms must put a question to the human"
+  },
+  {
+   "id": "l1_symbol",
+   "shape": "L1 grep intent (routed as a read)",
+   "intent": "where is filesys_glob defined",
+   "native": {
+    "round_trips": 1,
+    "exec_ms": 0.7,
+    "steps": [
+     {
+      "tool": "filesys_grep",
+      "ms": 0.7,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "987700b2c244"
+   },
+   "service": {
+    "round_trips": 1,
+    "wall_ms": 13.3,
+    "hops": 1,
+    "hop_ops": [
+     "filesys_glob"
+    ],
+    "decide_hops": 0,
+    "decide_ms": 0,
+    "status": "error",
+    "asked": "",
+    "error": "pair: no stage produced a choice",
+    "result_digest": "6eef6648406c"
+   },
+   "correct": {
+    "a": true,
+    "b": false,
+    "a_detail": "a grep hit on impl.py (got ['impl.py', 'impl.py', 'impl.py'])",
+    "b_detail": "a reference to service/ti/ops/filesys/impl.py",
+    "agree": false
+   },
+   "note": "a grep intent the disk template answers as a read \u2014 recorded as measured"
+  },
+  {
+   "id": "l2_research",
+   "shape": "L2 research (search -> fetch)",
+   "intent": "research llama.cpp quantization options for cpu inference",
+   "native": {
+    "round_trips": 2,
+    "exec_ms": 12814.8,
+    "steps": [
+     {
+      "tool": "web_search",
+      "ms": 11274.5,
+      "conf": 1.0,
+      "error": null
+     },
+     {
+      "tool": "web_fetch",
+      "ms": 1540.3,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "9e3fc462807d"
+   },
+   "service": {
+    "round_trips": 1,
+    "wall_ms": 56307.1,
+    "hops": 2,
+    "hop_ops": [
+     "decide_extract",
+     "web_search"
+    ],
+    "decide_hops": 1,
+    "decide_ms": 0.2,
+    "status": "error",
+    "asked": "",
+    "error": "pair: no stage produced a choice",
+    "result_digest": "6eef6648406c"
+   },
+   "correct": {
+    "a": true,
+    "b": false,
+    "a_detail": "one fetched page with >=200 chars of text",
+    "b_detail": "one fetched page with >=200 chars of text",
+    "agree": false
+   },
+   "note": "the pipeline shape: several hops inside one useTool call"
+  },
+  {
+   "id": "l2_reddit",
+   "shape": "L2 reddit digest",
+   "intent": "what does r/rust say about async runtimes",
+   "native": {
+    "round_trips": 1,
+    "exec_ms": 0.1,
+    "steps": [
+     {
+      "tool": "reddit_digest",
+      "ms": 0.1,
+      "error": "CliMissingBinary: reddit-research CLI unavailable: no project directory found; tried:\n  $HOME/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  $HOME/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree."
+     }
+    ],
+    "error": "reddit_digest: CliMissingBinary: reddit-research CLI unavailable: no project directory found; tried:\n  $HOME/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  $HOME/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
+    "result_digest": "6eef6648406c"
+   },
+   "service": {
+    "round_trips": 1,
+    "wall_ms": 2.5,
+    "hops": 0,
+    "hop_ops": [],
+    "decide_hops": 0,
+    "decide_ms": 0,
+    "status": "error",
+    "asked": "",
+    "error": "reddit-research CLI unavailable: no project directory found; tried:\n  $HOME/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  $HOME/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
+    "result_digest": "6eef6648406c"
+   },
+   "correct": {
+    "a": false,
+    "b": false,
+    "a_detail": ">=1 reddit thread",
+    "b_detail": ">=1 reddit thread",
+    "agree": true
+   },
+   "note": "the CLI is absent on this box: an arm-B error, not a task failure"
+  },
+  {
+   "id": "compound_walk",
+   "shape": "compound human intent (find + quote)",
+   "intent": "find the file named walk.py and tell me the max depth it enforces",
+   "native": {
+    "round_trips": 2,
+    "exec_ms": 8.5,
+    "steps": [
+     {
+      "tool": "filesys_glob",
+      "ms": 8.2,
+      "conf": 1.0,
+      "error": null
+     },
+     {
+      "tool": "filesys_read",
+      "ms": 0.3,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "4869af2932dd"
+   },
+   "service": {
+    "round_trips": 1,
+    "wall_ms": 12.4,
+    "hops": 1,
+    "hop_ops": [
+     "filesys_glob"
+    ],
+    "decide_hops": 0,
+    "decide_ms": 0,
+    "status": "error",
+    "asked": "",
+    "error": "pair: no stage produced a choice",
+    "result_digest": "6eef6648406c"
+   },
+   "correct": {
+    "a": true,
+    "b": false,
+    "a_detail": "the bytes of service/ti/ops/filesys/walk.py",
+    "b_detail": "the bytes of service/ti/ops/filesys/walk.py",
+    "agree": false
+   },
+   "note": "a two-clause ask a human really issues; the service answers it as one read"
+  }
+ ],
+ "aggregate": {
+  "pass_ms": 2000.0,
+  "round_trips": {
+   "a": 14,
+   "b": 9,
+   "saved": 5,
+   "saved_pct": 35.7
+  },
+  "wall_ms": {
+   "a": 40834.0,
+   "b": 74383.4,
+   "saved": -33549.4,
+   "saved_pct": -82.2
+  },
+  "tool_exec_ms": {
+   "a": 12834.0,
+   "b": 56383.4
+  },
+  "service_overhead_ms": 43549.4,
+  "decide_ms_on_b": 0.2,
+  "hops_on_b": 9,
+  "hops_per_round_trip": 1.0,
+  "correct": {
+   "a": 8,
+   "b": 3,
+   "of": 9
+  },
+  "decide_hops_on_b": 1,
+  "projected": {
+   "decide_ms_per_hop": 250.0,
+   "service_ms": 56633.2,
+   "wall_ms": 74633.2,
+   "saved_ms": -33799.2,
+   "saved_pct": -82.8
+  }
+ },
+ "sensitivity": [
+  {
+   "pass_ms": 250.0,
+   "round_trips": {
+    "a": 14,
+    "b": 9,
+    "saved": 5,
+    "saved_pct": 35.7
+   },
+   "wall_ms": {
+    "a": 16334.0,
+    "b": 58633.4,
+    "saved": -42299.4,
+    "saved_pct": -259.0
+   },
+   "tool_exec_ms": {
+    "a": 12834.0,
+    "b": 56383.4
+   },
+   "service_overhead_ms": 43549.4,
+   "decide_ms_on_b": 0.2,
+   "hops_on_b": 9,
+   "hops_per_round_trip": 1.0,
+   "correct": {
+    "a": 8,
+    "b": 3,
+    "of": 9
+   },
+   "decide_hops_on_b": 1
+  },
+  {
+   "pass_ms": 500.0,
+   "round_trips": {
+    "a": 14,
+    "b": 9,
+    "saved": 5,
+    "saved_pct": 35.7
+   },
+   "wall_ms": {
+    "a": 19834.0,
+    "b": 60883.4,
+    "saved": -41049.4,
+    "saved_pct": -207.0
+   },
+   "tool_exec_ms": {
+    "a": 12834.0,
+    "b": 56383.4
+   },
+   "service_overhead_ms": 43549.4,
+   "decide_ms_on_b": 0.2,
+   "hops_on_b": 9,
+   "hops_per_round_trip": 1.0,
+   "correct": {
+    "a": 8,
+    "b": 3,
+    "of": 9
+   },
+   "decide_hops_on_b": 1
+  },
+  {
+   "pass_ms": 1000.0,
+   "round_trips": {
+    "a": 14,
+    "b": 9,
+    "saved": 5,
+    "saved_pct": 35.7
+   },
+   "wall_ms": {
+    "a": 26834.0,
+    "b": 65383.4,
+    "saved": -38549.4,
+    "saved_pct": -143.7
+   },
+   "tool_exec_ms": {
+    "a": 12834.0,
+    "b": 56383.4
+   },
+   "service_overhead_ms": 43549.4,
+   "decide_ms_on_b": 0.2,
+   "hops_on_b": 9,
+   "hops_per_round_trip": 1.0,
+   "correct": {
+    "a": 8,
+    "b": 3,
+    "of": 9
+   },
+   "decide_hops_on_b": 1
+  },
+  {
+   "pass_ms": 2000.0,
+   "round_trips": {
+    "a": 14,
+    "b": 9,
+    "saved": 5,
+    "saved_pct": 35.7
+   },
+   "wall_ms": {
+    "a": 40834.0,
+    "b": 74383.4,
+    "saved": -33549.4,
+    "saved_pct": -82.2
+   },
+   "tool_exec_ms": {
+    "a": 12834.0,
+    "b": 56383.4
+   },
+   "service_overhead_ms": 43549.4,
+   "decide_ms_on_b": 0.2,
+   "hops_on_b": 9,
+   "hops_per_round_trip": 1.0,
+   "correct": {
+    "a": 8,
+    "b": 3,
+    "of": 9
+   },
+   "decide_hops_on_b": 1
+  },
+  {
+   "pass_ms": 5000.0,
+   "round_trips": {
+    "a": 14,
+    "b": 9,
+    "saved": 5,
+    "saved_pct": 35.7
+   },
+   "wall_ms": {
+    "a": 82834.0,
+    "b": 101383.4,
+    "saved": -18549.4,
+    "saved_pct": -22.4
+   },
+   "tool_exec_ms": {
+    "a": 12834.0,
+    "b": 56383.4
+   },
+   "service_overhead_ms": 43549.4,
+   "decide_ms_on_b": 0.2,
+   "hops_on_b": 9,
+   "hops_per_round_trip": 1.0,
+   "correct": {
+    "a": 8,
+    "b": 3,
+    "of": 9
+   },
+   "decide_hops_on_b": 1
+  },
+  {
+   "pass_ms": 10000.0,
+   "round_trips": {
+    "a": 14,
+    "b": 9,
+    "saved": 5,
+    "saved_pct": 35.7
+   },
+   "wall_ms": {
+    "a": 152834.0,
+    "b": 146383.4,
+    "saved": 6450.6,
+    "saved_pct": 4.2
+   },
+   "tool_exec_ms": {
+    "a": 12834.0,
+    "b": 56383.4
+   },
+   "service_overhead_ms": 43549.4,
+   "decide_ms_on_b": 0.2,
+   "hops_on_b": 9,
+   "hops_per_round_trip": 1.0,
+   "correct": {
+    "a": 8,
+    "b": 3,
+    "of": 9
+   },
+   "decide_hops_on_b": 1
+  }
+ ]
+}

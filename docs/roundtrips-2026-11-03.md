@@ -9,8 +9,10 @@ Reproduce: `python3 bench/roundtrips.py --serve --json bench/results/roundtrips-
 **The README's "one round trip for a whole pipeline" holds, but it is not the same claim as
 "cheaper".** On this task list the layer removes **2 of 14 round trips (14.3%)** and is
 **7.5 s slower** in wall time, because the decisions it makes cost more than the round trips
-they replace. The saving only turns positive when a model pass costs more than **~5.8 s** or
-the decision costs less than **~1 s**.
+they replace. The saving only turns positive when a model pass costs more than **~5.8 s** —
+equivalently, when the decision costs less than **~1.06 s** *at that pass cost*. The two
+thresholds are one point in (pass, decision) space, not two independent ones: at the
+headline 2 s pass the break-even is **~303 ms per decision**.
 
 That is a real result about where the layer belongs, and it is narrower than the spec
 implies. Two facts produce it:
@@ -61,8 +63,10 @@ Aggregate at `pass_ms = 2000`: **14 → 12 round trips (−2, −14.3%)**, A 28,
 B 35,662 ms (**B is 7,523 ms, 26.7% slower**), 43 hops across 12 round trips (3.58 per
 round trip), correctness 8/9 vs 7/9.
 
-`l2_reddit` fails on **both** arms — the `reddit-research` CLI is not vendored on this box —
-so it is not a comparison; it is recorded and excluded from the correctness count's meaning.
+`l2_reddit` fails on **both** arms — the `reddit-research` binary is installed on this box but
+`ops.reddit.cwd` points at `~/Documents/.../redditScrapingSearching`, which does not exist
+(the project lives under `~/mirror/...`), so the op cannot find the project directory it
+runs the CLI in — so it is not a comparison; it is recorded and excluded from the correctness count's meaning.
 `l1_symbol` is the one real disagreement and it is a routing defect, not a measurement
 artefact: a grep intent was answered as a file read, so B returned a file reference where A
 returned grep hits.
@@ -76,6 +80,11 @@ returned grep hits.
 14p + 138 = 12p + 11,661   ->   p = 5,762 ms per model pass
 ```
 
+The same line, solved for the other variable: `2p = 968 + 10C`, so at the measured
+`C = 1,055 ms` per decision the arms cross at `p = 5,762 ms`, and at `p = 2,000 ms` they
+cross at `C = 303 ms` per decision. The document's "~1 s per decision" is the first of
+those two points, not a threshold that holds at every pass cost.
+
 | pass ms | A wall | B wall | saving |
 |---:|---:|---:|---:|
 | 250 | 3.6 s | 14.7 s | −11.0 s (−302.9%) |
@@ -88,8 +97,47 @@ returned grep hits.
 The direction is fixed by the ratio of two measured costs — a round trip saves one model
 pass (0.25–10 s) and adds `service_ms_B − tool_ms_A = 11,523 ms` of service work. Only a
 slow model makes that trade. If the decision cost falls to the spec's 250 ms/decision figure
-(10 decide hops ≈ 2.5 s instead of 10.5 s), `service_ms_B` becomes ~3.6 s and the crossover
-moves to ~1.8 s per pass — at which point a 2 s pass breaks even (+1.9% projected).
+(10 decide hops ≈ 2.5 s instead of 10.5 s), `service_ms_B` becomes 3,606.7 ms (it is
+`11,661.8 − 10,555.1 + 2,500`) and the crossover moves to **1,734 ms** per pass — at which
+point a 2 s pass breaks even (+1.9% projected). Re-derived from
+`bench/results/roundtrips-2026-11-03.json`, not quoted: `(3,606.7 − 138.6) / 2 = 1,734.0`.
+
+## Reproduction status — re-run 2026-11-03 15:42 EST, worktree `p2-numbers` @ `ca7ffec`
+
+`python3 bench/roundtrips.py --serve --service-port 1121 --project-decide-ms 250 --json
+bench/results/repro2-roundtrips-2026-11-03.json` (exit 0, port released):
+
+| | published | re-run |
+|---|---:|---:|
+| arm A round trips | 14 | **14** |
+| arm B round trips | 12 | **9** |
+| A wall at `pass_ms=2000` | 28,139 ms | 40,834 ms |
+| B wall at `pass_ms=2000` | 35,662 ms | 74,383 ms |
+| hops on B | 43 | 9 |
+| correctness A / B | 8/9 · 7/9 | 8/9 · **3/9** |
+| decide hops on B | 10 | **0** |
+
+Arm A's round-trip count is reproduced exactly, because it is a property of the task list.
+Arm B's is not: with no `llama-server` reachable, every decision fell through to
+`pair: no stage produced a choice`, so the six L1/L2 tasks answered (wrongly) in one round
+trip instead of two and the decide term that this document is built on is **0 ms instead of
+10,555 ms**. The aggregate wall-time comparison is therefore not a comparison of the same
+quantity, and the direction it shows (−82.2% rather than −26.7%) is carried by a second
+difference: arm A's own `l2_research` tool work took 12,815 ms here against 119 ms in the
+recorded run, i.e. the live web CLIs are ~100× slower now than they were.
+
+What survives, and what does not:
+
+- **Survives:** arm A's 14 round trips, and the five single-call shapes that bound arm B at
+  1 round trip each. Those are properties of the task list.
+- **Survives:** the crossover arithmetic in the section above, re-derived from the recorded
+  JSON to the millisecond (5,761.6 against the stated 5,762).
+- **Not reproduced, needs a resource this worktree does not have:** the `14 → 12` saving.
+  It needs a decision backend to answer, and the six failing tasks show what arm B measures
+  when none can: one round trip and a wrong answer, which flatters the round-trip count.
+- **Does not survive:** every wall-time figure. They are `round_trips × 2,000 ms +` a
+  measured service cost, and the measured service cost is a property of which decisions were
+  reachable and how fast the network CLIs were that hour.
 
 ## What this says about the product
 
@@ -121,5 +169,6 @@ moves to ~1.8 s per pass — at which point a 2 s pass breaks even (+1.9% projec
    `pair` backend whose stage 2 has no key here. The measured `service_ms_B` is therefore a
    pessimistic floor, not a typical.
 5. **`l2_reddit` could not run on either arm.** It is in the table because leaving it out
-   would hide that the L2 reddit path is unexercisable on this machine, not because it
-   compared anything.
+   would hide that the L2 reddit path is unexercisable from the shipped config on this
+   machine, not because it compared anything. The blocker is configuration, not a missing
+   binary: `python3 -c "import shutil; print(shutil.which('reddit-research'))"` finds one.

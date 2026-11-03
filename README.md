@@ -56,12 +56,15 @@ pipeline. A decision costs ~0.15 s on the hardware that served the sweep below (
 the 150-row set), and zero generated tokens.
 
 **Whether that is cheaper is a trade, and it is measured.** Nine fixed tasks, two arms, the
-real service (`n=9` tasks): the layer removes **2 of 14 round trips (14.3%)** and is
-**7.5 s slower** on the CPU-only box, because its 10 decisions cost 10.56 s against 0.14 s
-of actual tool work. The two arms cross at **~5.8 s per model pass** or **~1 s per
-decision** — so the layer pays for compound intents on slow models with fast local
-decisions, and is pure overhead on single-call shapes. Full table, method and caveats:
-[`docs/roundtrips-2026-11-03.md`](docs/roundtrips-2026-11-03.md), raw
+real service (`n=9` tasks): the layer removes **2 of 14 round trips (14.3%)** — that part is
+counted, not modelled — and at an assumed 2 s agent pass it is **7.5 s slower**, because its
+10 decisions cost 10.56 s against 0.14 s of actual tool work. The two arms cross at
+**~5.8 s per model pass** (equivalently ~1.06 s per decision *at that pass cost*; at a 2 s
+pass the break-even decision is ~0.30 s). So the layer pays for compound intents on slow
+models with fast local decisions, and is pure overhead on single-call shapes. A re-run on a
+box with no reachable decision backend does not reproduce the round-trip saving or any
+wall-time figure — see the reproduction status in the source. Full table, method and
+caveats: [`docs/roundtrips-2026-11-03.md`](docs/roundtrips-2026-11-03.md), raw
 `bench/results/roundtrips-2026-11-03.json`.
 
 ## Architecture
@@ -119,7 +122,7 @@ Verified by running it, not by reading the spec:
 | `pair` (local, escalating to hosted) and `openrouter` | implemented and measured by the author; running them needs a local llama.cpp server, and the hosted stage needs `TI_OPENROUTER_API_KEY` — [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md) |
 | Bounded decision state (structural, not conventional) | works — digest ≤ 8 turns × 240 chars, state ≤ `conf.context.state_max_tokens` |
 | pi extension: `useTool`, `/ti` command, service spawn on session start | complete — `npm ci && npx tsc --noEmit` exits 0, and the contract check passes 11/11 schema cases plus 10/10 through a stubbed transport; see [`pi-extension/README.md`](pi-extension/README.md) |
-| Test suite | 679 tests, 349 subtests, no network, no model |
+| Test suite | 715 tests, 349 subtests, no network, no model |
 
 ### Honest gaps
 
@@ -292,7 +295,7 @@ notes are in [`pi-extension/README.md`](pi-extension/README.md).
 
 ```sh
 python3 -m pytest tests/ -q
-# 679 passed, 349 subtests passed
+# 715 passed, 349 subtests passed
 ```
 
 Runs from a fresh clone with nothing installed: each test file puts `service/` on

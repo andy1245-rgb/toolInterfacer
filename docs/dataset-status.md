@@ -15,6 +15,18 @@ attached to some hops, and the three things a router would need — a state, a
 candidate set, and the answer the model picked — are not in it. What it has is
 which op *ran*.
 
+**Re-checked 2026-11-03 15:48 EST against the live log, which has since grown.**
+The same rule, run over the current `service/logs/hops.jsonl` (**5,243 lines**, up
+from 1,398; `live.jsonl` unchanged at 13) yields **15** records instead of 14, and
+**all 19 observed records — 15 from `hops.jsonl`, 4 from `live.jsonl` — are still
+`filesys_glob`**. So the count is a snapshot that moves with the log and the
+finding does not: entropy is still zero and the file is still not a decision log.
+The per-op table below describes the 1,398-line snapshot; on the current 5,243
+lines the three kinds are `filesys_glob` 2,400, `decide_pick` 1,501,
+`filesys_read` 1,342, with 2,985 hops rejected as contradictory and 1,484 for no
+intent. `TI_DATASET_LOGS=<live log dir> TI_DATASET_OUT=/tmp/<dir> python3 -m
+tools.dataset ingest` reproduces both.
+
 Worse for training: because every surviving record is `filesys_glob`, a model
 trained on this file learns "answer `filesys_glob`" and nothing else. The label
 distribution is 14/14, entropy zero.
