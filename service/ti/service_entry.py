@@ -20,7 +20,17 @@ from .policy.confidence import gate_route
 from .planner.inspector import inspect
 
 
-def use_tool(body: dict[str, Any], dry: bool = False, on_ask: Any = None) -> dict[str, Any]:
+def use_tool(body: dict[str, Any], dry: bool = False, on_ask: Any = None,
+             ask_via_response: bool = False) -> dict[str, Any]:
+    """Run one useTool call. `ask_via_response` is the HTTP transport's channel.
+
+    Ask-back needs somewhere to send the question. An in-process caller passes
+    `on_ask`; http.api has only the response, so it sets `ask_via_response` and a
+    gated run reports `status:"need_input"` plus the question, which the
+    extension relays to the LLM (spec §3/§4). The caller then answers by calling
+    again with `params.answer`. Without either, a gate block degrades to a best
+    guess — the P1 behaviour, kept for direct callers and tests.
+    """
     from .ops.op_api import import_all
     import_all()
     intent = str(body.get("intent", "")).strip()
@@ -43,12 +53,14 @@ def use_tool(body: dict[str, Any], dry: bool = False, on_ask: Any = None) -> dic
         from .planner.templates import apply_template
         steps, final_key, notes = apply_template(meta["template"], intent, digest, params)
         return _run_steps(steps, {}, final_key, intent, params,
-                          on_ask=on_ask, log_hops=True, pre_assumptions=notes)
+                          on_ask=on_ask, log_hops=True, pre_assumptions=notes,
+                          ask_via_response=ask_via_response)
     # L1 disk-slot-fill bridge
     from .planner.templates.disk_lookup import build
     steps, final_key, notes = build(intent, digest, params)
     return _run_steps(steps, {}, final_key, intent, params,
-                      on_ask=on_ask, log_hops=True, pre_assumptions=notes)
+                      on_ask=on_ask, log_hops=True, pre_assumptions=notes,
+                      ask_via_response=ask_via_response)
 
 
 def _passthrough(params: dict[str, Any]) -> dict[str, Any]:
@@ -77,14 +89,29 @@ def _passthrough(params: dict[str, Any]) -> dict[str, Any]:
 
 def _run_steps(steps: list[Step], llm_params: dict[str, Any], final_key: str,
                intent: str, params: dict[str, Any], on_ask: Any, log_hops: bool,
-               pre_assumptions: list[str] | None = None) -> dict[str, Any]:
+               pre_assumptions: list[str] | None = None,
+               ask_via_response: bool = False) -> dict[str, Any]:
     bcfg = load()["budget"]
     budget = Budget(max_hops=int(bcfg["max_hops"]), max_asks=int(bcfg["max_asks"]),
                     max_seconds=float(bcfg["max_seconds"]))
     log = HopLog() if log_hops else None
+    pending: list[Question] = []
+    # The answer to a previous call's need_input: the caller restates the gap by
+    # naming the option it meant (`params.answer`), and that is a channel — the
+    # gate blocker re-writes the artifact with it exactly as a live ask would.
+    answer = params.get("answer")
+    if on_ask is None and answer not in (None, "", [], {}):
+        reply = answer if isinstance(answer, dict) else {"choice": str(answer)}
+        on_ask = lambda _q: reply  # noqa: E731 — a constant answer, not a callback
 
     def ask(q: Question) -> Any:
         if on_ask is None or budget.asks >= budget.max_asks:
+            # No channel inside this call. Over HTTP the transport is the channel,
+            # so the question is recorded for the response body instead of being
+            # dropped: a gate block on the wire is a need_input, not a silent
+            # degraded guess the LLM never gets to correct (spec §4).
+            if ask_via_response:
+                pending.append(q)
             from .policy.askback import MaxAsksReached
             raise MaxAsksReached()
         budget.use_ask()
@@ -110,7 +137,13 @@ def _run_steps(steps: list[Step], llm_params: dict[str, Any], final_key: str,
         out["confidence"] = conf
     if res.error is not None:
         out["error"] = res.error
-    if res.status == "need_input" and on_ask is None and not res.degraded:
+    if pending and res.status != "error":
+        # The question the run could not ask itself. `options` is what makes it
+        # answerable in one round trip: the LLM picks an id and calls again.
+        q = pending[0]
+        out["status"] = "need_input"
+        out["question"] = {"kind": q.kind, "question": q.question, "options": q.options}
+    elif res.status == "need_input" and on_ask is None and not res.degraded:
         out["question"] = {"kind": "choice", "question": "resolve step", "options": []}
     return out
 
@@ -125,9 +158,10 @@ def _route_conf(hops: list[dict[str, Any]]) -> float | None:
     support — an absent field is the honest encoding of an absent measurement.
 
     The `askback` hop is written before the ask is attempted, so its conf 0.0 is
-    a placeholder rather than a measurement — ask-back is not wired into the
-    HTTP path at all (use_tool is called without on_ask), which would make every
-    gated run report 0.0 and destroy the decide confidence it did reach. Only a
+    a placeholder rather than a measurement — on the HTTP path the ask travels in
+    the response body (ask_via_response), so no answer exists when the hop is
+    written, and counting it would make every gated run report 0.0 and destroy
+    the decide confidence it did reach. Only a
     resolved ask-back counts: `askback.resolved` (ASKBACK_CONF, the LLM-trusted
     answer) supersedes the hop for the artifact it re-wrote, because that hop
     scored a proposal the gate rejected, not the answer that was delivered.

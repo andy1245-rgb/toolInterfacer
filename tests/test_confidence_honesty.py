@@ -103,9 +103,19 @@ class MissingConfidenceTest(NoMeasurementTestCase):
         # The run did measure a pick before the read failed. The measurement is on
         # the hop, where it is attributed to the step that made it; the envelope
         # describes a result that does not exist, so it claims nothing.
+        #
+        # The read has to fail *for its own reason*: an unreadable file, not the
+        # caller-frame bug that used to make every relative read fail, because
+        # that bug made this test pass for the wrong reason.
         with tempfile.TemporaryDirectory() as tmp:
-            pathlib.Path(tmp, "present_but_not_picked.txt").write_text("x", encoding="utf-8")
-            out = use_tool({"intent": "read the file we discussed", "digest": {"cwd": tmp}})
+            target = pathlib.Path(tmp, "present_but_not_picked.txt")
+            target.write_text("x", encoding="utf-8")
+            target.chmod(0o000)
+            try:
+                out = use_tool({"intent": "read the file we discussed",
+                                "digest": {"cwd": tmp}})
+            finally:
+                target.chmod(0o600)
         self.assertEqual(out["status"], "error", out)
         self.assertTrue(out["hops"])
         self.assertNotIn("confidence", out)

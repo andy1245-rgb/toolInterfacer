@@ -106,9 +106,16 @@ def _describe(candidates: list[Any]) -> dict[str, str]:
 def run_extract(params: dict[str, Any], store: Any) -> tuple[str, Any, float | None]:
     src = params.get("source_artifact")
     source = store.try_get(src) if src else None
-    ctx = source.data if source is not None else (params.get("intent_context") or "")
+    ctx = source.data if source is not None else {}
+    # The extractor mines the payload for literals, and the intent is payload: a
+    # step with no source artifact (research's `queries`) otherwise handed it
+    # nothing but its own instruction text ("Extract 3-6 search queries ..."),
+    # which has no topic in it. `intent_context` is the runner's per-step intent
+    # (see core/runner.run_plan), declared optional so it lands as a real arg.
+    intent = params.get("intent_context")
+    payload: Any = {"intent": intent, "source": ctx} if intent else ctx
     backend = resolve_backend("extract")
-    state = guard_state({"context": ctx, "instructions": params["instructions"]})
+    state = guard_state({"context": payload, "instructions": params["instructions"]})
     values = backend.extract(state,
                              {"type": "value_list", "count": int(params.get("count", 4))})
     conf = _measured_conf(values)
@@ -147,6 +154,12 @@ def run_pick(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
                          f"{params['source_artifact']!r} is empty")
     chosen = _rank(raw, params.get("intent_context"))[:_max_candidates()]
     criteria = _describe(chosen)
+    if not criteria:
+        # Nothing to choose from is not a decision the backend can make: asking it
+        # anyway made d1 abstain and the pair surface "pair: no stage produced a
+        # choice" for an empty directory (observed live). Name the real cause.
+        raise ValueError(f"decide_pick: {params['source_artifact']!r} has no candidates "
+                         "to choose from — the previous step found nothing")
     backend = resolve_backend("choice")
     # The candidate list travels once, in `criteria` (the backends render it as the
     # option set / the questions.criteria block). Repeating it in the state doubled

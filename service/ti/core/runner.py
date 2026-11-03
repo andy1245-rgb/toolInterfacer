@@ -278,14 +278,21 @@ def _handle_block(gb: GateBlocked, step: Step, store: ArtifactStore,
     """
     from ..policy.askback import MaxAsksReached, Question
     src_art = None
-    # choose the most informative artifact of the plan so far for choice-building
-    arts = [a for a in store.all().values() if a.kind in ("path_list", "picked_items", "url_list")]
+    # The options are the *enumeration* the blocked step was choosing from, never
+    # the choice itself. The last artifact of the three kinds used to win, and on a
+    # blocked pick that is the pick — picked_items holds exactly one item — so the
+    # question offered a single option: the very answer the gate had just rejected,
+    # which is not answerable (observed live: "conf 0.26 below gate" plus one
+    # option). A pick is only the fallback for a block with no enumeration left.
+    arts = [a for a in store.all().values() if a.kind in ("path_list", "url_list")]
+    if not arts:
+        arts = [a for a in store.all().values() if a.kind == "picked_items"]
     if arts:
         src_art = arts[-1]
     options: list[dict[str, Any]] = []
     if src_art and isinstance(src_art.data, list):
         for it in src_art.data[:12]:
-            options.append({"id": str(it if not isinstance(it, dict) else it.get("id", it)), "desc": ""})
+            options.append({"id": _option_id(it), "desc": ""})
     ask_hop: dict[str, Any] = {"step": step.id, "op": "askback", "ms": 0.0,
                               "conf": 0.0, "ask_available": False,
                               "artifact_summary": gb.what}
@@ -311,6 +318,21 @@ def _handle_block(gb: GateBlocked, step: Step, store: ArtifactStore,
         return True
     assumptions.append(f"{step.id}: asked, answer not applicable: {str(pick)[:120]}")
     return False
+
+
+def _option_id(item: Any) -> str:
+    """A candidate's answerable id — its path, its URL, or its own label.
+
+    A URL candidate is a dict ({title, url, snippet, ...}), and the id used to be
+    str(item): a 400-character Python dict repr that no caller could answer with.
+    """
+    if not isinstance(item, dict):
+        return str(item)
+    for key in ("id", "url", "path", "name", "title"):
+        value = item.get(key)
+        if value:
+            return str(value)
+    return str(item)
 
 
 def _summarize(kind: str, data: Any) -> str:
