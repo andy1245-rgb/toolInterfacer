@@ -116,7 +116,7 @@ Verified by running it, not by reading the spec:
 | HTTP service: `GET /health`, `POST /v1/useTool`, `POST /v1/plan` | works — see the quickstart below |
 | L0 passthrough (caller fully specifies the op) | works — validates params, executes, returns with no decision hop (1–18 ms measured, `docs/roundtrips-2026-11-03.md`) |
 | L1 disk slot-fill (glob candidates → `decide_pick` → read) | works end to end model-free via `bench/replay.py` |
-| L2 templates: `research` (queries → search → pick → fetch+verify loop → optional reddit cross-check → digest) and `reddit_digest` | `research` runs end to end model-free via `bench/replay.py` and returns a sourced digest; `reddit_digest` needs the reddit project (see gaps) |
+| L2 templates: `research` (queries → search → pick → fetch+verify loop → optional reddit cross-check → digest) and `reddit_digest` | `research` runs end to end **offline** via `bench/demo.py` — scene 3 pins the decisions to the fixture backend and both web CLIs to `tests/data/fake_cli.py`, and assembles a digest over the four stubbed sources. `bench/replay.py` runs the same plan against the *real* CLIs, so it needs them configured and takes minutes, not milliseconds. `reddit_digest` needs the reddit project (see gaps) |
 | Nine registered ops | `decide_extract`, `decide_pick`, `digest_assemble`, `filesys_glob`, `filesys_grep`, `filesys_read`, `reddit_digest`, `web_fetch`, `web_search` |
 | Decide backends and the pre-gate → cache → backend fast path | works — `heuristic_micro` pre-gate and the 256-entry decision cache are on by default |
 | `pair` (local, escalating to hosted) and `openrouter` | implemented and measured by the author; running them needs a local llama.cpp server, and the hosted stage needs `TI_OPENROUTER_API_KEY` — [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md) |
@@ -142,7 +142,12 @@ These are not wired, and the README would be lying if it did not say so:
   mid-request, so `use_tool(..., ask_via_response=True)` returns `status: "need_input"`
   with the candidate list as answerable options, and the caller resolves it by calling
   again with `params.answer`. A direct caller that passes `on_ask` gets the callback form
-  instead; `tests/test_loop.py` and the live probe both exercise it.
+  instead; `tests/test_loop.py` covers the callback form and
+  `tests/test_live_e2e_regressions.py` the over-HTTP one (`need_input`, then the answer
+  completing the call). `bench/live_e2e.py` carries the same ask-then-answer case against
+  a live stack and does send the service token now, but its one recorded run predates
+  that — every POST was refused `401` (`docs/live-e2e-2026-11-03.md`), so it is no
+  evidence for this line yet.
 - **`reddit_digest` cannot run out of the box.** The op is written against the
   `reddit-research` CLI contract but that project is not vendored, and its parser was
   inferred from the skill's docs rather than observed. `docs/ops.md` §6.
@@ -315,10 +320,13 @@ One test is a policy guard rather than a behaviour test:
 `tests/test_no_personal_paths.py` fails the suite if a machine-personal absolute path
 appears anywhere in source, config, tests or docs. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-CI runs the suite on Python 3.10 and 3.12 (`.github/workflows/ci.yml`), typechecks the
-extension on Node 22 and 24, and builds the wheel, asserting the four service modules it
-names — `ti/http/api.py`, `ti/decide/resolve.py`, `ti/ops/op_api.py`,
-`ti/conf/defaults.json` — are inside it.
+CI (`.github/workflows/ci.yml`) runs the suite on Python 3.10 and 3.12, runs
+`bench/run.py selftest` and `bench/demo.py` offline, typechecks the extension on Node 22
+and 24, and builds the wheel. The wheel check asserts a *set*, not a list of names: every
+`.py` and `.json` under `service/ti` has to be inside it, nothing else may be, and
+`ti/conf/defaults.json` is asserted separately. It then installs that wheel with
+`--no-index` into a clean venv and starts `ti-serve` for a `/health` check — 9 ops and
+`conf: true`, which is `defaults.json` resolving out of the wheel.
 
 ## Benchmarks
 

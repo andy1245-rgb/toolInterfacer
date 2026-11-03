@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""P1 replay bench — model-free end-to-end run through the real engine.
+"""P1 replay bench — run one plan through the real engine and print its receipt.
 
-Runs a plan (fixture decide backend, zero network) and prints hops,
-confidences, and wall time.
+It uses the **configured** backend (default `pair`), so it is model-free only
+once `TI_CONF_OVERLAY` points the choice decision at `fixture` (README
+Quickstart), and it makes no network call only for a plan with no web op: an L2
+`research` plan runs the real `web_search` / `web_fetch` CLIs against live pages
+and takes minutes. The all-offline run is `bench/demo.py`, which pins the
+decisions *and* both CLIs (`tests/data/fake_cli.py`).
 
 Usage: python bench/replay.py [--intent "read the file we discussed"]
        python bench/replay.py --plan   # dry: resolved steps only

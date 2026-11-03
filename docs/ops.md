@@ -13,8 +13,13 @@ below was read off the live source rather than executed, it says so.
 ## 1. Invocation
 
 - **An argv list, never a shell string.** A query or URL is one element of the
-  list, so `;`, `&&` and `$(...)` are data. `--` precedes the positional so a
-  query that starts with `-` is not read as a flag.
+  list, so `;`, `&&` and `$(...)` are data. `web_search` and `web_fetch` put `--`
+  before the positional, so a query or URL that starts with `-` is not read as a
+  flag. `reddit_digest` is the exception: it builds
+  `["search", query, "--json", "--limit", …]` with no `--` separator
+  (`_argv` in `service/ti/ops/reddit/digest.py`), so a leading `-` in that query
+  is taken as an option. Left as it is because changing the argv is a behaviour
+  change; written here so the guarantee is not read as covering all three ops.
 - **Launcher.** `cli.launcher(script)` returns the argv prefix for a configured
   script: an executable script with a sane shebang execs as itself; anything
   else runs under the service's own interpreter. A CRLF-terminated shebang also
@@ -208,9 +213,13 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 ```
 
 Two tests replay the recorded devskills fixtures as a read-only cross-check of
-the parsers (`TI_DEVSKILLS_FIXTURES`, default
-`~/toolInterfacerExtras/devskills`); they skip when that tree is absent. Nothing
-in the suite touches the network or a live skill CLI.
+the parsers: `tests/test_ops_web.py::DevSkillsFixtureTest` reads
+`tests/data/devskills/` — repo-relative and shipped with the tree
+(`TI_DEVSKILLS_FIXTURES` overrides it) — and both **pass** in a fresh clone; they do
+not skip. Each carries a `skipUnless` on its own fixture file, so the skip only
+fires if `TI_DEVSKILLS_FIXTURES` points at a tree missing that file, and it names
+the path it looked for. Nothing in the suite touches the network or a live skill
+CLI.
 
 ## 9. The HTTP status contract
 

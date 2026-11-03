@@ -16,10 +16,11 @@
   latency distribution (docs/decision-pair-vs-hosted.md). A `llama-server` arm
   asserts `/props` through `model_guard` **before** any probe traffic and aborts
   non-zero on mismatch, and an arm that cannot say which model it expects is
-  refused unless `--expect-model` names one — the guard
-  docs/model-sweep-consolidated.md (CORRECTION) exists for. `warmup.calls_discarded`
-  states how many throwaway calls were dropped; error rows are excluded from the
-  latency distribution and counted.
+  refused unless `--expect-model` names one — the guard exists for exactly the
+  failure the CORRECTION in `docs/model-sweep-consolidated.md` records, a lane
+  labelled for one model that a server was answering with another.
+  `warmup.calls_discarded` states how many throwaway calls were dropped; error
+  rows are excluded from the latency distribution and counted.
 
   A report (`schema: ti-bench/1`) carries per-row `id`/`band`/`expected`/`chosen`/
   `confidence`/`latency_ms`/`real_call`, per-band accuracy, overall accuracy with
@@ -62,8 +63,16 @@
   never crosses a shell command line. `--print-argv` emits the argv as JSON.
 - `lane.sh` — one full lane on bench-host: serve via `serve_lane.py`, `/props`
   assertion, probe, teardown.
-- `baseline.py` (P4) — scripted LLM-driver baseline for the research template
-  comparison.
+- `roundtrips.py` + `roundtrip_tasks.py` — the scripted LLM-driver baseline the P4
+  acceptance criterion asks for: two arms over one fixed task list, the agent's own
+  tool calls (arm A, no LLM: the round-trip count is a property of the shape, the
+  per-pass cost is a stated number you can replace) against one `useTool` call (arm
+  B), in round trips and wall time. Recorded: `docs/roundtrips-2026-11-03.md`.
+- `classical_baseline.py` — the non-model baseline: re-runs the sibling
+  benchmark's TF-IDF + linear-SVM protocol in-repo with the provenance, overlap,
+  near/far and template-grouped CV checks it omitted, then scores the same backend
+  on this repo's 150-row set. Every number in
+  `docs/classical-baseline-2026-11-03.md` comes from it.
 
 ## `results/` — recorded evidence, with the machine redacted
 
