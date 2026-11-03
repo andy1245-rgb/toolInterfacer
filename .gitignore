@@ -19,3 +19,6 @@ var/dataset/
 # machine-specific bench env (see bench/lane.env.example)
 bench/lane.env
 build-vk/
+
+# distill pipeline output: generated rows, labels, audit CSVs (never committed)
+var/
