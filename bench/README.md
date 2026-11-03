@@ -73,6 +73,59 @@
   near/far and template-grouped CV checks it omitted, then scores the same backend
   on this repo's 150-row set. Every number in
   `docs/classical-baseline-2026-11-03.md` comes from it.
+- `or_bench.py` — the hosted sweep: one chat completion per utterance per model
+  against OpenRouter, an accuracy pass at bounded concurrency plus a strictly
+  sequential latency pass (the concurrent pass's timings are never reported as
+  latency). Prompt material is the frozen probe, imported from `ti_bench.prompts`,
+  so accuracy is comparable to `live_probe.py`'s local runs. It is **not a local
+  lane**: it needs an `OPENROUTER_API_KEY` (read only from the environment, never
+  logged, never in argv) and it spends real money, which is why the two spend caps
+  exist. A run is one labelled *configuration* and the sweep dimensions multiply:
+  `--providers` (`Relace`, `Wafer`, …, `sort:price`, `order:Relace+Wafer`),
+  `--variants` (`full`, `compact`), `--answers` (`json`, `json-noconf`, `label`,
+  `letter`), `--reasoning` (`default`, `off`, `minimal`, `exclude`). Each row
+  records the endpoint that actually answered (`provider`), a `fallback` flag when
+  a requested endpoint list was not honoured, and the `cached_tokens` /
+  `reasoning_tokens` / `cost_details` split, so cost is attributed to the endpoint
+  that served it rather than assumed. A pin with `only` fails closed by default
+  (`--allow-fallbacks` to relax it) — a silent fallback would otherwise measure a
+  different endpoint than the one under test. `--sample N` takes a deterministic
+  stride sample across the whole set; prefer it to `--limit N`, which is the first
+  N rows and is band-skewed (the first 50 are all t1). `--model-max-tokens MODEL=N`
+  raises the cap for a reasoning model whose JSON answer would otherwise truncate,
+  and `--model-budget-usd` / `--budget-usd` stop a config or the whole run on
+  provider-reported spend — **both default to 0 (off)**, because rows dropped by a
+  cap leave the accuracy denominator and a capped run must not read as a bad one;
+  when a cap does fire the entry records `budget_stop`, `skipped` and `n_attempted`.
+  Per-endpoint prices for `z-ai/glm-5.3-flash` live in `PROVIDERS`; they are what is
+  billed, unlike the catalogue block, which is a fallback only.
+- `prefilter.py` — the deterministic pre-filter in front of a hosted routing call:
+  15 regex rules over the utterance, tiered by how much of the surface form has to
+  line up, first match wins. No model, no network, no state. It asserts no accuracy
+  of its own; the rules are ranked by measured precision elsewhere.
+- `cost_curve.py` — call-reduction cost curve from a recorded `or_bench.py` run:
+  applies `prefilter.py` to every row, ranks rules by measured precision, and
+  reports coverage / pre-filter precision / blended accuracy / $ per 1k decisions
+  for every prefix of the ranking, plus the 20/40/60% points. Cost per point is
+  measured per-decision cost × the calls the cascade still makes. Reads only a
+  committed result file, so it runs offline.
+
+See `docs/cost-reduction-glm-flash.md` for what those levers actually bought, and
+for which raw result files were merged with it and which were not.
+
+## The hosted sweep: three branches, one audit, one port
+
+`docs/model-sweep-consolidated.md` is about the **local** lane sweep
+(`live_probe.py` + `band_summary.py`, both here). The **hosted** sweep
+(`or_bench.py`, a different experiment on the same 150 frozen rows) was authored on
+three unmerged branches cut from the same base commit, and only the parts below
+were ported. Recorded so the next reader does not have to re-decide it.
+
+| branch | what it was | verdict |
+|---|---|---|
+| `bench/qwen-family` | the base commit alone: `or_bench.py` at 508 lines (22,486 B), a 12-line README bullet, two raw runs (`or-bench-2026-10-26.json` 482,469 B at 512 tokens, `-run2` 509,114 B at 2048). 33,245 insertions. | **discarded — superseded.** Its script is the ancestor of both continuations and the ported `or_bench.py` reproduces its default prompt byte for byte, so it carries nothing the port lacks. Its two runs are the truncated-at-512 baseline that the 2048 run was made to replace. |
+| `bench/or-models` | base + `da16e7f` "provider pinning, prompt compaction and minimal reasoning, measured": the script grown to 38,915 B, `prefilter.py` (4,560 B), `cost_curve.py` (7,391 B), 15 raw runs totalling 4,535,614 B, and `docs/cost-reduction-glm-flash.md` (15,362 B). 20 files, 147,451 insertions. | **ported: script + both modules + the doc + one result file.** The 147k insertions are 4,535,614 B of raw model output; committing all of it would have added 78% to a 5,631,649-byte repository. Its headline numbers reproduce against the merged files (see the doc's corrections section for the two that do not). |
+| `bench/or-models-2` | base + `095f0ef` "record the serving provider, cap tokens per model, and stop on spend": the script at 28,865 B, two raw runs (457,240 B and 114,609 B). 6 files, 52,070 insertions. | **complementary, partly ported.** A divergent continuation of the same base, not a stack: it has the spend ledger and per-model token cap that `or-models` lacks, and lacks the pinning / variant / answer / reasoning axes that `or-models` has. Both features were hand-merged into the ported script, with the run-wide cap hoisted out of the per-model loop (upstream it was constructed inside the loop, so `--budget-usd` reset for every model and never bounded the run) and **both caps defaulted to 0 instead of $0.50/$2.00** so the default run is unchanged. Its provider recording is redundant with `or-models`' `providers_served`. Its two result files were not merged: `run3`'s `meta/muse-wonder` headline accuracy of 98.9% is measured on **90 of 150 rows with zero `t3` rows**, because a $0.50 per-model cap stopped the pass — the JSON discloses this in `skipped` and `budget_stop`, but the accuracy field alone does not. |
 
 ## `results/` — recorded evidence, with the machine redacted
 
