@@ -16,8 +16,15 @@ from ..conf import load
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         if self.path == "/health":
+            # The decide map is on the wire because a live probe has to be able to
+            # say which backend answered, not just that *a* service did: "done"
+            # from the replay fixture and "done" from d1-3B are indistinguishable
+            # in a useTool body, and the fixture one proves nothing about the model.
+            decide = load().get("decide") or {}
             self._json({"status": "ok", "ops": all_ops(),
-                        "conf": bool(load())})
+                        "conf": bool(load()),
+                        "decide": dict(decide.get("backends_in_use") or {}),
+                        "cascade": bool((decide.get("cascade") or {}).get("enabled", False))})
         else:
             self._json({"error": "not found"}, 404)
 
@@ -34,7 +41,10 @@ class Handler(BaseHTTPRequestHandler):
     def _use_tool(self, body: dict, dry: bool = False) -> dict:
         from ..service_entry import use_tool
         try:
-            return use_tool(body, dry=dry)
+            # ask_via_response: this transport's only channel to the caller is the
+            # response body, so a gate the run cannot settle comes back as
+            # need_input + question rather than as a silent degraded guess.
+            return use_tool(body, dry=dry, ask_via_response=not dry)
         except Exception as exc:  # noqa: BLE001 — surface as structured error, not a 500 hang
             return {"status": "error", "error": str(exc), "hops": []}
 

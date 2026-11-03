@@ -1,0 +1,2 @@
+boot ok
+ready in 3s

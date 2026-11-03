@@ -16,11 +16,11 @@ def apply(intent: str, digest: dict) -> list[Step]:
     k = int(cfg["pick_top_k"])
     slot_gate = float(load()["policy"]["gate_slot"])
     steps: list[Step] = [
-        Step(id="queries", op="__decide_extract__",
+        Step(id="queries", op="decide_extract",
              params={"instructions": "Extract 3-6 search queries for the intent."}),
         Step(id="hits", op="web_search", inject={"queries": "queries"},
              params={}),
-        Step(id="picked", op="__decide_pick__",
+        Step(id="picked", op="decide_pick",
              params={"source_artifact": "hits", "instructions": "Pick the top relevant URLs.",
                      "top_k": k}),
         Step(id="pages", op="web_fetch", inject={"urls": "picked"},

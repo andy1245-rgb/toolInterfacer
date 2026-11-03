@@ -77,9 +77,20 @@ def run(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
     return "path_list", hits, 1.0
 
 
-@op("filesys_read", kind="file_content", required=["path"], optional=["max_lines"])
+@op("filesys_read", kind="file_content", required=["path"], optional=["max_lines", "cwd"])
 def run(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
-    path = os.path.expanduser(params["path"])
+    """Read one file. A relative `path` resolves against `cwd`, never the process's.
+
+    The service is spawned with its own cwd (lifecycle.ts pins it to the repo root)
+    while every path in a request is in the *caller's* frame: filesys_glob reports
+    hits relative to the digest cwd, so a picked name read against the service's
+    own cwd raised ENOENT for every session whose cwd was not the service's
+    (observed live: `[Errno 2] No such file or directory: 'notes.md'`).
+    """
+    path = os.path.expanduser(str(params["path"]))
+    cwd = params.get("cwd")
+    if cwd and not os.path.isabs(path):
+        path = os.path.join(os.path.expanduser(str(cwd)), path)
     limit = int(params.get("max_lines", 2000))
     with open(path, "r", encoding="utf-8", errors="replace") as fh:
         lines = [next_l for idx, next_l in enumerate(fh) if idx < limit]

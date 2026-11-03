@@ -46,10 +46,12 @@ def build(intent: str, digest: dict,
              params={"source_artifact": "candidates",
                      "instructions": "Which candidate file matches the intent best?",
                      "top_k": 1}),
+        # `cwd` is the frame the glob reported its hits in: the read resolves the
+        # picked relative path against the caller's directory, not the service's.
         Step(id="content", op="filesys_read", inject={"path": "picked_file"},
              gate=Gate(pre=[{"artifact": "picked_file", "kind": "conf_gte",
                              "min": float(cfg["gate_slot"])}]),
-             params={}),
+             params={"cwd": str(digest.get("cwd", "."))}),
     ], "content", []
 
 

@@ -91,11 +91,15 @@ class LoopTest(unittest.TestCase):
             load()["decide"]["backends_in_use"] = conf_backup
 
     def test_runner_error_is_surfaced_in_response(self):
-        # A one-file dir whose file is picked, then read by a relative path that does not
-        # resolve from the process cwd — the op raises, the runner converts it to
-        # status "error" carrying the message, and service_entry must forward that message.
+        # A one-file dir whose file is picked and then cannot be read — the op raises,
+        # the runner converts it to status "error" carrying the message, and
+        # service_entry must forward that message. The entry is a dangling symlink so
+        # the read fails for its own reason: a picked relative path now resolves
+        # against the digest cwd (ops/filesys/impl.py), which is the caller's frame,
+        # so "relative and therefore unreadable" is no longer a way to make this fail.
         with tempfile.TemporaryDirectory() as tmp:
-            pathlib.Path(tmp, "errprop_missing_xyz.txt").write_text("x", encoding="utf-8")
+            pathlib.Path(tmp, "errprop_missing_xyz.txt").symlink_to(
+                pathlib.Path(tmp, "errprop_gone_xyz.txt"))
             out = use_tool({"intent": "read the file we discussed",
                             "digest": {"cwd": tmp}})
         self.assertEqual(out["status"], "error", out)

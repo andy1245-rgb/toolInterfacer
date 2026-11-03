@@ -1,0 +1,98 @@
+{
+  "timestamp": "2026-11-03T03:08:45-0500",
+  "service": "http://127.0.0.1:1114",
+  "model_url": "http://127.0.0.1:8099",
+  "served_model": {
+    "path": "/home/andrew/toolInterfacer/models/d1-3B-Q4_K_M.gguf",
+    "basename": "d1-3B-Q4_K_M.gguf",
+    "ftype": "Q4_K - Medium",
+    "build_info": "b1-f74e2fa",
+    "sha": "",
+    "size": null
+  },
+  "decide": {
+    "choice": "pair",
+    "noul": "fixture",
+    "extract": "rule_extract"
+  },
+  "ops": [
+    "decide_extract",
+    "decide_pick",
+    "filesys_glob",
+    "filesys_grep",
+    "filesys_read",
+    "reddit_digest",
+    "web_fetch",
+    "web_search"
+  ],
+  "cases": [
+    {
+      "case": "l0_passthrough_read",
+      "status": "done",
+      "confidence": 1.0,
+      "wall_ms": 19.3,
+      "hops": [
+        "filesys_read"
+      ],
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "l1_slot_fill",
+      "status": "done",
+      "confidence": 0.9538697186583452,
+      "wall_ms": 7730.0,
+      "hops": [
+        "filesys_glob",
+        "decide_pick",
+        "filesys_read"
+      ],
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "l2_compound_research",
+      "status": "need_input",
+      "confidence": 0.2510329390725592,
+      "wall_ms": 43519.5,
+      "hops": [
+        "decide_extract",
+        "web_search",
+        "decide_pick",
+        "askback",
+        "web_fetch"
+      ],
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "ambiguous_needs_input",
+      "status": "need_input",
+      "confidence": 0.26100475883721175,
+      "wall_ms": 9279.0,
+      "hops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "filesys_read"
+      ],
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "ambiguous_answer_resolves",
+      "status": "done",
+      "confidence": 0.9,
+      "wall_ms": 6.6,
+      "hops": [
+        "filesys_glob",
+        "decide_pick",
+        "askback",
+        "askback.resolved",
+        "filesys_read"
+      ],
+      "ok": true,
+      "problems": []
+    }
+  ]
+}

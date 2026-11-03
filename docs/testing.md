@@ -54,3 +54,19 @@ Latency on this box (d1-3B Q4, CPU): **~1.7 s per routing decision**, ~50 ms on 
 decision-cache hit. Prefill is ~19 ms/token, so *state size is the latency knob* —
 which is why `decide.max_candidates` defaults to 6 and the candidate list is sent
 once (criteria), never duplicated into the state. Raising it to 64 costs ~31 s.
+
+## Proving the wire, not just the engine
+
+`tests/` drives the runner with the fixture backend, so it cannot fail on a break
+in HTTP ingress, the decide wall, or the response contract. `bench/live_e2e.py`
+can:
+
+```
+python3 bench/live_e2e.py --serve        # start llama-server + service, probe, tear down
+python3 bench/live_e2e.py --skip-l2      # attach to what is running (the L2 case drives the web CLIs)
+```
+
+It asserts the served model via `/props` before any traffic, refuses to report
+success when `/health` says the choice backend is a replay fixture, and exits
+non-zero when the stack is unreachable. See `docs/live-e2e-2026-11-03.md` for the
+last run, its PASS/FAIL table, and the defects it found.
