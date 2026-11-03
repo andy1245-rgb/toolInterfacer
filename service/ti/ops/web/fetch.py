@@ -11,13 +11,16 @@ mode would cost the artifact-to-URL correlation that is the whole point here.
 
 Data is one entry per input URL, in input order:
 
-    {"url": str, "content": str, "method": str | None, "error": str | None}
+    {"url": str, "content": str, "method": str | None, "degraded": bool,
+     "error": str | None}
 
 A failed page is skipped in the only sense a downstream consumer cares about —
 ``content`` is ``""`` — but it keeps its entry and its error, because "this page
 failed" and "this URL was never fetched" must not look alike. The CLI signals a
 total failure by *omitting* ``text``, not by setting ``error``; ``degraded`` (a
-meta-description shell extracted instead of the page) is passed through as-is.
+meta-description shell extracted instead of the page) travels as a flag on the
+page *and* as half conf, because a digest that grades its sources needs the fact
+after the conf has been averaged away.
 
 conf is the mean over URLs of 1.0 (content present and not degraded), 0.5
 (degraded) and 0.0 (nothing usable). A page that failed is data the picker and
@@ -85,6 +88,7 @@ def _page(url: str, doc: dict[str, Any]) -> tuple[dict[str, Any], float]:
     page = {"url": str(doc.get("url") or url),
             "content": content,
             "method": doc.get("source"),
+            "degraded": bool(doc.get("degraded")),
             "error": str(error) if error else None}
     if not content:
         return page, 0.0
