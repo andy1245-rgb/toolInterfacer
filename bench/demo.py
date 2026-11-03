@@ -42,6 +42,16 @@ GREEN, YELLOW, RED, BLUE, CYAN = "\033[32m", "\033[33m", "\033[31m", "\033[34m",
 USE_COLOUR = sys.stdout.isatty() and os.environ.get("NO_COLOR") is None
 
 
+PACE = 0.0
+
+
+def _beat(seconds: float | None = None) -> None:
+    """A pause for a recording. Zero unless --pace asked for one."""
+    delay = PACE if seconds is None else seconds
+    if delay > 0:
+        time.sleep(delay)
+
+
 def _c(text: str, colour: str) -> str:
     return f"{colour}{text}{RESET}" if USE_COLOUR else text
 
@@ -94,6 +104,7 @@ class Service:
                # defaulting to the cwd — which is this repo, so an unset value
                # leaves a `combined.json` behind on every run.
                "FAKE_CLI_OUT": str(self.tmp / "cli")}
+        (self.tmp / "cli").mkdir(parents=True, exist_ok=True)
         self.proc = subprocess.Popen([sys.executable, "-m", "ti.http.api"], cwd=str(ROOT),
                                      env=env, stdout=subprocess.DEVNULL,
                                      stderr=subprocess.DEVNULL, start_new_session=True)
@@ -202,12 +213,14 @@ def _result_preview(out: dict, width: int = 300) -> str:
 def scene(number: int, title: str, intent: str, body: dict, service: Service,
           note: str) -> dict:
     print()
+    _beat()
     print(_b(f"scene {number} — {title}"))
     print(f"  intent  {_c(repr(intent), CYAN)}")
     print(_d(f"          {note}"))
     out, wall = service.call(body)
 
     print()
+    _beat()
     _hop_table(out.get("hops") or [])
     print()
     status = out.get("status", "?")
@@ -226,6 +239,7 @@ def scene(number: int, title: str, intent: str, body: dict, service: Service,
         for option in (q.get("options") or [])[:4]:
             print(_d(f"      · {option.get('id')}"))
     if out.get("result") is not None:
+        _beat()
         print(f"  result {_result_preview(out)}")
     return out
 
@@ -235,10 +249,15 @@ def main() -> int:
     ap.add_argument("--live", action="store_true",
                     help="use the shipped config: the configured decision model and the "
                          "real web/reddit CLIs (needs a model server and configured CLIs)")
+    ap.add_argument("--pace", type=float, default=0.0, metavar="SECONDS",
+                    help="pause between blocks so a recording is readable "
+                         "(0 = no pause; try 0.8 for an asciinema cast)")
     ap.add_argument("--keep-services", action="store_true",
                     help="leave the service running and print its URL (for poking at it)")
     args = ap.parse_args()
 
+    global PACE
+    PACE = max(0.0, float(args.pace))
     demo_dir = Path(tempfile.mkdtemp(prefix="ti-demo-files-"))
     (demo_dir / "notes.md").write_text(
         "# Project notes\n\nThe decision model runs one forward pass.\n", encoding="utf-8")
@@ -293,8 +312,7 @@ def main() -> int:
               {"intent": "research lora rank for a 3b router",
                "digest": {"cwd": str(demo_dir)}},
               service,
-              "L2 template — extract queries, search, pick, fetch with a relevance gate, "
-              "assemble a digest")
+              "L2 template — extract queries, search, pick, fetch (gated), digest")
 
         print()
         print(_rule())
