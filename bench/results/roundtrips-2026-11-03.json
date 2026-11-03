@@ -1,0 +1,690 @@
+{
+ "generated": "2026-11-03T04:43:09.072792-05:00",
+ "finished": "2026-11-03T04:43:23.048503-05:00",
+ "commit": "e52c86b",
+ "branch": "ov-avenue",
+ "service": {
+  "base": "http://127.0.0.1:1116",
+  "decide": {
+   "choice": "pair",
+   "noul": "fixture",
+   "extract": "rule_extract"
+  },
+  "started_by_bench": true
+ },
+ "machine": {
+  "cpus": 12,
+  "loadavg_start": [
+   0.86,
+   1.42,
+   1.51
+  ],
+  "loadavg_end": [
+   2.59,
+   1.77,
+   1.63
+  ]
+ },
+ "cost_model": {
+  "pass_ms_assumed": 2000.0,
+  "project_decide_ms": 250.0,
+  "sweep_ms": [
+   250.0,
+   500.0,
+   1000.0,
+   2000.0,
+   5000.0,
+   10000.0
+  ],
+  "local_pass_anchor": {
+   "ms": 1753.6,
+   "completion_tokens": 29,
+   "model_url": "http://127.0.0.1:8098"
+  },
+  "definition": "a round trip is one agent-model inference that issues a tool call; the final answer pass is excluded from both arms"
+ },
+ "tasks": [
+  {
+   "id": "l0_read",
+   "shape": "L0 read (caller names the path)",
+   "intent": "read the file I named",
+   "native": {
+    "round_trips": 1,
+    "exec_ms": 0.4,
+    "steps": [
+     {
+      "tool": "filesys_read",
+      "ms": 0.4,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "5f478268986e"
+   },
+   "service": {
+    "round_trips": 1,
+    "wall_ms": 17.8,
+    "hops": 1,
+    "hop_ops": [
+     "filesys_read"
+    ],
+    "decide_hops": 0,
+    "decide_ms": 0,
+    "status": "done",
+    "asked": "",
+    "error": "",
+    "result_digest": "5f478268986e"
+   },
+   "correct": {
+    "a": true,
+    "b": true,
+    "a_detail": "",
+    "b_detail": "",
+    "agree": true
+   },
+   "note": "the shape the layer cannot improve: one tool call either way"
+  },
+  {
+   "id": "l0_grep",
+   "shape": "L0 grep (caller names the pattern)",
+   "intent": "search the planner templates for the build entry points",
+   "native": {
+    "round_trips": 1,
+    "exec_ms": 1.1,
+    "steps": [
+     {
+      "tool": "filesys_grep",
+      "ms": 1.1,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "1c96bbf71d3e"
+   },
+   "service": {
+    "round_trips": 1,
+    "wall_ms": 2.7,
+    "hops": 1,
+    "hop_ops": [
+     "filesys_grep"
+    ],
+    "decide_hops": 0,
+    "decide_ms": 0,
+    "status": "done",
+    "asked": "",
+    "error": "",
+    "result_digest": "1c96bbf71d3e"
+   },
+   "correct": {
+    "a": true,
+    "b": true,
+    "a_detail": "a grep hit on disk_lookup.py (got 3 hits)",
+    "b_detail": "a grep hit on disk_lookup.py (got 3 hits)",
+    "agree": true
+   },
+   "note": "a resolved pattern is one round trip natively; the service adds only a hop"
+  },
+  {
+   "id": "l1_list",
+   "shape": "L1 listing",
+   "intent": "list the .py files in the tests directory",
+   "native": {
+    "round_trips": 1,
+    "exec_ms": 7.8,
+    "steps": [
+     {
+      "tool": "filesys_glob",
+      "ms": 7.8,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "61633fbabdfc"
+   },
+   "service": {
+    "round_trips": 1,
+    "wall_ms": 7.7,
+    "hops": 1,
+    "hop_ops": [
+     "filesys_glob"
+    ],
+    "decide_hops": 0,
+    "decide_ms": 0,
+    "status": "done",
+    "asked": "",
+    "error": "",
+    "result_digest": "61633fbabdfc"
+   },
+   "correct": {
+    "a": true,
+    "b": true,
+    "a_detail": "the 34 tests/*.py paths",
+    "b_detail": "the 34 tests/*.py paths",
+    "agree": true
+   },
+   "note": "listing terminates on candidates: one glob either way"
+  },
+  {
+   "id": "l1_read",
+   "shape": "L1 read (slot fill over 3 files)",
+   "intent": "read the notes file",
+   "native": {
+    "round_trips": 2,
+    "exec_ms": 0.4,
+    "steps": [
+     {
+      "tool": "filesys_glob",
+      "ms": 0.3,
+      "conf": 1.0,
+      "error": null
+     },
+     {
+      "tool": "filesys_read",
+      "ms": 0.1,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "4a101e9be720"
+   },
+   "service": {
+    "round_trips": 1,
+    "wall_ms": 983.6,
+    "hops": 3,
+    "hop_ops": [
+     "filesys_glob",
+     "decide_pick",
+     "filesys_read"
+    ],
+    "decide_hops": 1,
+    "decide_ms": 981.1,
+    "status": "done",
+    "asked": "",
+    "error": "",
+    "result_digest": "4a101e9be720"
+   },
+   "correct": {
+    "a": true,
+    "b": true,
+    "a_detail": "",
+    "b_detail": "",
+    "agree": true
+   },
+   "note": "the service globs and picks inside one round trip"
+  },
+  {
+   "id": "l1_ask",
+   "shape": "L1 ambiguous -> ask-back",
+   "intent": "read the report file",
+   "native": {
+    "round_trips": 3,
+    "exec_ms": 0.5,
+    "steps": [
+     {
+      "tool": "filesys_glob",
+      "ms": 0.4,
+      "conf": 1.0,
+      "error": null
+     },
+     {
+      "tool": "ask_user",
+      "ms": 0.0,
+      "error": null
+     },
+     {
+      "tool": "filesys_read",
+      "ms": 0.2,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "c34688c88a38"
+   },
+   "service": {
+    "round_trips": 2,
+    "wall_ms": 1252.5,
+    "hops": 9,
+    "hop_ops": [
+     "filesys_glob",
+     "decide_pick",
+     "askback",
+     "filesys_read",
+     "filesys_glob",
+     "decide_pick",
+     "askback",
+     "askback.resolved",
+     "filesys_read"
+    ],
+    "decide_hops": 2,
+    "decide_ms": 1247.5,
+    "status": "done",
+    "asked": "report-v1.md",
+    "error": "",
+    "result_digest": "c34688c88a38"
+   },
+   "correct": {
+    "a": true,
+    "b": true,
+    "a_detail": "",
+    "b_detail": "",
+    "agree": true
+   },
+   "note": "five equal candidates: both arms must put a question to the human"
+  },
+  {
+   "id": "l1_symbol",
+   "shape": "L1 grep intent (routed as a read)",
+   "intent": "where is filesys_glob defined",
+   "native": {
+    "round_trips": 1,
+    "exec_ms": 1.1,
+    "steps": [
+     {
+      "tool": "filesys_grep",
+      "ms": 1.1,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "987700b2c244"
+   },
+   "service": {
+    "round_trips": 2,
+    "wall_ms": 1450.5,
+    "hops": 9,
+    "hop_ops": [
+     "filesys_glob",
+     "decide_pick",
+     "askback",
+     "filesys_read",
+     "filesys_glob",
+     "decide_pick",
+     "askback",
+     "askback.resolved",
+     "filesys_read"
+    ],
+    "decide_hops": 2,
+    "decide_ms": 1422.6,
+    "status": "done",
+    "asked": "LICENSE",
+    "error": "",
+    "result_digest": "45d0bdfeb830"
+   },
+   "correct": {
+    "a": true,
+    "b": false,
+    "a_detail": "a grep hit on impl.py (got ['impl.py', 'impl.py', 'impl.py'])",
+    "b_detail": "a reference to service/ti/ops/filesys/impl.py",
+    "agree": false
+   },
+   "note": "a grep intent the disk template answers as a read \u2014 recorded as measured"
+  },
+  {
+   "id": "l2_research",
+   "shape": "L2 research (search -> fetch)",
+   "intent": "research llama.cpp quantization options for cpu inference",
+   "native": {
+    "round_trips": 2,
+    "exec_ms": 119.2,
+    "steps": [
+     {
+      "tool": "web_search",
+      "ms": 58.8,
+      "conf": 1.0,
+      "error": null
+     },
+     {
+      "tool": "web_fetch",
+      "ms": 60.4,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "9e3fc462807d"
+   },
+   "service": {
+    "round_trips": 2,
+    "wall_ms": 5601.0,
+    "hops": 16,
+    "hop_ops": [
+     "decide_extract",
+     "web_search",
+     "decide_pick",
+     "askback",
+     "web_fetch",
+     "web_fetch",
+     "web_fetch",
+     "web_fetch",
+     "digest_assemble",
+     "decide_extract",
+     "web_search",
+     "decide_pick",
+     "askback",
+     "askback.resolved",
+     "web_fetch",
+     "digest_assemble"
+    ],
+    "decide_hops": 4,
+    "decide_ms": 4572.0,
+    "status": "done",
+    "asked": "https://arxiv.org/abs/2601.14277",
+    "error": "",
+    "result_digest": "1f3dc1a9295e"
+   },
+   "correct": {
+    "a": true,
+    "b": true,
+    "a_detail": "one fetched page with >=200 chars of text",
+    "b_detail": "a digest citing >=1 source with a claim",
+    "agree": true
+   },
+   "note": "the pipeline shape: several hops inside one useTool call"
+  },
+  {
+   "id": "l2_reddit",
+   "shape": "L2 reddit digest",
+   "intent": "what does r/rust say about async runtimes",
+   "native": {
+    "round_trips": 1,
+    "exec_ms": 0.1,
+    "steps": [
+     {
+      "tool": "reddit_digest",
+      "ms": 0.1,
+      "error": "CliMissingBinary: reddit-research CLI unavailable: no project directory found; tried:\n  /home/andrew/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  /home/andrew/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree."
+     }
+    ],
+    "error": "reddit_digest: CliMissingBinary: reddit-research CLI unavailable: no project directory found; tried:\n  /home/andrew/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  /home/andrew/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
+    "result_digest": "6eef6648406c"
+   },
+   "service": {
+    "round_trips": 1,
+    "wall_ms": 1.9,
+    "hops": 0,
+    "hop_ops": [],
+    "decide_hops": 0,
+    "decide_ms": 0,
+    "status": "error",
+    "asked": "",
+    "error": "reddit-research CLI unavailable: no project directory found; tried:\n  /home/andrew/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  /home/andrew/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
+    "result_digest": "6eef6648406c"
+   },
+   "correct": {
+    "a": false,
+    "b": false,
+    "a_detail": ">=1 reddit thread",
+    "b_detail": ">=1 reddit thread",
+    "agree": true
+   },
+   "note": "the CLI is absent on this box: an arm-B error, not a task failure"
+  },
+  {
+   "id": "compound_walk",
+   "shape": "compound human intent (find + quote)",
+   "intent": "find the file named walk.py and tell me the max depth it enforces",
+   "native": {
+    "round_trips": 2,
+    "exec_ms": 7.9,
+    "steps": [
+     {
+      "tool": "filesys_glob",
+      "ms": 7.7,
+      "conf": 1.0,
+      "error": null
+     },
+     {
+      "tool": "filesys_read",
+      "ms": 0.2,
+      "conf": 1.0,
+      "error": null
+     }
+    ],
+    "error": "",
+    "result_digest": "4869af2932dd"
+   },
+   "service": {
+    "round_trips": 1,
+    "wall_ms": 2344.1,
+    "hops": 3,
+    "hop_ops": [
+     "filesys_glob",
+     "decide_pick",
+     "filesys_read"
+    ],
+    "decide_hops": 1,
+    "decide_ms": 2331.9,
+    "status": "done",
+    "asked": "",
+    "error": "",
+    "result_digest": "4869af2932dd"
+   },
+   "correct": {
+    "a": true,
+    "b": true,
+    "a_detail": "the bytes of service/ti/ops/filesys/walk.py",
+    "b_detail": "the bytes of service/ti/ops/filesys/walk.py",
+    "agree": true
+   },
+   "note": "a two-clause ask a human really issues; the service answers it as one read"
+  }
+ ],
+ "aggregate": {
+  "pass_ms": 2000.0,
+  "round_trips": {
+   "a": 14,
+   "b": 12,
+   "saved": 2,
+   "saved_pct": 14.3
+  },
+  "wall_ms": {
+   "a": 28138.6,
+   "b": 35661.8,
+   "saved": -7523.2,
+   "saved_pct": -26.7
+  },
+  "tool_exec_ms": {
+   "a": 138.6,
+   "b": 11661.8
+  },
+  "service_overhead_ms": 11523.2,
+  "decide_ms_on_b": 10555.1,
+  "hops_on_b": 43,
+  "hops_per_round_trip": 3.58,
+  "correct": {
+   "a": 8,
+   "b": 7,
+   "of": 9
+  },
+  "decide_hops_on_b": 10,
+  "projected": {
+   "decide_ms_per_hop": 250.0,
+   "service_ms": 3606.7,
+   "wall_ms": 27606.7,
+   "saved_ms": 531.9,
+   "saved_pct": 1.9
+  }
+ },
+ "sensitivity": [
+  {
+   "pass_ms": 250.0,
+   "round_trips": {
+    "a": 14,
+    "b": 12,
+    "saved": 2,
+    "saved_pct": 14.3
+   },
+   "wall_ms": {
+    "a": 3638.6,
+    "b": 14661.8,
+    "saved": -11023.2,
+    "saved_pct": -302.9
+   },
+   "tool_exec_ms": {
+    "a": 138.6,
+    "b": 11661.8
+   },
+   "service_overhead_ms": 11523.2,
+   "decide_ms_on_b": 10555.1,
+   "hops_on_b": 43,
+   "hops_per_round_trip": 3.58,
+   "correct": {
+    "a": 8,
+    "b": 7,
+    "of": 9
+   },
+   "decide_hops_on_b": 10
+  },
+  {
+   "pass_ms": 500.0,
+   "round_trips": {
+    "a": 14,
+    "b": 12,
+    "saved": 2,
+    "saved_pct": 14.3
+   },
+   "wall_ms": {
+    "a": 7138.6,
+    "b": 17661.8,
+    "saved": -10523.2,
+    "saved_pct": -147.4
+   },
+   "tool_exec_ms": {
+    "a": 138.6,
+    "b": 11661.8
+   },
+   "service_overhead_ms": 11523.2,
+   "decide_ms_on_b": 10555.1,
+   "hops_on_b": 43,
+   "hops_per_round_trip": 3.58,
+   "correct": {
+    "a": 8,
+    "b": 7,
+    "of": 9
+   },
+   "decide_hops_on_b": 10
+  },
+  {
+   "pass_ms": 1000.0,
+   "round_trips": {
+    "a": 14,
+    "b": 12,
+    "saved": 2,
+    "saved_pct": 14.3
+   },
+   "wall_ms": {
+    "a": 14138.6,
+    "b": 23661.8,
+    "saved": -9523.2,
+    "saved_pct": -67.4
+   },
+   "tool_exec_ms": {
+    "a": 138.6,
+    "b": 11661.8
+   },
+   "service_overhead_ms": 11523.2,
+   "decide_ms_on_b": 10555.1,
+   "hops_on_b": 43,
+   "hops_per_round_trip": 3.58,
+   "correct": {
+    "a": 8,
+    "b": 7,
+    "of": 9
+   },
+   "decide_hops_on_b": 10
+  },
+  {
+   "pass_ms": 2000.0,
+   "round_trips": {
+    "a": 14,
+    "b": 12,
+    "saved": 2,
+    "saved_pct": 14.3
+   },
+   "wall_ms": {
+    "a": 28138.6,
+    "b": 35661.8,
+    "saved": -7523.2,
+    "saved_pct": -26.7
+   },
+   "tool_exec_ms": {
+    "a": 138.6,
+    "b": 11661.8
+   },
+   "service_overhead_ms": 11523.2,
+   "decide_ms_on_b": 10555.1,
+   "hops_on_b": 43,
+   "hops_per_round_trip": 3.58,
+   "correct": {
+    "a": 8,
+    "b": 7,
+    "of": 9
+   },
+   "decide_hops_on_b": 10
+  },
+  {
+   "pass_ms": 5000.0,
+   "round_trips": {
+    "a": 14,
+    "b": 12,
+    "saved": 2,
+    "saved_pct": 14.3
+   },
+   "wall_ms": {
+    "a": 70138.6,
+    "b": 71661.8,
+    "saved": -1523.2,
+    "saved_pct": -2.2
+   },
+   "tool_exec_ms": {
+    "a": 138.6,
+    "b": 11661.8
+   },
+   "service_overhead_ms": 11523.2,
+   "decide_ms_on_b": 10555.1,
+   "hops_on_b": 43,
+   "hops_per_round_trip": 3.58,
+   "correct": {
+    "a": 8,
+    "b": 7,
+    "of": 9
+   },
+   "decide_hops_on_b": 10
+  },
+  {
+   "pass_ms": 10000.0,
+   "round_trips": {
+    "a": 14,
+    "b": 12,
+    "saved": 2,
+    "saved_pct": 14.3
+   },
+   "wall_ms": {
+    "a": 140138.6,
+    "b": 131661.8,
+    "saved": 8476.8,
+    "saved_pct": 6.0
+   },
+   "tool_exec_ms": {
+    "a": 138.6,
+    "b": 11661.8
+   },
+   "service_overhead_ms": 11523.2,
+   "decide_ms_on_b": 10555.1,
+   "hops_on_b": 43,
+   "hops_per_round_trip": 3.58,
+   "correct": {
+    "a": 8,
+    "b": 7,
+    "of": 9
+   },
+   "decide_hops_on_b": 10
+  }
+ ]
+}
