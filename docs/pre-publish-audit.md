@@ -21,8 +21,9 @@ under discussion is `/home/<user>`, where `<user>` is the account name that appe
 ## 1. Verdicts
 
 **History — cannot be published as-is.** 108 of 110 commits on `main` have a tree
-containing `/home/<user>`, plus the real Windows account name `andre` and the hostname
-`dell321`. Only the first two commits are clean. HEAD itself still has two occurrences.
+containing `/home/<user>`, plus the real Windows account name and the hostname — redacted
+here as `<user>` and `<host>` for the same reason the path is. Only the first two commits are
+clean. HEAD itself still has two occurrences.
 A public clone can check out any of those 108 trees.
 
 **Secrets — clean.** No live credential in the index, none in 117 commits of history, no
@@ -103,11 +104,11 @@ From the history alone, not from any single file:
   appears in `bench/results/*.json` from `c1adb56` onward. A reader learns the repo lived at
   `~/toolInterfacer`, that models sat in a `models/` dir inside it, and which GGUF
   quantisations were on disk.
-- **A Windows box reached over sshfs.** `~/mnt/dell321` — the hostname `dell321` and the
+- **A Windows box reached over sshfs.** `~/mnt/<host>` — the hostname and the
   fact that it was mounted into the Linux home directory. The mount name is the hostname.
-- **The real Windows account name.** `andre`, in the llama.cpp `/props` dumps committed in
-  `151ba64`: `C:\Users\<user>\Documents\PersonalCodingProjects\personal\Research\jevResearch\lab\d1bench\models\...`,
-  where `<user>` is literally the Windows account name `andre` in the committed blob.
+- **The real Windows account name.** It is in the llama.cpp `/props` dumps committed in
+  `151ba64`: `C:\Users\<user>\…`, where `<user>` is the literal Windows account name in the
+  committed blob — not a placeholder.
   This is the single most informative historical artefact — one line gives the account name,
   the directory convention and the sibling-project path.
 - **Sibling project names in the history**, even where HEAD redacts them:
@@ -119,6 +120,11 @@ result JSONs under `bench/results/dell/` and `bench/results/dell/props/`, plus
 `bench/README.md:75` where the placeholder is documented). Every one carries
 `Documents\PersonalCodingProjects\personal\Research\jevResearch\lab\d1bench\models\<model>.gguf`.
 
+**Status of §2.2 and §2.3.** Both were fixed in a forward commit after this audit: the `_HOME`
+pattern now matches the bare form, both files in §2.2 are redacted, the 41 files in §2.3 carry
+`<workspace>\models\<model>.gguf`, and the guard now catches the Windows structure as well as
+the account name. Every measurement above describes the audited tree at `ca7ffec`.
+
 ### 2.4 Commit messages
 
 Commit *messages* are a separate vector, and one that a content rewrite does not fix by
@@ -127,11 +133,11 @@ default.
 | string | commit messages |
 |---|---|
 | `/home/<user>` | 0 |
-| `dell321` | **3** — `c1adb56`, `412da1a`, `7872d7d` |
-| `andre` | 0 |
+| `<host>` | **3** — `c1adb56`, `412da1a`, `7872d7d` |
+| `<user>` | 0 |
 
 `7872d7d`'s message is the ironic one: it explains the redaction and names the machine three
-times in doing so ("dell321 paths come from env (DELL_LAB / DELL_E3_PY / ...)"). The
+times in doing so ("<host> paths come from env (DELL_LAB / DELL_E3_PY / ...)"). The
 hostname also survives in the HEAD tree as an env-var *prefix*, `DELL_LAB`, `DELL_E3_PY`,
 `DELL_TIBENCH`, `DELL_MOUNT` (`bench/lane.env.example:7-16`, `bench/lane.sh:25-32`).
 
@@ -148,8 +154,8 @@ owner's decision. The real consequences, as they apply to this repo:
 
 **Option A — accept it and publish as-is.**
 - Cost: nothing to do; the tree shipped is the tree audited.
-- Consequence: a reader learns a Linux username, a Windows account name (`andre`), a
-  hostname (`dell321`), the sshfs workflow, and the layout of a personal projects tree. All
+- Consequence: a reader learns a Linux username, a Windows account name (`<user>`), a
+  hostname (`<host>`), the sshfs workflow, and the layout of a personal projects tree. All
   of it is consistent with an identity that is already deliberately public (see §4), so this
   is "my machine's shape is public", not "my identity is revealed".
 - Publish cleanly on top: fix the `_HOME` regex, redact the two HEAD files, delete the 6
@@ -165,7 +171,7 @@ owner's decision. The real consequences, as they apply to this repo:
   `docs/`"; `docs/` cites shas in places) would need re-verification, because the shas they
   cite would no longer exist.
 - Must be run with `--replace-text` for contents **and** `--replace-message` for the three
-  `dell321` commit messages, or the hostname survives. `filter-repo` does not rewrite
+  `<host>` commit messages, or the hostname survives. `filter-repo` does not rewrite
   messages by default.
 - The rewritten history cannot be reconciled with any existing clone. Since `origin` is
   already configured (`https://github.com/andy1245-rgb/toolInterfacer.git`) this is only
@@ -187,7 +193,7 @@ owner's decision. The real consequences, as they apply to this repo:
 
 My read: **A, with the forward fixes, is the right default** — the identity is already
 deliberately public, so the history leak is machine-shape rather than person-identity.
-B is only worth its cost if `dell321`/`andre` are considered sensitive in their own right.
+B is only worth its cost if `<host>`/`<user>` are considered sensitive in their own right.
 C is the cleanest exposure and the worst repo.
 
 ---
@@ -291,7 +297,7 @@ Given that, the remaining disclosures are about **machine and projects**, not pe
 | Byte sizes of private checkpoints/adapters (242,047,978 B; 35,335,380 B; LoRA exports at 15.4/27.4/63.4 MB) | `docs/assets-inventory.md:41-44` | accidental — unnecessary detail for a case study |
 | `mcm-portal` (a university course portal checkout) as a future data source | `docs/roadmap-2026-11.md:77` | **deliberate** — one line in a roadmap, no private detail |
 | `localAlexa` / `jevResearch` provenance for imported data | `tests/data/routing_382_PROVENANCE.md:9` | **deliberate and correct** — this is attribution for imported data, and should stay |
-| Hostname `dell321` as env-var prefix | `bench/lane.env.example:7-16`, `bench/lane.sh:25-32` | deliberate anonymisation that stops one step short (machine called "bench-host" in prose) |
+| Hostname `<host>` as env-var prefix | `bench/lane.env.example:7-16`, `bench/lane.sh:25-32` | deliberate anonymisation that stops one step short (machine called "bench-host" in prose) |
 | Hardware: Intel Arc 140V iGPU, `-ngl 99`, Python 3.10.12 | `README.md:347`, `docs/classical-baseline-2026-11-03.md:28` | deliberate — it is the measurement context, and a reader needs it |
 | Canada (Ubuntu `ca.archive.ubuntu.com` mirror) + `-0400`/`-0500` commit offsets | `docs/vulkan-igpu-2026-11-03.md:78` | accidental, low value: timezone is in every commit anyway |
 | Private-voice framing, "the operator" | `README.md`, `docs/` ×4 | accidental — a public doc addressing "the operator" reads as an internal memo. Cosmetic, not exposure. |
@@ -422,7 +428,7 @@ requires a rewrite, so none of them forecloses §2.6 option B later.
    `C:\Users\<user>\...` paths. They add nothing the public wants (the analysis landed on
    `main`) and they are 6 refs a `git push --all` publishes silently.
 
-Item beyond these three, worth one line: the three `dell321` commit messages
+Item beyond these three, worth one line: the three `<host>` commit messages
 (`c1adb56`, `412da1a`, `7872d7d`) survive any content-only rewrite. If the hostname is
 sensitive, only §2.6 option B with `--replace-message` addresses them.
 

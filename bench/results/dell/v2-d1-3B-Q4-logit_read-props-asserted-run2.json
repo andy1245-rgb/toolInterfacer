@@ -5,7 +5,7 @@
   "base_url": "http://127.0.0.1:18080",
   "server_threads": 8,
   "model": {
-    "path": "C:\Users\<user>\Documents\\PersonalCodingProjects\\personal\\Research\\jevResearch\\lab\\d1bench\\models\\d1-3B-Q4_K_M.gguf",
+    "path": "<workspace>\\models\\d1-3B-Q4_K_M.gguf",
     "ftype": "Q4_K - Medium",
     "build_info": "b11512-a11f57ba9"
   },
