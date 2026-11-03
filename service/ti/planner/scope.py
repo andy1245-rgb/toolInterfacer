@@ -77,10 +77,22 @@ def _scoped(name: str, frame: str) -> Scope:
 
 
 def _existing_dir(name: str, frame: str) -> str | None:
-    path = os.path.expanduser(name)
-    if not os.path.isabs(path):
-        path = os.path.join(frame, path)
-    path = os.path.abspath(path)
+    """The directory `name` denotes, or None when it is not one we may look at.
+
+    `os.path.isdir` is a `stat`, and those are exactly what the file policy exists
+    to gate: the deny list covers trees whose session is dead, where one stat
+    blocks in uninterruptible sleep and nothing in this process can stop it. So a
+    name that resolves outside the run root, or at or under a denied root, is not
+    "a directory here" — which is already the shape of the answer this function
+    gives for a path that does not exist (found by docs/review2-2026-11-03.md NB2:
+    `params.path` reached this stat without passing the file policy at all).
+    """
+    from ..ops.filesys import confine
+
+    try:
+        path = confine.confined_root(name, base=frame)
+    except confine.PathRefused:
+        return None
     return path if os.path.isdir(path) else None
 
 

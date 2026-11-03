@@ -241,8 +241,14 @@ def _take_quantifier(pattern: str, index: int, frame: _Frame,
     if unbounded is None:
         return False, index, prev
     atom = prev if prev is not None else _emit(frame, _ANY, index)
+    # The nesting rule applies to *every* quantifier, not only an unbounded one.
+    # `(a+){10}b` backtracks exponentially exactly as `(a+)+b` does: the bound caps
+    # how many times the group is entered, not how many ways the inner `+` can
+    # divide the input, and each of the ten entries backtracks. Gating this on
+    # `unbounded` let that pattern through, measured at 19.9 s on a 36-character
+    # line and past the deadline on 40 (docs/review2-2026-11-03.md NB1).
+    _refuse_unsafe(frame, atom)
     if unbounded:
-        _refuse_unsafe(frame, atom)
         atom.unbounded = True
         frame.has_unbounded = True
     return True, nxt, atom

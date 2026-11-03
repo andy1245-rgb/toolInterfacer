@@ -255,11 +255,15 @@ class ContractFieldTest(unittest.TestCase):
         self.assertTrue(any("carries an error" in p
                             for p in self.problems(dict(self.base(), error="stale"))))
 
-    def test_confidence_is_bounded_and_present_when_a_run_finished(self):
-        self.assertTrue(any("no confidence" in p
-                            for p in self.problems(dict(self.base(), confidence=None))))
+    def test_confidence_is_optional_and_bounded_when_present(self):
+        # Optional: the service reports it only when a hop measured one, so an L0
+        # passthrough and an error run both omit it, and demanding it scored real
+        # bodies as failures (docs/review2-2026-11-03.md NB3).
+        self.assertEqual(self.problems(dict(self.base(), confidence=None)), [])
         self.assertTrue(any("outside [0,1]" in p
                             for p in self.problems(dict(self.base(), confidence=1.5))))
+        self.assertTrue(any("not a number" in p
+                            for p in self.problems(dict(self.base(), confidence="high"))))
 
     def test_sources_is_a_list_when_present(self):
         self.assertEqual(self.problems(dict(self.base(), sources=["a"])), [])
@@ -295,6 +299,61 @@ class BackendEvidenceTest(unittest.TestCase):
     def test_unknown_backend_is_refused(self):
         self.assertIn("cannot say what answered", probe.backend_problem({}, False))
         self.assertEqual(probe.backend_problem({}, True), "")
+
+
+class RealBodyTest(unittest.TestCase):
+    """The contract, checked against bodies the service actually produced.
+
+    Every other case here is a hand-written stub, and that is exactly how the
+    probe came to reject the service's own correct responses: two hand-merged
+    branches disagreed about whether `confidence` and a hop's `conf` are
+    optional, and 22 stub cases happily agreed with the wrong side
+    (docs/review2-2026-11-03.md NB3). This case asks the real entry point for a
+    body and runs the real checker over it, so the contract cannot drift away
+    from the thing it describes again.
+    """
+
+    def setUp(self):
+        sys.path.insert(0, str(ROOT / "service"))
+        from ti.conf import load
+        self._filesys = dict(load()["ops"]["filesys"])
+        self.addCleanup(load()["ops"]["filesys"].update, self._filesys)
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.root = pathlib.Path(self._tmp.name)
+        (self.root / "notes.md").write_text("body\n", encoding="utf-8")
+        (self.root / "budget.csv").write_text("a,b\n", encoding="utf-8")
+
+    def _body(self, request):
+        from ti.service_entry import use_tool
+        return use_tool(request)
+
+    def test_an_l0_body_passes_the_contract(self):
+        # `digest.cwd` is the run root; L0 paths are confined to it.
+        body = self._body({
+            "intent": "read the notes file",
+            "digest": {"cwd": str(self.root)},
+            "params": {"tool": "filesys_read",
+                       "args": {"path": str(self.root / "notes.md")}},
+        })
+        self.assertEqual(body["status"], "done", body)
+        self.assertEqual(probe.check_contract(body, set(OPS)), [])
+
+    def test_an_error_body_passes_the_contract(self):
+        body = self._body({
+            "intent": "x",
+            "digest": {"cwd": str(self.root)},
+            "params": {"tool": "filesys_read",
+                       "args": {"path": str(self.root / "absent.txt")}},
+        })
+        self.assertEqual(body["status"], "error", body)
+        self.assertEqual(probe.check_contract(body, set(OPS)), [])
+
+    def test_a_plan_body_passes_the_contract(self):
+        body = self._body({"intent": "research local inference latency",
+                           "mode": "plan"})
+        self.assertEqual(body["status"], "plan", body)
+        self.assertEqual(probe.check_contract(body, set(OPS)), [])
 
 
 if __name__ == "__main__":

@@ -166,10 +166,33 @@ class Handler(BaseHTTPRequestHandler):
             raise _Refused(403, "scope_refused", str(exc)) from None
         if tool is not None:
             self._check_path_args(str(tool), params.get("args"), root)
+        self._check_soft_path(params.get("path"), root)
         # ask_via_response: this transport's only channel to the caller is the
         # response body, so a gate the run cannot settle comes back as
         # need_input + question rather than as a silent degraded guess.
         return use_tool(body, dry=dry, ask_via_response=not dry), 200
+
+    def _check_soft_path(self, value: Any, root: str) -> None:
+        """`params.path` is not an op argument — it is a *scope hint* the planner
+        reads to decide what a listing covers — so it is checked against the
+        policy roots rather than the run root, which is the rule `planner.scope`
+        applies when it resolves it.
+
+        Until this existed the value reached `scope._existing_dir`, which called
+        `os.path.isdir` on it with no pump: one `stat`, and on this box a name
+        inside the sshfs mount blocks that thread in uninterruptible sleep
+        (docs/review2-2026-11-03.md NB2 measured the call; the outage that
+        follows is why the deny list exists at all). Refusing here means the
+        caller gets a 403 that names the field, and no syscall happens.
+        """
+        if value in (None, ""):
+            return
+        if not isinstance(value, str):
+            raise _Refused(400, "bad_path", "params.path must be a string")
+        try:
+            confine.confined_root(value, base=root)
+        except confine.PathRefused as exc:
+            raise _Refused(403, "path_refused", f"params.path: {exc}") from None
 
     def _check_op(self, tool: str) -> None:
         allowed_conf = load()["http"].get("allowed_ops")

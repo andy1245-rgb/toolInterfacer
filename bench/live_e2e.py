@@ -180,10 +180,16 @@ def check_contract(body: Any, ops: list[str]) -> list[str]:
             for field_name in HOP_FIELDS:
                 if field_name not in hop:
                     problems.append(f"hops[{i}] has no {field_name!r}")
-            for numeric in ("ms", "conf"):
-                value = hop.get(numeric)
-                if not isinstance(value, (int, float)) or isinstance(value, bool):
-                    problems.append(f"hops[{i}].{numeric} is {value!r}, not a number")
+            value = hop.get("ms")
+            if not isinstance(value, (int, float)) or isinstance(value, bool):
+                problems.append(f"hops[{i}].ms is {value!r}, not a number")
+            # `conf` is `float | None` by design: a rule extractor has no
+            # distribution to report and says so rather than inventing one
+            # (docs/confidence-sources.md). Absence is not a contract violation.
+            hop_conf = hop.get("conf")
+            if hop_conf is not None and (not isinstance(hop_conf, (int, float))
+                                         or isinstance(hop_conf, bool)):
+                problems.append(f"hops[{i}].conf is {hop_conf!r}, not a number or null")
             for text in ("step", "op", "artifact_summary"):
                 if text in hop and not isinstance(hop[text], str):
                     problems.append(f"hops[{i}].{text} is {type(hop[text]).__name__}, not a string")
@@ -200,14 +206,17 @@ def check_contract(body: Any, ops: list[str]) -> list[str]:
     elif "error" in body:
         problems.append(f"status {status!r} carries an error field")
 
+    # `confidence` is optional for *every* status: it is present when — and only
+    # when — a hop measured one (docs/confidence-sources.md). An L0 passthrough
+    # makes no routing decision and an error run delivered nothing, so both omit
+    # it; a probe that demanded it scored correct bodies as FAIL
+    # (docs/review2-2026-11-03.md NB3).
     confidence = body.get("confidence")
-    if confidence is None:
-        if status in ("done", "need_input"):
-            problems.append(f"status {status!r} with no confidence (service_entry always sets one)")
-    elif not isinstance(confidence, (int, float)) or isinstance(confidence, bool):
-        problems.append(f"confidence {confidence!r} is not a number")
-    elif not 0.0 <= float(confidence) <= 1.0:
-        problems.append(f"confidence {confidence} outside [0,1]")
+    if confidence is not None:
+        if not isinstance(confidence, (int, float)) or isinstance(confidence, bool):
+            problems.append(f"confidence {confidence!r} is not a number")
+        elif not 0.0 <= float(confidence) <= 1.0:
+            problems.append(f"confidence {confidence} outside [0,1]")
 
     if "degraded" in body and not isinstance(body["degraded"], bool):
         problems.append(f"degraded is {type(body['degraded']).__name__}, not a boolean")

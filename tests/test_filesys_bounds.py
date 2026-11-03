@@ -133,11 +133,12 @@ class ConfineTest(FilesysCase):
 class PolicyRootsTest(unittest.TestCase):
     """`ops.filesys.roots` is what a run root must live inside — and its default.
 
-    The default is `["~", "."]`, and `.` is the load-bearing half: it is the
-    directory the service was started in. Without it a clone that does not live
-    under the home directory cannot run the README's first example at all
-    (`docs/quickstart-stranger-2026-11-03.md` §1 measured exactly that: a clone
-    in `/tmp` answered `403 scope_refused` for every documented call).
+    The default is `["~", ".", "/tmp"]`: home, the directory the service was
+    started in, and scratch space. The middle entry is the load-bearing one for
+    a clone that does not live under the home directory, and `/tmp` is where a
+    session started in a temp directory works at all — without either, a clone in
+    `/tmp` answered `403 scope_refused` for every documented call
+    (`docs/quickstart-stranger-2026-11-03.md` §1, `docs/review2-2026-11-03.md` NB4).
 
     Widening it does not widen what a request may name: the requested cwd still
     has to resolve *inside* one of the roots, so `/etc` is refused unless the
@@ -157,7 +158,7 @@ class PolicyRootsTest(unittest.TestCase):
         shipped = json.loads(
             (ROOT / "service" / "ti" / "conf" / "defaults.json").read_text()
         )["ops"]["filesys"]["roots"]
-        self.assertEqual(shipped, ["~", "."])
+        self.assertEqual(shipped, ["~", ".", "/tmp"])
 
     def test_the_start_directory_is_a_permitted_root(self):
         # A clone anywhere works, because the service's own cwd is a root.

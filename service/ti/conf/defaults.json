@@ -142,7 +142,8 @@
     "filesys": {
       "roots": [
         "~",
-        "."
+        ".",
+        "/tmp"
       ],
       "deny_roots": [
         "~/mnt"

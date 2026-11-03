@@ -121,16 +121,18 @@ def run_root() -> str:
 def policy_roots() -> list[str]:
     """The configured roots a run's cwd must live inside (`ops.filesys.roots`).
 
-    The shipped default is `["~", "."]`:
+    The shipped default is `["~", ".", "/tmp"]`:
 
     - `~` covers the ordinary case — the service is spawned with its own repo as
       the cwd (`pi-extension/src/lifecycle.ts`) while a run is about the
       session's cwd, which is some project under the operator's home.
-    - `.` is the directory the service was *started* in, and it is what makes a
-      clone work wherever it lives. Without it, `git clone` into `/tmp` or
-      `/opt` and the README's first example answers `403 scope_refused`, because
-      the run root is the clone and the only permitted root was `~` (observed by
-      the first-contact review, `docs/quickstart-stranger-2026-11-03.md` §1).
+    - `.` is the directory the service was *started* in, and `/tmp` is scratch
+      space. Both are what make a clone work wherever it lives and a session
+      started in a temp directory work at all. Without them, `git clone` into
+      `/tmp` and the README's first example answers `403 scope_refused`, because
+      the run root is the clone and the only permitted root was `~` (measured by
+      `docs/quickstart-stranger-2026-11-03.md` §1 and `docs/review2-2026-11-03.md`
+      NB4).
 
     Both are directories the operator chose by starting the service where they
     did. Neither widens what a *request* may name: the run root is still resolved
@@ -148,7 +150,7 @@ def policy_roots() -> list[str]:
     return out
 
 
-def confined_root(cwd: Any = None) -> str:
+def confined_root(cwd: Any = None, *, base: str | None = None) -> str:
     """The run root for a request: `cwd` (default: the process cwd), resolved
     inside one of the configured policy roots (`ops.filesys.roots`).
 
@@ -156,14 +158,19 @@ def confined_root(cwd: Any = None) -> str:
     its frame: "list what is in /etc" does not get to walk `/etc` because it said
     so. What the run may then touch is bounded again by `resolve`, one path at a
     time, against the root returned here.
+
+    `base` is the frame a *relative* `cwd` resolves against (default: the process
+    cwd). `planner.scope` passes the run frame, because a directory named in the
+    intent is relative to the session, not to wherever the service was started.
     """
     roots = policy_roots()
     candidate = str(cwd) if cwd not in (None, "") else "."
+    frame = base if base is not None else os.getcwd()
     denied: DeniedPath | None = None
     last: PathRefused | None = None
     for policy in roots:
         try:
-            return resolve(candidate, base=os.getcwd(), root=policy)
+            return resolve(candidate, base=frame, root=policy)
         except DeniedPath as exc:
             denied = exc
         except PathRefused as exc:

@@ -25,6 +25,7 @@ import pathlib
 import socket
 import subprocess
 import sys
+import shutil
 import tempfile
 import threading
 import time
@@ -467,6 +468,46 @@ class LifecycleHandshakeTest(unittest.TestCase):
                 "digest": {"cwd": str(self.root)}}
         status, payload = self._post(body, None)
         self.assertEqual(status, 401, payload)
+
+
+class SoftPathTest(ServiceCase):
+    """`params.path` is a scope hint, and it is checked before any syscall.
+
+    It is not an op argument, so `_check_path_args` never saw it: the value went
+    to `planner.scope._existing_dir`, which called `os.path.isdir` on it. One
+    `stat`, and a name inside the sshfs mount blocks that thread for hours
+    (docs/review2-2026-11-03.md NB2).
+    """
+
+    def test_a_denied_root_named_in_params_path_is_refused_at_the_door(self):
+        dead = self.root / "mnt"
+        dead.mkdir()
+        (dead / "secret.txt").write_text("x", encoding="utf-8")
+        status, body = self.post({"intent": "list the files in the directory",
+                                  "params": {"path": str(dead)},
+                                  "digest": {"cwd": str(self.root)}})
+        self.assertEqual(status, 403, body)
+        self.assertEqual(body["error"], "path_refused")
+        self.assertIn("params.path", body["detail"])
+
+    def test_a_path_outside_every_policy_root_is_refused(self):
+        outside = tempfile.mkdtemp(prefix="ti-outside-")
+        self.addCleanup(shutil.rmtree, outside, True)
+        status, body = self.post({"intent": "list the files in the directory",
+                                  "params": {"path": outside},
+                                  "digest": {"cwd": str(self.root)}})
+        self.assertEqual(status, 403, body)
+        self.assertIn("params.path", body["detail"])
+
+    def test_a_permitted_directory_still_scopes_the_listing(self):
+        sub = self.root / "docs"
+        sub.mkdir()
+        (sub / "a.md").write_text("x", encoding="utf-8")
+        status, body = self.post({"intent": "list the files in the directory",
+                                  "params": {"path": str(sub)},
+                                  "digest": {"cwd": str(self.root)}})
+        self.assertEqual(status, 200, body)
+        self.assertEqual(body["status"], "done", body)
 
 
 if __name__ == "__main__":
