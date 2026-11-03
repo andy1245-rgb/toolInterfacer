@@ -15,7 +15,10 @@ pipelines exist — a needle (Cactus) fine-tune with a LoRA adapter, a `.cact`
 archive and an eval harness in `~/agentFleet`, and a six-backend tool-router
 benchmark with a shared 382-row test set in `~/mirror/.../localAlexa/jevResearchCompiled`.
 The needle result is **negative and documented as such**. The router benchmark is
-**positive and includes the classical baseline toolInterfacer has never run**.
+**positive and includes the classical baseline toolInterfacer has never run** —
+*(it has since been run in-repo: `bench/classical_baseline.py`, written up in
+`docs/classical-baseline-2026-11-03.md`; see the status section at the end of this
+document.)*
 
 ---
 
@@ -187,6 +190,11 @@ note says it fails 5 of 6 Cactus suites at the default gate.
 - **Two class-balance defects in the corpus**: `declare_done` has 0 rows out of 502 and was still left in the grammar (the direct cause of d8's 30/50 over-prediction), and `leave` has 7 rows so its recall is a 7-example statistic (`finetune/README.md` §3, `docs/specs/LIMITATIONS.md` lineage).
 - **No throughput number for the sliced rungs.** `d4` at 206 ms and `d20` at 1100 ms are eval-loop medians over 50 rows, not a latency benchmark; nobody has run `needle-bench`-style pp/tg on `.cact`.
 - **No `extract` benchmark wired into toolInterfacer.** `jevResearch/lab/needle_extract_bench.py` exists and has never been pointed at `service/ti/decide/primitives.py::extract`, even though `round2/D-needle-decision.md` names `extract` as needle's correct seat and notes `resolve("extract")` raises `KeyError` today.
+  *(Half of this closed 2026-11-03: the primitive has a backend — `rule_extract`,
+  `service/ti/decide/backends/rule_extract.py`, shipped as
+  `decide.backends_in_use.extract` — so the `KeyError` is gone and the seat
+  `round2` described is occupied, by a rule extractor rather than a model. The
+  benchmark half stands: nothing under `bench/` drives `needle_extract_bench.py`.)*
 
 **Net:** the local evidence on Needle is a *measured no* for routing (59.4% node-fixed, a fine-tune that dropped 26% → 6%) and an *unmeasured maybe* for `extract`.
 
@@ -204,7 +212,11 @@ Ranked by hours saved. Each names the exact source path and where it lands.
 `router_lib.py`, and `results/{needle,d1,classic,qwen,router,cascade}_results.json`.
 
 **Lands at:** `tests/data/routing_382.json`, `bench/registry.json`, `bench/routers/`,
-`bench/results/routing_382/`.
+`bench/results/routing_382/`. *(As landed, 2026-11-03: the rows are
+`tests/data/routing_382.json`; the registry is `bench/registry_382.json`; there is
+no `bench/routers/` — the classical half is `bench/classical_baseline.py` and its
+artifacts are `bench/results/classical_382.json` and `classical_v2.json`, with the
+variant results left where they came from.)*
 
 **Why it saves time:** it is the only head-to-head where six backends saw the same 382
 utterances on the same box, and it includes the two baselines toolInterfacer has never
@@ -298,3 +310,23 @@ probability-array schemas, which is why `LOCALJEV_GRAMMAR_MAX_OUTCOMES` defaults
 - **`Research/localLLMfunReseach` and `Research/moneyLM`** — a domain-research pipeline
   and a business sweep. Neither contains a dataset, model, adapter or eval for
   decisions. Recorded here so a later survey does not spend a pass on them.
+
+---
+
+## Status of this inventory — 2026-11-03 16:20 EST
+
+*(Appended. The survey above is the record of what was on disk when it was
+written; three of its "has never been run" claims have since stopped being true,
+and they are marked inline as well as here.)*
+
+| claim in this document | status now |
+|---|---|
+| "the classical baseline toolInterfacer has never run" (headline, and Top-5 #1's "two baselines toolInterfacer has never run") | **done, in-repo.** `bench/classical_baseline.py` reproduces the sibling benchmark's 93.19% / 0.60 / 0.61 ms protocol in stdlib Python, plus the checks that number needed: 66.23% with whole templates held out, 0.0% coverage behind the shipped 0.70 gate, and 62.7% against d1-3B's 74.0% on this repo's own frozen set. Written up in `docs/classical-baseline-2026-11-03.md`, artifacts in `bench/results/classical_382.json` and `classical_v2.json`. The MiniLM baseline still has not been run. |
+| Top-5 #1's landing paths | the rows landed at `tests/data/routing_382.json` and the registry at `bench/registry_382.json`; there is no `bench/routers/` (the runners became one script, `bench/classical_baseline.py`) and no `bench/results/routing_382/`. |
+| "`resolve("extract")` raises `KeyError` today" | **closed.** `extract` has a backend (`rule_extract`) and ships as `decide.backends_in_use.extract`. What is still missing is the *benchmark*: nothing under `bench/` drives `jevResearch/lab/needle_extract_bench.py`. |
+
+Everything else in the survey is a reading of a sibling project's files and is
+unaffected by this repo's work. The one number a later document qualifies is in
+`docs/classical-baseline-2026-11-03.md` §5–6, which measures the same classical
+model on a different, harder task and reaches the opposite verdict for it; that is
+a scope difference, not a contradiction, and that document says so.

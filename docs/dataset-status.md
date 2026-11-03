@@ -10,10 +10,11 @@ source so a mismatch is visible rather than confusing.
 ## Headline
 
 **`hops.jsonl` yields 14 trainable choice records, and all 14 carry the same
-label.** It is not a decision log. It is an execution trace with an intent string
-attached to some hops, and the three things a router would need — a state, a
-candidate set, and the answer the model picked — are not in it. What it has is
-which op *ran*.
+label.** (15 on the current log — the re-check immediately below is the current
+number and the 14 is the snapshot this section describes.) It is not a decision
+log. It is an execution trace with an intent string attached to some hops, and the
+three things a router would need — a state, a candidate set, and the answer the
+model picked — are not in it. What it has is which op *ran*.
 
 **Re-checked 2026-11-03 15:48 EST against the live log, which has since grown.**
 The same rule, run over the current `service/logs/hops.jsonl` (**5,243 lines**, up
@@ -25,7 +26,14 @@ The per-op table below describes the 1,398-line snapshot; on the current 5,243
 lines the three kinds are `filesys_glob` 2,400, `decide_pick` 1,501,
 `filesys_read` 1,342, with 2,985 hops rejected as contradictory and 1,484 for no
 intent. `TI_DATASET_LOGS=<live log dir> TI_DATASET_OUT=/tmp/<dir> python3 -m
-tools.dataset ingest` reproduces both.
+tools.dataset ingest` reproduces both. *(Checked 2026-11-03 16:2x EST: the rule in
+`tools/dataset/ingest.py` — `soft.intent_context` non-empty, op in the 8 routable
+set, op consistent with the intent across the whole log — is unchanged since
+`fb19e16`, so both counts come from one rule and neither is a rule change wearing a
+snapshot change. The per-op figures above add up to the line count
+(2,400 + 1,501 + 1,342 = 5,243). They could not be re-measured from this worktree:
+`service/logs/` is git-ignored and absent here, so the 5,243-line snapshot is taken
+as recorded rather than re-counted.)*
 
 Worse for training: because every surviving record is `filesys_glob`, a model
 trained on this file learns "answer `filesys_glob`" and nothing else. The label
@@ -95,7 +103,10 @@ The only gold labels in the repo are the vetted utterance→label pairs:
 | `tests/data/heldout_phase4.json` | 70 | shape | singular / enumerative |
 
 The five files share no utterance with each other (checked), so every gold record
-is a distinct row. 496 gold records, 18 observed, 514 total.
+is a distinct row. 496 gold records, 18 observed, 514 total — the observed half
+being 14 from `hops.jsonl` plus 4 from `live.jsonl` on this snapshot; on the
+5,243-line log measured above it is 19 observed and 515 total — the same
+arithmetic, with one more row from a longer trace.
 
 ## What the pipeline emits
 

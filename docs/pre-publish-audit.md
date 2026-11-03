@@ -452,3 +452,76 @@ git log --all --diff-filter=A --name-only --format=''
 git log --all -p --format='' | grep -oE '<key patterns>' -> 2 hits, both all-zeros fixtures
 git ls-files -z | xargs -0 du -ch | tail -1     -> 5.6M
 ```
+
+---
+
+## Resolution — appended 2026-11-03 16:20 EST
+
+*Appended to a dated audit. Nothing above this line has been rewritten:
+everything there describes the tree at `ca7ffec`, 2026-11-03 15:37 EST. Two of
+its headline findings were closed 24 minutes later.*
+
+### What was fixed, in which commit
+
+Commit **`7113ef8`** — "chore: close the path leak the guard could not see",
+2026-11-03 16:01:17 — closes §2.2 and §2.3 together.
+
+| finding | was (at `ca7ffec`) | now (at `a105d50`) |
+|---|---|---|
+| §2.2, `docs/assets-inventory.md:11` | the Linux account path followed by a backtick | `$HOME` |
+| §2.2, `docs/review2-2026-11-03.md:344` | the same path captured inside a service error message | `('$HOME')` — which is what the service now prints |
+| §2.3, **41 tracked files under `bench/`** | `C:\Users\<user>` + the sibling-project tree + `models\<model>.gguf`, in every recorded `model.path` | `<workspace>\models\<model>.gguf` — 40 result JSONs under `bench/results/dell/` (including `props/`) plus `bench/README.md:75`, which documents the placeholder |
+| §2.3's carriage of the **Windows account name** | literal in every recorded blob | gone; `<workspace>` is the repo's own placeholder form |
+
+Measured on this worktree at `a105d50`: all 40 result JSONs carry
+`<workspace>\models\`, and no scanned file in the tree matches any of the guard's
+three patterns — `python3 -m pytest tests/test_no_personal_paths.py -q` → **8
+passed, 39 subtests**. §2.2's appendix recorded `1 passed` while two files still
+held the path, which is exactly the defect this commit exists to close.
+
+The same edit also made `bench/classical_baseline.py` runnable again: `e523336`'s
+substitution left the account prefix unescaped, so 37 of the 40 result files
+failed `json.loads` and the script died in its loader. That episode and its
+closure are recorded in `docs/classical-baseline-2026-11-03.md` §10.
+
+### The guard was rewritten, not re-pointed
+
+`tests/test_no_personal_paths.py` no longer has a pattern the bare form slips past.
+It carries three, plus a `GuardPatternTest` class that pins what each must catch
+*and* the near-misses each must let through — the part §2.2 was really missing:
+
+- `_HOME` — `/home/<name>` with a terminator set covering end-of-string,
+  whitespace, a backtick, quotes, and every punctuation a captured error path gets
+  quoted with. The mandatory trailing `/` is gone.
+- `_USERS` — a drive-rooted `Users\<name>` (either separator), same terminator
+  rule, so the bare form matches here too.
+- `_WIN_STRUCTURE` — a drive-rooted path that still carries a `Documents` or
+  `models` component: the *shape* §2.3 complained about, without hardcoding this
+  machine's sibling directories.
+
+Two exemptions were removed rather than widened: `bench/results/` is scanned now
+(its recorded paths are redacted and the model basename — the part that proved the
+phantom-lane bug — is intact), and `node_modules` is skipped by directory *name*
+anywhere instead of by root prefix, which is what had made the suite fail on the
+extension's own dependency tree.
+
+### What remains — the owner's decision, unchanged
+
+- **History.** 108 of `main`'s 110 trees still contain the path. Nothing in the
+  working tree touches that; only a rewrite does. §2.6 option A remains my read.
+- **Commit messages.** Three carry `<host>` (`c1adb56`, `412da1a`, `7872d7d`), and
+  a content-only rewrite does not fix them (§2.4).
+- **The 6 unmerged `bench/*` branches** — 7 commits, and a further copy of the
+  pre-redaction paths (§7 item 3).
+- **`docs/assets-inventory.md`'s scope** (§7 item 2): the directory listings,
+  checkpoint byte sizes and the two characterisations of unrelated private projects
+  are untouched.
+- **Three dangling doc references** (§6.2): `docs/session-recall.md`,
+  `docs/dataset-spec.md` and `docs/project_reference.md` are still cited and still
+  do not exist. This pass found one more in the same family — `docs/assets-inventory.md`
+  names `bench/registry.json` as where the imported registry would land; the file
+  that landed is `bench/registry_382.json`.
+
+§1's headline — "history cannot be published as-is" — stands. What changed is the
+*HEAD* half of it: 2 occurrences became 0, and the guard can see the shape that hid
+them.

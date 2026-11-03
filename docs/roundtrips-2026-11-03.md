@@ -152,6 +152,11 @@ What survives, and what does not:
   (`docs/vulkan-igpu-2026-11-03.md`): the decision cost on this box is the binding term, and
   the cheapest way to lower it measured so far is the classical backend at 0.04 ms
   (`docs/classical-baseline-2026-11-03.md`), not a faster GPU.
+  *(2026-11-03 16:2x EST: that p50 is the low end of a noisy digit. The same rows have
+  since measured 0.027 ms and 0.17 ms in two further runs — `docs/classical-baseline-2026-11-03.md`
+  §10 — so the point here (three orders of magnitude below the 1,055 ms per-decision term)
+  survives the spread while "0.04 ms" does not survive as a stable figure. Nothing in this
+  document's arithmetic changes: it uses the 1,055 ms decide cost, not the classical latency.)*
 - **One correctness regression to chase**: a grep intent answered by the disk-read template.
 
 ## Caveats

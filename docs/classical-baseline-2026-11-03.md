@@ -38,7 +38,7 @@ in stdlib Python and the recorded hyper-parameters were copied exactly.
 | `tests/data/routing_382.json` | The 382 rows, verbatim. |
 | `bench/registry_382.json` | The 17-tool + `none_route` registry, verbatim — this is the **training** corpus the recorded number was fitted on. |
 | `tests/data/routing_382_PROVENANCE.md` | Origin, digests, label distribution, the exact command. |
-| `bench/classical_baseline.py` | Every number in this document. Writes `bench/results/classical_382.json` and `classical_v2.json`. |
+| `bench/classical_baseline.py` | Every number in this document. Writes `bench/results/classical_382.json` and `classical_v2.json` — *by default, over the recorded copies*; pass `--out-dir` unless replacing them is what you mean. See §10. |
 
 **Probabilities are a softmax of decision values, not `predict_proba`.** A linear
 SVM's margins are uncalibrated, so the distribution is the softmax of those
@@ -275,11 +275,15 @@ p_max is on the gate's axis at all, plus a threshold fitted on held-out rows,
 ## 10. Reproduce
 
 ```
-python3 bench/classical_baseline.py                 # every number above
-python3 -m pytest tests/test_classical_backend.py -q # the contract
+python3 bench/classical_baseline.py --out-dir /tmp/cls   # every number above
+python3 -m pytest tests/test_classical_backend.py -q     # the contract
 ```
 
-**The first command does not run at HEAD (`ca7ffec`).** It exits with
+`--out-dir` is not decoration: without it the script rewrites the two artifacts
+under `bench/results/` that hold the recorded numbers (see below).
+
+**At `ca7ffec` — the HEAD this section was written against, 2026-11-03 15:41 EST —
+the first command did not run at all.** It exited with
 
 ```
 json.decoder.JSONDecodeError: Invalid \escape: line 8 column 16 (char 193)
@@ -326,3 +330,58 @@ Artifacts: `bench/results/classical_382.json` (reproduction, in-sample contrast,
 both CVs, reference-distance buckets, coverage curve, config, model fingerprint)
 and `bench/results/classical_v2.json` (v1→v2 transfer, per-band, both CVs,
 coverage curve, the d1 cascade sweep).
+
+### The crash is closed — status 2026-11-03 16:20 EST, at `a105d50`
+
+**The `JSONDecodeError` above no longer reproduces, and the paragraph describing
+it is a record of one afternoon rather than a property of the tree.** Commit
+`7113ef8` (2026-11-03 16:01:17, "chore: close the path leak the guard could not
+see") rewrote every recorded `model.path` — the half-redacted Windows form
+`e523336` left behind — to `<workspace>\models\<model>.gguf`, which is portable
+*and* valid JSON. Measured on this worktree:
+
+- all **61** result files under `bench/results/` parse with `json.loads`. That
+includes the 37 of the 40 named above, the three `props/*.json` beside them (also
+invalid at `ca7ffec`, and outside the glob the count was taken over), and the three
+`heuristic_micro` files that always parsed because they carry no `model` block;
+- `python3 bench/classical_baseline.py --out-dir /tmp/cls-verify` exits **0 in 52 s**
+and writes both artifacts, so the v2 half and the cascade sweep run;
+- every figure in the table above is reproduced by that run: accuracy 0.9319
+(356/382), none-detection 0.60 (15/25), false-none 0.00 (0/357), template-grouped
+253/382 = 0.6623, random-row 353/382 = 0.9241, in-sample 382/382, v2 transfer
+94/150 = 62.7% with bands 67.2 / 41.9 / 69.1, v2 CV 60.0 / 62.0, cascade 79.3% at
+44% coverage and gate ≥ 0.20, model fingerprint `2eff58ac…`.
+
+A second, independent defence exists on an unmerged branch (`p2-regress` @
+`ae9961e`, 16:07:17, "fix(bench): the probes survive auth and a bad artifact"): a
+`load_runs` that names each unreadable artifact and its reason, checks that every
+file's `per_row` count matches the rows it is paired with, and continues on the
+files that parse — so a future damaged recording degrades this run instead of
+aborting it. It is not on `main`; the edit that makes the files parse is.
+
+### The documented command overwrites the evidence it reproduces — 2026-11-03 16:20 EST
+
+This is the defect this document did not have. `--out-dir` defaults to
+`bench/results` (`bench/classical_baseline.py:247`) and both writes are
+unconditional `write_text` calls (`:319`, `:354`). So the reproduction command
+above does not reproduce the recorded numbers — it **replaces the files that
+record them**, `bench/results/classical_382.json` and `classical_v2.json`, with
+whatever the box produced this run.
+
+Observed when this baseline was first re-run by hand on 2026-11-03: the accuracy
+was identical and the p50 latency moved **0.062 → 0.024 ms** — the same 3×
+single-shot timing noise §2 warns about — and both files had to be `git checkout`-ed
+back. A third run, in this pass and into `/tmp`, gave **0.17 ms** p50 for the same
+356/382. Three values for a figure that is not changing; two of those runs wrote
+over the recording, which is why it had to be restored by hand.
+
+Practical rule, and the reason §10 now shows the flag:
+
+```
+cp -r bench/results /tmp/results-before          # keep the recording
+python3 bench/classical_baseline.py --out-dir /tmp/cls-verify
+```
+
+Without `--out-dir` the run is not read-only, and a reader who "just reproduces
+the numbers" deletes the numbers being reproduced. The same hazard applies to any
+documented command whose script writes into `bench/results/` by default.
