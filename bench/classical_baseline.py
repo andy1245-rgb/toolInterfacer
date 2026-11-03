@@ -16,7 +16,7 @@ It also runs the backend on this repo's own frozen 150-row set
 (`tests/data/utterances_v2.json`), 8-way, which is a different task: the 18-way
 set has a `__none__` class and the v2 set has none.
 
-Usage: python3 bench/classical_baseline.py [--out-dir bench/results]
+Usage: python3 bench/classical_baseline.py [--out-dir bench/results] [--d1-dir bench/results/dell]
 """
 from __future__ import annotations
 
@@ -242,12 +242,64 @@ def cascade_with_d1(d1_runs: list[dict], classical: dict) -> dict:
     return by_threshold
 
 
+def load_runs(paths: list[Path], expected_rows: int) -> tuple[list[dict], list[dict]]:
+    """The recorded run files that parse and line up, plus a reason for every one that does not.
+
+    A bench driver reads `bench/results/` as evidence, and evidence arrives in the
+    state the recorder left it: 37 of the 40 files under `bench/results/dell/` are
+    invalid JSON after the personal-prefix redaction in `e523336`, and this loader
+    used to die on the first one, taking the v2 half and the cascade sweep with it.
+    A malformed artifact is a datum *about the artifact*: it is named with its
+    reason and the run continues on the files that parse.
+
+    Row alignment is checked, not assumed: the cascade pairs these rows positionally
+    with the classical per-row list, so a file with the wrong count would silently
+    mislabel every row and report a worse number rather than a missing one.
+    """
+    runs: list[dict] = []
+    problems: list[dict] = []
+    for path in paths:
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+            problems.append({"file": path.name,
+                             "problem": f"{type(exc).__name__}: {exc}"})
+            continue
+        rows = data.get("per_row") if isinstance(data, dict) else None
+        if not isinstance(rows, list):
+            keys = sorted(data) if isinstance(data, dict) else type(data).__name__
+            problems.append({"file": path.name,
+                             "problem": f"no 'per_row' list (top-level: {keys})"})
+            continue
+        if len(rows) != expected_rows:
+            problems.append({"file": path.name,
+                             "problem": f"{len(rows)} per_row entries, expected "
+                                        f"{expected_rows} — pairing them with the v2 rows "
+                                        f"positionally would mislabel every row"})
+            continue
+        broken = next((i for i, row in enumerate(rows)
+                       if not isinstance(row, dict)
+                       or any(key not in row for key in ("choice", "ms", "correct"))),
+                      None)
+        if broken is not None:
+            problems.append({"file": path.name,
+                             "problem": f"per_row[{broken}] has no 'choice'/'ms'/'correct', "
+                                        f"which the cascade reads"})
+            continue
+        runs.append(data)
+    return runs, problems
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out-dir", default=str(ROOT / "bench/results"))
+    ap.add_argument("--d1-dir", default=str(ROOT / "bench/results/dell"),
+                    help="directory holding the recorded d1 lane files the cascade sweep "
+                         "pairs against the v2 rows (default %(default)s)")
     args = ap.parse_args()
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+    d1_dir = Path(args.d1_dir)
 
     cfg = dict(load()["decide"]["classical"])
     rows_382 = json.loads(ROUTING_382.read_text())
@@ -329,8 +381,9 @@ def main() -> None:
     pair_keys = [("pair::" + "|".join(sorted((r["label"], r["tier_target"])))
                   if r.get("tier_target") else f"row::{i}")
                  for i, r in enumerate(rows_v2)]
-    d1_runs = [json.loads(p.read_text()) for p in sorted(
-        (ROOT / "bench/results/dell").glob("v2-d1-3B-Q4-systemone-props-asserted*.json"))]
+    d1_paths = sorted(d1_dir.glob("v2-d1-3B-Q4-systemone-props-asserted*.json"))
+    d1_runs, d1_problems = load_runs(d1_paths, len(v2["per_row"]))
+    d1_skipped = {problem["file"] for problem in d1_problems}
     result_v2 = {
         "train": {"source": "tests/data/utterances.json", "n": len(rows_v1),
                   "classes": len({r["label"] for r in rows_v1})},
@@ -345,8 +398,9 @@ def main() -> None:
                                       "bands": {"t1": 0.812, "t2": 0.710, "t3": 0.673},
                                       "source": "docs/model-sweep-consolidated.md"},
         "cascade_gate_then_d1": (cascade_with_d1(d1_runs, v2) if d1_runs else {}),
-        "cascade_source_files": [p.name for p in sorted(
-            (ROOT / "bench/results/dell").glob("v2-d1-3B-Q4-systemone-props-asserted*.json"))],
+        "cascade_source_files": [p.name for p in d1_paths],
+        "cascade_files_used": [p.name for p in d1_paths if p.name not in d1_skipped],
+        "cascade_skipped": d1_problems,
         "config": cfg,
         "model_fingerprint": v2_backend.model().fingerprint,
         "generated": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
@@ -395,11 +449,30 @@ def main() -> None:
           f"{result_v2['cv_v2_random']['correct']}/{result_v2['cv_v2_random']['n']}"
           f" = {result_v2['cv_v2_random']['accuracy']:.1%}")
     if result_v2["cascade_gate_then_d1"]:
-        print("\n# classical gate in front of d1-3B, same 150 rows (threshold swept):")
+        print(f"\n# classical gate in front of d1-3B, same {len(v2['per_row'])} rows "
+              f"(threshold swept), from {len(d1_runs)} of {len(d1_paths)} recorded run files:")
         for threshold, slot in result_v2["cascade_gate_then_d1"].items():
             print(f"  gate>={threshold}: cascade {slot['accuracy']:.1%} "
-                  f"(d1 alone 74.0%) at {slot['gate_coverage']:.0%} coverage, "
-                  f"mean {slot['mean_ms']:.0f} ms")
+                  f"(d1 alone {result_v2['incumbent_d1_3B_systemone']['accuracy']:.1%}) at "
+                  f"{slot['gate_coverage']:.0%} coverage, "
+                  f"mean {slot['mean_ms']:.0f} ms, "
+                  f"{slot['rows_fixed_vs_d1']} fixed / {slot['rows_broken_vs_d1']} broken")
+    else:
+        print(f"\n# cascade NOT MEASURED: 0 of {len(d1_paths)} recorded d1 run files in "
+              f"{d1_dir} could be read, so there is no d1 per-row answer to pair the classical "
+              f"rows with. Nothing below is a verdict on the front gate.")
+    if d1_problems:
+        print(f"\n# WARNING: {len(d1_problems)} of {len(d1_paths)} recorded d1 run files were "
+              f"skipped — the artifact itself is unusable, which says nothing about the model:")
+        for problem in d1_problems:
+            print(f"  {problem['file']}: {problem['problem']}")
+    print(f"\n# summary: {'DEGRADED' if d1_problems else 'complete'} run — "
+          f"{len(rows_382)}-row reproduction (fit {len(corpus)} registry references, scored "
+          f"{len(rows_382)} rows), both CVs on the 382, v1→{len(rows_v2)}-row v2 transfer, "
+          f"cascade from {len(d1_runs)}/{len(d1_paths)} d1 run files")
+    print(f"# measured here: accuracy over fixed row sets and single-shot per-row latency on "
+          f"this box. Not a throughput claim, and not a d1-3B re-run — its rows are the "
+          f"recorded ones.")
     print(f"\nwrote {out_dir / 'classical_382.json'}\nwrote {out_dir / 'classical_v2.json'}")
 
 

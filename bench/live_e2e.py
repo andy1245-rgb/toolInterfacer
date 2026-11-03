@@ -31,13 +31,26 @@ the run's temp dir, and `--decide-timeout` for `decide.d1_systemone.timeout_s`
 (the shipped 30 s is tight for an L2 pick on a shared box — measured 20 s and
 61 s for the same request, see docs/live-e2e-2026-11-03.md).
 
+Auth. Every POST carries the shared service token, resolved in
+`service/ti/http/auth.py`'s order: the variable named by `http.token_env`
+(default `TI_HTTP_TOKEN`), then the 0600 runtime file the service writes
+(`TI_HTTP_TOKEN_FILE`, else `http.token_file`). `pi-extension/src/token.ts`
+resolves it the same way, so the probe is the third caller of one rule rather
+than a fourth opinion. `--serve` hands that *same* value to the child it spawns,
+so the two ends of a run cannot disagree; `--token` overrides both for attaching
+to a service whose token the caller set by hand. A 401 aborts the run: the
+service refuses every POST without the token, so a table of failed cases there
+would report a worse number than the code deserves (that is what happened after
+auth landed in `5dc537f` — `0/4`, HTTP 401).
+
     python3 bench/live_e2e.py --serve                       # start, probe, stop
     python3 bench/live_e2e.py --skip-l2                     # attach; skip the ~3 min L2 case
     python3 bench/live_e2e.py --service http://127.0.0.1:1115 \
         --model-url http://127.0.0.1:8099                   # attach to a running pair
 
 Exit codes: 0 every case passed, 1 a case or contract violation failed,
-2 the stack was unreachable or the probe refused to start it.
+2 the stack was unreachable, the probe refused to start it, or the service
+refused its token (nothing was measured, so the run may not read as a score).
 
 Ports, model, and server are env-overridable (`TI_E2E_SERVICE_PORT`,
 `TI_E2E_MODEL_PORT`, `TI_MODEL`, `TI_SERVER`); nothing machine-specific is baked
@@ -64,6 +77,9 @@ from typing import Any, Callable
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+# The token half is the service's own resolution (`service/ti/http/auth.py`), not a
+# copy of it, so `ti` has to be importable here as well as in the child.
+sys.path.insert(0, str(ROOT / "service"))
 
 from model_guard import (  # noqa: E402
     NO_EXPECT_WARNING,
@@ -71,6 +87,12 @@ from model_guard import (  # noqa: E402
     assert_model_match,
     served_model,
 )
+
+#: The header `service/ti/http/auth.py::authorized` reads, and the one
+#: `pi-extension/src/token.ts` sends (`tests/test_probe_guard.py` pins all three).
+TOKEN_HEADER = "X-TI-Token"
+#: `auth._establish`'s fallback when conf declares no `http.token_env`.
+DEFAULT_TOKEN_ENV = "TI_HTTP_TOKEN"
 
 FIXTURE_DIR = ROOT / "bench" / "fixtures" / "live-e2e"
 DEFAULT_EXPECT_MODEL = "d1-3B-Q4_K_M.gguf"
@@ -96,15 +118,95 @@ AMBIGUOUS_INTENT = "read the report file"
 AMBIGUOUS_ANSWER = "report-v1.md"
 
 
+# -------------------------------------------------------------------------- auth
+
+
+@dataclass
+class Token:
+    """The token a POST must carry, and where it came from — so a refusal can name it."""
+
+    value: str
+    source: str
+
+
+class Unauthenticated(RuntimeError):
+    """The service refused the credentials: every POST will, so nothing was measured."""
+
+
+def service_auth():
+    """The service's own `ti.http.auth` — one resolution rule, not a second copy."""
+    try:
+        from ti.http import auth
+    except ImportError as exc:  # pragma: no cover — `service/` ships with the repo
+        raise RuntimeError(
+            f"cannot import ti.http.auth from {ROOT / 'service'} to resolve the service "
+            f"token: {exc}") from exc
+    return auth
+
+
+def token_env_name() -> str:
+    """`http.token_env` — the variable `auth._establish` reads first (`TI_HTTP_TOKEN`)."""
+    return str(service_auth().conf().get("token_env") or DEFAULT_TOKEN_ENV)
+
+
+def resolve_token(explicit: str = "") -> Token:
+    """The token to send, resolved in `service/ti/http/auth.py`'s order.
+
+    1. `--token`, a bench override in front of the rule (attaching to a service
+       whose token the caller set by hand);
+    2. the environment variable named by `http.token_env`, because the extension
+       spawns the service with `{...process.env}` and an exported token reaches
+       both ends with no file;
+    3. the runtime file the service writes — `auth.token()`'s own code, so the
+       0600/regular-file/empty checks cannot drift from the service's.
+    """
+    if explicit.strip():
+        return Token(explicit.strip(), "--token")
+    auth = service_auth()
+    name = token_env_name()
+    from_env = os.environ.get(name, "").strip()
+    if from_env:
+        return Token(from_env, f"${name}")
+    return Token(auth.token(), auth.token_path())
+
+
+def refusal(url: str, token: Token | None) -> str:
+    """What a 401 deserves: what was sent, where from, and both places it is read."""
+    sent = f"the token from {token.source}" if token is not None and token.value else "no token"
+    return (f"the service refused this probe's credentials: POST {url} answered HTTP 401 "
+            f"(unauthenticated). The probe sent {sent}; the service serves a POST only when it "
+            f"carries the value of http.token_env (default ${DEFAULT_TOKEN_ENV}) or of the 0600 "
+            f"runtime file at http.token_file (default ~/.local/state/ti/http.token) — "
+            f"service/ti/http/auth.py. A service started with a different token, or one whose "
+            f"token file was rotated after it started, refuses every call: pass --token, or "
+            f"start the service with this token in its environment.")
+
+
 # --------------------------------------------------------------------------- io
 
 
-def http_json(url: str, payload: Any = None, timeout: float = 30.0) -> Any:
+def http_json(url: str, payload: Any = None, timeout: float = 30.0,
+              token: Token | None = None) -> Any:
+    """GET, or POST when `payload` is given. Every POST carries the service token.
+
+    A 401 is raised as `Unauthenticated`, not returned as a failed case: the
+    service refuses *every* POST without the token, so folding that into the pass
+    count reports a worse number than the code deserves. That is the regression
+    this parameter exists for — auth landed nine minutes after the recorded run and
+    the probe reported `0/4` for it (docs/live-e2e-2026-11-03.md).
+    """
     data = None if payload is None else json.dumps(payload).encode()
     headers = {"Content-Type": "application/json"} if data is not None else {}
+    if data is not None and token is not None:
+        headers[TOKEN_HEADER] = token.value
     req = urllib.request.Request(url, data=data, headers=headers)
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        raw = resp.read()
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            raw = resp.read()
+    except urllib.error.HTTPError as exc:
+        if exc.code == 401:
+            raise Unauthenticated(refusal(url, token)) from None
+        raise
     return json.loads(raw) if raw else None
 
 
@@ -520,6 +622,10 @@ def run_cases(chosen: list[Case], ctx: Ctx, ops: list[str],
         started = time.monotonic()
         try:
             row.body = transport(body, case.timeout) or {}
+        except Unauthenticated:
+            # not a case failure: with no token there is nothing to score, and a
+            # table of FAILs would report the 401 as a property of the code
+            raise
         except Exception as exc:  # noqa: BLE001 — a dead transport is a failed case, not a crash
             row.problems = [f"transport failed: {type(exc).__name__}: {exc}"]
             row.wall_ms = round((time.monotonic() - started) * 1000, 1)
@@ -538,7 +644,9 @@ def _fmt_conf(body: dict) -> str:
 
 def print_table(rows: list[Row]) -> None:
     width = max([len(r.case.name) for r in rows] + [4])
-    print(f"\n{'#':>2} {'case':<{width}} {'status':<10} {'conf':>5} {'hops':>4} "
+    print("\n# status / conf / hops come from each response body; wall ms is this probe's own "
+          "round trip over the socket")
+    print(f"{'#':>2} {'case':<{width}} {'status':<10} {'conf':>5} {'hops':>4} "
           f"{'wall ms':>9}  verdict")
     print("-" * (width + 44))
     for i, row in enumerate(rows, 1):
@@ -569,8 +677,9 @@ def print_table(rows: list[Row]) -> None:
 class Stack:
     """llama-server + the decision service, started only under --serve."""
 
-    def __init__(self, args: argparse.Namespace) -> None:
+    def __init__(self, args: argparse.Namespace, token: Token) -> None:
         self.args = args
+        self.token = token
         self.tmp = Path(tempfile.mkdtemp(prefix="ti-live-e2e-"))
         self.procs: list[subprocess.Popen] = []
         self.service = args.service.rstrip("/")
@@ -633,9 +742,12 @@ class Stack:
             "http": {"port": service_port},
             "hops_log": {"path": str(self.tmp / "hops.jsonl")},
         }), encoding="utf-8")
-        env = {**os.environ, "PYTHONPATH": "service", "TI_CONF_OVERLAY": str(overlay)}
+        env = {**os.environ, "PYTHONPATH": "service", "TI_CONF_OVERLAY": str(overlay),
+               # the value the probe will send, so the child cannot resolve another
+               # one: two tokens would mean five 401s and no way to tell why
+               token_env_name(): self.token.value}
         print(f"serving the decision service on 127.0.0.1:{service_port} (overlay "
-              f"{overlay.name})", flush=True)
+              f"{overlay.name}, token from {self.token.source})", flush=True)
         self.procs.append(subprocess.Popen(
             [sys.executable, "-m", "ti.http.api"], cwd=str(ROOT), env=env,
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True))
@@ -666,6 +778,30 @@ class Stack:
 
 
 # --------------------------------------------------------------------- main
+
+
+def summary_notes(rows: list[Row], expect_model: str, allow_fixture: bool) -> list[str]:
+    """What stops this run from reading as "the shipped path passed", in words.
+
+    A pass count is only as good as what answered it. A run with no served-model
+    assertion, a replay backend, or a case that took a degraded path is a
+    *different measurement*, and the verdict line has to say which one it is: the
+    recorded `5/5` was a real d1-3B behind `pair`, and the same `5/5` from a
+    fixture would prove only the transport.
+    """
+    notes: list[str] = []
+    if not expect_model:
+        notes.append("no served-model assertion (`--expect-model ''`): this run cannot say "
+                     "which model answered, only that something answered on the model port")
+    if allow_fixture:
+        notes.append("`--allow-fixture` accepted a replay backend: these cases measure the "
+                     "transport, not the model")
+    degraded = [row.case.name for row in rows if row.body.get("degraded") is True]
+    if degraded:
+        notes.append(f"{len(degraded)} of {len(rows)} cases carried degraded=true "
+                     f"({', '.join(degraded)}): those bodies report a gated or fallback answer, "
+                     f"so read them as degraded results, not clean ones")
+    return notes
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -706,6 +842,9 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--allow-fixture", action="store_true",
                     help="pass even when the service's choice backend is the replay fixture "
                          "(a smoke test of the transport, not of the model)")
+    ap.add_argument("--token", default="",
+                    help="service token (default: $TI_HTTP_TOKEN, then the runtime token "
+                         "file — the order service/ti/http/auth.py resolves)")
     ap.add_argument("--json", default="", help="write the summary (rows + health) to this path")
     return ap
 
@@ -720,9 +859,13 @@ def make_ambiguous_dir() -> Path:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    try:
+        token = resolve_token(args.token)
+    except RuntimeError as exc:  # TokenUnavailable is one: the file was refused, not read
+        return abort(f"cannot resolve the service token — {exc}")
     ambiguous = make_ambiguous_dir()
     ctx = Ctx(fixture=FIXTURE_DIR, ambiguous=ambiguous, readme=ROOT / "README.md")
-    stack = Stack(args) if args.serve else None
+    stack = Stack(args, token) if args.serve else None
     try:
         if stack is not None:
             stack.start()
@@ -764,10 +907,12 @@ def main(argv: list[str] | None = None) -> int:
             print(NO_EXPECT_WARNING, file=sys.stderr)
 
         choice_backend = str(decide.get("choice") or "")
-        print(f"service  {service}  ops={len(ops)}")
+        print(f"service  {service}  ops={len(ops)} registered")
         print(f"decide   choice={choice_backend or '?'} noul={decide.get('noul') or '?'} "
               f"extract={decide.get('extract') or '?'} cascade={health.get('cascade')}")
         print(f"model    {served['basename']} ({served['ftype']}) at {model_url}")
+        print(f"auth     token resolved from {token.source}"
+              + (" and handed to the service this run started" if stack is not None else ""))
         problem = backend_problem(decide, args.allow_fixture)
         if problem:
             print(f"\nFAIL: {problem}")
@@ -779,22 +924,34 @@ def main(argv: list[str] | None = None) -> int:
             return 2
 
         def transport(body: dict, timeout: float) -> dict:
-            got = http_json(f"{service}/v1/useTool", body, timeout=timeout)
+            got = http_json(f"{service}/v1/useTool", body, timeout=timeout, token=token)
             if not isinstance(got, dict):
                 raise RuntimeError(f"service answered {type(got).__name__}, not an object")
             return got
 
-        rows = run_cases(chosen, ctx, ops, transport)
+        try:
+            rows = run_cases(chosen, ctx, ops, transport)
+        except Unauthenticated as exc:
+            return abort(str(exc))
         print_table(rows)
         failed = [row for row in rows if not row.ok]
-        print(f"\n{len(rows) - len(failed)}/{len(rows)} cases passed "
-              f"(choice backend: {choice_backend or 'unknown'})")
+        notes = summary_notes(rows, args.expect_model, args.allow_fixture)
+        print(f"\n{len(rows) - len(failed)}/{len(rows)} contract cases passed — "
+              f"{'DEGRADED' if notes else 'clean'} run, choice backend "
+              f"{choice_backend or 'unknown'}, model {served['basename']} ({served['ftype']})")
+        print(f"measured: the HTTP contract of the shipped path on these {len(rows)} fixed "
+              f"case(s); not a routing-accuracy, quality or latency claim")
+        for note in notes:
+            print(f"  DEGRADED {note}")
 
         if args.json:
             Path(args.json).write_text(json.dumps({
                 "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "service": service, "model_url": model_url,
                 "served_model": served, "decide": decide, "ops": ops,
+                "auth_source": token.source,
+                "cases_passed": len(rows) - len(failed), "case_count": len(rows),
+                "degraded_notes": notes,
                 "cases": [{"case": r.case.name, "status": r.body.get("status"),
                            "confidence": r.body.get("confidence"), "wall_ms": r.wall_ms,
                            "hops": hop_ops(r.body), "ok": r.ok, "problems": r.problems}
