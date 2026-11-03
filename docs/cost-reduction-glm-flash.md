@@ -315,10 +315,13 @@ with it. The other fourteen did not.
 | `or-bench-batch-probe-2026-10-26.json` | 6,898 | no | 3 rows, all 404 |
 
 The fourteen excluded files total **4,391,433 bytes**. The repo's tracked content
-on `main` is 5,631,649 bytes, so committing them would have added 78% to the whole
+on `main` is 5,788,005 bytes, so committing them would have added 76% to the whole
 repository for raw model transcripts of a single day's run. The one file that was
 kept carries the config the doc recommends; the rest are regenerable from the
 command in **Reproducing** above, which names every axis that distinguished them.
+The port as merged — this doc, the harness, both modules and the one result file —
+adds **227,643 bytes net**, 3.9% of the repository: 221,880 in five new files
+and 5,763 of added `bench/README.md` prose.
 
 **This does not weaken "every number carries its source file."** The source of
 these numbers is a script plus a documented configuration, and both are in the
