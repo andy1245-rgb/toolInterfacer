@@ -343,8 +343,13 @@ class ClassicalLoaderTest(unittest.TestCase):
         good = self._write("good.json", json.dumps({"per_row": [
             {"choice": "filesys_read", "ms": 1.0, "correct": True},
             {"choice": "filesys_glob", "ms": 2.0, "correct": False}]}))
-        # the shape `e523336` left behind: a Windows path with unescaped backslashes
-        bad = self._write("bad.json", r'{"model": {"path": "C:\models\d1.gguf"}}')
+        # the shape `e523336` left behind: a Windows path with unescaped
+        # backslashes. The directory is `fixture` rather than `models` because
+        # `tests/test_no_personal_paths.py` flags a drive-rooted path carrying a
+        # `Documents`/`models` component as a recorded tree, and its docstring
+        # names `C:\fixture\` as the synthetic shape it deliberately allows.
+        # The defect under test is the escaping, not the directory name.
+        bad = self._write("bad.json", r'{"model": {"path": "C:\fixture\d1.gguf"}}')
         runs, problems = self.baseline.load_runs([bad, good], 2)
         self.assertEqual(len(runs), 1)                       # the good one survived
         self.assertEqual(len(problems), 1)
