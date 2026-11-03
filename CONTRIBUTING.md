@@ -6,7 +6,7 @@
 python3 -m pytest tests/ -q
 ```
 
-That is the whole suite: 326 tests, 159 subtests, no network, no model, no CLI.
+That is the whole suite: 679 tests, 349 subtests, no network, no model, no CLI.
 It runs from a fresh clone with nothing installed — each test file puts
 `service/` on `sys.path` itself. Installing the package (`pip install -e
 ".[dev]"`) also works and is what CI does.
@@ -33,10 +33,15 @@ variable, a `~`-relative default, a repo-relative path, or a `<placeholder>`.
 
 `tests/test_no_personal_paths.py` scans the tree and fails the suite if one
 appears. The fix is always to parameterise the path, never to add an exception.
-Three trees are skipped on purpose: `bench/results/` (recorded evidence the
-unportable paths are the subject of), `extern/` (vendored), and `service/logs/`
-(runtime output). Machine-specific bench settings go in `bench/lane.env`, which
-is gitignored — copy `bench/lane.env.example`.
+Two trees are skipped by path, on purpose: `extern/` (vendored) and
+`service/logs/` (runtime output); generated trees are skipped by directory name
+(`node_modules`, `__pycache__`, `.venv`, `.git`, `build`, `build-vk`).
+`bench/results/` used to be exempt and is not any more: the recorded model paths
+are redacted to `$HOME/` and `C:\Users\<user>`, and the basenames that prove the
+phantom-lane point are kept, so the evidence is still guarded.
+
+Machine-specific bench settings go in `bench/lane.env`, which is gitignored —
+copy `bench/lane.env.example`.
 
 ## Commit style
 
@@ -74,7 +79,8 @@ readable in history.
 
 ```sh
 python3 -m pytest tests/ -q     # green
-python3 -m build --wheel        # the wheel still carries every subpackage
+python3 -m build --wheel        # build the wheel; CI then asserts the service
+                                # modules it names are inside it
 ```
 
 See [`docs/`](docs/) for the architecture, the ops CLI contract, the testing

@@ -64,7 +64,9 @@ this order:
 5. **Run the plan** — `core.runner.run_plan` walks the steps: execute the op → store its
    artifact → evaluate the gate → pick the next step, under a hop/ask/clock budget.
 6. **Map to a response** — `status`, `result`, `confidence`, `hops`, `degraded`,
-   `assumptions`, `sources`, and for a gated run `question`.
+   `assumptions`, `wall_ms`, `meta`, and for a gated run `question`. There is no
+   top-level `sources` field: a digest's sources live inside its own artifact, which
+   arrives as `result`.
 
 ## The levels
 
@@ -97,7 +99,7 @@ Everything that chooses goes through four primitives in `service/ti/decide/primi
 
 A backend implements them; `decide.resolve` picks one per call from
 `conf.decide.backends_in_use`. Swapping the model is one config line, and every backend is
-swappable for a recorded fixture — which is how 662 tests run with no network and no model.
+swappable for a recorded fixture — which is how 679 tests run with no network and no model.
 
 Shipped backends: `d1_systemone` (llama.cpp `/v1/systemone`), `logit_read` (any local LLM,
 A–Z letters read from `top_logprobs`), `pair` (local, escalating to hosted under a
@@ -157,12 +159,18 @@ The service is a local HTTP endpoint that reads files on behalf of whoever asks,
   network mount blocks in uninterruptible sleep on this box, measured from 22 minutes to 9.8
   hours, and no timeout or signal releases it.
 - **Bounds.** Body size, worker count, walk depth, walk hits, walk deadline, grep pattern
-  length, grep line width, and four regex *shapes* refused at compile.
+  length, grep line width, and three pattern *shapes* refused before compilation — a
+  quantified group holding a quantified atom, two adjacent unbounded atoms that can match the
+  same character, and an unbounded group whose alternation branches can start alike
+  (`ops/filesys/regexguard.py`).
 
 ## What is deliberately not here
 
 - **No model decides the plan.** Intent classification is keyword frames; the decision model
-  is used *inside* a plan. Spec §2 calls the routed version P2.
+  is used *inside* a plan. Spec §2 calls the model-planned version L3 and lists it as not
+  built; the label **P2** for the routed replacement comes from
+  `service/ti/planner/inspector.py`, not from the spec, whose P2 is the "d1-3B live" phase
+  (§8).
 - **No destructive tools.** `bash`/`write`/`edit` stay native; the v1 domain is read-only
   plus the web stack.
 - **No orchestration.** This schedules one call. Multi-agent coordination is a different
@@ -174,7 +182,7 @@ The service is a local HTTP endpoint that reads files on behalf of whoever asks,
 |---|---|
 | to see it run | `python3 bench/demo.py` |
 | the backlog and what the numbers imply | [`TODO.md`](TODO.md) |
-| the normative design and the phase plan | [`spec/1.0-spec.md`](spec/1.0-spec.md) |
+| the normative design and the phase plan | [`spec/1.0-spec.md`](spec/1.0-spec.md) — including its closing "Divergences from this spec" |
 | per-module ownership, what each owns and does not | [`docs/architecture.md`](docs/architecture.md) |
 | the CLI contract the web ops depend on | [`docs/ops.md`](docs/ops.md) |
 | what the economics actually are | [`docs/roundtrips-2026-11-03.md`](docs/roundtrips-2026-11-03.md) |

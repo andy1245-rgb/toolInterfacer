@@ -6,6 +6,11 @@ executed, not when its code exists.
 
 ## Where the project actually stands
 
+*(As of 2026-11-03, the start of this run. Superseded numbers: the suite is 679 tests,
+159→349 subtests, and the hop log is 1398 records — `README.md` and
+`docs/dataset-status.md` carry the current ones. The rest of this file is the record of that
+night's plan and is not rewritten.)*
+
 - Service, planner, four decide backends (d1 `/v1/systemone`, Jev-style
   `logit_read`, `pair`, `openrouter`) and the ops wall exist and are covered:
   `python3 -m pytest tests/ -q` → 326 passed, 159 subtests.

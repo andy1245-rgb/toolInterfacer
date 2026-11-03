@@ -31,6 +31,13 @@ scene 2 — a vague intent, resolved against real files
 [`ARCHITECTURE.md`](ARCHITECTURE.md) is how it works, [`TODO.md`](TODO.md) is what is next,
 and the numbers are under [`docs/`](docs/) — including the ones that are bad news.
 
+<details>
+<summary>The whole run, as one picture (a recording of <code>bench/demo.py</code>, offline)</summary>
+
+<img src="demo/toolinterfacer.svg" width="760" alt="A recorded bench/demo.py session: a header naming the service port, nine registered ops, the fixture decision backend and a temp directory, then three scenes. Scene 1, intent 'read notes.md', is an L0 passthrough: one filesys_read hop at 0.1 ms and a status line reading 'confidence absent (nothing was measured)', 1 hop in 26 ms wall. Scene 2, intent 'read the notes file', is L1 slot fill: filesys_glob lists 3 candidates, decide_pick picks notes.md at confidence 0.93, filesys_read returns its text — 3 hops in 22 ms wall. Scene 3, intent 'research lora rank for a 3b router', is the L2 template: decide_extract makes 6 queries, web_search returns 7 hits, decide_pick keeps 4, four gated web_fetch hops each verify one page, digest_assemble assembles the digest — 8 hops in 251 ms wall. A footer says the model made one call per scene and got every hop as evidence.">
+
+</details>
+
 ## The problem
 
 An agent that reads, searches, fetches and re-checks spends most of its round trips moving
@@ -39,22 +46,23 @@ remember the whole tool catalogue, emit a schema-valid argument object, and then
 a result it did not need to see to decide the next step.
 
 The work being done in those calls is mostly *decision*, not generation: which of these
-eight operations, over which of these six candidate files, with which slot values. That is a
+nine operations, over which of these six candidate files, with which slot values. That is a
 classification problem over a short state, and it does not need a frontier model.
 
 toolInterfacer puts a decision model there instead. `useTool(intent, params)` is the only
 thing the LLM calls; the service classifies the intent, resolves a step graph, fills slots
 against real candidates, and runs the operations. The LLM pays one round trip for a whole
-pipeline. A decision costs ~0.15 s on the hardware that served the sweep below, and zero
-generated tokens.
+pipeline. A decision costs ~0.15 s on the hardware that served the sweep below (p50 over
+the 150-row set), and zero generated tokens.
 
 **Whether that is cheaper is a trade, and it is measured.** Nine fixed tasks, two arms, the
-real service: the layer removes **2 of 14 round trips (14.3%)** and is **7.5 s slower** on
-the CPU-only box, because 10 decisions cost 10.6 s against 0.14 s of actual tool work. The
-two arms cross at **~5.8 s per model pass** or **~1 s per decision** — so the layer pays for
-compound intents on slow models with fast local decisions, and is pure overhead on
-single-call shapes. Full table, method and caveats:
-[`docs/roundtrips-2026-11-03.md`](docs/roundtrips-2026-11-03.md).
+real service (`n=9` tasks): the layer removes **2 of 14 round trips (14.3%)** and is
+**7.5 s slower** on the CPU-only box, because its 10 decisions cost 10.56 s against 0.14 s
+of actual tool work. The two arms cross at **~5.8 s per model pass** or **~1 s per
+decision** — so the layer pays for compound intents on slow models with fast local
+decisions, and is pure overhead on single-call shapes. Full table, method and caveats:
+[`docs/roundtrips-2026-11-03.md`](docs/roundtrips-2026-11-03.md), raw
+`bench/results/roundtrips-2026-11-03.json`.
 
 ## Architecture
 
@@ -80,6 +88,7 @@ decision service (Python, 127.0.0.1:1113)          service/ti/
                          ├─ d1_systemone   llama.cpp POST /v1/systemone
                          ├─ logit_read     any local LLM, letter A–Z → top_logprobs
                          ├─ openrouter     a hosted model behind a provider pin
+                         ├─ classical      TF-IDF + linear SVM, no model server
                          ├─ heuristic_micro a regex pre-gate that mostly abstains
                          ├─ rule_extract   deterministic, no model
                          └─ fixture        recorded answers, for tests and replay
@@ -102,15 +111,15 @@ Verified by running it, not by reading the spec:
 | capability | state |
 |---|---|
 | HTTP service: `GET /health`, `POST /v1/useTool`, `POST /v1/plan` | works — see the quickstart below |
-| L0 passthrough (caller fully specifies the op) | works — validates params, executes, returns in ~3 ms |
+| L0 passthrough (caller fully specifies the op) | works — validates params, executes, returns with no decision hop (1–18 ms measured, `docs/roundtrips-2026-11-03.md`) |
 | L1 disk slot-fill (glob candidates → `decide_pick` → read) | works end to end model-free via `bench/replay.py` |
 | L2 templates: `research` (queries → search → pick → fetch+verify loop → optional reddit cross-check → digest) and `reddit_digest` | `research` runs end to end model-free via `bench/replay.py` and returns a sourced digest; `reddit_digest` needs the reddit project (see gaps) |
 | Nine registered ops | `decide_extract`, `decide_pick`, `digest_assemble`, `filesys_glob`, `filesys_grep`, `filesys_read`, `reddit_digest`, `web_fetch`, `web_search` |
 | Decide backends and the pre-gate → cache → backend fast path | works — `heuristic_micro` pre-gate and the 256-entry decision cache are on by default |
 | `pair` (local, escalating to hosted) and `openrouter` | implemented and measured by the author; running them needs a local llama.cpp server, and the hosted stage needs `TI_OPENROUTER_API_KEY` — [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md) |
 | Bounded decision state (structural, not conventional) | works — digest ≤ 8 turns × 240 chars, state ≤ `conf.context.state_max_tokens` |
-| pi extension: `useTool`, `/ti` command, service spawn on session start | complete — `npm ci && npx tsc --noEmit` exits 0 and the contract check passes 11/11 against a stubbed transport; see [`pi-extension/README.md`](pi-extension/README.md) |
-| Test suite | 662 tests, 349 subtests, no network, no model |
+| pi extension: `useTool`, `/ti` command, service spawn on session start | complete — `npm ci && npx tsc --noEmit` exits 0, and the contract check passes 11/11 schema cases plus 10/10 through a stubbed transport; see [`pi-extension/README.md`](pi-extension/README.md) |
+| Test suite | 679 tests, 349 subtests, no network, no model |
 
 ### Honest gaps
 
@@ -121,9 +130,11 @@ These are not wired, and the README would be lying if it did not say so:
   reddit route, a named web channel, a published source, a research verb gated on nothing
   local — which is wider than the two words (`"research"`, `"compare"`) it shipped with
   and is still a rule list. The decision model is used *inside* a plan — candidate
-  selection, slot fill, verification — not to choose the plan. Spec §2 calls the routed
-  version P2; `tests/test_route_real_traffic.py` is the table that holds the rules to the
-  hop log.
+  selection, slot fill, verification — not to choose the plan. Spec §2 calls the
+  model-planned version **L3** and marks it *not built*, which is what this is; the label
+  **P2** for the routed replacement is `planner/inspector.py`'s own and collides with the
+  phase name "P2 — d1-3B live" in spec §8. `tests/test_route_real_traffic.py` is the table
+  that holds the rules to the hop log.
 - **Ask-back works over HTTP, but only as a second call.** The transport has no channel
   mid-request, so `use_tool(..., ask_via_response=True)` returns `status: "need_input"`
   with the candidate list as answerable options, and the caller resolves it by calling
@@ -137,7 +148,8 @@ These are not wired, and the README would be lying if it did not say so:
   `~/.pi/profiles/registry/...` skill scripts. Point them at any CLI that honours the
   contract in [`docs/ops.md`](docs/ops.md), or the ops raise `CliMissingBinary`.
 - **L3 (model-planned DAG) is a placeholder** — `service/ti/planner/free.py` is a docstring.
-  **L4 (browser)** is an unwired adapter slot.
+  **L4 (browser)** is a row in the spec's level table and nothing else: no adapter, no code
+  path, and no reference to one anywhere in `service/`.
 - **Destructive tools stay native.** `bash` / `write` / `edit` are not routed through
   `useTool`; the v1 domain is read/glob/grep plus the web stack.
 
@@ -162,7 +174,9 @@ It listens on `127.0.0.1:1113` (`conf.http.host` / `conf.http.port`). Check it:
 
 ```sh
 curl -s http://127.0.0.1:1113/health
-# {"status": "ok", "ops": ["decide_extract", ..., "web_search"], "conf": true}
+# {"status": "ok", "ops": ["decide_extract", ..., "web_search"], "conf": true,
+#  "decide": {"choice": "pair", "noul": "fixture", "extract": "rule_extract"},
+#  "cascade": false}
 ```
 
 ### The service token
@@ -204,10 +218,10 @@ and every path they touch is confined to the run's cwd — the body's `digest.cw
 must itself resolve inside `ops.filesys.roots`. `..`, an absolute path outside the run, a
 symlink out of it, and a cwd outside the policy all come back `403`.
 
-`ops.filesys.roots` defaults to `["~", "."]` — your home directory plus the directory
-the service was started in — so the example above works from a clone wherever it lives. A
-run root outside both answers `{"error": "scope_refused", ...}` and needs `roots` widened
-through `TI_CONF_OVERLAY` (below).
+`ops.filesys.roots` defaults to `["~", ".", "/tmp"]` — your home directory, the
+directory the service was started in, and the temp directory — so the example above works
+from a clone wherever it lives. A run root outside all three answers `{"error":
+"scope_refused", ...}` and needs `roots` widened through `TI_CONF_OVERLAY` (below).
 
 Ask what a compound intent *would* do, without running it:
 
@@ -278,7 +292,7 @@ notes are in [`pi-extension/README.md`](pi-extension/README.md).
 
 ```sh
 python3 -m pytest tests/ -q
-# 662 passed, 349 subtests passed
+# 679 passed, 349 subtests passed
 ```
 
 Runs from a fresh clone with nothing installed: each test file puts `service/` on
@@ -291,8 +305,10 @@ One test is a policy guard rather than a behaviour test:
 `tests/test_no_personal_paths.py` fails the suite if a machine-personal absolute path
 appears anywhere in source, config, tests or docs. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-CI runs the suite on Python 3.10 and 3.12 and asserts the built wheel contains every
-subpackage.
+CI runs the suite on Python 3.10 and 3.12 (`.github/workflows/ci.yml`), typechecks the
+extension on Node 22 and 24, and builds the wheel, asserting the four service modules it
+names — `ti/http/api.py`, `ti/decide/resolve.py`, `ti/ops/op_api.py`,
+`ti/conf/defaults.json` — are inside it.
 
 ## Benchmarks
 
@@ -368,8 +384,8 @@ behaviour, never latency.
 
 | file | contents |
 |---|---|
-| [`spec/1.0-spec.md`](spec/1.0-spec.md) | the design of record: levels, tool contract, ask-back policy, phases |
-| [`docs/architecture.md`](docs/architecture.md) | process view, module responsibilities, the two plugin walls, the bounded-state guarantee |
+| [`spec/1.0-spec.md`](spec/1.0-spec.md) | the design of record: levels, tool contract, ask-back policy, phases, and where the code has since diverged |
+| [`docs/architecture.md`](docs/architecture.md) | the per-module contract: what each module owns and does not, read beside [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | [`docs/ops.md`](docs/ops.md) | the CLI contract the subprocess ops rely on, and the mismatches found against live CLIs |
 | [`docs/testing.md`](docs/testing.md) | where tests run, serving recipes, the portability rule, latency knobs |
 | [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md) | pair vs hosted-only, measured |
