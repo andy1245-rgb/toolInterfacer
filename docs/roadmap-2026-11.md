@@ -39,7 +39,7 @@ answer is the assets survey, not a document of its own — see the row below.
 
 | Track | Question | Deliverable |
 |---|---|---|
-| recall | What has already been decided, measured and abandoned across toolInterfacer, jevResearch, localAlexa, cactus/needle, decision-model tuning? | [`docs/assets-inventory.md`](assets-inventory.md) — the survey answers it for every one of those projects. No separate recall document was ever written; this row pointed at `docs/session-recall.md`, which is in no commit on any branch |
+| recall | What has already been decided, measured and abandoned across this project, its private sibling trees, cactus/needle, and decision-model tuning? | [`docs/assets-inventory.md`](assets-inventory.md) — the survey answers it for every one of those projects. No separate recall document was ever written; this row pointed at `docs/session-recall.md`, which is in no commit on any branch |
 | audit | Which modules are real, which are stubs, and what blocks a stranger's first clone? | `docs/audit-2026-11-03.md` |
 | assets | What can be imported instead of rebuilt from the sibling projects? | `docs/assets-inventory.md` |
 | publish | LICENSE, packaging, CI, a README that states what is true. | repo root + `.github/` |
@@ -74,7 +74,7 @@ be enough, so the plan is teacher distillation into a controlled set:
 - Build utterances beyond the frozen 150 from the operator's real session corpus,
   band-labelled (t1 literal / t2 veiled / t3 compound) to match `utterances_v2`.
 - Label with the hosted teacher (`openrouter` backend), then human-check a sample.
-- LoRA SFT rank 32–64 on an instruct 3B per `decisionModelTuning/02`, 10–20%
+- LoRA SFT rank 32–64 on an instruct 3B per `docs/assets-inventory.md` §1, 10–20%
   general-instruction mix.
 
 Acceptance: a labelled corpus with a stated size, and a fine-tuned checkpoint
@@ -145,7 +145,7 @@ the project's premise -- a neural decision model behind the `choice` primitive -
 is the wrong instrument. `ov-classical` exists to settle it.
 
 **2. Every accuracy claim in `docs/` is underpowered.** Per
-`decisionModelTuning/03-evaluation-and-calibration.md` section 3, detecting two
+`docs/assets-inventory.md` §19, detecting two
 points unpaired needs ~5,000 rows per arm; paired with McNemar at 10%
 discordance, ~1,960. At n=300 the 95% interval is +/-4.0 points. This repo reports
 74.0% vs 58.0% on n=150 and 90.0% vs 93.3% on n=30 -- both are directional,
@@ -226,7 +226,7 @@ frame is the band whose frames need a human audit first (`var/distill/audit.csv`
 ### Still open
 
 The fine-tune itself. The corpus is feedstock, not yet a trainable set — 199 rows
-against the 300-row floor in `decisionModelTuning/01` §5, and the labelling stall
+against the 300-row floor in `docs/assets-inventory.md` §9, and the labelling stall
 was provider congestion, not policy. Before training: finish to 414 rows, fit the
 per-band temperature, and annotate `audit.csv` so calibration stops reading
 UNKNOWN.

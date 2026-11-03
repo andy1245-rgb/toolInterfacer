@@ -9,7 +9,7 @@ recorded.
 
 | | |
 |---|---|
-| source directory | `~/mirror/PersonalCodingProjects/personal/projects/localAlexa/jevResearchCompiled/experiments/` |
+| source | a private sibling benchmark tree — the six-backend tool-router benchmark this set was generated for. Read 2026-11-03; the directory is not published and does not resolve for a reader, so the digests below are what make the import checkable |
 | rows | `data/test.json` (39,265 B) |
 | registry | `registry.json` (21,872 B) |
 | generator | `gen_data.py`, `SEED = registry["seed"]` = **42**, `PER_TOOL = 25` |

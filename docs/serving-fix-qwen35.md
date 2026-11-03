@@ -42,7 +42,7 @@ class, "cached 4-token prompt eval" tens→260 ms per token):
   fast-lane template config)
 - `--rpc <local rpc server>` (compute in a separate process)
 - exchanged build: b11510 vs b11512 (`llama-b11510-win-vulkan-x64.zip` vs
-  `llama-b11512-win-vulkan-x64.zip` in Research/jevResearch/lab/d1bench)
+  `llama-b11512-win-vulkan-x64.zip`, both from the private benchmark tree)
 - recreated-exe serving (tibench-style `llama-server.exe` carve, E-exe-1)
 - token-array `/completion` prompt (bypasses the chat pipeline entirely):
   still 73 t/s cold, 281 ms/token cached
@@ -112,7 +112,7 @@ whether a newer build moves the qwen35 server path off the host chunk.
 
 ## Reproduce today
 
-Dell-side driver (new files, this run): `toolInterfacerLab/qdiag.py`
+Dell-side driver (new files, this run): `qdiag.py`
 (config-in-json pyhost; fd-redirect gives full load/offload lines at `-lv 5`),
 `qdiag_b10.py` (same, pointed at the b11510 engine dir), plus
 `qdiag_config.json` / `qdiag.log` state and `mkrexe.py` (AV-safe carve of

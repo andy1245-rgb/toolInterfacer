@@ -22,7 +22,7 @@ Bar to beat (incumbent): **d1-3B Q4_K_M on the native `/v1/systemone` path**.
 
 The four result files `bench/results/dell/q4-Qwen3.5-4B-{v1,v2}{,-run2}.json`
 actually contain **d1-3B-Q4_K_M** data — **no Qwen3.5-4B was ever loaded** for
-those lanes. Three defects combined (full RCA: `toolInterfacerExtras/dell-rerun/c-recap.md`):
+those lanes. Three defects combined (full RCA: a private run-recap note from that pass):
 
 1. The Qwen lane's serve command carried `--chat-template-kwargs
    {"enable_thinking": false}`. An unquoted `{"enable_thinking": false}` in a
@@ -34,7 +34,7 @@ those lanes. Three defects combined (full RCA: `toolInterfacerExtras/dell-rerun/
    `ok`, so the stale model answered every probe.
 
 **`/props` evidence.** All four phantom files record
-`model.path = …\d1bench\models\d1-3B-Q4_K_M.gguf`, and the mislabelled lane's
+`model.path = <workspace>\models\d1-3B-Q4_K_M.gguf`, and the mislabelled lane's
 logit_read accuracy (74.67%) is bit-identical to the corrected d1-3B-Q4
 logit_read number below. Raw `/props` captures are kept at
 `bench/results/dell/props/props-{d1,qwen35,intern}.json`.

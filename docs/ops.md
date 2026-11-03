@@ -213,6 +213,7 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 ```
 
 Two tests replay the recorded devskills fixtures as a read-only cross-check of
+<<<<<<< HEAD
 the parsers: `tests/test_ops_web.py::DevSkillsFixtureTest` reads
 `tests/data/devskills/` — repo-relative and shipped with the tree
 (`TI_DEVSKILLS_FIXTURES` overrides it) — and both **pass** in a fresh clone; they do
@@ -220,6 +221,11 @@ not skip. Each carries a `skipUnless` on its own fixture file, so the skip only
 fires if `TI_DEVSKILLS_FIXTURES` points at a tree missing that file, and it names
 the path it looked for. Nothing in the suite touches the network or a live skill
 CLI.
+=======
+the parsers (`TI_DEVSKILLS_FIXTURES`, default `tests/data/devskills`, which ships
+with the repo); they skip when the resolved tree is absent. Nothing in the suite
+touches the network or a live skill CLI.
+>>>>>>> d6-private
 
 ## 9. The HTTP status contract
 
