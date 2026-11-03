@@ -22,3 +22,8 @@ build-vk/
 
 # distill pipeline output: generated rows, labels, audit CSVs (never committed)
 var/
+
+# test/coverage scratch
+.pytest_cache/
+.coverage
+htmlcov/
