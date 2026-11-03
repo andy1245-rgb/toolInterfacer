@@ -28,6 +28,45 @@ jobs:
       - name: Test
         run: python -m pytest tests/ -q
 
+  typecheck:
+    name: extension typecheck (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ["22", "24"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install
+        working-directory: pi-extension
+        run: npm ci --no-audit --no-fund
+      - name: Typecheck
+        working-directory: pi-extension
+        run: npx tsc --noEmit
+
+  contract-check:
+    name: extension checks (contract + capture)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Install
+        working-directory: pi-extension
+        run: npm ci --no-audit --no-fund
+      # --live binds a stub service on an ephemeral loopback port and drives it through
+      # bridge.call(), so the run needs no external service and no fixed port.
+      - name: Contract check against the stubbed service
+        working-directory: pi-extension
+        run: node scripts/contract-check.ts --live
+      - name: Capture check
+        working-directory: pi-extension
+        run: node scripts/capture-check.ts
+
   package:
     name: wheel build
     runs-on: ubuntu-latest
