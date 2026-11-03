@@ -400,20 +400,58 @@ behaviour, never latency.
 
 ## Docs
 
+Grouped by what you are trying to do, not alphabetically. **Every `.md` under [`docs/`](docs/)
+is in one of these four tables**, plus the spec, the architecture overview and the release
+runbook — and the last table is dated material, a snapshot of one tree, not reference you
+can read as current.
+
+### The design of record
+
 | file | contents |
 |---|---|
-| [`spec/1.0-spec.md`](spec/1.0-spec.md) | the design of record: levels, tool contract, ask-back policy, phases, and where the code has since diverged |
-| [`docs/architecture.md`](docs/architecture.md) | the per-module contract: what each module owns and does not, read beside [`ARCHITECTURE.md`](ARCHITECTURE.md) |
-| [`docs/ops.md`](docs/ops.md) | the CLI contract the subprocess ops rely on, and the mismatches found against live CLIs |
-| [`docs/testing.md`](docs/testing.md) | where tests run, serving recipes, the portability rule, latency knobs |
-| [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md) | pair vs hosted-only, measured |
-| [`docs/model-sweep-consolidated.md`](docs/model-sweep-consolidated.md) | the backend sweep, per band, with its correction |
-| [`docs/serving-fix-qwen35.md`](docs/serving-fix-qwen35.md) | why qwen35 lanes serve CPU-class in server contexts |
-| [`docs/research-model-sweep-q4.md`](docs/research-model-sweep-q4.md) | the 4B-class model scout |
-| [`RELEASE.md`](RELEASE.md) | the release runbook: the pre-flight that must exit 0, the wheel built *and installed* before anything is tagged, TestPyPI before PyPI, and the rollback order |
-| [`docs/pre-publish-audit.md`](docs/pre-publish-audit.md) | the gate before a public push: what a stranger can see, download and infer from the clone — history, secrets, licence, tracked tree — with a Resolution appendix saying which findings were closed and which are still the owner's call |
-| [`docs/audit-2026-11-03.md`](docs/audit-2026-11-03.md) | the implementation audited against [`spec/1.0-spec.md`](spec/1.0-spec.md), module by module, with the three publish blockers that started the repair branches (all three since closed — [`docs/roadmap-2026-11.md`](docs/roadmap-2026-11.md)'s Outcome has the table) |
-| [`docs/review-2026-11-03.md`](docs/review-2026-11-03.md) and [`docs/review2-2026-11-03.md`](docs/review2-2026-11-03.md) | two independent reviews: the first names five blockers B1–B5 with the evidence for each; the second, written after the repair merges, gives the status of each one and what is still open |
+| [`spec/1.0-spec.md`](spec/1.0-spec.md) | the agreed design: levels, tool contract, ask-back policy, the decision-model wall, phases — and a closing *Divergences* section listing where the code has since moved away from it |
+| [`ARCHITECTURE.md`](ARCHITECTURE.md) | the overview: why the layer exists, the process view, the life of one `useTool` call, the two plugin walls, the bounded-context argument, the security surface. Read it before `docs/architecture.md` |
+| [`docs/architecture.md`](docs/architecture.md) | the per-module contract: what each module owns and explicitly does not, so a change to a behaviour lands in the one module that owns it |
+| [`docs/ops.md`](docs/ops.md) | the CLI contract the three subprocess ops rely on — invocation, locating the result, exit codes, op shapes — and the mismatches found against the live CLIs; §9 is the HTTP status contract, including why a run that fails is served `200` |
+| [`docs/confidence-sources.md`](docs/confidence-sources.md) | every place a `confidence` is produced, each classified **measured** / **derived** / **asserted**, and the rule that came out of it: reported only when a hop measured one, the minimum over those, absent otherwise — the run-level `1.0` is `None` now |
+
+### Running, testing, shipping
+
+| file | contents |
+|---|---|
+| [`docs/testing.md`](docs/testing.md) | where the suite and the benchmarks run (bench-host over ssh; this box is compile-only), the d1-3B launch recipe, the enforced placeholders-not-paths rule, the CPU-only stack recipe, and how to prove the wire rather than the engine |
+| [`RELEASE.md`](RELEASE.md) | the release runbook: the pre-flight that must exit 0, the wheel built *and installed* into a clean venv before anything is tagged, TestPyPI before PyPI, and the rollback order |
+
+### What was measured
+
+| file | contents |
+|---|---|
+| [`docs/roundtrips-2026-11-03.md`](docs/roundtrips-2026-11-03.md) | whether `useTool` saves round trips: 2 of 14 (14.3%) removed and 7.5 s *slower* at a 2 s agent pass, because 10 decisions cost 10.56 s against 138 ms of tool work; the crossover is ~5.8 s per pass (~0.30 s per decision), and the later re-run on a box with no reachable backend does not reproduce the saving |
+| [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md) | `pair` vs `openrouter` vs `d1_systemone` over 30 interleaved utterances: 3118 / 827 / 2261 ms p50 at 27, 28, 22 of 30 correct, McNemar p = 1.000 — and the decision that `pair` ships anyway, because hosted-only hard-fails without a key while the pair degrades to local |
+| [`docs/model-sweep-consolidated.md`](docs/model-sweep-consolidated.md) | the October sweep on one frozen 150-row set, per band: d1-3B-Q4_K_M at 74% overall (t1 81 / t2 71 / t3 67, p50 153 ms) against the 4B challengers, plus the 2026-10-18 correction where the "Qwen3.5-4B" lanes turned out never to have served Qwen3.5-4B |
+| [`docs/research-model-sweep-q4.md`](docs/research-model-sweep-q4.md) | the 4B-class scout that fed those lanes: three sourced candidates, downloaded and benched through `logit_read`, scored against the 84% d1-3B bar |
+| [`docs/serving-fix-qwen35.md`](docs/serving-fix-qwen35.md) | why the qwen35 lanes served CPU-class in-process — **unresolved**: the flags, the builds, RPC, the driver and the GGUFs are each ruled out by measurement, and the surviving lead is a 6–7× compute-buffer split between `llama-bench` and `llama-server` |
+| [`docs/classical-baseline-2026-11-03.md`](docs/classical-baseline-2026-11-03.md) | the TF-IDF + linear-SVM baseline rebuilt in stdlib: the recorded 93.19% reproduces exactly, but on this repo's own 150 rows the same model scores 62.7% against d1-3B's 74.0% — verdict: not the default; as a front gate, 79.3% at 95 ms against d1 alone at 74.0% and 169 ms |
+| [`docs/vulkan-igpu-2026-11-03.md`](docs/vulkan-igpu-2026-11-03.md) | the Iris Xe iGPU against the CPU build on the routing workload: 2.72× slower per decision (8943.6 vs 3283.7 ms p50, n=50), 6.9× slower at prefill, 0 of 50 paired rows won — the idle GPU is not compute, because routing is prefill-dominated |
+| [`docs/dataset-status.md`](docs/dataset-status.md) | the hop log measured as training data: 14 of 1398 records trainable and all 14 carrying the same label (15 of 5243 on the re-checked snapshot) — it is an execution trace, so the fine-tune corpus is distilled rather than harvested |
+
+### Dated audits, probes and plans — 2026-11-03
+
+One tree, not reference material. These were written on 2026-11-03 against the tree of that
+day — most name the commit — and none is rewritten afterwards except by an appended
+Resolution section.
+
+| file | contents |
+|---|---|
+| [`docs/audit-2026-11-03.md`](docs/audit-2026-11-03.md) | [`spec/1.0-spec.md`](spec/1.0-spec.md) audited module by module on a branch off `1a7c8fe`: four blockers — a wheel shipping 2 of 53 modules, 66 `tsc` errors, an L2 template naming ops that do not exist, a `pair` default needing a model and a key — with a 16:25 Resolution section saying which are fixed and which are still the owner's call |
+| [`docs/review-2026-11-03.md`](docs/review-2026-11-03.md) | five blockers B1–B5 with the proof for each — `confidence: 1.0` on a run that measured nothing, a one-entry probability vector read as `p_max` 1.0, an unauthenticated POST reading `/etc/hostname` — and a Resolution recording what each later fix did and did not cover |
+| [`docs/review2-2026-11-03.md`](docs/review2-2026-11-03.md) | the same five re-checked after twelve repair merges (B2 fixed at run level only, B4 structural with two holes still open) plus four new blockers NB1–NB4, among them a ReDoS guard a bounded quantifier walks through and `ops.filesys.roots` shipping as `~` |
+| [`docs/doc-review-2026-11-03.md`](docs/doc-review-2026-11-03.md) | the docs read as a stranger at `a105d50`: the suite count wrong in seven places (715/349 against a green 722/388) and a digest bound the README calls structural although `sanitize` does not apply it — alongside the claims that held up |
+| [`docs/quickstart-stranger-2026-11-03.md`](docs/quickstart-stranger-2026-11-03.md) | the README followed literally from a fresh clone: five wrong turns to a first working `useTool` — the L0 example 403s unless the clone sits under the reader's home directory, and `ti-serve` dead-ends on a held port with no recovery hint |
+| [`docs/live-e2e-2026-11-03.md`](docs/live-e2e-2026-11-03.md) | the *shipped* path probed over a real socket, `5/5` cases — HTTP → inspector → plan → decide wall → ops wall with d1-3B answering — and ten defects found and fixed, from a picked path read against the service's cwd to a gate block that degraded instead of asking |
+| [`docs/pre-publish-audit.md`](docs/pre-publish-audit.md) | the gate before a public push, taken at `ca7ffec`: what a stranger can see, download and infer from the clone — history, secrets, licence, the tracked tree — with a Resolution appendix saying which findings were closed and which are still the owner's call |
+| [`docs/roadmap-2026-11.md`](docs/roadmap-2026-11.md) | the plan for the overnight run and its closing Outcome: which publish blockers were closed and re-probed rather than asserted, and the three measurements that changed the plan — the classical baseline, the iGPU, the hop log |
+| [`docs/assets-inventory.md`](docs/assets-inventory.md) | what the sibling projects already hold, surveyed against this repo's three needs: five ranked import candidates with concrete paths and a recommendation for each, the cactus/needle fine-tune that came back negative, and two things worth not importing |
 
 ## Layout
 
