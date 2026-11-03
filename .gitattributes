@@ -1,0 +1,23 @@
+# Line endings are decided here, not by whoever's editor touched the file last.
+# This repo is developed on both Windows and Linux, so without these rules the
+# bytes on disk depend on the checkout machine and a one-character edit can show
+# up as a whole-file diff.
+#
+# `*.sh` is the one that has already caused a bug. A CRLF shebang is not a style
+# issue: the kernel hands `#!/usr/bin/env python3\r` to env, which then looks for
+# an interpreter literally named `python3\r`, fails with exit 127 and writes no
+# artifact — so the symptom reads as "every query failed" rather than "the
+# interpreter line is broken" (docs/ops.md §7, "CRLF shebang"). Forcing LF here
+# means the script that reaches disk is the script that was committed.
+#
+# `*.py`, `*.ts` and `*.md` are LF for the same class of reason without the
+# shebang: a CRLF checkout still compiles, but it makes every subsequent diff
+# noisy and every patch context line a coin flip on a repo with two platforms.
+*.sh    text eol=lf
+*.py    text eol=lf
+*.ts    text eol=lf
+*.md    text eol=lf
+
+# The demo's rendered stills are pixels. Marking them binary tells git to stop
+# guessing: no eol conversion, and no attempt to diff or merge them as text.
+demo/*.png    binary
