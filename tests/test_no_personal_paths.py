@@ -2,7 +2,9 @@
 
 Recorded evidence under ``bench/results/`` legitimately contains the machine's
 model paths (they are the proof of the phantom-lane bug), ``extern/`` is vendored
-code, and ``service/logs/`` is runtime output — all three are skipped.
+code, ``service/logs/`` is runtime output, and the cmake build trees
+(``build/``, ``build-vk/``) are generated output that records the source path it
+was configured from — all of them are skipped.
 
 Everything else must stay portable: an environment variable, a ``~``-relative
 default, a repo-relative path, or ``<placeholder>``. If this test fails, the fix
@@ -17,8 +19,10 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 # only at the repo root. `node_modules` was previously matched as a prefix, so
 # only a top-level one was skipped and `pi-extension/node_modules` was scanned
 # as portable source — which is how the extension's own dependency tree made
-# this guard fail on files nobody wrote.
-SKIP_DIR_NAMES = {"node_modules", "__pycache__", ".venv", ".git"}
+# this guard fail on files nobody wrote. `build*` are cmake trees: the CPU build
+# lives at the root, the Vulkan one is out-of-tree beside it.
+SKIP_DIR_NAMES = {"node_modules", "__pycache__", ".venv", ".git", "build",
+                  "build-vk"}
 SKIP_PREFIXES = {"bench/results", "extern", "service/logs"}
 SKIP_FILES = {pathlib.Path(__file__).resolve()}
 SUFFIXES = {".py", ".ts", ".json", ".sh", ".md", ".toml", ".yml", ".yaml"}
