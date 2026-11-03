@@ -86,8 +86,8 @@ Verified by running it, not by reading the spec:
 | Decide backends and the pre-gate → cache → backend fast path | works — `heuristic_micro` pre-gate and the 256-entry decision cache are on by default |
 | `pair` (local, escalating to hosted) and `openrouter` | implemented and measured by the author; running them needs a local llama.cpp server, and the hosted stage needs `TI_OPENROUTER_API_KEY` — [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md) |
 | Bounded decision state (structural, not conventional) | works — digest ≤ 8 turns × 240 chars, state ≤ `conf.context.state_max_tokens` |
-| pi extension: `useTool`, `/ti` command, service spawn on session start | complete; its own checks are in [`pi-extension/README.md`](pi-extension/README.md) (not re-run in this pass) |
-| Test suite | 588 tests, 349 subtests, no network, no model |
+| pi extension: `useTool`, `/ti` command, service spawn on session start | complete — `npm ci && npx tsc --noEmit` exits 0 and the contract check passes 11/11 against a stubbed transport; see [`pi-extension/README.md`](pi-extension/README.md) |
+| Test suite | 662 tests, 349 subtests, no network, no model |
 
 ### Honest gaps
 
@@ -101,10 +101,11 @@ These are not wired, and the README would be lying if it did not say so:
   selection, slot fill, verification — not to choose the plan. Spec §2 calls the routed
   version P2; `tests/test_route_real_traffic.py` is the table that holds the rules to the
   hop log.
-- **Ask-back does not reach the HTTP path.** `use_tool(..., on_ask=...)` supports it and
-  `tests/test_loop.py` exercises it, but `http/api.py` calls `use_tool` with no ask
-  channel, so a gated step currently degrades to a best guess with `degraded: true`
-  instead of asking. The reasoning is recorded in `service/ti/service_entry.py::_route_conf`.
+- **Ask-back works over HTTP, but only as a second call.** The transport has no channel
+  mid-request, so `use_tool(..., ask_via_response=True)` returns `status: "need_input"`
+  with the candidate list as answerable options, and the caller resolves it by calling
+  again with `params.answer`. A direct caller that passes `on_ask` gets the callback form
+  instead; `tests/test_loop.py` and the live probe both exercise it.
 - **`reddit_digest` cannot run out of the box.** The op is written against the
   `reddit-research` CLI contract but that project is not vendored, and its parser was
   inferred from the skill's docs rather than observed. `docs/ops.md` §6.
@@ -254,7 +255,7 @@ notes are in [`pi-extension/README.md`](pi-extension/README.md).
 
 ```sh
 python3 -m pytest tests/ -q
-# 588 passed, 349 subtests passed
+# 662 passed, 349 subtests passed
 ```
 
 Runs from a fresh clone with nothing installed: each test file puts `service/` on
