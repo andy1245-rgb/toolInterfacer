@@ -18,7 +18,8 @@ sys.path.insert(0, str(ROOT / "service"))
 import ti.decide.primitives as prim  # noqa: E402
 from ti.conf import load  # noqa: E402
 from ti.context import packer  # noqa: E402
-from ti.context.session_digest import TURN_CAP, TURN_CHARS, sanitize  # noqa: E402
+from ti.context.session_digest import (CWD_CHARS, MENTION_CAP, TURN_CAP,  # noqa: E402
+                                      TURN_CHARS, mentioned, sanitize)
 from ti.core.artifacts import ArtifactStore  # noqa: E402
 from ti.decide.cache import clear as clear_decisions  # noqa: E402
 from ti.ops import decisions  # noqa: E402
@@ -151,6 +152,73 @@ class ContextBoundTest(OfflineDecide):
     def test_sanitize_rejects_a_non_dict(self):
         self.assertEqual(sanitize("a pasted transcript"), {"turns": [], "antecedents": []})
         self.assertEqual(sanitize(None), {"turns": [], "antecedents": []})
+        self.assertEqual(sanitize([{"role": "user"}]), {"turns": [], "antecedents": []})
+
+    # (d') a turn is projected onto the keys the consumers read, and clipped:
+    # nothing a caller invents rides into the decision model's state
+    def test_sanitize_drops_an_unknown_turn_key(self):
+        out = sanitize({"turns": [{"role": "user", "summary": "x",
+                                    "blob": "A" * 100_000}]})
+        turn = out["turns"][0]
+        self.assertEqual(set(turn), {"role", "summary"})
+        self.assertNotIn("blob", turn)
+        self.assertLess(len(str(out)), TURN_CHARS + 100)   # 100_100 chars in, ~280 out
+
+    def test_sanitize_keeps_every_field_a_consumer_reads(self):
+        long_mention = "m" * (CWD_CHARS + 500)
+        digest = {"turns": [{"role": "user", "summary": "read docs/architecture.md",
+                             "mentions": ["docs/architecture.md", long_mention, 7],
+                             "tool": "read", "ts": 1}],
+                  "antecedents": [{"phrase": "docs/architecture.md",
+                                    "resolved": str(ROOT / "docs" / "architecture.md"),
+                                    "score": 0.9}],
+                  "cwd": str(ROOT), "extra": "e" * 50_000}
+        out = sanitize(digest)
+        turn = out["turns"][0]
+        self.assertEqual(turn["role"], "user")                 # planner/packer shape
+        self.assertEqual(turn["summary"], "read docs/architecture.md")
+        self.assertEqual(turn["mentions"][0], "docs/architecture.md")  # the path field
+        self.assertLessEqual(len(turn["mentions"]), MENTION_CAP)
+        self.assertLessEqual(len(turn["mentions"][1]), CWD_CHARS)      # clipped
+        self.assertNotIn("tool", turn)
+        self.assertNotIn("ts", turn)
+        self.assertEqual(out["antecedents"][0]["phrase"], "docs/architecture.md")
+        self.assertEqual(out["antecedents"][0]["resolved"],
+                         str(ROOT / "docs" / "architecture.md"))
+        self.assertNotIn("score", out["antecedents"][0])
+        self.assertEqual(out["cwd"], str(ROOT))                 # the L1 bridge reads it
+        self.assertNotIn("extra", out)
+        # the consumers run on it without raising
+        self.assertEqual(mentioned(["architecture"], out),
+                         [str(out["antecedents"][0])])
+
+    def test_sanitize_handles_junk_in_every_position(self):
+        out = sanitize({"turns": ["a pasted transcript",
+                                   {"role": "user", "summary": 42},
+                                   {"role": 7, "summary": "kept"}],
+                        "antecedents": [None, {"phrase": "kept", "resolved": ["x"]},
+                                        {"phrase": "docs/a.md", "mentions": "s"}],
+                        "cwd": {"not": "a path"}})
+        # a turn that is not a dict is not a turn; a non-string summary is not text
+        self.assertEqual(out["turns"], [{"role": "user"}, {"summary": "kept"}])
+        self.assertEqual(out["antecedents"], [{"phrase": "kept"}, {"phrase": "docs/a.md"}])
+        self.assertNotIn("cwd", out)   # non-string cwd dropped -> set_root(None)
+
+    def test_sanitize_handles_a_turns_value_that_is_not_a_list(self):
+        for turns in ("a transcript", 12, {"0": {"role": "user"}}, None):
+            self.assertEqual(sanitize({"turns": turns, "antecedents": turns}),
+                             {"turns": [], "antecedents": []})
+
+    def test_sanitize_drops_a_mentions_value_that_is_not_a_list(self):
+        out = sanitize({"turns": [{"role": "user", "summary": "s",
+                                    "mentions": "docs/a.md"}]})
+        self.assertEqual(out["turns"][0], {"role": "user", "summary": "s"})
+
+    def test_a_sanitized_digest_never_crashes_mentioned(self):
+        out = sanitize({"antecedents": ["pasted", 7,
+                                         {"phrase": "docs/architecture.md"}]})
+        self.assertEqual(mentioned(["architecture"], out),
+                         ["{'phrase': 'docs/architecture.md'}"])
 
     # (e) the cap is conf-driven, not a constant in the code
     def test_cap_follows_conf_state_max_tokens(self):
