@@ -226,6 +226,11 @@ directory the service was started in, and the temp directory — so the example 
 from a clone wherever it lives. A run root outside all three answers `{"error":
 "scope_refused", ...}` and needs `roots` widened through `TI_CONF_OVERLAY` (below).
 
+A *failed run* is still a `200`: the body says `status: "error"`, because the request was
+accepted and the work is what failed. Read `status`, not the status line. The whole
+contract — `401` / `403` / `400` / `411` / `413` / `503`, and why a run-level error is not
+a `4xx` — is in [`docs/ops.md` §9](docs/ops.md).
+
 Ask what a compound intent *would* do, without running it:
 
 ```sh

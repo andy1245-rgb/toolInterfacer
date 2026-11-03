@@ -1,9 +1,11 @@
-# Ops: the CLI contract `web_search` / `web_fetch` / `reddit_digest` rely on
+# Ops: the CLI contract the web ops rely on, and the HTTP contract callers rely on
 
 Three ops shell out to a skill CLI instead of doing work in-process:
 `web_search` (`url_list`), `web_fetch` (`pages`), `reddit_digest`
 (`thread_digest`). All three go through one adapter, `service/ti/ops/cli.py`, so
-the subprocess rules live in exactly one place.
+the subprocess rules live in exactly one place (§1–§8). §9 is the other
+direction: the status codes the service itself answers with, which a caller has
+to read before it can tell a failure from a success.
 
 The ops assume nothing about the CLIs beyond what is written here. Where a rule
 below was read off the live source rather than executed, it says so.
@@ -209,3 +211,71 @@ Two tests replay the recorded devskills fixtures as a read-only cross-check of
 the parsers (`TI_DEVSKILLS_FIXTURES`, default
 `~/toolInterfacerExtras/devskills`); they skip when that tree is absent. Nothing
 in the suite touches the network or a live skill CLI.
+
+## 9. The HTTP status contract
+
+`service/ti/http/api.py` is the whole surface — `POST /v1/useTool`,
+`POST /v1/plan`, `GET /health` — and `service/ti/http/pool.py` answers before
+any handler runs. The table is in the order a request meets the guards (the
+`501` is the stdlib's, for any method that is not GET or POST). Every row but
+`short_body` and `500` was observed against a live service; those two are read
+off the source, being an interrupted socket and an unplanned exception.
+
+| status | `error` | when |
+|---|---|---|
+| `503` | `busy` | more than `http.max_workers` (16) connections are live. Covers every route, `/health` included, and happens before the handler, so before auth. Sent with `Retry-After: 1`. |
+| `200` | — | `GET /health`: open by design (the extension polls it to decide whether to spawn), body `{status, ops, conf, decide, cascade}`. |
+| `401` | `unauthenticated` | a POST with no `X-TI-Token` / `Authorization: Bearer`, or a token that does not match. Checked before routing, so an unknown POST path is also a `401`. |
+| `404` | `not found` | a path that is not one of the three routes — including `GET /v1/useTool`, which is a `404` rather than a `405`. |
+| `501` | — | any method other than GET/POST: the stdlib's own answer, an HTML body, not this service's JSON. |
+| `411` | `length_required` | no `Content-Length`, or a `Transfer-Encoding` other than `identity` — a chunked body has no length to refuse before reading it. |
+| `400` | `bad_length` | `Content-Length` is not an integer, or is negative. |
+| `413` | `body_too_large` | `Content-Length` over `http.max_body_bytes` (262144 by default). |
+| `400` | `short_body` | fewer bytes on the socket than the header promised. |
+| `400` | `invalid_json` | the body is not JSON (or not UTF-8). |
+| `400` | `invalid_body` | the body is JSON but not an object. |
+| `400` | `op_not_allowed` | `params.tool` names an L0 op outside `http.allowed_ops` ∩ the three `filesys_*` mirrors. |
+| `403` | `scope_refused` | the run root — `digest.cwd`, else the service's own cwd — does not resolve inside `ops.filesys.roots`. |
+| `400` | `bad_args` | `params.args` is not an object, or a named path argument is not a string. |
+| `403` | `path_refused` | a path argument escapes the run root, or `params.path` (a scope hint, not an op argument) escapes the policy roots. |
+| `400` | `bad_path` | `params.path` is not a string. |
+| `200` | — | the run happened. The body carries `status: "done"`, `"plan"`, `"need_input"` or `"error"`. |
+| `500` | — | an unexpected exception inside the handler *after* the guards: `{status: "error", error, hops: []}`. Means the service, not the request. |
+
+Every refusal body is `{"error": <code>, "detail": <a sentence naming the
+field, the config key and the fix>}`, and a refusal also sets
+`close_connection`, so a refused request always ends its connection.
+
+### A run that fails is a `200`
+
+**A `status: "error"` body is served with `200`, deliberately.** A request that
+reaches the run has been authenticated, length-bounded, parsed, admitted by the
+op allowlist and scoped to a run root: the *request* was well formed and
+authorised. What failed is the *work* — a CLI that is not installed, a decision
+backend that produced no choice, a gate nothing could settle:
+
+```
+POST /v1/useTool          →  200
+{"status": "error", "hops": [], "error": "reddit-research CLI unavailable: …"}
+```
+
+A 4xx there would say "your request was refused", which would be false and would
+send the caller off to fix a request that is already correct; and it would throw
+away the receipt — `hops`, `meta`, `degraded`, `assumptions` — that a failed run
+carries and that a caller needs to see *why* it failed. So the same rule that
+makes `status: "done"` a `200` makes `status: "error"` one too. `status:
+"need_input"` follows it as well: the question rides in a `200` body.
+
+A client therefore reads the body, not the status line:
+
+```python
+r = requests.post(url, json=body, headers={"X-TI-Token": token})
+r.raise_for_status()                 # 401 / 403 / 4xx / 5xx only: the request was refused
+out = r.json()
+if out.get("status") != "done":      # the run failed, needs an answer, or returned a plan
+    handle(out)
+```
+
+`tests/test_http_bounds.py` holds the refusals: the token cases, the op
+allowlist and `bad_args`, the scope and path refusals, the length and size
+failures, the `404`, the `503`, and the `200` that carries an error.

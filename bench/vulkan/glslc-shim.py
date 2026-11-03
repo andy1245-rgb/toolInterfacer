@@ -16,6 +16,7 @@ depfile. -O (spirv-opt) is accepted and ignored — glslangValidator emits
 unoptimised SPIR-V, which is functionally equivalent.
 """
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -72,37 +73,40 @@ def main(argv):
         lines.insert(0, INJECT + "\n")
 
     tmpdir = tempfile.mkdtemp(prefix="glslcshim.")
-    tmp_src = os.path.join(tmpdir, os.path.basename(src))
-    with open(tmp_src, "w", encoding="utf-8", errors="surrogateescape") as f:
-        f.write("".join(lines))
+    try:
+        tmp_src = os.path.join(tmpdir, os.path.basename(src))
+        with open(tmp_src, "w", encoding="utf-8", errors="surrogateescape") as f:
+            f.write("".join(lines))
 
-    to_stdout = out in (None, "-")
-    spv = os.path.join(tmpdir, "out.spv") if to_stdout else out
+        to_stdout = out in (None, "-")
+        spv = os.path.join(tmpdir, "out.spv") if to_stdout else out
 
-    cmd = ["glslangValidator", "-V", "--target-env", target_env, "-S", stage,
-           "-I" + src_dir, "-I" + tmpdir, "-o", spv]
-    if dbg:
-        cmd.append("-g")
-    cmd.extend(defines)
-    cmd.append(tmp_src)
+        cmd = ["glslangValidator", "-V", "--target-env", target_env, "-S", stage,
+               "-I" + src_dir, "-I" + tmpdir, "-o", spv]
+        if dbg:
+            cmd.append("-g")
+        cmd.extend(defines)
+        cmd.append(tmp_src)
 
-    proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    diag = (proc.stdout + proc.stderr).decode("utf-8", "replace")
-    if proc.returncode != 0 or "ERROR:" in diag:
-        sys.stderr.write(diag)
-        sys.stderr.write("glslc-shim: failed: %s\n" % " ".join(cmd))
-        return proc.returncode or 1
+        proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        diag = (proc.stdout + proc.stderr).decode("utf-8", "replace")
+        if proc.returncode != 0 or "ERROR:" in diag:
+            sys.stderr.write(diag)
+            sys.stderr.write("glslc-shim: failed: %s\n" % " ".join(cmd))
+            return proc.returncode or 1
 
-    if to_stdout:
-        with open(spv, "rb") as f:
-            sys.stdout.buffer.write(f.read())
-        sys.stdout.buffer.flush()
+        if to_stdout:
+            with open(spv, "rb") as f:
+                sys.stdout.buffer.write(f.read())
+            sys.stdout.buffer.flush()
 
-    if depfile:
-        with open(depfile, "w", encoding="utf-8") as f:
-            f.write("%s: %s\n" % (out if out else spv, src))
+        if depfile:
+            with open(depfile, "w", encoding="utf-8") as f:
+                f.write("%s: %s\n" % (out if out else spv, src))
 
-    return 0
+        return 0
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
 
 
 if __name__ == "__main__":

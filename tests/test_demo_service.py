@@ -59,8 +59,9 @@ def _alive(pid: int) -> bool:
     return bool(state) and not state.startswith("Z")
 
 
-def _demo_tmp_dirs() -> set[str]:
-    return {name for name in os.listdir(tempfile.gettempdir())
+def _demo_tmp_dirs(root: pathlib.Path) -> set[str]:
+    """The demo's own temp dirs, under the private TMPDIR the caller gave it."""
+    return {name for name in os.listdir(root)
             if name.startswith(("ti-demo-", "ti-demo-files-"))}
 
 
@@ -140,11 +141,25 @@ class ServiceLifecycleTest(unittest.TestCase):
 class SignalTest(unittest.TestCase):
     """The demo, killed mid-run, takes its service with it."""
 
-    def _run_until_service_is_up(self) -> tuple[subprocess.Popen, list[int]]:
+    def _private_tmp(self) -> pathlib.Path:
+        """A TMPDIR of this test's own, so only what this test started is observed.
+
+        A scan of the shared `/tmp` for `ti-demo-*` also sees a second suite run,
+        or a `bench/demo.py` someone left going, and calls their directories this
+        run's leak — a check that is only correct on a quiet machine. The demo's
+        `mkdtemp` honours `TMPDIR`, so the child is pointed at this directory and
+        the assertion below reads exactly what the child wrote there.
+        """
+        holder = tempfile.TemporaryDirectory(prefix="ti-demo-harness-")
+        self.addCleanup(holder.cleanup)
+        return pathlib.Path(holder.name)
+
+    def _run_until_service_is_up(self, tmp: pathlib.Path) -> tuple[subprocess.Popen, list[int]]:
         proc = subprocess.Popen([sys.executable, str(ROOT / "bench" / "demo.py"),
                                  "--pace", "5"],
                                 stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
-                                text=True, start_new_session=True)
+                                text=True, start_new_session=True,
+                                env={**os.environ, "TMPDIR": str(tmp)})
         self.addCleanup(self._kill, proc)
         deadline = time.monotonic() + 40
         while time.monotonic() < deadline:
@@ -163,8 +178,12 @@ class SignalTest(unittest.TestCase):
             proc.wait(timeout=30)
 
     def _assert_signal_takes_the_service_down(self, signum: int, expected: int) -> None:
-        before = _demo_tmp_dirs()
-        proc, children = self._run_until_service_is_up()
+        tmp = self._private_tmp()
+        proc, children = self._run_until_service_is_up(tmp)
+        # Non-vacuous: the demo did put a temp dir in there, so "it removed it"
+        # is a statement about something that existed.
+        self.assertNotEqual(_demo_tmp_dirs(tmp), set(),
+                            "the demo left nothing in its TMPDIR to leak")
         os.kill(proc.pid, signum)
         self.assertEqual(proc.wait(timeout=40), expected)
         time.sleep(0.5)
@@ -172,7 +191,7 @@ class SignalTest(unittest.TestCase):
         for pid in survivors:               # never leave one behind, even on failure
             os.kill(pid, signal.SIGKILL)
         self.assertEqual(survivors, [], f"the service outlived SIG{signum}")
-        self.assertEqual(_demo_tmp_dirs() - before, set(), "temp dirs were left behind")
+        self.assertEqual(_demo_tmp_dirs(tmp), set(), "temp dirs were left behind")
 
     def test_sigint_takes_the_service_down(self):
         self._assert_signal_takes_the_service_down(signal.SIGINT, 130)
