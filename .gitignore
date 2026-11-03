@@ -13,5 +13,8 @@ models/
 extern/
 .env
 
+# derived dataset artefacts (tools/dataset export)
+var/dataset/
+
 # machine-specific bench env (see bench/lane.env.example)
 bench/lane.env
