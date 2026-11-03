@@ -127,20 +127,26 @@ is recorded only so it can be stopped deliberately: `kill <pid>` (shown by `/ti`
 ## Development
 
 ```sh
-ln -s $(ls -d ~/.pi/agent/install/releases/*/node_modules | tail -1) node_modules
-npx --yes -p typescript@5.5.4 tsc --noEmit          # strict, zero errors
-node scripts/contract-check.ts                       # 10/10 contract cases
+npm ci --no-audit --no-fund                            # reproducible install from package-lock.json
+npx tsc --noEmit                                       # strict, zero errors
+node scripts/contract-check.ts                         # 10/10 contract cases, no service needed
+node scripts/contract-check.ts --live                  # + 9/9 against a stubbed service over HTTP
+node scripts/capture-check.ts                          # 22/22 capture cases
 ```
 
-`node_modules` is a symlink to pi's own install tree (same pattern as
-pi-edit3) — do **not** run `npm install` here; it would replace the symlink.
-`node_modules/` is gitignored. pi executes this TS directly via jiti, so no build
-step exists. `scripts/contract-check.ts` runs under Node's built-in type
-stripping (Node ≥ 22) and needs the same symlink.
+`node_modules/` is gitignored and installed from the committed
+`package-lock.json`; do not symlink it to pi's own install tree — that would
+bypass the pinned versions and `tsc` would no longer resolve the SDK.
 
-Zero runtime deps: `@earendil-works/pi-ai` (TypeBox is re-exported from it; pi's
-loader aliases `typebox`, `typebox/compile`, `typebox/value`), Node builtins, and
-global `fetch`.
+Dependencies: `@earendil-works/pi-ai` and `@earendil-works/pi-coding-agent`
+(the pi extension SDK, re-exporting TypeBox as `Type`/`Static`), `typebox` for
+`typebox/value`, and `@types/node` for the `node:` builtins. The SDK packages are
+pinned to **1.2.0** — the release installed by pi on this box — and `overrides`
+holds the whole `@earendil-works/*` family there too, since the SDK's own
+manifests range its siblings as `^1.2.0`. Bump both together when pi is
+upgraded. Node ≥ 22.19 (the SDK's `engines` floor) is required: pi executes this
+TS directly via jiti and the check scripts run under Node's built-in type
+stripping, so no build step exists.
 
 ## Install (pi extension discovery)
 

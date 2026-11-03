@@ -1,14 +1,29 @@
 {
-  "name": "pi-toolinterfacer",
-  "version": "0.1.0",
-  "description": "useTool — decision-model tool interfacing for pi",
-  "type": "module",
-  "main": "src/index.ts",
-  "scripts": {
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "typescript": "^5.5.0"
-  }
+	"name": "pi-toolinterfacer",
+	"version": "0.1.0",
+	"description": "useTool — decision-model tool interfacing for pi",
+	"type": "module",
+	"main": "src/index.ts",
+	"scripts": {
+		"typecheck": "tsc --noEmit",
+		"check:contract": "node scripts/contract-check.ts",
+		"check:capture": "node scripts/capture-check.ts"
+	},
+	"dependencies": {
+		"@earendil-works/pi-ai": "1.2.0",
+		"@earendil-works/pi-coding-agent": "1.2.0",
+		"typebox": "1.3.27"
+	},
+	"devDependencies": {
+		"@types/node": "22.19.19",
+		"typescript": "^5.5.0"
+	},
+	"overrides": {
+		"@earendil-works/pi-ai": "1.2.0",
+		"@earendil-works/pi-agent-core": "1.2.0",
+		"@earendil-works/pi-codemode": "1.2.0",
+		"@earendil-works/pi-mcp": "1.2.0",
+		"@earendil-works/pi-telemetry": "1.2.0",
+		"@earendil-works/pi-tui": "1.2.0"
+	}
 }
