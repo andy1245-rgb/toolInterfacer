@@ -99,7 +99,7 @@ Everything that chooses goes through four primitives in `service/ti/decide/primi
 
 A backend implements them; `decide.resolve` picks one per call from
 `conf.decide.backends_in_use`. Swapping the model is one config line, and every backend is
-swappable for a recorded fixture — which is how 679 tests run with no network and no model.
+swappable for a recorded fixture — which is how 715 tests run with no network and no model.
 
 Shipped backends: `d1_systemone` (llama.cpp `/v1/systemone`), `logit_read` (any local LLM,
 A–Z letters read from `top_logprobs`), `pair` (local, escalating to hosted under a

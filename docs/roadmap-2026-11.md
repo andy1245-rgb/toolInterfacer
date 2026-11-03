@@ -6,7 +6,7 @@ executed, not when its code exists.
 
 ## Where the project actually stands
 
-*(As of 2026-11-03, the start of this run. Superseded numbers: the suite is 679 tests,
+*(As of 2026-11-03, the start of this run. Superseded numbers: the suite is 715 tests,
 159→349 subtests, and the hop log is 1398 records — `README.md` and
 `docs/dataset-status.md` carry the current ones. The rest of this file is the record of that
 night's plan and is not rewritten.)*

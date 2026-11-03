@@ -6,7 +6,7 @@
 python3 -m pytest tests/ -q
 ```
 
-That is the whole suite: 679 tests, 349 subtests, no network, no model, no CLI.
+That is the whole suite: 715 tests, 349 subtests, no network, no model, no CLI.
 It runs from a fresh clone with nothing installed — each test file puts
 `service/` on `sys.path` itself. Installing the package (`pip install -e
 ".[dev]"`) also works and is what CI does.

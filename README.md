@@ -119,7 +119,7 @@ Verified by running it, not by reading the spec:
 | `pair` (local, escalating to hosted) and `openrouter` | implemented and measured by the author; running them needs a local llama.cpp server, and the hosted stage needs `TI_OPENROUTER_API_KEY` — [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md) |
 | Bounded decision state (structural, not conventional) | works — digest ≤ 8 turns × 240 chars, state ≤ `conf.context.state_max_tokens` |
 | pi extension: `useTool`, `/ti` command, service spawn on session start | complete — `npm ci && npx tsc --noEmit` exits 0, and the contract check passes 11/11 schema cases plus 10/10 through a stubbed transport; see [`pi-extension/README.md`](pi-extension/README.md) |
-| Test suite | 679 tests, 349 subtests, no network, no model |
+| Test suite | 715 tests, 349 subtests, no network, no model |
 
 ### Honest gaps
 
@@ -292,7 +292,7 @@ notes are in [`pi-extension/README.md`](pi-extension/README.md).
 
 ```sh
 python3 -m pytest tests/ -q
-# 679 passed, 349 subtests passed
+# 715 passed, 349 subtests passed
 ```
 
 Runs from a fresh clone with nothing installed: each test file puts `service/` on
@@ -318,7 +318,7 @@ names — `ti/http/api.py`, `ti/decide/resolve.py`, `ti/ops/op_api.py`,
 |---|---|
 | `bench/demo.py` | three scenes, a hop list as the receipt; offline by default, `--live` for the real backend |
 | `bench/run.py` | score any decide arm on a frozen set, and compare two reports (McNemar exact + a latency delta); `selftest` runs the whole path offline |
-| `bench/replay.py` | runs one plan through the real engine — zero network once `TI_CONF_OVERLAY` points the choice decision at `fixture` (see the Quickstart); the script itself uses the configured backend |
+| `bench/replay.py` | runs one plan through the real engine — no decision model once `TI_CONF_OVERLAY` points the choice decision at `fixture` (see the Quickstart); a plan with no web op then makes no network call, but an L2 `research` plan still runs the real `web_search` / `web_fetch` CLIs. The script itself uses the configured backend |
 | `bench/live_probe.py` | routing probe over the frozen utterance set against a live llama.cpp server; `--expect-model <gguf>` asserts `/props` before any probe traffic |
 | `bench/model_guard.py` | the `/props` served-model assertion on its own |
 | `bench/serve_lane.py`, `bench/lane.sh`, `bench/lanes.json` | argv-safe llama-server lane launch, serve → assert → probe → teardown |
