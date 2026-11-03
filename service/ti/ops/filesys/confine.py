@@ -121,13 +121,24 @@ def run_root() -> str:
 def policy_roots() -> list[str]:
     """The configured roots a run's cwd must live inside (`ops.filesys.roots`).
 
-    The shipped default is `~`: the service is spawned with its own repo as the
-    cwd (pi-extension/src/lifecycle.ts) while a run is about the session's cwd,
-    which is some project under the operator's home, so a cwd-only policy would
-    refuse every session that is not a session on the service's own repo.
+    The shipped default is `["~", "."]`:
+
+    - `~` covers the ordinary case — the service is spawned with its own repo as
+      the cwd (`pi-extension/src/lifecycle.ts`) while a run is about the
+      session's cwd, which is some project under the operator's home.
+    - `.` is the directory the service was *started* in, and it is what makes a
+      clone work wherever it lives. Without it, `git clone` into `/tmp` or
+      `/opt` and the README's first example answers `403 scope_refused`, because
+      the run root is the clone and the only permitted root was `~` (observed by
+      the first-contact review, `docs/quickstart-stranger-2026-11-03.md` §1).
+
+    Both are directories the operator chose by starting the service where they
+    did. Neither widens what a *request* may name: the run root is still resolved
+    inside one of these roots, so "list what is in /etc" is refused unless the
+    service was started in `/etc`.
     """
     out: list[str] = []
-    for entry in filesys_conf().get("roots") or ["~"]:
+    for entry in filesys_conf().get("roots") or ["~", "."]:
         text = str(entry)
         if not text.strip():
             continue

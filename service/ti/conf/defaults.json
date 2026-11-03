@@ -141,7 +141,8 @@
     "cli_timeout_s": 60,
     "filesys": {
       "roots": [
-        "~"
+        "~",
+        "."
       ],
       "deny_roots": [
         "~/mnt"

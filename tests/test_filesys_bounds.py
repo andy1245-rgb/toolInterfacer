@@ -11,8 +11,10 @@ so that is where they are pinned. The HTTP layer's own cases (token, allowlist,
 status codes) are in test_http_bounds.py.
 """
 import copy
+import json
 import os
 import pathlib
+import shutil
 import sys
 import tempfile
 import time
@@ -126,6 +128,55 @@ class ConfineTest(FilesysCase):
                         "params": {"tool": "filesys_read", "args": {"path": "sub/target.txt"}}})
         self.assertEqual(out["status"], "done", out)
         self.assertIn("resolved by the run root", str(out["result"]))
+
+
+class PolicyRootsTest(unittest.TestCase):
+    """`ops.filesys.roots` is what a run root must live inside — and its default.
+
+    The default is `["~", "."]`, and `.` is the load-bearing half: it is the
+    directory the service was started in. Without it a clone that does not live
+    under the home directory cannot run the README's first example at all
+    (`docs/quickstart-stranger-2026-11-03.md` §1 measured exactly that: a clone
+    in `/tmp` answered `403 scope_refused` for every documented call).
+
+    Widening it does not widen what a request may name: the requested cwd still
+    has to resolve *inside* one of the roots, so `/etc` is refused unless the
+    service happens to have been started there.
+    """
+
+    def setUp(self) -> None:
+        self._filesys = copy.deepcopy(load()["ops"]["filesys"])
+        self.addCleanup(self._restore)
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+
+    def _restore(self) -> None:
+        load()["ops"]["filesys"] = self._filesys
+
+    def test_the_shipped_default_covers_home_and_the_start_directory(self):
+        shipped = json.loads(
+            (ROOT / "service" / "ti" / "conf" / "defaults.json").read_text()
+        )["ops"]["filesys"]["roots"]
+        self.assertEqual(shipped, ["~", "."])
+
+    def test_the_start_directory_is_a_permitted_root(self):
+        # A clone anywhere works, because the service's own cwd is a root.
+        cwd = os.getcwd()
+        load()["ops"]["filesys"]["roots"] = ["~", "."]
+        self.assertIn(os.path.realpath(cwd), confine.policy_roots())
+        self.assertEqual(confine.confined_root(self._tmp.name)
+                         if self._tmp.name.startswith(os.path.realpath(cwd))
+                         else confine.confined_root("."),
+                         os.path.realpath("."))
+
+    def test_a_cwd_outside_every_root_is_still_refused(self):
+        load()["ops"]["filesys"]["roots"] = ["~", "."]
+        outside = tempfile.mkdtemp(prefix="ti-outside-")
+        self.addCleanup(shutil.rmtree, outside, True)
+        if os.path.realpath(outside).startswith(os.path.realpath(".")):
+            self.skipTest("the temp dir is inside the start directory; no escape to test")
+        with self.assertRaises(confine.PathRefused):
+            confine.confined_root(outside)
 
 
 class DenyListTest(FilesysCase):
