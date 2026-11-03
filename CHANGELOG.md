@@ -7,7 +7,7 @@ commit in `git log` or to a document under `docs/`.
 
 ## [0.1.0] — 2026-11-03
 
-First public release: 104 commits from 2026-10-17 to 2026-11-03, 679 tests and 349
+First public release: 104 commits from 2026-10-17 to 2026-11-03, 715 tests and 349
 subtests, 62 modules in 16 packages, no runtime dependencies.
 
 ### Added
@@ -121,7 +121,7 @@ subtests, 62 modules in 16 packages, no runtime dependencies.
   service and a real d1-3B over `/v1/systemone`, having found 10 defects on the way.
   Caveat: `openrouter` had no API key, so every escalation was exercised through its
   degraded path rather than a live hosted call (`docs/live-e2e-2026-11-03.md`).
-- **The suite needs nothing.** 679 tests and 349 subtests with no network, no model and no
+- **The suite needs nothing.** 715 tests and 349 subtests with no network, no model and no
   CLI: the choice decision is the `fixture` backend and the subprocess ops run against
   `tests/data/fake_cli.py`.
 

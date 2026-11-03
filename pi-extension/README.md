@@ -129,8 +129,8 @@ is recorded only so it can be stopped deliberately: `kill <pid>` (shown by `/ti`
 ```sh
 npm ci --no-audit --no-fund                            # reproducible install from package-lock.json
 npx tsc --noEmit                                       # strict, zero errors
-node scripts/contract-check.ts                         # 10/10 contract cases, no service needed
-node scripts/contract-check.ts --live                  # + 9/9 against a stubbed service over HTTP
+node scripts/contract-check.ts                         # 11/11 contract cases, no service needed
+node scripts/contract-check.ts --live                  # + 10/10 against a stubbed service over HTTP
 node scripts/capture-check.ts                          # 22/22 capture cases
 ```
 
@@ -172,9 +172,9 @@ adapter.
 ## Verified
 
 - `tsc --noEmit` (TS 5.5.4 and 5.7.3, strict `noEmit`): clean on `src/` + `scripts/`.
-- `node scripts/contract-check.ts`: 10/10 — auto (`done`, L0 passthrough),
-  `need_input`, `error`, plan with and without `hops`, plus 4 malformed bodies
-  that must be rejected.
+- `node scripts/contract-check.ts`: 11/11 — auto (`done`, L0 passthrough, an
+  unmeasured decide hop), `need_input`, `error`, plan with and without `hops`, plus 4
+  malformed bodies that must be rejected.
 - Live service on a spare port: `mode:"auto"` → `done` (3 hops, conf 0.95),
   `mode:"plan"` → `plan` (3 steps, `hops: []`), empty intent → `error`, and a
   1ms timeout → `ServiceError{kind:"timeout"}`.
