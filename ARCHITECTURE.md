@@ -51,9 +51,13 @@ in the Python service, which is why the whole benchmark suite runs without pi.
 `service/ti/service_entry.py::use_tool` is the only place that wires these together, in
 this order:
 
-1. **Ingress bound.** `context.session_digest.sanitize` clips the caller's digest to
-   `≤ 8 turns × 240 chars` plus `≤ 8` path antecedents and the `cwd`. A caller cannot
-   inflate the prompt by sending a bigger digest; they get a thinner one.
+1. **Ingress bound.** `context.session_digest.sanitize` projects each digest turn onto
+   `{role, summary, mentions}` and each antecedent onto `{phrase, resolved}`, keeps the last
+   8 of each, and clips every string that survives (240 chars per turn, 6 mentions, 1024 per
+   path, the `cwd` too) — a key the shape does not list is dropped, not forwarded. Behind it,
+   `context.packer.trim` replaces a digest still over `conf.context.state_max_tokens` with a
+   stub. So a caller cannot inflate the prompt either way: `sanitize` makes their digest
+   arrive thin, and if it were bypassed `trim` would discard the digest rather than bound it.
 2. **Run root.** `ops.filesys.confine.set_root(cwd)` pins every path the run may touch, for
    the duration of this call only, and is torn down in a `finally`. Relative paths resolve
    in the *caller's* frame, never the service's.
