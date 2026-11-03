@@ -86,9 +86,13 @@ Verified by running it, not by reading the spec:
 These are not wired, and the README would be lying if it did not say so:
 
 - **Intent classification is keyword rules, not the decision model.**
-  `planner/inspector.py` picks L0/L1/L2 from string matches (`"research"`, `"reddit"`,
-  `params.tool`). The decision model is used *inside* a plan — candidate selection, slot
-  fill, verification — not to choose the plan. Spec §2 calls the routed version P2.
+  `planner/inspector.py` picks L0/L1/L2 from ordered keyword frames — an explicit op, a
+  reddit route, a named web channel, a published source, a research verb gated on nothing
+  local — which is wider than the two words (`"research"`, `"compare"`) it shipped with
+  and is still a rule list. The decision model is used *inside* a plan — candidate
+  selection, slot fill, verification — not to choose the plan. Spec §2 calls the routed
+  version P2; `tests/test_route_real_traffic.py` is the table that holds the rules to the
+  hop log.
 - **Ask-back does not reach the HTTP path.** `use_tool(..., on_ask=...)` supports it and
   `tests/test_loop.py` exercises it, but `http/api.py` calls `use_tool` with no ask
   channel, so a gated step currently degrades to a best guess with `degraded: true`
