@@ -1,0 +1,3610 @@
+{
+ "reproduction": {
+  "n": 382,
+  "accuracy": 0.9319,
+  "correct": 356,
+  "none_detection": 0.6,
+  "false_none_rate": 0.0,
+  "latency_p50_ms": 0.027,
+  "latency_p95_ms": 0.033,
+  "confidence_p50": 0.1711,
+  "pmax_p50": 0.1711,
+  "accuracy_by_label": {
+   "__none__": 0.6,
+   "calendar_today": 1.0,
+   "docs_query": 1.0,
+   "email_unread": 1.0,
+   "light_query": 0.8,
+   "light_set": 0.92,
+   "projects_query": 0.833,
+   "reminder_cancel": 0.96,
+   "reminder_create": 1.0,
+   "research_deep": 1.0,
+   "shoppinglist_add": 1.0,
+   "shoppinglist_remove": 1.0,
+   "shoppinglist_view": 1.0,
+   "thermostat_offset": 0.87,
+   "thermostat_set": 1.0,
+   "timer_cancel": 0.947,
+   "timer_create": 1.0,
+   "timer_status": 0.923
+  },
+  "per_row": [
+   {
+    "text": "run a timer for 2 hours",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.23778706448865117,
+    "ms": 0.082,
+    "pmax": 0.23778706448865117
+   },
+   {
+    "text": "set a timer for 90 seconds",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.2456123127209569,
+    "ms": 0.042,
+    "pmax": 0.2456123127209569
+   },
+   {
+    "text": "I need a 90 seconds timer",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.13234517684696392,
+    "ms": 0.031,
+    "pmax": 0.13234517684696392
+   },
+   {
+    "text": "run a timer for 1 hour",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.278753684810297,
+    "ms": 0.027,
+    "pmax": 0.278753684810297
+   },
+   {
+    "text": "set a timer for 5 minutes",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.28173313514792553,
+    "ms": 0.028,
+    "pmax": 0.28173313514792553
+   },
+   {
+    "text": "run a timer for 45 seconds",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.18127954243793365,
+    "ms": 0.026,
+    "pmax": 0.18127954243793365
+   },
+   {
+    "text": "start a 10 minutes timer",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.23621191485898133,
+    "ms": 0.026,
+    "pmax": 0.23621191485898133
+   },
+   {
+    "text": "give me a 3 minutes timer please",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.17163616757191097,
+    "ms": 0.029,
+    "pmax": 0.17163616757191097
+   },
+   {
+    "text": "set a timer for 1 hour",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.2818250291391956,
+    "ms": 0.025,
+    "pmax": 0.2818250291391956
+   },
+   {
+    "text": "run a timer for half an hour",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.21132742485863096,
+    "ms": 0.031,
+    "pmax": 0.21132742485863096
+   },
+   {
+    "text": "kick off a half an hour countdown",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.127692142146978,
+    "ms": 0.029,
+    "pmax": 0.127692142146978
+   },
+   {
+    "text": "start a 90 seconds timer",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.19743366824918943,
+    "ms": 0.024,
+    "pmax": 0.19743366824918943
+   },
+   {
+    "text": "start a countdown of 25 minutes",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.1540261825708987,
+    "ms": 0.027,
+    "pmax": 0.1540261825708987
+   },
+   {
+    "text": "start a countdown of half an hour",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.16566709436112415,
+    "ms": 0.028,
+    "pmax": 0.16566709436112415
+   },
+   {
+    "text": "start a 25 minutes timer",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.20484808393618323,
+    "ms": 0.023,
+    "pmax": 0.20484808393618323
+   },
+   {
+    "text": "I need a 5 minutes timer",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.14996778923374526,
+    "ms": 0.022,
+    "pmax": 0.14996778923374526
+   },
+   {
+    "text": "start a countdown of 12 minutes",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.18406376100879765,
+    "ms": 0.023,
+    "pmax": 0.18406376100879765
+   },
+   {
+    "text": "kick off a 3 minutes countdown",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.12601074392524547,
+    "ms": 0.023,
+    "pmax": 0.12601074392524547
+   },
+   {
+    "text": "start a countdown of 10 minutes",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.17035063108868675,
+    "ms": 0.024,
+    "pmax": 0.17035063108868675
+   },
+   {
+    "text": "give me a 90 seconds timer please",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.15813682079411132,
+    "ms": 0.028,
+    "pmax": 0.15813682079411132
+   },
+   {
+    "text": "start a countdown of 5 minutes",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.18406376100879765,
+    "ms": 0.023,
+    "pmax": 0.18406376100879765
+   },
+   {
+    "text": "give me a half an hour timer please",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.18123043424419663,
+    "ms": 0.03,
+    "pmax": 0.18123043424419663
+   },
+   {
+    "text": "kick off a 1 hour countdown",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.11963411132396255,
+    "ms": 0.022,
+    "pmax": 0.11963411132396255
+   },
+   {
+    "text": "start a 5 minutes timer",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.27789337172673595,
+    "ms": 0.021,
+    "pmax": 0.27789337172673595
+   },
+   {
+    "text": "start a 12 minutes timer",
+    "gold": "timer_create",
+    "pick": "timer_create",
+    "correct": true,
+    "conf": 0.27789337172673595,
+    "ms": 0.021,
+    "pmax": 0.27789337172673595
+   },
+   {
+    "text": "cancel the 30 second timer",
+    "gold": "timer_cancel",
+    "pick": "timer_create",
+    "correct": false,
+    "conf": 0.1234922950559518,
+    "ms": 0.028,
+    "pmax": 0.1234922950559518
+   },
+   {
+    "text": "stop the 1 hour timer now",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.1386963544202433,
+    "ms": 0.027,
+    "pmax": 0.1386963544202433
+   },
+   {
+    "text": "cancel the countdown",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.23200787364465192,
+    "ms": 0.023,
+    "pmax": 0.23200787364465192
+   },
+   {
+    "text": "shut off the running timer",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.15234908247570642,
+    "ms": 0.027,
+    "pmax": 0.15234908247570642
+   },
+   {
+    "text": "abort the 10 minute countdown",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.13960677059854687,
+    "ms": 0.037,
+    "pmax": 0.13960677059854687
+   },
+   {
+    "text": "abort the 1 hour countdown",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.1393666327897512,
+    "ms": 0.028,
+    "pmax": 0.1393666327897512
+   },
+   {
+    "text": "kill that timer",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.1376510017694532,
+    "ms": 0.027,
+    "pmax": 0.1376510017694532
+   },
+   {
+    "text": "stop the 3 minute timer now",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.17114970710730287,
+    "ms": 0.027,
+    "pmax": 0.17114970710730287
+   },
+   {
+    "text": "abort the 30 second countdown",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.11107624891798623,
+    "ms": 0.027,
+    "pmax": 0.11107624891798623
+   },
+   {
+    "text": "stop the 5 minute timer now",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.17114970710730287,
+    "ms": 0.028,
+    "pmax": 0.17114970710730287
+   },
+   {
+    "text": "cancel the 5 minute timer",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.16163484217672103,
+    "ms": 0.023,
+    "pmax": 0.16163484217672103
+   },
+   {
+    "text": "abort the 5 minute countdown",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.12573467190240498,
+    "ms": 0.023,
+    "pmax": 0.12573467190240498
+   },
+   {
+    "text": "cancel the 1 hour timer",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.12645566884956858,
+    "ms": 0.023,
+    "pmax": 0.12645566884956858
+   },
+   {
+    "text": "stop the 10 minute timer now",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.17716788353213248,
+    "ms": 0.029,
+    "pmax": 0.17716788353213248
+   },
+   {
+    "text": "stop the 30 second timer now",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.11752400442008872,
+    "ms": 0.027,
+    "pmax": 0.11752400442008872
+   },
+   {
+    "text": "cancel the 10 minute timer",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.16614311196246534,
+    "ms": 0.026,
+    "pmax": 0.16614311196246534
+   },
+   {
+    "text": "cancel my countdown please",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.1724980100476153,
+    "ms": 0.026,
+    "pmax": 0.1724980100476153
+   },
+   {
+    "text": "abort the 3 minute countdown",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.12573467190240498,
+    "ms": 0.024,
+    "pmax": 0.12573467190240498
+   },
+   {
+    "text": "cancel the 3 minute timer",
+    "gold": "timer_cancel",
+    "pick": "timer_cancel",
+    "correct": true,
+    "conf": 0.16163484217672103,
+    "ms": 0.023,
+    "pmax": 0.16163484217672103
+   },
+   {
+    "text": "how much time is left on the 1 hour timer",
+    "gold": "timer_status",
+    "pick": "timer_status",
+    "correct": true,
+    "conf": 0.20547286429764303,
+    "ms": 0.04,
+    "pmax": 0.20547286429764303
+   },
+   {
+    "text": "what's remaining on the countdown",
+    "gold": "timer_status",
+    "pick": "timer_status",
+    "correct": true,
+    "conf": 0.13559216622732517,
+    "ms": 0.029,
+    "pmax": 0.13559216622732517
+   },
+   {
+    "text": "check how long is left on the timer",
+    "gold": "timer_status",
+    "pick": "timer_status",
+    "correct": true,
+    "conf": 0.27895007533109384,
+    "ms": 0.034,
+    "pmax": 0.27895007533109384
+   },
+   {
+    "text": "when does the countdown finish",
+    "gold": "timer_status",
+    "pick": "timer_status",
+    "correct": true,
+    "conf": 0.12025599319716707,
+    "ms": 0.027,
+    "pmax": 0.12025599319716707
+   },
+   {
+    "text": "is the 1 hour timer still going",
+    "gold": "timer_status",
+    "pick": "timer_create",
+    "correct": false,
+    "conf": 0.1051854258593526,
+    "ms": 0.027,
+    "pmax": 0.1051854258593526
+   },
+   {
+    "text": "is the 10 minute timer still going",
+    "gold": "timer_status",
+    "pick": "timer_status",
+    "correct": true,
+    "conf": 0.08561379333938984,
+    "ms": 0.03,
+    "pmax": 0.08561379333938984
+   },
+   {
+    "text": "is the 25 minute timer still going",
+    "gold": "timer_status",
+    "pick": "timer_status",
+    "correct": true,
+    "conf": 0.09496565578469028,
+    "ms": 0.028,
+    "pmax": 0.09496565578469028
+   },
+   {
+    "text": "time left on the timer please",
+    "gold": "timer_status",
+    "pick": "timer_status",
+    "correct": true,
+    "conf": 0.27432287279039047,
+    "ms": 0.028,
+    "pmax": 0.27432287279039047
+   },
+   {
+    "text": "how much time is left on the 5 minute timer",
+    "gold": "timer_status",
+    "pick": "timer_status",
+    "correct": true,
+    "conf": 0.209784969414659,
+    "ms": 0.035,
+    "pmax": 0.209784969414659
+   },
+   {
+    "text": "is the 5 minute timer still going",
+    "gold": "timer_status",
+    "pick": "timer_status",
+    "correct": true,
+    "conf": 0.10043838819307452,
+    "ms": 0.027,
+    "pmax": 0.10043838819307452
+   },
+   {
+    "text": "how much time is left on the 10 minute timer",
+    "gold": "timer_status",
+    "pick": "timer_status",
+    "correct": true,
+    "conf": 0.17761986623468595,
+    "ms": 0.038,
+    "pmax": 0.17761986623468595
+   },
+   {
+    "text": "how much longer on the timer",
+    "gold": "timer_status",
+    "pick": "timer_status",
+    "correct": true,
+    "conf": 0.18722721738926937,
+    "ms": 0.028,
+    "pmax": 0.18722721738926937
+   },
+   {
+    "text": "how much time is left on the 25 minute timer",
+    "gold": "timer_status",
+    "pick": "timer_status",
+    "correct": true,
+    "conf": 0.19779066318916472,
+    "ms": 0.036,
+    "pmax": 0.19779066318916472
+   },
+   {
+    "text": "remind me at next Monday to feed the cat",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.33614823025199203,
+    "ms": 0.03,
+    "pmax": 0.33614823025199203
+   },
+   {
+    "text": "remind me at in 20 minutes to charge the scooter",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.258495407690095,
+    "ms": 0.034,
+    "pmax": 0.258495407690095
+   },
+   {
+    "text": "set a reminder to feed the cat on Friday",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.130820580145986,
+    "ms": 0.028,
+    "pmax": 0.130820580145986
+   },
+   {
+    "text": "remember to water the plants tomorrow at 9am",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.19349809540010077,
+    "ms": 0.035,
+    "pmax": 0.19349809540010077
+   },
+   {
+    "text": "remind me to water the plants at at 7:30am",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.3113112461375901,
+    "ms": 0.033,
+    "pmax": 0.3113112461375901
+   },
+   {
+    "text": "remember to feed the cat next Monday",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.13628643148255662,
+    "ms": 0.024,
+    "pmax": 0.13628643148255662
+   },
+   {
+    "text": "remember to charge the scooter tomorrow at 9am",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.19291583408378984,
+    "ms": 0.03,
+    "pmax": 0.19291583408378984
+   },
+   {
+    "text": "remind me about charge the scooter in 20 minutes",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.1839859669705758,
+    "ms": 0.032,
+    "pmax": 0.1839859669705758
+   },
+   {
+    "text": "remind me at at 7:30am to feed the cat",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.3431716868474202,
+    "ms": 0.029,
+    "pmax": 0.3431716868474202
+   },
+   {
+    "text": "remind me about water the plants next Monday",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.19279540282569313,
+    "ms": 0.032,
+    "pmax": 0.19279540282569313
+   },
+   {
+    "text": "remind me to take the cookies out at at 6pm",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.2942685714874614,
+    "ms": 0.037,
+    "pmax": 0.2942685714874614
+   },
+   {
+    "text": "remind me about water the plants on Friday",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.18573979462703005,
+    "ms": 0.031,
+    "pmax": 0.18573979462703005
+   },
+   {
+    "text": "remember to feed the cat on Friday",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.12578162090848685,
+    "ms": 0.025,
+    "pmax": 0.12578162090848685
+   },
+   {
+    "text": "remind me about check the laundry in 20 minutes",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.15344481571784677,
+    "ms": 0.035,
+    "pmax": 0.15344481571784677
+   },
+   {
+    "text": "remind me to lock the back door at at 7:30am",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.3923097327680289,
+    "ms": 0.028,
+    "pmax": 0.3923097327680289
+   },
+   {
+    "text": "don't let me forget to feed the cat tomorrow at 9am",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.2023846092610188,
+    "ms": 0.035,
+    "pmax": 0.2023846092610188
+   },
+   {
+    "text": "don't let me forget to charge the scooter at 6pm",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.1824500303321791,
+    "ms": 0.032,
+    "pmax": 0.1824500303321791
+   },
+   {
+    "text": "remember to water the plants at 6pm",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.17411201246937824,
+    "ms": 0.03,
+    "pmax": 0.17411201246937824
+   },
+   {
+    "text": "remind me about take the cookies out next Monday",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.18075109523205868,
+    "ms": 0.029,
+    "pmax": 0.18075109523205868
+   },
+   {
+    "text": "remind me at tomorrow at 9am to charge the scooter",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.31467668897122314,
+    "ms": 0.031,
+    "pmax": 0.31467668897122314
+   },
+   {
+    "text": "remind me to submit the tax form at this evening",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.275401325514478,
+    "ms": 0.035,
+    "pmax": 0.275401325514478
+   },
+   {
+    "text": "remind me to water the plants at tomorrow at 9am",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.31344818763624965,
+    "ms": 0.035,
+    "pmax": 0.31344818763624965
+   },
+   {
+    "text": "don't let me forget to feed the cat next Monday",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.14831824998338541,
+    "ms": 0.029,
+    "pmax": 0.14831824998338541
+   },
+   {
+    "text": "don't let me forget to submit the tax form on Friday",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.14734710159449985,
+    "ms": 0.033,
+    "pmax": 0.14734710159449985
+   },
+   {
+    "text": "remind me at on Friday to charge the scooter",
+    "gold": "reminder_create",
+    "pick": "reminder_create",
+    "correct": true,
+    "conf": 0.3125944999902853,
+    "ms": 0.028,
+    "pmax": 0.3125944999902853
+   },
+   {
+    "text": "remove the reminder to trash",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.20446155695026139,
+    "ms": 0.028,
+    "pmax": 0.20446155695026139
+   },
+   {
+    "text": "delete my reminder about dentist",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.22087351133862157,
+    "ms": 0.029,
+    "pmax": 0.22087351133862157
+   },
+   {
+    "text": "get rid of the meeting reminder",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.15881256445163297,
+    "ms": 0.03,
+    "pmax": 0.15881256445163297
+   },
+   {
+    "text": "cancel the reminder for meeting",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.1828415728939211,
+    "ms": 0.027,
+    "pmax": 0.1828415728939211
+   },
+   {
+    "text": "cancel the reminder for dentist",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.21566068547975692,
+    "ms": 0.026,
+    "pmax": 0.21566068547975692
+   },
+   {
+    "text": "remove the 6pm reminder",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.23638172359929616,
+    "ms": 0.025,
+    "pmax": 0.23638172359929616
+   },
+   {
+    "text": "delete my reminder about meeting",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.19041724571937277,
+    "ms": 0.026,
+    "pmax": 0.19041724571937277
+   },
+   {
+    "text": "cancel the reminder for package",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.19471684645212092,
+    "ms": 0.027,
+    "pmax": 0.19471684645212092
+   },
+   {
+    "text": "get rid of the package reminder",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.15595115870209922,
+    "ms": 0.028,
+    "pmax": 0.15595115870209922
+   },
+   {
+    "text": "remove the 9am reminder",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.18867312180627585,
+    "ms": 0.022,
+    "pmax": 0.18867312180627585
+   },
+   {
+    "text": "delete the reminder set for noon",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.22036685562104572,
+    "ms": 0.03,
+    "pmax": 0.22036685562104572
+   },
+   {
+    "text": "delete the reminder set for 9am",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.20478411011948175,
+    "ms": 0.029,
+    "pmax": 0.20478411011948175
+   },
+   {
+    "text": "remove the 5pm reminder",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.2518704283591486,
+    "ms": 0.022,
+    "pmax": 0.2518704283591486
+   },
+   {
+    "text": "remove the reminder to dentist",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.20194234092424468,
+    "ms": 0.027,
+    "pmax": 0.20194234092424468
+   },
+   {
+    "text": "cancel all my reminders",
+    "gold": "reminder_cancel",
+    "pick": "timer_cancel",
+    "correct": false,
+    "conf": 0.13068883110476076,
+    "ms": 0.048,
+    "pmax": 0.13068883110476076
+   },
+   {
+    "text": "delete my reminder about laundry",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.228377344033348,
+    "ms": 0.027,
+    "pmax": 0.228377344033348
+   },
+   {
+    "text": "cancel the reminder for trash",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.21875780419393828,
+    "ms": 0.026,
+    "pmax": 0.21875780419393828
+   },
+   {
+    "text": "delete the reminder set for 5pm",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.23068626518572408,
+    "ms": 0.029,
+    "pmax": 0.23068626518572408
+   },
+   {
+    "text": "remove the reminder to package",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.18178634710767413,
+    "ms": 0.025,
+    "pmax": 0.18178634710767413
+   },
+   {
+    "text": "get rid of the dentist reminder",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.1838352540158841,
+    "ms": 0.028,
+    "pmax": 0.1838352540158841
+   },
+   {
+    "text": "remove the reminder to meeting",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.1703295620192579,
+    "ms": 0.026,
+    "pmax": 0.1703295620192579
+   },
+   {
+    "text": "remove the reminder to laundry",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.20995722807199996,
+    "ms": 0.025,
+    "pmax": 0.20995722807199996
+   },
+   {
+    "text": "delete my reminder about package",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.201528758289631,
+    "ms": 0.026,
+    "pmax": 0.201528758289631
+   },
+   {
+    "text": "remove the noon reminder",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.21121663472268157,
+    "ms": 0.022,
+    "pmax": 0.21121663472268157
+   },
+   {
+    "text": "delete my reminder about trash",
+    "gold": "reminder_cancel",
+    "pick": "reminder_cancel",
+    "correct": true,
+    "conf": 0.2233745181265436,
+    "ms": 0.025,
+    "pmax": 0.2233745181265436
+   },
+   {
+    "text": "add some paper towels to the grocery list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.2341565651067639,
+    "ms": 0.032,
+    "pmax": 0.2341565651067639
+   },
+   {
+    "text": "add paper towels to the shopping list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.2882754570990663,
+    "ms": 0.028,
+    "pmax": 0.2882754570990663
+   },
+   {
+    "text": "throw pasta on the shopping list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.12215993462585781,
+    "ms": 0.028,
+    "pmax": 0.12215993462585781
+   },
+   {
+    "text": "we're out of dish soap, add it to groceries",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.14169539487468533,
+    "ms": 0.03,
+    "pmax": 0.14169539487468533
+   },
+   {
+    "text": "we're out of olive oil, add it to groceries",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.1476039052859349,
+    "ms": 0.031,
+    "pmax": 0.1476039052859349
+   },
+   {
+    "text": "throw chicken on the shopping list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.13900982758425312,
+    "ms": 0.025,
+    "pmax": 0.13900982758425312
+   },
+   {
+    "text": "we're out of bread, add it to groceries",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.1462462571163077,
+    "ms": 0.03,
+    "pmax": 0.1462462571163077
+   },
+   {
+    "text": "throw olive oil on the shopping list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.13877992058856772,
+    "ms": 0.029,
+    "pmax": 0.13877992058856772
+   },
+   {
+    "text": "add batteries to the shopping list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.28459654360753034,
+    "ms": 0.028,
+    "pmax": 0.28459654360753034
+   },
+   {
+    "text": "we're out of bananas, add it to groceries",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.14169539487468533,
+    "ms": 0.027,
+    "pmax": 0.14169539487468533
+   },
+   {
+    "text": "add olive oil to my list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.166769636548998,
+    "ms": 0.029,
+    "pmax": 0.166769636548998
+   },
+   {
+    "text": "put milk on the grocery list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.17417877380797447,
+    "ms": 0.028,
+    "pmax": 0.17417877380797447
+   },
+   {
+    "text": "we're out of batteries, add it to groceries",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.1434811132676572,
+    "ms": 0.029,
+    "pmax": 0.1434811132676572
+   },
+   {
+    "text": "add some bananas to the grocery list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.24290340299946608,
+    "ms": 0.027,
+    "pmax": 0.24290340299946608
+   },
+   {
+    "text": "add olive oil to the shopping list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.24616719972021,
+    "ms": 0.031,
+    "pmax": 0.24616719972021
+   },
+   {
+    "text": "throw rice on the shopping list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.16214117359667649,
+    "ms": 0.027,
+    "pmax": 0.16214117359667649
+   },
+   {
+    "text": "add bananas to the shopping list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.3159643679498838,
+    "ms": 0.025,
+    "pmax": 0.3159643679498838
+   },
+   {
+    "text": "throw batteries on the shopping list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.1344472040051297,
+    "ms": 0.026,
+    "pmax": 0.1344472040051297
+   },
+   {
+    "text": "add bread to my list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.18356482657301976,
+    "ms": 0.027,
+    "pmax": 0.18356482657301976
+   },
+   {
+    "text": "add chicken to my list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.17306161245692508,
+    "ms": 0.023,
+    "pmax": 0.17306161245692508
+   },
+   {
+    "text": "add some batteries to the grocery list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.2301910380735843,
+    "ms": 0.028,
+    "pmax": 0.2301910380735843
+   },
+   {
+    "text": "add some rice to the grocery list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.24731258408136783,
+    "ms": 0.028,
+    "pmax": 0.24731258408136783
+   },
+   {
+    "text": "throw dish soap on the shopping list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.13900982758425312,
+    "ms": 0.026,
+    "pmax": 0.13900982758425312
+   },
+   {
+    "text": "add chicken to the shopping list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.3159643679498838,
+    "ms": 0.028,
+    "pmax": 0.3159643679498838
+   },
+   {
+    "text": "add batteries to my list",
+    "gold": "shoppinglist_add",
+    "pick": "shoppinglist_add",
+    "correct": true,
+    "conf": 0.16460429960146852,
+    "ms": 0.025,
+    "pmax": 0.16460429960146852
+   },
+   {
+    "text": "remove bananas from the shopping list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.2592622530975949,
+    "ms": 0.026,
+    "pmax": 0.2592622530975949
+   },
+   {
+    "text": "take pasta off the grocery list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.17914995773490366,
+    "ms": 0.028,
+    "pmax": 0.17914995773490366
+   },
+   {
+    "text": "cross bananas off the shopping list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.13076068433012292,
+    "ms": 0.025,
+    "pmax": 0.13076068433012292
+   },
+   {
+    "text": "delete coffee from my list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.2182048913239346,
+    "ms": 0.026,
+    "pmax": 0.2182048913239346
+   },
+   {
+    "text": "take pasta off the list please",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.14136248743467494,
+    "ms": 0.028,
+    "pmax": 0.14136248743467494
+   },
+   {
+    "text": "delete pasta from my list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.21823728892728447,
+    "ms": 0.025,
+    "pmax": 0.21823728892728447
+   },
+   {
+    "text": "remove the bread from groceries",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.2171189093065587,
+    "ms": 0.026,
+    "pmax": 0.2171189093065587
+   },
+   {
+    "text": "remove the chicken from groceries",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.2254678936576681,
+    "ms": 0.024,
+    "pmax": 0.2254678936576681
+   },
+   {
+    "text": "remove bread from the shopping list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.24428561098013693,
+    "ms": 0.028,
+    "pmax": 0.24428561098013693
+   },
+   {
+    "text": "cross batteries off the shopping list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.13475527803083423,
+    "ms": 0.026,
+    "pmax": 0.13475527803083423
+   },
+   {
+    "text": "delete rice from my list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.21808305793619184,
+    "ms": 0.026,
+    "pmax": 0.21808305793619184
+   },
+   {
+    "text": "delete chicken from my list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.2233784890755571,
+    "ms": 0.024,
+    "pmax": 0.2233784890755571
+   },
+   {
+    "text": "cross eggs off the shopping list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.14876189933949088,
+    "ms": 0.028,
+    "pmax": 0.14876189933949088
+   },
+   {
+    "text": "cross coffee off the shopping list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.14796707918245486,
+    "ms": 0.026,
+    "pmax": 0.14796707918245486
+   },
+   {
+    "text": "take coffee off the grocery list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.19631104848649125,
+    "ms": 0.028,
+    "pmax": 0.19631104848649125
+   },
+   {
+    "text": "cross rice off the shopping list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.13276223841576149,
+    "ms": 0.026,
+    "pmax": 0.13276223841576149
+   },
+   {
+    "text": "cross bread off the shopping list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.13181831655092918,
+    "ms": 0.025,
+    "pmax": 0.13181831655092918
+   },
+   {
+    "text": "take batteries off the grocery list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.17291247100259888,
+    "ms": 0.027,
+    "pmax": 0.17291247100259888
+   },
+   {
+    "text": "remove chicken from the shopping list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.2592622530975949,
+    "ms": 0.025,
+    "pmax": 0.2592622530975949
+   },
+   {
+    "text": "remove olive oil from the shopping list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.17135470432291763,
+    "ms": 0.029,
+    "pmax": 0.17135470432291763
+   },
+   {
+    "text": "remove the milk from groceries",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.2118297534351733,
+    "ms": 0.025,
+    "pmax": 0.2118297534351733
+   },
+   {
+    "text": "delete olive oil from my list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.15299522780541977,
+    "ms": 0.026,
+    "pmax": 0.15299522780541977
+   },
+   {
+    "text": "remove pasta from the shopping list",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.24961647372135107,
+    "ms": 0.027,
+    "pmax": 0.24961647372135107
+   },
+   {
+    "text": "remove the pasta from groceries",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.22094375262665852,
+    "ms": 0.025,
+    "pmax": 0.22094375262665852
+   },
+   {
+    "text": "take bread off the list please",
+    "gold": "shoppinglist_remove",
+    "pick": "shoppinglist_remove",
+    "correct": true,
+    "conf": 0.13090437373760616,
+    "ms": 0.027,
+    "pmax": 0.13090437373760616
+   },
+   {
+    "text": "what's on the grocery list today",
+    "gold": "shoppinglist_view",
+    "pick": "shoppinglist_view",
+    "correct": true,
+    "conf": 0.1841523932325484,
+    "ms": 0.029,
+    "pmax": 0.1841523932325484
+   },
+   {
+    "text": "list out my shopping items",
+    "gold": "shoppinglist_view",
+    "pick": "shoppinglist_view",
+    "correct": true,
+    "conf": 0.12435946090354909,
+    "ms": 0.024,
+    "pmax": 0.12435946090354909
+   },
+   {
+    "text": "read the shopping list to me",
+    "gold": "shoppinglist_view",
+    "pick": "shoppinglist_view",
+    "correct": true,
+    "conf": 0.13991977976002268,
+    "ms": 0.027,
+    "pmax": 0.13991977976002268
+   },
+   {
+    "text": "what's on the list right now",
+    "gold": "shoppinglist_view",
+    "pick": "shoppinglist_view",
+    "correct": true,
+    "conf": 0.21378268667541536,
+    "ms": 0.029,
+    "pmax": 0.21378268667541536
+   },
+   {
+    "text": "show my shopping list",
+    "gold": "shoppinglist_view",
+    "pick": "shoppinglist_view",
+    "correct": true,
+    "conf": 0.13200445605502542,
+    "ms": 0.025,
+    "pmax": 0.13200445605502542
+   },
+   {
+    "text": "what do I need to buy",
+    "gold": "shoppinglist_view",
+    "pick": "shoppinglist_view",
+    "correct": true,
+    "conf": 0.1644677029350264,
+    "ms": 0.026,
+    "pmax": 0.1644677029350264
+   },
+   {
+    "text": "put the thermostat on 25",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.16082493366578476,
+    "ms": 0.025,
+    "pmax": 0.16082493366578476
+   },
+   {
+    "text": "set the temperature to 26 degrees",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.3048558938278142,
+    "ms": 0.029,
+    "pmax": 0.3048558938278142
+   },
+   {
+    "text": "change the thermostat to 22",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.24356129122363082,
+    "ms": 0.027,
+    "pmax": 0.24356129122363082
+   },
+   {
+    "text": "drop the temperature to 21 degrees",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.23125216054226946,
+    "ms": 0.03,
+    "pmax": 0.23125216054226946
+   },
+   {
+    "text": "drop the temperature to 19 degrees",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.21781196852818555,
+    "ms": 0.031,
+    "pmax": 0.21781196852818555
+   },
+   {
+    "text": "set the house temperature to 20",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.22043973598349112,
+    "ms": 0.03,
+    "pmax": 0.22043973598349112
+   },
+   {
+    "text": "turn the heat up to 21 degrees",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.13113258565445848,
+    "ms": 0.033,
+    "pmax": 0.13113258565445848
+   },
+   {
+    "text": "drop the temperature to 25 degrees",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.24450618317887052,
+    "ms": 0.029,
+    "pmax": 0.24450618317887052
+   },
+   {
+    "text": "turn the heat up to 20 degrees",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.13885700311367796,
+    "ms": 0.031,
+    "pmax": 0.13885700311367796
+   },
+   {
+    "text": "change the thermostat to 26",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.2548567250132838,
+    "ms": 0.026,
+    "pmax": 0.2548567250132838
+   },
+   {
+    "text": "set the heat to 25 degrees",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.23724665652255766,
+    "ms": 0.028,
+    "pmax": 0.23724665652255766
+   },
+   {
+    "text": "set the house temperature to 19",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.20572437440193583,
+    "ms": 0.028,
+    "pmax": 0.20572437440193583
+   },
+   {
+    "text": "set the heat to 20 degrees",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.2206058283276011,
+    "ms": 0.029,
+    "pmax": 0.2206058283276011
+   },
+   {
+    "text": "put the thermostat on 21",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.15993984114855236,
+    "ms": 0.025,
+    "pmax": 0.15993984114855236
+   },
+   {
+    "text": "drop the temperature to 26 degrees",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.23518662577132293,
+    "ms": 0.028,
+    "pmax": 0.23518662577132293
+   },
+   {
+    "text": "make it 24 degrees in here",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.14514996967864088,
+    "ms": 0.029,
+    "pmax": 0.14514996967864088
+   },
+   {
+    "text": "turn the heat up to 18 degrees",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.1370583804788076,
+    "ms": 0.031,
+    "pmax": 0.1370583804788076
+   },
+   {
+    "text": "make it 19 degrees in here",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.14054360400406388,
+    "ms": 0.028,
+    "pmax": 0.14054360400406388
+   },
+   {
+    "text": "set the heat to 23 degrees",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.23334722022649837,
+    "ms": 0.028,
+    "pmax": 0.23334722022649837
+   },
+   {
+    "text": "set the temperature to 23 degrees",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.30447976897427476,
+    "ms": 0.029,
+    "pmax": 0.30447976897427476
+   },
+   {
+    "text": "change the thermostat to 25",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.25520209612813444,
+    "ms": 0.026,
+    "pmax": 0.25520209612813444
+   },
+   {
+    "text": "set the heat to 21 degrees",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.22399561913800917,
+    "ms": 0.028,
+    "pmax": 0.22399561913800917
+   },
+   {
+    "text": "drop the temperature to 22 degrees",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.22752698067079072,
+    "ms": 0.029,
+    "pmax": 0.22752698067079072
+   },
+   {
+    "text": "set the heat to 19 degrees",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.21042964027541378,
+    "ms": 0.028,
+    "pmax": 0.21042964027541378
+   },
+   {
+    "text": "set the house temperature to 18",
+    "gold": "thermostat_set",
+    "pick": "thermostat_set",
+    "correct": true,
+    "conf": 0.217756249369352,
+    "ms": 0.028,
+    "pmax": 0.217756249369352
+   },
+   {
+    "text": "make the living room colder",
+    "gold": "thermostat_offset",
+    "pick": "light_set",
+    "correct": false,
+    "conf": 0.10497482006887467,
+    "ms": 0.025,
+    "pmax": 0.10497482006887467
+   },
+   {
+    "text": "make it hotter in here",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.1721166815799647,
+    "ms": 0.024,
+    "pmax": 0.1721166815799647
+   },
+   {
+    "text": "it's warmer in here, fix it",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.2150505202628015,
+    "ms": 0.027,
+    "pmax": 0.2150505202628015
+   },
+   {
+    "text": "turn the temperature warmer a bit",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.20510648970218595,
+    "ms": 0.026,
+    "pmax": 0.20510648970218595
+   },
+   {
+    "text": "it's cooler in here, fix it",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.1772673063842107,
+    "ms": 0.024,
+    "pmax": 0.1772673063842107
+   },
+   {
+    "text": "make it cooler in here",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.18068107904800307,
+    "ms": 0.024,
+    "pmax": 0.18068107904800307
+   },
+   {
+    "text": "warmer the heat a little",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.19463746252520878,
+    "ms": 0.022,
+    "pmax": 0.19463746252520878
+   },
+   {
+    "text": "bump the thermostat cooler a couple degrees",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.1346604235723671,
+    "ms": 0.028,
+    "pmax": 0.1346604235723671
+   },
+   {
+    "text": "bump the thermostat hotter a couple degrees",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.12361356711424651,
+    "ms": 0.027,
+    "pmax": 0.12361356711424651
+   },
+   {
+    "text": "cooler the heat a little",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.15881037962406408,
+    "ms": 0.023,
+    "pmax": 0.15881037962406408
+   },
+   {
+    "text": "make the living room warmer",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.10499366136935508,
+    "ms": 0.026,
+    "pmax": 0.10499366136935508
+   },
+   {
+    "text": "make it colder in here",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.1721166815799647,
+    "ms": 0.024,
+    "pmax": 0.1721166815799647
+   },
+   {
+    "text": "turn the temperature colder a bit",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.16290525022119917,
+    "ms": 0.023,
+    "pmax": 0.16290525022119917
+   },
+   {
+    "text": "make the living room hotter",
+    "gold": "thermostat_offset",
+    "pick": "light_set",
+    "correct": false,
+    "conf": 0.10497482006887467,
+    "ms": 0.026,
+    "pmax": 0.10497482006887467
+   },
+   {
+    "text": "it's hotter in here, fix it",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.16882409267493054,
+    "ms": 0.024,
+    "pmax": 0.16882409267493054
+   },
+   {
+    "text": "bump the thermostat warmer a couple degrees",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.15533476891202114,
+    "ms": 0.029,
+    "pmax": 0.15533476891202114
+   },
+   {
+    "text": "make the living room cooler",
+    "gold": "thermostat_offset",
+    "pick": "light_set",
+    "correct": false,
+    "conf": 0.09765016483329104,
+    "ms": 0.026,
+    "pmax": 0.09765016483329104
+   },
+   {
+    "text": "turn the temperature hotter a bit",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.16290525022119917,
+    "ms": 0.024,
+    "pmax": 0.16290525022119917
+   },
+   {
+    "text": "it's colder in here, fix it",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.16882409267493054,
+    "ms": 0.024,
+    "pmax": 0.16882409267493054
+   },
+   {
+    "text": "colder the heat a little",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.1511414838069142,
+    "ms": 0.022,
+    "pmax": 0.1511414838069142
+   },
+   {
+    "text": "turn the temperature cooler a bit",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.17165397177345007,
+    "ms": 0.025,
+    "pmax": 0.17165397177345007
+   },
+   {
+    "text": "bump the thermostat colder a couple degrees",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.12361356711424651,
+    "ms": 0.026,
+    "pmax": 0.12361356711424651
+   },
+   {
+    "text": "hotter the heat a little",
+    "gold": "thermostat_offset",
+    "pick": "thermostat_offset",
+    "correct": true,
+    "conf": 0.1511414838069142,
+    "ms": 0.021,
+    "pmax": 0.1511414838069142
+   },
+   {
+    "text": "turn on the bedroom lights",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.21280180515298053,
+    "ms": 0.029,
+    "pmax": 0.21280180515298053
+   },
+   {
+    "text": "turn the bathroom lamp off",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.14291292702481415,
+    "ms": 0.027,
+    "pmax": 0.14291292702481415
+   },
+   {
+    "text": "bedroom lights off please",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.1557183398293494,
+    "ms": 0.024,
+    "pmax": 0.1557183398293494
+   },
+   {
+    "text": "switch the garage light off",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.14683632295217733,
+    "ms": 0.028,
+    "pmax": 0.14683632295217733
+   },
+   {
+    "text": "turn off the living room lights",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.1815735110461532,
+    "ms": 0.029,
+    "pmax": 0.1815735110461532
+   },
+   {
+    "text": "bathroom lights on please",
+    "gold": "light_set",
+    "pick": "light_query",
+    "correct": false,
+    "conf": 0.14562697426186721,
+    "ms": 0.023,
+    "pmax": 0.14562697426186721
+   },
+   {
+    "text": "switch the living room light on",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.15468521127053392,
+    "ms": 0.028,
+    "pmax": 0.15468521127053392
+   },
+   {
+    "text": "bedroom lights on please",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.11306465532189434,
+    "ms": 0.023,
+    "pmax": 0.11306465532189434
+   },
+   {
+    "text": "kill the porch lights",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.1630736743890486,
+    "ms": 0.023,
+    "pmax": 0.1630736743890486
+   },
+   {
+    "text": "turn the hallway lamp on",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.17002796914005464,
+    "ms": 0.025,
+    "pmax": 0.17002796914005464
+   },
+   {
+    "text": "turn the kitchen lamp off",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.21040634792371452,
+    "ms": 0.025,
+    "pmax": 0.21040634792371452
+   },
+   {
+    "text": "kill the bathroom lights",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.10176370951611512,
+    "ms": 0.024,
+    "pmax": 0.10176370951611512
+   },
+   {
+    "text": "turn the office lamp on",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.17231691337024935,
+    "ms": 0.025,
+    "pmax": 0.17231691337024935
+   },
+   {
+    "text": "fire up the bathroom lights",
+    "gold": "light_set",
+    "pick": "light_query",
+    "correct": false,
+    "conf": 0.10681375001979491,
+    "ms": 0.025,
+    "pmax": 0.10681375001979491
+   },
+   {
+    "text": "turn on the hallway lights",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.21411979544777465,
+    "ms": 0.026,
+    "pmax": 0.21411979544777465
+   },
+   {
+    "text": "turn the bathroom lamp on",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.11330839066059539,
+    "ms": 0.025,
+    "pmax": 0.11330839066059539
+   },
+   {
+    "text": "switch the porch light on",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.14020273501808972,
+    "ms": 0.027,
+    "pmax": 0.14020273501808972
+   },
+   {
+    "text": "turn on the kitchen lights",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.23172826489268988,
+    "ms": 0.027,
+    "pmax": 0.23172826489268988
+   },
+   {
+    "text": "turn the porch lamp off",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.1920898656434678,
+    "ms": 0.026,
+    "pmax": 0.1920898656434678
+   },
+   {
+    "text": "turn off the garage lights",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.23929746307768565,
+    "ms": 0.026,
+    "pmax": 0.23929746307768565
+   },
+   {
+    "text": "turn on the garage lights",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.2690915566779679,
+    "ms": 0.026,
+    "pmax": 0.2690915566779679
+   },
+   {
+    "text": "turn the garage lamp off",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.24735753152341694,
+    "ms": 0.025,
+    "pmax": 0.24735753152341694
+   },
+   {
+    "text": "turn on the living room lights",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.19890301257329784,
+    "ms": 0.029,
+    "pmax": 0.19890301257329784
+   },
+   {
+    "text": "fire up the office lights",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.12818440190701985,
+    "ms": 0.025,
+    "pmax": 0.12818440190701985
+   },
+   {
+    "text": "garage lights off please",
+    "gold": "light_set",
+    "pick": "light_set",
+    "correct": true,
+    "conf": 0.1812851557618872,
+    "ms": 0.023,
+    "pmax": 0.1812851557618872
+   },
+   {
+    "text": "check the living room light status",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.12806708262139732,
+    "ms": 0.028,
+    "pmax": 0.12806708262139732
+   },
+   {
+    "text": "what's the state of the bathroom lights",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.115926444533135,
+    "ms": 0.029,
+    "pmax": 0.115926444533135
+   },
+   {
+    "text": "is the living room lamp off",
+    "gold": "light_query",
+    "pick": "light_set",
+    "correct": false,
+    "conf": 0.12727314475730583,
+    "ms": 0.03,
+    "pmax": 0.12727314475730583
+   },
+   {
+    "text": "is the office light still on",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.19669295039073548,
+    "ms": 0.033,
+    "pmax": 0.19669295039073548
+   },
+   {
+    "text": "are the garage lights on",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.1586530423670662,
+    "ms": 0.029,
+    "pmax": 0.1586530423670662
+   },
+   {
+    "text": "what's the state of the garage lights",
+    "gold": "light_query",
+    "pick": "light_set",
+    "correct": false,
+    "conf": 0.12591816555750496,
+    "ms": 0.028,
+    "pmax": 0.12591816555750496
+   },
+   {
+    "text": "are the bathroom lights on",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.23442033861621436,
+    "ms": 0.028,
+    "pmax": 0.23442033861621436
+   },
+   {
+    "text": "what's the state of the living room lights",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.11653808936013572,
+    "ms": 0.032,
+    "pmax": 0.11653808936013572
+   },
+   {
+    "text": "did I leave the office lights on",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.16794914059257793,
+    "ms": 0.032,
+    "pmax": 0.16794914059257793
+   },
+   {
+    "text": "is the porch lamp off",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.10008908283727658,
+    "ms": 0.027,
+    "pmax": 0.10008908283727658
+   },
+   {
+    "text": "are the living room lights on",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.22524689464087086,
+    "ms": 0.029,
+    "pmax": 0.22524689464087086
+   },
+   {
+    "text": "did I leave the living room lights on",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.20874973910504704,
+    "ms": 0.031,
+    "pmax": 0.20874973910504704
+   },
+   {
+    "text": "is the bedroom light still on",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.21531046760924638,
+    "ms": 0.029,
+    "pmax": 0.21531046760924638
+   },
+   {
+    "text": "is the bathroom light still on",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.23041021859242758,
+    "ms": 0.028,
+    "pmax": 0.23041021859242758
+   },
+   {
+    "text": "did I leave the bedroom lights on",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.1639758199476859,
+    "ms": 0.029,
+    "pmax": 0.1639758199476859
+   },
+   {
+    "text": "what's the state of the bedroom lights",
+    "gold": "light_query",
+    "pick": "light_set",
+    "correct": false,
+    "conf": 0.09577399062401817,
+    "ms": 0.029,
+    "pmax": 0.09577399062401817
+   },
+   {
+    "text": "is the office lamp off",
+    "gold": "light_query",
+    "pick": "light_set",
+    "correct": false,
+    "conf": 0.10566699216023281,
+    "ms": 0.027,
+    "pmax": 0.10566699216023281
+   },
+   {
+    "text": "is the garage lamp off",
+    "gold": "light_query",
+    "pick": "light_set",
+    "correct": false,
+    "conf": 0.130547710305493,
+    "ms": 0.026,
+    "pmax": 0.130547710305493
+   },
+   {
+    "text": "are the porch lights on",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.2131843246249518,
+    "ms": 0.027,
+    "pmax": 0.2131843246249518
+   },
+   {
+    "text": "are the hallway lights on",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.19151040692470345,
+    "ms": 0.026,
+    "pmax": 0.19151040692470345
+   },
+   {
+    "text": "check the bathroom light status",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.12975056067145427,
+    "ms": 0.026,
+    "pmax": 0.12975056067145427
+   },
+   {
+    "text": "is the hallway light still on",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.18980698203287014,
+    "ms": 0.03,
+    "pmax": 0.18980698203287014
+   },
+   {
+    "text": "check the garage light status",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.10962432532598351,
+    "ms": 0.026,
+    "pmax": 0.10962432532598351
+   },
+   {
+    "text": "check the bedroom light status",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.12011381788500454,
+    "ms": 0.027,
+    "pmax": 0.12011381788500454
+   },
+   {
+    "text": "is the porch light still on",
+    "gold": "light_query",
+    "pick": "light_query",
+    "correct": true,
+    "conf": 0.2155968500806067,
+    "ms": 0.031,
+    "pmax": 0.2155968500806067
+   },
+   {
+    "text": "look up error envelopes in the docs",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.1700900718390982,
+    "ms": 0.028,
+    "pmax": 0.1700900718390982
+   },
+   {
+    "text": "what do the docs say about the knowledge layer",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.24467048752444917,
+    "ms": 0.037,
+    "pmax": 0.24467048752444917
+   },
+   {
+    "text": "look up the voice pipeline in the docs",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.17097454938205628,
+    "ms": 0.029,
+    "pmax": 0.17097454938205628
+   },
+   {
+    "text": "pull up what's documented about the knowledge layer",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.164174827272635,
+    "ms": 0.032,
+    "pmax": 0.164174827272635
+   },
+   {
+    "text": "look up the knowledge layer in the docs",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.21536513236348925,
+    "ms": 0.031,
+    "pmax": 0.21536513236348925
+   },
+   {
+    "text": "find documentation on tool calling",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.14093942254916594,
+    "ms": 0.027,
+    "pmax": 0.14093942254916594
+   },
+   {
+    "text": "how does the docs tool work in the documentation",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.33487812196019245,
+    "ms": 0.033,
+    "pmax": 0.33487812196019245
+   },
+   {
+    "text": "pull up what's documented about the splitter",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.13415776020024944,
+    "ms": 0.03,
+    "pmax": 0.13415776020024944
+   },
+   {
+    "text": "how does the splitter work in the documentation",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.23137194395013888,
+    "ms": 0.032,
+    "pmax": 0.23137194395013888
+   },
+   {
+    "text": "look up the splitter in the docs",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.18456162982382518,
+    "ms": 0.03,
+    "pmax": 0.18456162982382518
+   },
+   {
+    "text": "search the docs for tool calling",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.18915099260990814,
+    "ms": 0.029,
+    "pmax": 0.18915099260990814
+   },
+   {
+    "text": "pull up what's documented about session init",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.12346947892483054,
+    "ms": 0.025,
+    "pmax": 0.12346947892483054
+   },
+   {
+    "text": "search the docs for the knowledge layer",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.20261149457628042,
+    "ms": 0.029,
+    "pmax": 0.20261149457628042
+   },
+   {
+    "text": "pull up what's documented about error envelopes",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.12346947892483054,
+    "ms": 0.025,
+    "pmax": 0.12346947892483054
+   },
+   {
+    "text": "what do the docs say about the voice pipeline",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.20109986741135624,
+    "ms": 0.033,
+    "pmax": 0.20109986741135624
+   },
+   {
+    "text": "how does model serving work in the documentation",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.21951438238749274,
+    "ms": 0.031,
+    "pmax": 0.21951438238749274
+   },
+   {
+    "text": "what do the docs say about session init",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.21552253229279128,
+    "ms": 0.03,
+    "pmax": 0.21552253229279128
+   },
+   {
+    "text": "find documentation on the knowledge layer",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.16720291750980013,
+    "ms": 0.027,
+    "pmax": 0.16720291750980013
+   },
+   {
+    "text": "pull up what's documented about the docs tool",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.21186025537132472,
+    "ms": 0.03,
+    "pmax": 0.21186025537132472
+   },
+   {
+    "text": "search the docs for model serving",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.19490534644036972,
+    "ms": 0.027,
+    "pmax": 0.19490534644036972
+   },
+   {
+    "text": "look up tool calling in the docs",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.174349283254289,
+    "ms": 0.029,
+    "pmax": 0.174349283254289
+   },
+   {
+    "text": "pull up what's documented about model serving",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.13853143864884615,
+    "ms": 0.027,
+    "pmax": 0.13853143864884615
+   },
+   {
+    "text": "how does the knowledge layer work in the documentation",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.2705531185770294,
+    "ms": 0.034,
+    "pmax": 0.2705531185770294
+   },
+   {
+    "text": "what do the docs say about model serving",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.22273114052612736,
+    "ms": 0.033,
+    "pmax": 0.22273114052612736
+   },
+   {
+    "text": "what do the docs say about error envelopes",
+    "gold": "docs_query",
+    "pick": "docs_query",
+    "correct": true,
+    "conf": 0.21552253229279128,
+    "ms": 0.03,
+    "pmax": 0.21552253229279128
+   },
+   {
+    "text": "how is electronicsProjects doing",
+    "gold": "projects_query",
+    "pick": "projects_query",
+    "correct": true,
+    "conf": 0.09173803322106935,
+    "ms": 0.022,
+    "pmax": 0.09173803322106935
+   },
+   {
+    "text": "what's happening in todo app",
+    "gold": "projects_query",
+    "pick": "shoppinglist_view",
+    "correct": false,
+    "conf": 0.08379967189484046,
+    "ms": 0.021,
+    "pmax": 0.08379967189484046
+   },
+   {
+    "text": "how is todo app doing",
+    "gold": "projects_query",
+    "pick": "projects_query",
+    "correct": true,
+    "conf": 0.09173803322106935,
+    "ms": 0.022,
+    "pmax": 0.09173803322106935
+   },
+   {
+    "text": "what's happening in minicpmTune",
+    "gold": "projects_query",
+    "pick": "projects_query",
+    "correct": true,
+    "conf": 0.09602124389695901,
+    "ms": 0.022,
+    "pmax": 0.09602124389695901
+   },
+   {
+    "text": "what's happening in localAlexa",
+    "gold": "projects_query",
+    "pick": "projects_query",
+    "correct": true,
+    "conf": 0.0909096218750567,
+    "ms": 0.021,
+    "pmax": 0.0909096218750567
+   },
+   {
+    "text": "give me a summary of the electronicsProjects project",
+    "gold": "projects_query",
+    "pick": "projects_query",
+    "correct": true,
+    "conf": 0.18273822050432842,
+    "ms": 0.03,
+    "pmax": 0.18273822050432842
+   },
+   {
+    "text": "how is localAlexa doing",
+    "gold": "projects_query",
+    "pick": "projects_query",
+    "correct": true,
+    "conf": 0.10696721077083647,
+    "ms": 0.022,
+    "pmax": 0.10696721077083647
+   },
+   {
+    "text": "what's happening in liveCaptions",
+    "gold": "projects_query",
+    "pick": "shoppinglist_view",
+    "correct": false,
+    "conf": 0.08379967189484046,
+    "ms": 0.02,
+    "pmax": 0.08379967189484046
+   },
+   {
+    "text": "how is minicpmTune doing",
+    "gold": "projects_query",
+    "pick": "projects_query",
+    "correct": true,
+    "conf": 0.11100895295005384,
+    "ms": 0.023,
+    "pmax": 0.11100895295005384
+   },
+   {
+    "text": "what's happening in electronicsProjects",
+    "gold": "projects_query",
+    "pick": "shoppinglist_view",
+    "correct": false,
+    "conf": 0.08379967189484046,
+    "ms": 0.02,
+    "pmax": 0.08379967189484046
+   },
+   {
+    "text": "which repos are active right now",
+    "gold": "projects_query",
+    "pick": "projects_query",
+    "correct": true,
+    "conf": 0.10090475634283814,
+    "ms": 0.029,
+    "pmax": 0.10090475634283814
+   },
+   {
+    "text": "give me a summary of the localAlexa project",
+    "gold": "projects_query",
+    "pick": "projects_query",
+    "correct": true,
+    "conf": 0.21951277148021317,
+    "ms": 0.032,
+    "pmax": 0.21951277148021317
+   },
+   {
+    "text": "give me a summary of the liveCaptions project",
+    "gold": "projects_query",
+    "pick": "projects_query",
+    "correct": true,
+    "conf": 0.18273822050432842,
+    "ms": 0.028,
+    "pmax": 0.18273822050432842
+   },
+   {
+    "text": "what am I working on these days",
+    "gold": "projects_query",
+    "pick": "projects_query",
+    "correct": true,
+    "conf": 0.1842403496652791,
+    "ms": 0.027,
+    "pmax": 0.1842403496652791
+   },
+   {
+    "text": "give me a summary of the todo app project",
+    "gold": "projects_query",
+    "pick": "projects_query",
+    "correct": true,
+    "conf": 0.18273822050432842,
+    "ms": 0.029,
+    "pmax": 0.18273822050432842
+   },
+   {
+    "text": "what's the status of my projects",
+    "gold": "projects_query",
+    "pick": "projects_query",
+    "correct": true,
+    "conf": 0.2149084872965696,
+    "ms": 0.029,
+    "pmax": 0.2149084872965696
+   },
+   {
+    "text": "how is liveCaptions doing",
+    "gold": "projects_query",
+    "pick": "projects_query",
+    "correct": true,
+    "conf": 0.09173803322106935,
+    "ms": 0.022,
+    "pmax": 0.09173803322106935
+   },
+   {
+    "text": "give me a summary of the minicpmTune project",
+    "gold": "projects_query",
+    "pick": "projects_query",
+    "correct": true,
+    "conf": 0.1996308779833959,
+    "ms": 0.03,
+    "pmax": 0.1996308779833959
+   },
+   {
+    "text": "read my unread messages",
+    "gold": "email_unread",
+    "pick": "email_unread",
+    "correct": true,
+    "conf": 0.19398871588971192,
+    "ms": 0.025,
+    "pmax": 0.19398871588971192
+   },
+   {
+    "text": "how many emails are unread",
+    "gold": "email_unread",
+    "pick": "email_unread",
+    "correct": true,
+    "conf": 0.1702696149389478,
+    "ms": 0.025,
+    "pmax": 0.1702696149389478
+   },
+   {
+    "text": "do I have new mail",
+    "gold": "email_unread",
+    "pick": "email_unread",
+    "correct": true,
+    "conf": 0.1554556558712218,
+    "ms": 0.024,
+    "pmax": 0.1554556558712218
+   },
+   {
+    "text": "what's sitting in my inbox",
+    "gold": "email_unread",
+    "pick": "email_unread",
+    "correct": true,
+    "conf": 0.19235213393595146,
+    "ms": 0.024,
+    "pmax": 0.19235213393595146
+   },
+   {
+    "text": "any unread emails this morning",
+    "gold": "email_unread",
+    "pick": "email_unread",
+    "correct": true,
+    "conf": 0.24113564024895215,
+    "ms": 0.028,
+    "pmax": 0.24113564024895215
+   },
+   {
+    "text": "any mail I haven't seen",
+    "gold": "email_unread",
+    "pick": "email_unread",
+    "correct": true,
+    "conf": 0.14347504837348918,
+    "ms": 0.021,
+    "pmax": 0.14347504837348918
+   },
+   {
+    "text": "check the inbox for anything new",
+    "gold": "email_unread",
+    "pick": "email_unread",
+    "correct": true,
+    "conf": 0.15302531070533593,
+    "ms": 0.027,
+    "pmax": 0.15302531070533593
+   },
+   {
+    "text": "what does my morning look like",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.134879471634988,
+    "ms": 0.028,
+    "pmax": 0.134879471634988
+   },
+   {
+    "text": "what's my agenda today",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.18778700484090707,
+    "ms": 0.024,
+    "pmax": 0.18778700484090707
+   },
+   {
+    "text": "any meetings this weekend",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.14605393161713268,
+    "ms": 0.022,
+    "pmax": 0.14605393161713268
+   },
+   {
+    "text": "show me the schedule for today",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.17971578706602517,
+    "ms": 0.028,
+    "pmax": 0.17971578706602517
+   },
+   {
+    "text": "what's my agenda this weekend",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.15338330817127993,
+    "ms": 0.024,
+    "pmax": 0.15338330817127993
+   },
+   {
+    "text": "what's on my calendar on Friday",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.13480849677371234,
+    "ms": 0.026,
+    "pmax": 0.13480849677371234
+   },
+   {
+    "text": "am I free afternoon",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.13274420871869638,
+    "ms": 0.022,
+    "pmax": 0.13274420871869638
+   },
+   {
+    "text": "what's on my calendar tomorrow",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.1647230109056928,
+    "ms": 0.026,
+    "pmax": 0.1647230109056928
+   },
+   {
+    "text": "what does my afternoon look like",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.16356829449164673,
+    "ms": 0.027,
+    "pmax": 0.16356829449164673
+   },
+   {
+    "text": "any meetings on Friday",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.11551558233712138,
+    "ms": 0.022,
+    "pmax": 0.11551558233712138
+   },
+   {
+    "text": "what's on my calendar this weekend",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.16586637954230918,
+    "ms": 0.026,
+    "pmax": 0.16586637954230918
+   },
+   {
+    "text": "show me the schedule for tomorrow",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.11561015752640709,
+    "ms": 0.026,
+    "pmax": 0.11561015752640709
+   },
+   {
+    "text": "am I free week",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.12802293160531722,
+    "ms": 0.022,
+    "pmax": 0.12802293160531722
+   },
+   {
+    "text": "what's my agenda tomorrow",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.13496602843754568,
+    "ms": 0.023,
+    "pmax": 0.13496602843754568
+   },
+   {
+    "text": "am I free day",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.1296554254952668,
+    "ms": 0.021,
+    "pmax": 0.1296554254952668
+   },
+   {
+    "text": "what does my week look like",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.1593262472782448,
+    "ms": 0.027,
+    "pmax": 0.1593262472782448
+   },
+   {
+    "text": "any meetings tomorrow",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.1259573991274657,
+    "ms": 0.021,
+    "pmax": 0.1259573991274657
+   },
+   {
+    "text": "show me the schedule for this weekend",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.13165527587562903,
+    "ms": 0.027,
+    "pmax": 0.13165527587562903
+   },
+   {
+    "text": "show me the schedule for on Friday",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.10588313270060336,
+    "ms": 0.026,
+    "pmax": 0.10588313270060336
+   },
+   {
+    "text": "am I free morning",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.10192098902560379,
+    "ms": 0.022,
+    "pmax": 0.10192098902560379
+   },
+   {
+    "text": "what's my agenda on Friday",
+    "gold": "calendar_today",
+    "pick": "calendar_today",
+    "correct": true,
+    "conf": 0.12505034460495706,
+    "ms": 0.023,
+    "pmax": 0.12505034460495706
+   },
+   {
+    "text": "dig into llama.cpp quantization formats for me",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.183701381078536,
+    "ms": 0.031,
+    "pmax": 0.183701381078536
+   },
+   {
+    "text": "dive into openWakeWord custom models",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.1638993499363678,
+    "ms": 0.023,
+    "pmax": 0.1638993499363678
+   },
+   {
+    "text": "dive into llama.cpp quantization formats",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.1773689604654189,
+    "ms": 0.027,
+    "pmax": 0.1773689604654189
+   },
+   {
+    "text": "investigate MiniCPM fine-tuning data requirements and give me options",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.13679462290469474,
+    "ms": 0.031,
+    "pmax": 0.13679462290469474
+   },
+   {
+    "text": "find out about wyoming protocol internals",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.21726849869397177,
+    "ms": 0.028,
+    "pmax": 0.21726849869397177
+   },
+   {
+    "text": "research esp32-s3 box alternatives",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.17604265937550895,
+    "ms": 0.026,
+    "pmax": 0.17604265937550895
+   },
+   {
+    "text": "dig into home assistant voice pipeline latency for me",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.1828627461809609,
+    "ms": 0.03,
+    "pmax": 0.1828627461809609
+   },
+   {
+    "text": "research openWakeWord custom models",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.14233955209447055,
+    "ms": 0.021,
+    "pmax": 0.14233955209447055
+   },
+   {
+    "text": "dive into home assistant voice pipeline latency",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.17634093583009047,
+    "ms": 0.027,
+    "pmax": 0.17634093583009047
+   },
+   {
+    "text": "research MiniCPM fine-tuning data requirements",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.1838586751271279,
+    "ms": 0.026,
+    "pmax": 0.1838586751271279
+   },
+   {
+    "text": "investigate piper voice quality and give me options",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.10085342605245877,
+    "ms": 0.027,
+    "pmax": 0.10085342605245877
+   },
+   {
+    "text": "dive into esp32-s3 box alternatives",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.20372253771819365,
+    "ms": 0.028,
+    "pmax": 0.20372253771819365
+   },
+   {
+    "text": "dig into piper voice quality for me",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.17266307695349914,
+    "ms": 0.027,
+    "pmax": 0.17266307695349914
+   },
+   {
+    "text": "dive into esp32 voice satellite options",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.21013967391742217,
+    "ms": 0.028,
+    "pmax": 0.21013967391742217
+   },
+   {
+    "text": "look into llama.cpp quantization formats",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.18992688261264262,
+    "ms": 0.027,
+    "pmax": 0.18992688261264262
+   },
+   {
+    "text": "find out about piper voice quality",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.18827159658746329,
+    "ms": 0.025,
+    "pmax": 0.18827159658746329
+   },
+   {
+    "text": "dive into piper voice quality",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.16614932252265535,
+    "ms": 0.023,
+    "pmax": 0.16614932252265535
+   },
+   {
+    "text": "look into esp32 voice satellite options",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.22735678498839093,
+    "ms": 0.026,
+    "pmax": 0.22735678498839093
+   },
+   {
+    "text": "dive into wyoming protocol internals",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.18896541572249032,
+    "ms": 0.023,
+    "pmax": 0.18896541572249032
+   },
+   {
+    "text": "look into wyoming protocol internals",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.2080744216300842,
+    "ms": 0.024,
+    "pmax": 0.2080744216300842
+   },
+   {
+    "text": "research esp32 voice satellite options",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.1857749699637337,
+    "ms": 0.023,
+    "pmax": 0.1857749699637337
+   },
+   {
+    "text": "research home assistant voice pipeline latency",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.15203114892905484,
+    "ms": 0.024,
+    "pmax": 0.15203114892905484
+   },
+   {
+    "text": "dive into MiniCPM fine-tuning data requirements",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.19814456910269973,
+    "ms": 0.026,
+    "pmax": 0.19814456910269973
+   },
+   {
+    "text": "research wyoming protocol internals",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.1666197059671174,
+    "ms": 0.021,
+    "pmax": 0.1666197059671174
+   },
+   {
+    "text": "dig into MiniCPM fine-tuning data requirements for me",
+    "gold": "research_deep",
+    "pick": "research_deep",
+    "correct": true,
+    "conf": 0.2044576608748897,
+    "ms": 0.029,
+    "pmax": 0.2044576608748897
+   },
+   {
+    "text": "what's the tallest mountain in the world",
+    "gold": "__none__",
+    "pick": "__none__",
+    "correct": true,
+    "conf": 0.08755431371436749,
+    "ms": 0.025,
+    "pmax": 0.08755431371436749
+   },
+   {
+    "text": "tell me something interesting about space",
+    "gold": "__none__",
+    "pick": "__none__",
+    "correct": true,
+    "conf": 0.13334425662858956,
+    "ms": 0.023,
+    "pmax": 0.13334425662858956
+   },
+   {
+    "text": "how far is the moon",
+    "gold": "__none__",
+    "pick": "light_query",
+    "correct": false,
+    "conf": 0.11287748969533877,
+    "ms": 0.023,
+    "pmax": 0.11287748969533877
+   },
+   {
+    "text": "what should I have for dinner",
+    "gold": "__none__",
+    "pick": "calendar_today",
+    "correct": false,
+    "conf": 0.09093535153238437,
+    "ms": 0.022,
+    "pmax": 0.09093535153238437
+   },
+   {
+    "text": "give me a recipe for pancakes",
+    "gold": "__none__",
+    "pick": "timer_create",
+    "correct": false,
+    "conf": 0.1113688432143364,
+    "ms": 0.022,
+    "pmax": 0.1113688432143364
+   },
+   {
+    "text": "who invented the telephone",
+    "gold": "__none__",
+    "pick": "__none__",
+    "correct": true,
+    "conf": 0.08698818590756899,
+    "ms": 0.02,
+    "pmax": 0.08698818590756899
+   },
+   {
+    "text": "what's the weather this weekend",
+    "gold": "__none__",
+    "pick": "__none__",
+    "correct": true,
+    "conf": 0.12729760447828029,
+    "ms": 0.025,
+    "pmax": 0.12729760447828029
+   },
+   {
+    "text": "recommend me a good book",
+    "gold": "__none__",
+    "pick": "__none__",
+    "correct": true,
+    "conf": 0.12318150095310354,
+    "ms": 0.02,
+    "pmax": 0.12318150095310354
+   },
+   {
+    "text": "how do you say thank you in Japanese",
+    "gold": "__none__",
+    "pick": "__none__",
+    "correct": true,
+    "conf": 0.14405528318265667,
+    "ms": 0.027,
+    "pmax": 0.14405528318265667
+   },
+   {
+    "text": "what's a good workout for beginners",
+    "gold": "__none__",
+    "pick": "__none__",
+    "correct": true,
+    "conf": 0.09165899110187406,
+    "ms": 0.021,
+    "pmax": 0.09165899110187406
+   },
+   {
+    "text": "explain quantum computing simply",
+    "gold": "__none__",
+    "pick": "__none__",
+    "correct": true,
+    "conf": 0.0657166832674717,
+    "ms": 0.018,
+    "pmax": 0.0657166832674717
+   },
+   {
+    "text": "when is the next lunar eclipse",
+    "gold": "__none__",
+    "pick": "light_query",
+    "correct": false,
+    "conf": 0.1170628473974221,
+    "ms": 0.023,
+    "pmax": 0.1170628473974221
+   },
+   {
+    "text": "what's the difference between a fruit and a vegetable",
+    "gold": "__none__",
+    "pick": "__none__",
+    "correct": true,
+    "conf": 0.1290393435129528,
+    "ms": 0.023,
+    "pmax": 0.1290393435129528
+   },
+   {
+    "text": "help me write a birthday message",
+    "gold": "__none__",
+    "pick": "reminder_create",
+    "correct": false,
+    "conf": 0.11382165896928863,
+    "ms": 0.02,
+    "pmax": 0.11382165896928863
+   },
+   {
+    "text": "what's the stock price of Apple",
+    "gold": "__none__",
+    "pick": "__none__",
+    "correct": true,
+    "conf": 0.12668384212584088,
+    "ms": 0.023,
+    "pmax": 0.12668384212584088
+   },
+   {
+    "text": "how many bones are in the human body",
+    "gold": "__none__",
+    "pick": "projects_query",
+    "correct": false,
+    "conf": 0.07752558665757041,
+    "ms": 0.027,
+    "pmax": 0.07752558665757041
+   },
+   {
+    "text": "tell me about the roman empire",
+    "gold": "__none__",
+    "pick": "__none__",
+    "correct": true,
+    "conf": 0.10620393356148249,
+    "ms": 0.026,
+    "pmax": 0.10620393356148249
+   },
+   {
+    "text": "what's a good name for a dog",
+    "gold": "__none__",
+    "pick": "__none__",
+    "correct": true,
+    "conf": 0.084644190177729,
+    "ms": 0.022,
+    "pmax": 0.084644190177729
+   },
+   {
+    "text": "why is the sky blue",
+    "gold": "__none__",
+    "pick": "light_query",
+    "correct": false,
+    "conf": 0.1505052833548861,
+    "ms": 0.022,
+    "pmax": 0.1505052833548861
+   },
+   {
+    "text": "how do I fix a leaky faucet",
+    "gold": "__none__",
+    "pick": "__none__",
+    "correct": true,
+    "conf": 0.12972714876502198,
+    "ms": 0.021,
+    "pmax": 0.12972714876502198
+   },
+   {
+    "text": "what language do they speak in Brazil",
+    "gold": "__none__",
+    "pick": "shoppinglist_view",
+    "correct": false,
+    "conf": 0.0941834811734756,
+    "ms": 0.022,
+    "pmax": 0.0941834811734756
+   },
+   {
+    "text": "suggest a movie for tonight",
+    "gold": "__none__",
+    "pick": "__none__",
+    "correct": true,
+    "conf": 0.08223041369742251,
+    "ms": 0.02,
+    "pmax": 0.08223041369742251
+   },
+   {
+    "text": "what's the speed of light",
+    "gold": "__none__",
+    "pick": "__none__",
+    "correct": true,
+    "conf": 0.10911503073783183,
+    "ms": 0.024,
+    "pmax": 0.10911503073783183
+   },
+   {
+    "text": "how do I remove a stain from a shirt",
+    "gold": "__none__",
+    "pick": "shoppinglist_remove",
+    "correct": false,
+    "conf": 0.11449288957360487,
+    "ms": 0.025,
+    "pmax": 0.11449288957360487
+   },
+   {
+    "text": "who is the president of France",
+    "gold": "__none__",
+    "pick": "light_query",
+    "correct": false,
+    "conf": 0.11439540230269024,
+    "ms": 0.023,
+    "pmax": 0.11439540230269024
+   }
+  ],
+  "fit_seconds": 0.6,
+  "model_fingerprint": "2eff58ac9806fd8b25bd4d9e32582569fa518811dc8dba09c52a0a4fa37f09a3",
+  "config": {
+   "corpus_path": "bench/registry_382.json",
+   "loss": "squared_hinge",
+   "c": 1.0,
+   "epochs": 100,
+   "eta": 0.3,
+   "ngram_max": 2,
+   "min_df": 1,
+   "sublinear_tf": true,
+   "seed": 42,
+   "abstain_label": "__none__",
+   "temperature": 1.0
+  },
+  "by_reference_distance": {
+   "far   (<0.80)": {
+    "n": 357,
+    "accuracy": 0.9272
+   },
+   "near  (>=0.80)": {
+    "n": 25,
+    "accuracy": 1.0
+   }
+  },
+  "coverage_curve": {
+   "0.10": {
+    "coverage": 0.945,
+    "precision": 0.9501
+   },
+   "0.20": {
+    "coverage": 0.309,
+    "precision": 1.0
+   },
+   "0.30": {
+    "coverage": 0.031,
+    "precision": 1.0
+   },
+   "0.40": {
+    "coverage": 0.0,
+    "precision": null
+   },
+   "0.50": {
+    "coverage": 0.0,
+    "precision": null
+   },
+   "0.60": {
+    "coverage": 0.0,
+    "precision": null
+   },
+   "0.70": {
+    "coverage": 0.0,
+    "precision": null
+   },
+   "0.80": {
+    "coverage": 0.0,
+    "precision": null
+   },
+   "0.90": {
+    "coverage": 0.0,
+    "precision": null
+   },
+   "shipped_gate": {
+    "gate": 0.7,
+    "coverage": 0.0,
+    "precision": null
+   }
+  },
+  "reference_distance": {
+   "median": 0.578,
+   "min": 0.0,
+   "max": 1.0,
+   "at_or_above_0.95": 3
+  }
+ },
+ "in_sample_on_382": {
+  "n": 382,
+  "accuracy": 1.0,
+  "correct": 382,
+  "none_detection": 1.0,
+  "false_none_rate": 0.0,
+  "latency_p50_ms": 0.029,
+  "latency_p95_ms": 0.038,
+  "confidence_p50": 0.2524,
+  "pmax_p50": 0.2524,
+  "accuracy_by_label": {
+   "__none__": 1.0,
+   "calendar_today": 1.0,
+   "docs_query": 1.0,
+   "email_unread": 1.0,
+   "light_query": 1.0,
+   "light_set": 1.0,
+   "projects_query": 1.0,
+   "reminder_cancel": 1.0,
+   "reminder_create": 1.0,
+   "research_deep": 1.0,
+   "shoppinglist_add": 1.0,
+   "shoppinglist_remove": 1.0,
+   "shoppinglist_view": 1.0,
+   "thermostat_offset": 1.0,
+   "thermostat_set": 1.0,
+   "timer_cancel": 1.0,
+   "timer_create": 1.0,
+   "timer_status": 1.0
+  }
+ },
+ "cv_template_grouped": {
+  "n": 382,
+  "accuracy": 0.6623,
+  "correct": 253,
+  "k": 5
+ },
+ "cv_random_rows": {
+  "n": 382,
+  "accuracy": 0.9241,
+  "correct": 353,
+  "k": 5
+ },
+ "template_groups": 110,
+ "provenance": {
+  "recorded": {
+   "accuracy": 0.9319,
+   "none_detection": 0.6,
+   "latency_p50_ms": 0.61
+  },
+  "recorded_arithmetic": {
+   "356/382": 0.9319,
+   "15/25": 0.6,
+   "matches": true
+  },
+  "train_rows": 200,
+  "train_classes": 18,
+  "test_rows": 382,
+  "test_classes": 18,
+  "none_rows_in_test": 25,
+  "verbatim_train_test_overlap": 0
+ },
+ "generated": "2026-11-03T15:40:50-0500"
+}

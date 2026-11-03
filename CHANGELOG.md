@@ -95,8 +95,9 @@ subtests, 62 modules in 16 packages, no runtime dependencies.
 - **Round trips — the headline, and its condition.** `useTool` removed 2 of 14 round
   trips (14.3%) across nine fixed tasks and was **7.5 s slower**, because 10 decisions
   cost 10.6 s against 0.14 s of tool work; the two arms cross at ~5.8 s per model pass
-  or ~1 s per decision. Caveat: the native arm is scripted rather than a real agent, n =
-  9 tasks is a shape survey and not a distribution, and `pass_ms` is an assumption
+  (equivalently ~1 s per decision *at that pass cost* — at a 2 s pass the break-even is
+  ~0.3 s). Caveat: the native arm is scripted rather than a real agent, n = 9 tasks is a
+  shape survey and not a distribution, and `pass_ms` is an assumption
   (`docs/roundtrips-2026-11-03.md`).
 - **Routing accuracy — 74.0%** on the frozen 150-row stratified set (t1 81.2%, t2 71.0%,
   t3 67.3%; 8-way, chance 12.5%) with p50 ≈ 0.15 s per decision. Caveat: two runs pooled,
@@ -123,3 +124,20 @@ subtests, 62 modules in 16 packages, no runtime dependencies.
 - **The suite needs nothing.** 679 tests and 349 subtests with no network, no model and no
   CLI: the choice decision is the `fixture` backend and the subprocess ops run against
   `tests/data/fake_cli.py`.
+
+#### Reproduction status — re-run 2026-11-03 15:39–15:52 EST, branch `p2-numbers` @ `ca7ffec`
+
+Every figure above was re-driven against the artifacts it cites. What still reproduces, and
+what a fresh worktree cannot reproduce, is recorded per document: the round-trips report
+carries a reproduction table, so does the classical baseline, the live probe, and the
+dataset snapshot. In one place:
+
+| claim | status | why |
+|---|---|---|
+| round trips 2/14 | **not reproducible without a decision backend** | arm B needs `d1_systemone`; with none reachable every L1/L2 task answers in one round trip and is wrong (B 3/9) |
+| routing accuracy 74.0% | **reproduces from the recorded per-row data** (111/150 × 2, bands 81.2 / 71.0 / 67.3) | re-measuring needs d1-3B and a `llama-server`; the gitignored `models/` and `extern/` are outside a fresh worktree |
+| classical 93.19% / 66.23% / 62.7% | **reproduces exactly**, fingerprint and all | but `python3 bench/classical_baseline.py` now *crashes*: every `bench/results/dell/*.json` is invalid JSON after the `C:\Users\<user>` redaction in `e523336`, so the documented command exits at its d1 load |
+| iGPU 2.72× slower | **artifact only** | the gguf is on the box (`models/d1-3B-Q4_K_M.gguf`, 1.67 GB) and `vulkaninfo` still reports the ADL GT2, but no `build-vk/` exists, so re-measuring means rebuilding llama.cpp through the `glslc` shim first |
+| hop log → 14 records | **moved with the log**: 5,243 lines now yield 15, all still `filesys_glob` | the snapshot is live, machine-local and gitignored; the conclusion holds |
+| live 5/5 | **not reproducible**: `0/4`, HTTP 401 | `bench/live_e2e.py` sends no service token, and auth landed in `5dc537f` nine minutes after the recorded run |
+| 679 tests / 349 subtests | **349 subtests hold; 679 does not** (715 at HEAD) | 679 was right at the release commit `1b4563b`; the README quoted it as current |

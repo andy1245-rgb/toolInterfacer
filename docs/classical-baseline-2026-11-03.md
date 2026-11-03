@@ -279,6 +279,47 @@ python3 bench/classical_baseline.py                 # every number above
 python3 -m pytest tests/test_classical_backend.py -q # the contract
 ```
 
+**The first command does not run at HEAD (`ca7ffec`).** It exits with
+
+```
+json.decoder.JSONDecodeError: Invalid \escape: line 8 column 16 (char 193)
+  File "bench/classical_baseline.py", line 332, in main
+    d1_runs = [json.loads(p.read_text()) for p in sorted(
+```
+
+because all 36 files under `bench/results/dell/` are **invalid JSON**. Commit `e523336`
+redacted the personal prefix to `C:\Users\<user>` by string substitution and left the
+remaining backslashes unescaped, so every one of them fails `json.loads` at its
+`model.path` line. The 382-row half is written before line 332, so `classical_382.json`
+is produced; the v2 half and the cascade sweep are not, and `classical_v2.json` is never
+written. That is a defect in the recorder→loader chain, not in the numbers — see the
+verification below, which drives this file's own functions.
+
+Re-verified 2026-11-03 15:41 EST from worktree `p2-numbers` @ `ca7ffec`, with the escaped
+backslashes repaired **in memory** (`bench/results/repro2-2026-11-03/classical_382.json`,
+`classical_v2.json`):
+
+| figure | published | re-derived |
+|---|---:|---:|
+| 382-row accuracy | 93.19% | **93.19%** (356/382) |
+| none-detection | 0.60 | **0.60** (15/25) |
+| false-none | 0.00 | **0.00** (0/357) |
+| template-grouped CV | 66.23% | **66.23%** (253/382) |
+| random-row CV | 92.41% | **92.41%** (353/382) |
+| in-sample on 382 | 100.0% | **100.0%** (382/382) |
+| model fingerprint | `2eff58ac…` | `2eff58ac9806fd8b25bd4d9e32582569fa518811dc8dba09c52a0a4fa37f09a3` |
+| v2 transfer, v1-trained | 62.7% | **62.7%** (94/150) |
+| v2 bands t1/t2/t3 | 67.2 / 41.9 / 69.1 | **67.2 / 41.9 / 69.1** |
+| v2 CV grouped / random | 60.0 / 62.0 | **60.0 / 62.0** |
+| d1-3B recorded, both runs | 74.0% | **74.0%** (111/150 × 2) |
+| cascade at gate ≥ 0.20 | 79.3% at 44%, 95 ms | **79.3%** at 44%, **93.9 ms**, 16 fixed / 8 broken |
+| p50 latency, 382 rows | 0.04–0.14 ms | **0.027 ms** (p95 0.033) |
+
+The 382-row latency row is the only published figure that moved: 0.027 ms sits below the
+recorded 0.04–0.14 ms band, which is the same single-shot timing noise this document
+already warns about in §2, in the same direction. Nothing else moved by more than the
+0.1 ms rounding on the cascade's mean.
+
 Artifacts: `bench/results/classical_382.json` (reproduction, in-sample contrast,
 both CVs, reference-distance buckets, coverage curve, config, model fingerprint)
 and `bench/results/classical_v2.json` (v1→v2 transfer, per-band, both CVs,
