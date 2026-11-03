@@ -12,19 +12,15 @@ from __future__ import annotations
 import argparse
 import json
 import statistics
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from ti_bench.stats import percentile  # noqa: E402
+
 BANDS = ("t1", "t2", "t3")
-
-
-def percentile(vals: list[float], pct: float) -> float:
-    if not vals:
-        return 0.0
-    vals = sorted(vals)
-    idx = (len(vals) - 1) * pct
-    lo, hi = int(idx), min(int(idx) + 1, len(vals) - 1)
-    return vals[lo] + (vals[hi] - vals[lo]) * (idx - lo)
 
 
 def lane_of(path: Path) -> str:

@@ -28,29 +28,10 @@ sys.path.insert(0, str(ROOT / "service"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from model_guard import ModelAssertionError, preflight  # noqa: E402
+from ti_bench.prompts import INSTRUCTIONS, OP_DESCRIPTIONS  # noqa: E402
+from ti_bench.stats import percentile  # noqa: E402
 from ti.decide.resolve import resolve  # noqa: E402
 from ti.conf import load  # noqa: E402
-
-INSTRUCTIONS = "Which single operation should handle the user command?"
-
-OP_DESCRIPTIONS = {
-    "filesys_read": "Read one file's contents from disk.",
-    "filesys_glob": "List files matching a name pattern (paths only, no content search).",
-    "filesys_grep": "Search inside file contents for a regular expression.",
-    "decide_pick": "Pick the best item(s) from a candidate list.",
-    "decide_extract": "Extract query strings or parameter values from the user command.",
-    "web_search": "Search the web by keywords.",
-    "web_fetch": "Fetch one URL's full contents.",
-    "reddit_digest": "Summarize a Reddit subreddit or thread.",
-}
-
-
-def percentile(sorted_vals: list[float], pct: float) -> float:
-    if not sorted_vals:
-        return 0.0
-    idx = (len(sorted_vals) - 1) * pct
-    lo, hi = int(idx), min(int(idx) + 1, len(sorted_vals) - 1)
-    return sorted_vals[lo] + (sorted_vals[hi] - sorted_vals[lo]) * (idx - lo)
 
 
 def build_parser() -> argparse.ArgumentParser:

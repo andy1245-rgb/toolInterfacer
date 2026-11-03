@@ -1,0 +1,54 @@
+{
+  "comment": "Bench arms for bench/run.py. One entry per measurable arm; adding a backend is an entry here and no code change. requires: [] = offline/in-process, 'llama-server' = a live llama.cpp at the arm's endpoint (asserted via /props before any probe traffic), 'hosted' = a hosted API whose key must be in the environment. expect_model is the gguf basename the server must be serving; when it is empty the run refuses unless --expect-model names one, because an unasserted lane is how a stale server got measured as a different model (docs/model-sweep-consolidated.md, CORRECTION). override holds dotted conf paths applied before the backend is built, which is how a variant becomes a named arm instead of a flag nobody recorded.",
+  "arms": {
+    "fixture": {
+      "backend": "fixture",
+      "requires": [],
+      "comment": "Recorded-decision replay: deterministic, model-free, what selftest runs."
+    },
+    "heuristic": {
+      "backend": "heuristic_micro",
+      "requires": [],
+      "comment": "The regex pre-gate, scored standalone. Abstains on most rows; that is the coverage gate, not a weak classifier."
+    },
+    "d1": {
+      "backend": "d1_systemone",
+      "requires": ["llama-server"],
+      "endpoint": "decide.d1_systemone.base_url",
+      "expect_model": "d1-3B-Q4_K_M.gguf"
+    },
+    "logit_read": {
+      "backend": "logit_read",
+      "requires": ["llama-server"],
+      "endpoint": "decide.logit_read.base_url",
+      "expect_model": "",
+      "comment": "The Jev-style letter read this lane uses to score any gguf, so the model is not implied by the arm: pass --expect-model with the basename the lane was served."
+    },
+    "cascade": {
+      "backend": "cascade",
+      "requires": ["llama-server"],
+      "endpoint": "decide.d1_systemone.base_url",
+      "expect_model": "d1-3B-Q4_K_M.gguf"
+    },
+    "pair": {
+      "backend": "pair",
+      "requires": ["llama-server", "hosted"],
+      "endpoint": "decide.d1_systemone.base_url",
+      "expect_model": "d1-3B-Q4_K_M.gguf",
+      "comment": "stage1 local + stage2 hosted. Needs the key: without it the pair degrades to stage1 only, which is a different arm."
+    },
+    "pair_tau085": {
+      "backend": "pair",
+      "requires": ["llama-server", "hosted"],
+      "endpoint": "decide.d1_systemone.base_url",
+      "expect_model": "d1-3B-Q4_K_M.gguf",
+      "override": {"decide.pair.tau": 0.85},
+      "comment": "The 'enable the local model' variant: a lower tau escalates more, so more rows pay both stages."
+    },
+    "openrouter": {
+      "backend": "openrouter",
+      "requires": ["hosted"],
+      "comment": "Hosted-only. One key, one provider pin; both come from decide.openrouter."
+    }
+  }
+}
