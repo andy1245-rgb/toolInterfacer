@@ -30,7 +30,7 @@ from ti.decide.backends.openrouter import (ENV_KEY, OpenRouterBackend,  # noqa: 
                                            OpenRouterError)
 from ti.decide.primitives import ChoiceAnswer, make_backend  # noqa: E402
 
-TEST_KEY = "sk-or-v1-0000000000000000000000000000000000000000000000000000000000000000"
+TEST_KEY = "sk-or-v1-" + "0" * 64
 PIN = {"only": ["Relace"], "allow_fallbacks": True}
 MODEL = "z-ai/glm-5.3-flash"
 INSTRUCTION = "which file should the read step open next?"

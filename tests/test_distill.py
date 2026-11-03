@@ -38,7 +38,7 @@ from distill import (audit, bands, catalog, corpus, cost, label, mine,  # noqa: 
                      similarity, stats, teacher, templates, utterances)
 from ti.conf import load  # noqa: E402
 
-FAKE_KEY = "sk-or-v1-0000000000000000000000000000000000000000000000000000000000000000"
+FAKE_KEY = "sk-or-v1-" + "0" * 64
 
 
 class _Handler(BaseHTTPRequestHandler):
