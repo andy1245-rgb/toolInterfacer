@@ -3,6 +3,9 @@ name: CI
 on:
   push:
     branches: [main]
+    # A tag gets its own run so "the release is green" is a thing you can point
+    # at rather than infer: v0.1.0's run is the run for v0.1.0, not main's.
+    tags: ["v*"]
   pull_request:
 
 permissions:
@@ -27,6 +30,25 @@ jobs:
           python -m pip install -e ".[dev]"
       - name: Test
         run: python -m pytest tests/ -q
+
+  bench:
+    name: bench harness + demo (offline)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # Neither step needs an install or a network: bench/ puts service/ on
+      # sys.path itself, the decision backends are recorded answers, and the web
+      # CLIs are replaced by tests/data/fake_cli.py. They run in this job rather
+      # than alongside the suite because both start a real service on an
+      # ephemeral port, and a runner that is also running 679 tests is not the
+      # machine a stranger has.
+      - name: The harness scores, validates and compares, all offline
+        run: python3 bench/run.py selftest
+      - name: The demo answers all three scenes
+        run: python3 bench/demo.py
 
   typecheck:
     name: extension typecheck (Node ${{ matrix.node-version }})
@@ -68,7 +90,7 @@ jobs:
         run: node scripts/capture-check.ts
 
   package:
-    name: wheel build
+    name: wheel build, install and serve
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -79,21 +101,76 @@ jobs:
         run: |
           python -m pip install --upgrade pip build
           python -m build --wheel
-      - name: The wheel carries every subpackage
+      - name: The wheel carries every module the source has
         run: |
           python - <<'PY'
           import glob
+          import pathlib
           import zipfile
 
           wheel = glob.glob("dist/*.whl")[0]
-          names = set(zipfile.ZipFile(wheel).namelist())
-          required = [
-              "ti/http/api.py",
-              "ti/decide/resolve.py",
-              "ti/ops/op_api.py",
-              "ti/conf/defaults.json",
-          ]
-          missing = [r for r in required if r not in names]
+          shipped = {n for n in zipfile.ZipFile(wheel).namelist() if n.startswith("ti/")}
+          src = pathlib.Path("service")
+          # Every .py and .json under service/ti must be in the wheel. Named
+          # files would pass while a new subpackage went missing silently.
+          expected = {
+              str(p.relative_to(src))
+              for p in (src / "ti").rglob("*")
+              if p.is_file() and p.suffix in (".py", ".json") and "__pycache__" not in p.parts
+          }
+          missing = sorted(expected - shipped)
+          extra = sorted(shipped - expected)
           assert not missing, f"{wheel} is missing {missing}"
-          print(f"{wheel}: {len(names)} files, required modules present")
+          assert not extra, f"{wheel} has files the source does not: {extra}"
+          assert "ti/conf/defaults.json" in shipped, "defaults.json must ship"
+          print(f"{wheel}: {len(shipped)} entries, {sum(x.endswith('.py') for x in shipped)} "
+                f"modules, every source file present and no strays")
+          PY
+      - name: The wheel installs into a clean venv and serves
+        run: |
+          python -m venv /tmp/wheelcheck
+          # --no-index: dependencies = [] is a policy, so prove it by installing
+          # with nowhere to fetch from. If an import ever needs a third-party
+          # package, this step is where it surfaces.
+          /tmp/wheelcheck/bin/pip install --no-index --find-links dist toolinterfacer
+          /tmp/wheelcheck/bin/python - <<'PY'
+          import json
+          import os
+          import socket
+          import subprocess
+          import time
+          import urllib.error
+          import urllib.request
+
+          with socket.socket() as s:
+              s.bind(("127.0.0.1", 0))
+              port = s.getsockname()[1]
+          with open("/tmp/overlay.json", "w", encoding="utf-8") as fh:
+              json.dump({"http": {"port": port}}, fh)
+
+          env = {**os.environ, "TI_HTTP_TOKEN": "ci-not-a-secret",
+                 "TI_CONF_OVERLAY": "/tmp/overlay.json"}
+          # The console script by name: this is the entry point a stranger runs.
+          proc = subprocess.Popen(["/tmp/wheelcheck/bin/ti-serve"], env=env,
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+          url = f"http://127.0.0.1:{port}/health"
+          try:
+              for _ in range(150):
+                  try:
+                      with urllib.request.urlopen(url, timeout=2) as resp:
+                          health = json.load(resp)
+                      break
+                  except (urllib.error.URLError, OSError):
+                      time.sleep(0.2)
+              else:
+                  raise SystemExit("ti-serve never answered /health")
+              assert health["status"] == "ok", health
+              # conf:true is the proof defaults.json resolved out of the wheel.
+              assert health["conf"] is True, health
+              assert len(health["ops"]) == 9, health
+              print(f"health ok: {len(health['ops'])} ops, conf loaded, "
+                    f"decide={health['decide']}")
+          finally:
+              proc.terminate()
+              proc.wait(timeout=20)
           PY
