@@ -149,11 +149,10 @@ been averaged away. conf is the mean over URLs of 1.0 / 0.5 (degraded) / 0.0.
 
 ## 6. reddit-research: the op that cannot run yet
 
-The skill's project lives on an external mount
-(an external mount) that is not mounted, and `ops.reddit.cwd` points
-at a path that does not exist either. The op probes `cwd` then every entry in
-`cwd_candidates`, and when none is a directory it raises `CliMissingBinary`
-naming each path it tried. It does not hang, does not return an empty digest,
+The skill's project lives on an external mount that is not mounted, and
+`ops.reddit.cwd` points at a path that does not exist either. The op probes `cwd` then every
+entry in `cwd_candidates`, and when none is a directory it raises `CliMissingBinary` naming
+each path it tried. It does not hang, does not return an empty digest,
 and does not pretend a no-op was a success — an unmounted project and "the query
 found nothing" must not look alike.
 

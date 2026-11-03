@@ -51,7 +51,7 @@ converted to an honest absence, or kept with its provenance stated in code.
 | `ops/web/search.py:86` | **derived** | Coverage: 1.0 when every query answered, 0.5 otherwise, 0.0 when nothing came back. It is a measure of the search, documented as coverage and not as decision confidence. |
 | `ops/web/fetch.py:65` | **derived** | Mean over URLs of 1.0 (content present, not degraded), 0.5 (meta-description shell), 0.0 (nothing usable). |
 | `ops/reddit/digest.py:82` | **derived** (binary) | 1.0 with at least one post, 0.0 without: a fetch outcome. |
-| `ops/filesys/impl.py:77,87,109` | **asserted** | `filesys_glob`/`filesys_read`/`filesys_grep` return an unconditional `1.0`. **Not edited here** — another track owns that file. This is the same fabrication B2 named: a deterministic file read is not a decision, and its conf should be `None` so that a `conf_gte` gate cannot be cleared by an op that measured nothing. `Artifact.conf` now defaults to `None` and `gates.check_pre` blocks an unmeasured artifact, so the moment that file returns `None` it behaves correctly end to end. |
+| `ops/filesys/impl.py:54,110,149` | **derived** (coverage) | *This row used to read "unconditional `1.0`, not edited here — another track owns that file".* The file now reports what the walk actually covered (`_confidence(state)`): `1.0` complete and nothing refused, `0.7` a cap or deny-list prune, `0.5` the deadline — and `filesys_read` returns `0.7` when it truncated at `ops.filesys.read.max_lines`/`max_bytes`. That is a measurement of coverage, not a claim about a decision, and it is what a `conf_gte` gate can legitimately compare. |
 
 ## Mechanism
 

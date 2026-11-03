@@ -35,8 +35,10 @@ Do not hardcode machine-specific absolute paths in source, config, tests, or doc
 (`/home/<user>/...`, `C:\Users\<user>\...`). Use an environment variable, a
 `~`-relative default, a repo-relative path, or `<placeholder>`. `tests/test_no_personal_paths.py`
 fails the suite if one appears. Machine-specific bench paths belong in
-`bench/lane.env` (gitignored) — see `bench/lane.env.example`. Recorded evidence
-under `bench/results/` is exempt: those files are the proof of what ran where.
+`bench/lane.env` (gitignored) — see `bench/lane.env.example`. Recorded evidence under
+`bench/results/` is **guarded too**: the recorded model paths were redacted to `$HOME/` and
+`C:\Users\<user>`, keeping the basenames that prove what ran where, so that tree is no
+longer exempt from the check.
 
 ## Running the stack locally (CPU-only box)
 
