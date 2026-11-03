@@ -26,6 +26,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "service"))
 
 import ti.ops.filesys.impl  # noqa: E402,F401  (registers the ops)
+from ti.ops.filesys import confine  # noqa: E402
 from ti.ops.op_api import get  # noqa: E402
 
 FILES = {
@@ -74,6 +75,10 @@ class GlobMatcherTest(unittest.TestCase):
         self.addCleanup(self._tmp.cleanup)
         self.root = pathlib.Path(self._tmp.name)
         _build(self.root)
+        # Every path an op acts on resolves against the run root; use_tool() and
+        # the HTTP layer set it per run, a direct op call sets it here.
+        token = confine.set_root(str(self.root))
+        self.addCleanup(confine.reset_root, token)
 
     def hits(self, pattern: str, **params) -> list[str]:
         _kind, data, _conf = get("filesys_glob").run(
@@ -158,8 +163,12 @@ class SingularCandidateSetTest(unittest.TestCase):
                         continue
                     walked.append(os.path.relpath(os.path.join(dirpath, name), str(root)))
             self.assertEqual(sorted(walked), sorted(FILES))
-            _kind, data, _conf = get("filesys_glob").run(
-                {"pattern": "**/*", "cwd": tmp}, store=None)
+            token = confine.set_root(str(root))
+            try:
+                _kind, data, _conf = get("filesys_glob").run(
+                    {"pattern": "**/*", "cwd": tmp}, store=None)
+            finally:
+                confine.reset_root(token)
             self.assertEqual(sorted(data), sorted(walked))
 
 

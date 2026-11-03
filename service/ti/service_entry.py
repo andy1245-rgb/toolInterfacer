@@ -14,6 +14,7 @@ from .context.session_digest import sanitize
 from .core.budget import Budget
 from .core.runner import run_plan, Step
 from .hops.log import HopLog
+from .ops.filesys import confine
 from .ops.op_api import get as get_op, validate_params
 from .policy.askback import Question
 from .policy.confidence import gate_route
@@ -32,6 +33,23 @@ def use_tool(body: dict[str, Any], dry: bool = False, on_ask: Any = None) -> dic
     digest: dict[str, Any] = sanitize(body.get("digest"))
     mode = str(body.get("mode") or "auto")
 
+    # The run root: every path an op touches is resolved against it
+    # (ops/filesys/confine.py). It is the caller's cwd — the frame scope.py reads
+    # the digest for — and the process cwd when the body names none. The HTTP
+    # layer has already checked that cwd against ops.filesys.roots; a direct
+    # caller's cwd is where they said the run was.
+    try:
+        root = confine.set_root(digest.get("cwd"))
+    except confine.PathRefused as exc:
+        return {"status": "error", "error": str(exc), "hops": []}
+    try:
+        return _route(intent, params, digest, mode, dry, on_ask)
+    finally:
+        confine.reset_root(root)
+
+
+def _route(intent: str, params: dict[str, Any], digest: dict[str, Any],
+           mode: str, dry: bool, on_ask: Any) -> dict[str, Any]:
     meta = inspect(intent, params, digest)
 
     if dry or mode == "plan":

@@ -91,11 +91,16 @@ class LoopTest(unittest.TestCase):
             load()["decide"]["backends_in_use"] = conf_backup
 
     def test_runner_error_is_surfaced_in_response(self):
-        # A one-file dir whose file is picked, then read by a relative path that does not
-        # resolve from the process cwd — the op raises, the runner converts it to
-        # status "error" carrying the message, and service_entry must forward that message.
+        # A one-file dir whose file is picked and then cannot be read — the op raises,
+        # the runner converts it to status "error" carrying the message, and
+        # service_entry must forward that message. (The file used to be readable and
+        # the read failed only because a relative path resolved from the process cwd
+        # rather than the run root; confinement now resolves it against the run root,
+        # so the case pins a real unreadable file instead.)
         with tempfile.TemporaryDirectory() as tmp:
-            pathlib.Path(tmp, "errprop_missing_xyz.txt").write_text("x", encoding="utf-8")
+            unreadable = pathlib.Path(tmp, "errprop_missing_xyz.txt")
+            unreadable.write_text("x", encoding="utf-8")
+            unreadable.chmod(0)
             out = use_tool({"intent": "read the file we discussed",
                             "digest": {"cwd": tmp}})
         self.assertEqual(out["status"], "error", out)

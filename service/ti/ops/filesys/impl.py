@@ -2,16 +2,27 @@
 
 Same step shapes pi's registration exposes, so results are plausibly the same
 in bench and in-session. P1 implements these (pure stdlib, no CLI needed).
+
+Every path these ops touch goes through `confine`: it resolves the path and
+refuses one outside the run root, so `params.path`, `params.cwd` and `digest.cwd`
+cannot name `/etc` (or climb to it, or symlink to it). The walk is bounded by
+`walk`'s depth/file/deadline ceilings and prunes the configured deny roots, and
+`pattern` is compiled only if `regexguard` accepts its shape. `conf` reports
+whether the answer is complete: it used to be 1.0 unconditionally, which made a
+truncated listing look like a whole one.
 """
 from __future__ import annotations
 
 import fnmatch
 import os
-import re
+import time
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Iterator
 
+from ...conf import load
 from ..op_api import op
+from . import confine, regexguard
+from .walk import DEADLINE, MAX_HITS, Limits, WalkState, walk
 
 
 @dataclass
@@ -20,18 +31,30 @@ class FileHit:
     excerpt: str
 
 
-# Vendored, generated, and binary trees: never a sensible answer to "read the
-# file we discussed", and they dominate the candidate list (extern/llama.cpp/build
-# alone contributes thousands of .d files, which then cost decision-model prefill).
-SKIP_DIRS = frozenset({"build", "dist", "extern", "models", "node_modules",
-                       "venv", ".venv", "__pycache__", ".git", ".mypy_cache",
-                       ".pytest_cache", ".ruff_cache"})
+def _conf() -> dict[str, Any]:
+    return load()["ops"]["filesys"]
 
 
-def _walk(root: str):
-    for dirpath, dirs, files in os.walk(root):
-        dirs[:] = [d for d in dirs if not d.startswith(".") and d not in SKIP_DIRS]
+def _walk(root: str, limits: Limits | None = None,
+          state: WalkState | None = None) -> Iterator[tuple[str, list[str]]]:
+    """The ops' walk: `walk.walk` under the `ops.filesys` ceilings."""
+    for dirpath, files, _depth in walk(root, limits, state):
         yield dirpath, files
+
+
+def _confidence(state: WalkState) -> float:
+    """How much of the tree this answer covers.
+
+    1.0 is a walk that saw everything it was allowed to and refused nothing.
+    0.7 is a cap or a deny-list prune: a real, complete-over-what-it-saw listing
+    of part of the tree. 0.5 is the deadline, which is the one that says "there
+    was more here than I could look at".
+    """
+    if state.complete and not state.refused:
+        return 1.0
+    if state.stopped == DEADLINE:
+        return 0.5
+    return 0.7
 
 
 def _matched(rel: str, pattern: str) -> bool:
@@ -59,51 +82,108 @@ def _matched(rel: str, pattern: str) -> bool:
 
 @op("filesys_glob", kind="path_list", required=["pattern"], optional=["cwd", "base"])
 def run(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
-    cwd = params.get("cwd") or os.getcwd()
-    root = os.path.expanduser(cwd)
+    cfg = _conf()
+    limits = Limits.from_conf()
+    root = confine.resolve(params.get("cwd") or ".")
     # `base` only changes the frame hits are reported in: a scoped listing walks
     # the directory it was given but still speaks the caller's cwd. The walk root
-    # and the pattern both stay where they are.
-    frame = os.path.expanduser(params["base"]) if params.get("base") else root
+    # and the pattern both stay where they are, and `base` is not confined because
+    # it is not a path this op acts on — it is the coordinate system the answer is
+    # printed in, so naming `/` there reveals nothing the walk did not already
+    # return and stats nothing.
+    frame = os.path.expanduser(str(params["base"])) if params.get("base") else root
+    pattern = str(params["pattern"])
+    max_hits = int(cfg["glob"]["max_hits"])
+    state = WalkState()
     hits: list[str] = []
-    for dirpath, files in _walk(root):
-        for f in files:
-            if f.startswith("."):
-                continue
-            full = os.path.join(dirpath, f)
-            if _matched(os.path.relpath(full, root), params["pattern"]):
+    for dirpath, files in _walk(root, limits, state):
+        for name in files:
+            full = os.path.join(dirpath, name)
+            if _matched(os.path.relpath(full, root), pattern):
                 hits.append(os.path.relpath(full, frame))
+                if len(hits) >= max_hits:
+                    state.stop(MAX_HITS)
+                    break
+        if state.stopped is not None:
+            break
     _ = store
-    return "path_list", hits, 1.0
+    return "path_list", hits, _confidence(state)
 
 
 @op("filesys_read", kind="file_content", required=["path"], optional=["max_lines"])
 def run(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
-    path = os.path.expanduser(params["path"])
-    limit = int(params.get("max_lines", 2000))
+    cfg = _conf()["read"]
+    path = confine.resolve(params["path"])
+    limit = min(int(params.get("max_lines", cfg["max_lines"])), int(cfg["max_lines"]))
+    byte_cap = int(cfg["max_bytes"])
+    chunks: list[str] = []
+    size = 0
+    truncated = False
     with open(path, "r", encoding="utf-8", errors="replace") as fh:
-        lines = [next_l for idx, next_l in enumerate(fh) if idx < limit]
+        for index, line in enumerate(fh):
+            if index >= limit:
+                truncated = True
+                break
+            room = byte_cap - size
+            if room <= 0:
+                truncated = True
+                break
+            if len(line) > room:          # one long line: the answer is its head
+                chunks.append(line[:room])
+                truncated = True
+                break
+            chunks.append(line)
+            size += len(line)
     _ = store
-    return "file_content", "".join(lines), 1.0
+    return "file_content", "".join(chunks), 0.7 if truncated else 1.0
 
 
 @op("filesys_grep", kind="grep_hits", required=["pattern", "cwd"], optional=["glob"])
 def run(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
-    """Naive first cut (P1): single-file or re.search-per-file line hits."""
-    pat = re.compile(params["pattern"])
-    cwd = os.path.expanduser(params["cwd"])
+    cfg = _conf()
+    gcfg = cfg["grep"]
+    max_chars = int(gcfg["pattern_max_chars"])
+    pattern = regexguard.compile_guarded(str(params["pattern"]), max_chars=max_chars)
+    name_filter = (regexguard.compile_glob(str(params["glob"]), max_chars=max_chars)
+                   if params.get("glob") else None)
+    root = confine.resolve(params["cwd"])
+    limits = Limits.from_conf()
+    max_hits = int(gcfg["max_hits"])
+    line_cap = int(gcfg["line_max_chars"])
+    per_dir = int(gcfg["files_per_dir"])
+    deadline = time.monotonic() + limits.deadline_s
+    state = WalkState()
     hits: list[FileHit] = []
-    for dirpath, _dirs, files in os.walk(cwd):
-        for f in files[:50]:
-            fpath = os.path.join(dirpath, f)
-            if params.get("glob") and not re.match(params["glob"].replace("**", ".*"), f):
+    for dirpath, files in _walk(root, limits, state):
+        for name in files[:per_dir]:
+            if len(hits) >= max_hits:
+                state.stop(MAX_HITS)
+                break
+            if name_filter is not None and not name_filter.match(name):
                 continue
+            if time.monotonic() > deadline:
+                state.stop(DEADLINE)
+                break
+            path = os.path.join(dirpath, name)
             try:
-                with open(fpath, "r", encoding="utf-8", errors="replace") as fh:
+                with open(path, "r", encoding="utf-8", errors="replace") as fh:
                     for line in fh:
-                        if pat.search(line) and len(hits) < 200:
-                            hits.append(FileHit(os.path.relpath(fpath, cwd), line[:200]))
+                        if time.monotonic() > deadline:
+                            state.stop(DEADLINE)
+                            break
+                        # The match runs on windows of the clipped line: a
+                        # bound on the subject is the only budget `re` honours,
+                        # and a window keeps a minified one-line file searchable.
+                        # A match straddling a window boundary is not found.
+                        if any(pattern.search(line[start:start + line_cap])
+                               for start in range(0, max(len(line), 1), line_cap)):
+                            hits.append(FileHit(os.path.relpath(path, root), line[:200]))
+                            if len(hits) >= max_hits:
+                                state.stop(MAX_HITS)
+                                break
             except OSError:
                 continue
+        if state.stopped is not None:
+            break
     _ = store
-    return "grep_hits", [h.__dict__ for h in hits], 1.0
+    return "grep_hits", [hit.__dict__ for hit in hits], _confidence(state)

@@ -46,7 +46,7 @@
     "pair": {
       "stage1": "d1_systemone",
       "stage2": "openrouter",
-      "tau": 0.90,
+      "tau": 0.9,
       "escalate_on_error": true
     },
     "cascade": {
@@ -120,7 +120,31 @@
         "reddit_research.cli"
       ]
     },
-    "cli_timeout_s": 60
+    "cli_timeout_s": 60,
+    "filesys": {
+      "roots": [
+        "~"
+      ],
+      "deny_roots": [
+        "~/mnt"
+      ],
+      "max_depth": 12,
+      "max_files": 20000,
+      "deadline_s": 5.0,
+      "glob": {
+        "max_hits": 2000
+      },
+      "grep": {
+        "max_hits": 200,
+        "files_per_dir": 50,
+        "pattern_max_chars": 200,
+        "line_max_chars": 400
+      },
+      "read": {
+        "max_lines": 2000,
+        "max_bytes": 262144
+      }
+    }
   },
   "hops_log": {
     "path": "service/logs/hops.jsonl",
@@ -128,6 +152,15 @@
   },
   "http": {
     "host": "127.0.0.1",
-    "port": 1113
+    "port": 1113,
+    "token_env": "TI_HTTP_TOKEN",
+    "token_file": "~/.local/state/ti/http.token",
+    "max_body_bytes": 262144,
+    "max_workers": 16,
+    "allowed_ops": [
+      "filesys_read",
+      "filesys_glob",
+      "filesys_grep"
+    ]
   }
 }
