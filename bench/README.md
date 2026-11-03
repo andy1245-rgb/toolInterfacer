@@ -46,6 +46,22 @@
   against a live d1 server; writes per-row timing + conf to stdout/JSONL.
   `--expect-model <gguf-basename>` asserts the served model via `/props` and
   aborts before any probe traffic on a mismatch (warns loudly if omitted).
+- `ab_run.py` — three-arm A/B (`pair` / `openrouter` / `d1_systemone`) over a
+  stratified sample of `tests/data/utterances_v2.json`. All three arms run on each
+  utterance back to back with the order rotating per row, because between-arm
+  comparison across minutes is invalid on a box whose local latency swings
+  ~25%: a spike inside a row hits every arm, a spike between arms would be
+  read as a difference. Reports percentiles (never a mean), the pair's
+  bimodality split and additivity residual, McNemar on paired correctness, and
+  the four degradation paths over real dead ports and a stub 429.
+  `--summarize <run>.json` re-derives the report from a recorded run with no
+  traffic and no spend, so a reader can check the arithmetic without the model.
+
+  This is **not** the harness behind `docs/decision-pair-vs-hosted.md`: that run
+  is `results/ab-interleaved-30-run2.json`, built with `make_backend` directly,
+  and no committed script generates it. `ab_run.py` is a second interleaved run
+  of the same three arms on a different 30-row sample, driven through
+  `resolve()`, recorded at `results/ab-three-arm-30rows.json`.
 - `live_e2e.py` — the live proof that `POST /v1/useTool` runs end to end: it
   asserts the served model via `/props`, reads `/health` for the op registry *and
   the decide backend map* (a `done` from the replay fixture proves nothing), posts

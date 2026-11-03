@@ -4,6 +4,17 @@ Measured 2026-10-26 with interleaved calls (30 utterances x 3 arms, lead arm rot
 per utterance, one warm-up discarded per arm). Raw rows:
 `bench/results/ab-interleaved-30-run2.json`.
 
+That file's generator was a one-off and is not in the tree. The nearest committed
+harness is `bench/ab_run.py`, which implements the same design and records its own
+run at `bench/results/ab-three-arm-30rows.json` — a different 30-row sample, driven
+through `resolve()` rather than `make_backend()`, so its p50s (pair 4674 / hosted 787 /
+local 4052 ms, 28/27/23 correct) are not these numbers and do not replace them.
+Re-derive it with
+`python3 bench/ab_run.py --summarize bench/results/ab-three-arm-30rows.json` — no
+network, no spend. The failure-path costs below come from the uncommitted run and are
+not recomputable from either file; `ab_run.py` records those paths as pass/fail, not as
+milliseconds.
+
 Arms were built with `make_backend(...)` directly, bypassing `resolve()` on purpose:
 `FastPathBackend` would otherwise answer some rows from the decision cache or the
 `heuristic_micro` pre-gate with no network call, silently mixing 0 ms rows into an
@@ -80,5 +91,7 @@ call plus a wasted local call.
 - The latency comparison does not need that power: the p50 gap is 2.3 s against a
   ~0.5 s load-induced swing.
 - Direction (`pair costs escalation_rate x local_latency more than hosted-only`) is
-  structural. Magnitude is load-dependent — local p50 moved 4.1 s to 2.0 s inside this
-  run. Re-measure rather than re-reason when the box changes.
+  structural. Magnitude is load-dependent — local p50 was 4052 ms in
+  `bench/results/ab-three-arm-30rows.json` and 2261 ms here (rows 1801-3428 ms, so
+  nothing in this run reached 4.1 s). Re-measure rather than re-reason when the box
+  changes.
