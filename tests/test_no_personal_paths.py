@@ -23,7 +23,11 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 # lives at the root, the Vulkan one is out-of-tree beside it.
 SKIP_DIR_NAMES = {"node_modules", "__pycache__", ".venv", ".git", "build",
                   "build-vk"}
-SKIP_PREFIXES = {"bench/results", "extern", "service/logs"}
+# `bench/results/` used to be exempt because the recorded model paths were the
+# proof of the phantom-lane bug. The prefixes are redacted to `$HOME/` and
+# `C:\Users\<user>` now, and the basename -- the part that proved the point -- is
+# intact, so the exemption is gone and the evidence is still guarded.
+SKIP_PREFIXES = {"extern", "service/logs"}
 SKIP_FILES = {pathlib.Path(__file__).resolve()}
 SUFFIXES = {".py", ".ts", ".json", ".sh", ".md", ".toml", ".yml", ".yaml"}
 

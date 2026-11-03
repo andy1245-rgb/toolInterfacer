@@ -108,7 +108,7 @@ wins):
 
 Out: no mmproj downloaded (no vision lanes; adapter runs text-only).
 
-## Phase B results (dell321, 2026-10-17)
+## Phase B results (bench-host, 2026-10-17)
 
 Lock state when acquired: dell 8080 free for the entire 45-min window + 10-min
 idle grace; v2 lanes (dell-sweep-v2 outputs) had not appeared -> proceeded under

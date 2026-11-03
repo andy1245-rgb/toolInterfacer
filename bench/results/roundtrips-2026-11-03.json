@@ -398,10 +398,10 @@
      {
       "tool": "reddit_digest",
       "ms": 0.1,
-      "error": "CliMissingBinary: reddit-research CLI unavailable: no project directory found; tried:\n  /home/andrew/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  /home/andrew/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree."
+      "error": "CliMissingBinary: reddit-research CLI unavailable: no project directory found; tried:\n  $HOME/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  $HOME/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree."
      }
     ],
-    "error": "reddit_digest: CliMissingBinary: reddit-research CLI unavailable: no project directory found; tried:\n  /home/andrew/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  /home/andrew/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
+    "error": "reddit_digest: CliMissingBinary: reddit-research CLI unavailable: no project directory found; tried:\n  $HOME/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  $HOME/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
     "result_digest": "6eef6648406c"
    },
    "service": {
@@ -413,7 +413,7 @@
     "decide_ms": 0,
     "status": "error",
     "asked": "",
-    "error": "reddit-research CLI unavailable: no project directory found; tried:\n  /home/andrew/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  /home/andrew/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
+    "error": "reddit-research CLI unavailable: no project directory found; tried:\n  $HOME/Documents/PersonalCodingProjects/Research/redditScrapingSearching\n  $HOME/redditScrapingSearching\nThe project lives on an external mount \u2014 mount it, or point ops.reddit.cwd at it, then record a real response for the fixture tree.",
     "result_digest": "6eef6648406c"
    },
    "correct": {

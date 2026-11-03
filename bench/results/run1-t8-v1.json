@@ -3,7 +3,7 @@
   "base_url": "http://127.0.0.1:8080",
   "server_threads": 8,
   "model": {
-    "path": "/home/andrew/toolInterfacer/models/d1-3B-Q4_K_M.gguf",
+    "path": "$HOME/toolInterfacer/models/d1-3B-Q4_K_M.gguf",
     "ftype": "Q4_K - Medium",
     "build_info": "b1-f74e2fa"
   },

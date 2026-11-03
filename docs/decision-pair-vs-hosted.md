@@ -67,7 +67,7 @@ To switch when the key IS reliably present, one line in `service/ti/conf/default
 ```
 
 **On fast-local hardware the pair is the right default.** At the local latency recorded
-on dell321 (157-210 ms), expected pair p50 is `~200 + 0.733 x 827 ~= 0.81 s` — parity
+on bench-host (157-210 ms), expected pair p50 is `~200 + 0.733 x 827 ~= 0.81 s` — parity
 with hosted-only — and then the pair buys what this bench could not measure: no
 per-decision spend, no network dependency, no third-party data path, and a 100%-correct
 commitment set. Keep tau at 0.90 there; raising it converts every decision into a hosted

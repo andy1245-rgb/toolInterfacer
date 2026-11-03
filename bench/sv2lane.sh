@@ -1,14 +1,14 @@
 #!/bin/bash
 # sv2lane.sh <tibench-key> <logname> <backend> <outname>
-# v2 sweep lane on dell321 — adapted from bench/lane.sh (known-good ssh choreography).
+# v2 sweep lane on bench-host — adapted from bench/lane.sh (known-good ssh choreography).
 # Serves via pyhost (e3\python.exe tibench.py pyfg KEY), tunnels 18080, 2 probe runs
 # over tests/data/utterances_v2.json, teardown, verification. One restart allowed.
 set -u
 KEY="$1"; LOGNAME="$2"; BK="$3"; OUTNAME="$4"
 cd "${TI_REPO:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
-: "${DELL_E3_PY:?set DELL_E3_PY (the dell321 e3 python.exe)}"
-: "${DELL_TIBENCH:?set DELL_TIBENCH (path to tibench.py on dell321)}"
+: "${DELL_E3_PY:?set DELL_E3_PY (the bench-host e3 python.exe)}"
+: "${DELL_TIBENCH:?set DELL_TIBENCH (path to tibench.py on bench-host)}"
 e3py="$DELL_E3_PY"
 LIB="$DELL_TIBENCH"
 UT=tests/data/utterances_v2.json
@@ -18,10 +18,10 @@ L_TS=$(date +%s)
 L_NEED_MB=3500
 RESTARTED=0
 
-ram_mb() { ssh -o ConnectTimeout=10 dell321 "powershell -NoProfile -Command \"[math]::Round((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1KB,0)\"" 2>/dev/null | tail -1; }
-port80() { ssh -o ConnectTimeout=10 dell321 "netstat -ano | findstr LISTENING | findstr :8080" 2>/dev/null | head -1; }
-pythons() { ssh -o ConnectTimeout=10 dell321 "tasklist | findstr /I \"python\"" 2>/dev/null; }
-health_once() { ssh -o ConnectTimeout=10 dell321 "curl.exe -s http://127.0.0.1:8080/health" 2>/dev/null; }
+ram_mb() { ssh -o ConnectTimeout=10 bench-host "powershell -NoProfile -Command \"[math]::Round((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1KB,0)\"" 2>/dev/null | tail -1; }
+port80() { ssh -o ConnectTimeout=10 bench-host "netstat -ano | findstr LISTENING | findstr :8080" 2>/dev/null | head -1; }
+pythons() { ssh -o ConnectTimeout=10 bench-host "tasklist | findstr /I \"python\"" 2>/dev/null; }
+health_once() { ssh -o ConnectTimeout=10 bench-host "curl.exe -s http://127.0.0.1:8080/health" 2>/dev/null; }
 
 echo "== [lane $OUTNAME] pre-checks"
 L_RAM=$(ram_mb); echo "dell free RAM: ${L_RAM} MB (need $L_NEED_MB)"
@@ -34,7 +34,7 @@ echo "python PIDs before (do not touch): ${PYS_BEFORE:-none}"
 serve() {
   echo "== serve pyfg $KEY"
   L_SERVE_TS=$(date +%s)
-  nohup ssh -o ConnectTimeout=10 dell321 "$e3py $LIB pyfg $KEY" > "/tmp/v2serve_${LOGNAME}.log" 2>&1 &
+  nohup ssh -o ConnectTimeout=10 bench-host "$e3py $LIB pyfg $KEY" > "/tmp/v2serve_${LOGNAME}.log" 2>&1 &
   SERVE_SSH=$!
   H=""
   for i in $(seq 1 60); do
@@ -48,16 +48,16 @@ serve
 [ $? -ne 0 ] && exit 1
 L_HEALTH_S=$(( $(date +%s) - L_SERVE_TS ))
 # barrier in case another session races the port: verify OUR model is being served
-P=$(ssh -o ConnectTimeout=10 dell321 "curl.exe -s http://127.0.0.1:8080/props" 2>/dev/null)
+P=$(ssh -o ConnectTimeout=10 bench-host "curl.exe -s http://127.0.0.1:8080/props" 2>/dev/null)
 case "$P" in *"$OUTNAME"*) : ;; *) echo "!! /props mismatch (not our model): ${P:0:200} — ABORT"; exit 43;; esac
 sleep 30
-P2=$(ssh -o ConnectTimeout=10 dell321 "curl.exe -s http://127.0.0.1:8080/props" 2>/dev/null)
+P2=$(ssh -o ConnectTimeout=10 bench-host "curl.exe -s http://127.0.0.1:8080/props" 2>/dev/null)
 case "$P2" in *"$OUTNAME"*) : ;; *) echo "!! /props changed after settle (port stolen): ${P2:0:200} — ABORT"; exit 43;; esac
 
-RSS=$(ssh -o ConnectTimeout=10 dell321 "powershell -NoProfile -Command \"[math]::Round((Get-Process python).WorkingSet64/1MB,0)\"" 2>/dev/null | tail -1)
+RSS=$(ssh -o ConnectTimeout=10 bench-host "powershell -NoProfile -Command \"[math]::Round((Get-Process python).WorkingSet64/1MB,0)\"" 2>/dev/null | tail -1)
 echo "serve RSS: ${RSS} MB"
 
-ssh -f -N -L 18080:127.0.0.1:8080 -o ConnectTimeout=10 dell321
+ssh -f -N -L 18080:127.0.0.1:8080 -o ConnectTimeout=10 bench-host
 sleep 1
 ss -tln | grep 18080 >/dev/null || { echo "!! tunnel FAILED"; exit 1; }
 echo "tunnel up"
@@ -69,7 +69,7 @@ run_probe() { # run 1 or 2
   out="$ROUTE/v2-${OUTNAME}${N:+-run2}.json"
   t0=$(date +%s)
   python3 bench/live_probe.py --backend "$BK" --base-url http://127.0.0.1:18080 \
-    --host dell321 --threads 8 --utterances "$UT" --out "$out" \
+    --host bench-host --threads 8 --utterances "$UT" --out "$out" \
     > "/tmp/v2probe_${OUTNAME}-${N}.log" 2>&1
   rc=$?
   L_WALL=$(( $(date +%s) - t0 ))
@@ -121,7 +121,7 @@ TEARS=$(pgrep -f "ssh -f -N -L 18080" || true)
 kill $SERVE_SSH 2>/dev/null
 sleep 3
 for p in $(pythons | awk '{print $2}' | sort | comm -13 <(echo "$PYS_BEFORE") -); do
-  ssh -o ConnectTimeout=10 dell321 "taskkill /F /PID $p" >/dev/null 2>&1
+  ssh -o ConnectTimeout=10 bench-host "taskkill /F /PID $p" >/dev/null 2>&1
 done
 sleep 2
 L80=$(port80)

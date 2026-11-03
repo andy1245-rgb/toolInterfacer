@@ -55,7 +55,26 @@
 - `serve_lane.py` + `lanes.json` — argv-safe llama-server launcher for a lane;
   builds the serve argv in-process so a `--chat-template-kwargs` JSON value
   never crosses a shell command line. `--print-argv` emits the argv as JSON.
-- `lane.sh` — one full lane on dell321: serve via `serve_lane.py`, `/props`
+- `lane.sh` — one full lane on bench-host: serve via `serve_lane.py`, `/props`
   assertion, probe, teardown.
 - `baseline.py` (P4) — scripted LLM-driver baseline for the research template
   comparison.
+
+## `results/` — recorded evidence, with the machine redacted
+
+Every file under `results/` is a run that happened, kept as proof rather than
+decoration: `docs/model-sweep-consolidated.md` exists because a lane was
+mislabelled, and the `/props` capture under `results/dell/props/` is what proved
+it. Do not edit a number in them.
+
+The **machine-identifying prefixes are redacted**, and only those:
+
+| recorded as | was | why it is safe to change |
+|---|---|---|
+| `$HOME/…` | an operator's home path | the gguf *basename* is what proved the mislabel, and that is untouched |
+| `C:\Users\<user>\…` | a Windows profile path | same |
+| `bench-host` | a hostname | names the box for a reader; the date and the build id pin the run |
+
+The numbers, timings, build ids, model basenames and `/props` bodies are
+byte-identical to what was recorded. `tests/test_no_personal_paths.py` covers
+`results/` now, so a new run cannot reintroduce a personal path into the repo.

@@ -19,14 +19,14 @@
       "cpu": {
         "label": "cpu",
         "url": "http://127.0.0.1:8080",
-        "model_path": "/home/andrew/toolInterfacer/models/d1-3B-Q4_K_M.gguf",
+        "model_path": "$HOME/toolInterfacer/models/d1-3B-Q4_K_M.gguf",
         "ftype": "Q4_K - Medium",
         "build_info": "b1-f74e2fa"
       },
       "vulkan": {
         "label": "vulkan",
         "url": "http://127.0.0.1:8081",
-        "model_path": "/home/andrew/toolInterfacer/models/d1-3B-Q4_K_M.gguf",
+        "model_path": "$HOME/toolInterfacer/models/d1-3B-Q4_K_M.gguf",
         "ftype": "Q4_K - Medium",
         "build_info": "b1-f74e2fa"
       }

@@ -1,5 +1,5 @@
 #!/bin/bash
-# lane.sh <lane> <models-dir> [backend] [out-name] — one bench lane on dell321.
+# lane.sh <lane> <models-dir> [backend] [out-name] — one bench lane on bench-host.
 #
 # Serving is routed through bench/serve_lane.py (deployed to the dell box), which
 # builds the llama-server argv in-process so a chat-template-kwargs JSON value
@@ -21,11 +21,11 @@ NAME="${4:-$LANE}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-# Machine-specific dell321 paths come from the environment (see bench/lane.env.example):
-#   DELL_LAB    the lab dir on dell321 (models/, logs/, serve_pyhost.py live there)
+# Machine-specific bench-host paths come from the environment (see bench/lane.env.example):
+#   DELL_LAB    the lab dir on bench-host (models/, logs/, serve_pyhost.py live there)
 #   DELL_E3_PY  the python.exe with the llama-server impl DLLs that serves the model
-: "${DELL_LAB:?set DELL_LAB (the dell321 lab dir) - see bench/lane.env.example}"
-: "${DELL_E3_PY:?set DELL_E3_PY (the dell321 e3 python.exe) - see bench/lane.env.example}"
+: "${DELL_LAB:?set DELL_LAB (the bench-host lab dir) - see bench/lane.env.example}"
+: "${DELL_E3_PY:?set DELL_E3_PY (the bench-host e3 python.exe) - see bench/lane.env.example}"
 e3py="$DELL_E3_PY"
 DEPLOY="$DELL_LAB/v2serve"
 # serve_pyhost.py lives in the lab dir, not inside v2serve/ (the default import fails).
@@ -34,11 +34,11 @@ SLOG="$DELL_LAB/logs/v2-${NAME}-serve.log"
 ROUTE=bench/results/dell
 EXPECT=$(python3 -c "import json,sys; print(json.load(open('bench/lanes.json'))['lanes'][sys.argv[1]]['model'])" "$LANE")
 
-ps() { ssh -o ConnectTimeout=10 dell321 "powershell -NoProfile -Command \"$1\"" 2>/dev/null; }
-health_once() { ssh -o ConnectTimeout=10 dell321 "curl.exe -s http://127.0.0.1:8080/health" 2>/dev/null; }
-props_remote() { ssh -o ConnectTimeout=10 dell321 "curl.exe -s http://127.0.0.1:8080/props" 2>/dev/null; }
-pythons() { ssh -o ConnectTimeout=10 dell321 "tasklist | findstr /I \"python\"" 2>/dev/null; }
-port80() { ssh -o ConnectTimeout=10 dell321 "netstat -ano | findstr LISTENING | findstr :8080" 2>/dev/null | head -1; }
+ps() { ssh -o ConnectTimeout=10 bench-host "powershell -NoProfile -Command \"$1\"" 2>/dev/null; }
+health_once() { ssh -o ConnectTimeout=10 bench-host "curl.exe -s http://127.0.0.1:8080/health" 2>/dev/null; }
+props_remote() { ssh -o ConnectTimeout=10 bench-host "curl.exe -s http://127.0.0.1:8080/props" 2>/dev/null; }
+pythons() { ssh -o ConnectTimeout=10 bench-host "tasklist | findstr /I \"python\"" 2>/dev/null; }
+port80() { ssh -o ConnectTimeout=10 bench-host "netstat -ano | findstr LISTENING | findstr :8080" 2>/dev/null | head -1; }
 
 assert_props() { # $1 = stage label; $2 = props json (empty -> fetch from dell)
   local p="$2"
@@ -59,7 +59,7 @@ teardown() { # trap: any exit path past serve start must free the port + tunnel
   kill "$SERVE_SSH" 2>/dev/null
   sleep 2
   for p in $(pythons | awk '{print $2}' | sort | comm -13 <(echo "$PYS_BEFORE") -); do
-    ssh -o ConnectTimeout=10 dell321 "taskkill /F /PID $p" >/dev/null 2>&1
+    ssh -o ConnectTimeout=10 bench-host "taskkill /F /PID $p" >/dev/null 2>&1
   done
   sleep 2
   [ -z "$(port80)" ] && echo "dell 8080 free" || echo "!! dell 8080 still busy"
@@ -74,10 +74,10 @@ PYS_BEFORE=$(pythons | awk '{print $2}' | sort)
 
 echo "== deploy argv-safe launcher -> $DEPLOY"
 ps "New-Item -ItemType Directory -Force -Path '$DEPLOY' | Out-Null"
-scp -q bench/serve_lane.py bench/lanes.json "dell321:$DEPLOY/" || { echo "!! scp FAILED"; exit 1; }
+scp -q bench/serve_lane.py bench/lanes.json "bench-host:$DEPLOY/" || { echo "!! scp FAILED"; exit 1; }
 
 echo "== serve via serve_lane.py (argv built in-process, no shell quoting)"
-nohup ssh -o ConnectTimeout=10 dell321 \
+nohup ssh -o ConnectTimeout=10 bench-host \
   "$e3py $DEPLOY/serve_lane.py $LANE --models-dir '$MODELS_DIR' --serve-pyhost '$PYHOST'" > "/tmp/lane_serve_${NAME}.log" 2>&1 &
 SERVE_SSH=$!
 TEARDOWN=1
@@ -90,7 +90,7 @@ done
 case "$H" in
   *ok*) : ;;
   *) echo "SERVE FAILED"; tail -20 "/tmp/lane_serve_${NAME}.log"
-     ssh -o ConnectTimeout=10 dell321 "type '$SLOG'" 2>/dev/null | tail -20
+     ssh -o ConnectTimeout=10 bench-host "type '$SLOG'" 2>/dev/null | tail -20
      exit 1;;
 esac
 
@@ -102,7 +102,7 @@ sleep 15
 assert_props "after settle (port-steal check)" "" || exit 43
 
 ssh -f -N -L 18080:127.0.0.1:8080 -o ConnectTimeout=10 \
-  -o ServerAliveInterval=10 -o ServerAliveCountMax=6 -o ExitOnForwardFailure=yes dell321
+  -o ServerAliveInterval=10 -o ServerAliveCountMax=6 -o ExitOnForwardFailure=yes bench-host
 sleep 1
 ss -tln | grep 18080 >/dev/null || { echo "!! tunnel FAILED"; exit 1; }
 echo "tunnel up"

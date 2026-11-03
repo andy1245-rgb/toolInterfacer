@@ -3,7 +3,7 @@
   "service": "http://127.0.0.1:1114",
   "model_url": "http://127.0.0.1:8099",
   "served_model": {
-    "path": "/home/andrew/toolInterfacer/models/d1-3B-Q4_K_M.gguf",
+    "path": "$HOME/toolInterfacer/models/d1-3B-Q4_K_M.gguf",
     "basename": "d1-3B-Q4_K_M.gguf",
     "ftype": "Q4_K - Medium",
     "build_info": "b1-f74e2fa",

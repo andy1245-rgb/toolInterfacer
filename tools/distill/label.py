@@ -26,7 +26,7 @@ Persist-incrementally is the same rule as resumable: each row is appended and fs
 as it arrives (the run's value is upfront token spend, so a crash must not take it),
 and ``--resume`` skips every row id already present after validating it.
 
-    export TI_OPENROUTER_API_KEY="$(cat ~/.pi-bounty/secrets/ti-openrouter-key)"
+    export TI_OPENROUTER_API_KEY="$(cat $TI_OPENROUTER_KEY_FILE)"
     python3 tools/distill/label.py --in var/distill/candidates.jsonl \\
         --out var/distill/labels.jsonl --resume --gate 20 --budget 2.0
     python3 tools/distill/label.py ... --dry-run        # fixture teacher, no key

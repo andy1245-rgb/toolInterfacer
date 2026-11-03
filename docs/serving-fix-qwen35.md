@@ -1,4 +1,4 @@
-# Serving fix — qwen35 in-process GPU offload on dell321 (2026-10-17)
+# Serving fix — qwen35 in-process GPU offload on bench-host (2026-10-17)
 
 Task: root-cause why qwen35-arch lanes served in-process (pyhost recipe:
 `e3\python.exe` hardlinked into the llama.cpp bin dir + `LoadLibrary
@@ -6,7 +6,7 @@ llama-server-impl.dll` → `llama_server(argc, argv)`) ran CPU-only while
 `llama-bench` on the same build offloads the same GGUFs.
 
 **Verdict: unresolved at driver-flag level. Strongest hypothesis below.**
-Every documented experiment is first-hand measured on dell321 today; nothing
+Every documented experiment is first-hand measured on bench-host today; nothing
 inherited from q4-scout except where cited.
 
 ## Reproduced baseline (all today, build b11512/a11f57ba9 unless noted)

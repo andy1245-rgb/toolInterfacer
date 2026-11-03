@@ -1,6 +1,6 @@
 # Decision-backend sweep — consolidated report
 
-Session handoff. Consolidates three workstreams run on dell321 on 2026-10-17:
+Session handoff. Consolidates three workstreams run on bench-host on 2026-10-17:
 
 1. **Stratified v2 backend sweep** — the primary comparison, every lane scored on
    the same frozen 150-row set (`tests/data/utterances_v2.json`).

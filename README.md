@@ -8,6 +8,29 @@ A decision-model tool-interfacing layer for the pi coding agent: the big LLM sta
 **intent**, a small local model decides which tools to run and with what arguments, and the
 service executes them.
 
+```sh
+git clone https://github.com/andy1245-rgb/toolInterfacer.git && cd toolInterfacer
+python3 bench/demo.py            # offline: three scenes, no model, no network, no install
+```
+
+Three intents — one the caller fully specifies, one vague, one compound — each answered by a
+single call, with the hop list printed as a receipt:
+
+```
+scene 2 — a vague intent, resolved against real files
+  intent  'read the notes file'
+  step            op                       ms   conf  artifact
+  candidates      filesys_glob            0.4   1.00  path_list[3] e.g. server-out.log
+  picked_file     decide_pick             7.5   0.93  picked_items[1] e.g. notes.md
+  content         filesys_read            0.1   1.00  file_content :: # Project notes
+
+  status done   confidence 0.93   3 hops in 13 ms wall
+```
+
+`--live` runs the same scenes against the configured decision model and the real CLIs.
+[`ARCHITECTURE.md`](ARCHITECTURE.md) is how it works, [`TODO.md`](TODO.md) is what is next,
+and the numbers are under [`docs/`](docs/) — including the ones that are bad news.
+
 ## The problem
 
 An agent that reads, searches, fetches and re-checks spends most of its round trips moving
@@ -277,6 +300,7 @@ subpackage.
 
 | script | what it does |
 |---|---|
+| `bench/demo.py` | three scenes, a hop list as the receipt; offline by default, `--live` for the real backend |
 | `bench/run.py` | score any decide arm on a frozen set, and compare two reports (McNemar exact + a latency delta); `selftest` runs the whole path offline |
 | `bench/replay.py` | runs one plan through the real engine — zero network once `TI_CONF_OVERLAY` points the choice decision at `fixture` (see the Quickstart); the script itself uses the configured backend |
 | `bench/live_probe.py` | routing probe over the frozen utterance set against a live llama.cpp server; `--expect-model <gguf>` asserts `/props` before any probe traffic |

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""pyhost_qwen35.py — qwen35-family in-process serving driver for dell321.
+"""pyhost_qwen35.py — qwen35-family in-process serving driver for bench-host.
 
 Purpose
 -------
-One-stop driver for serving Qwen3.5-family GGUFs in-process on dell321 via the
+One-stop driver for serving Qwen3.5-family GGUFs in-process on bench-host via the
 pyhost recipe (LoadLibrary llama-server-impl.dll, python.exe hardlinked into
 the llama.cpp bin dir), with per-run config through a local JSON sidecar so no
 PowerShell quoting is needed over ssh.
@@ -25,10 +25,10 @@ resolved: any consumer context in this llama.cpp build runs qwen35 prefill at
 CPU-class speed in-process (llama-bench does GPU at 585-919 t/s on the same
 GGUF). d1 (lfm2-d1) lanes remain GPU-fast through this driver.
 
-Usage (from a machine with ssh access to dell321):
+Usage (from a machine with ssh access to bench-host):
   # 1. write dell-side qdiag_config.json (mode/args/env/log)
   # 2. launch:
-  ssh dell321 "C:\\...\\d1bench\\e3\\python.exe C:\\...\\toolInterfacerLab\\qdiag.py"
+  ssh bench-host "C:\\...\\d1bench\\e3\\python.exe C:\\...\\toolInterfacerLab\\qdiag.py"
   # 3. /health on dell:8080, probe over the 18080 tunnel, then taskkill PIDs.
 """
 from __future__ import annotations
@@ -63,7 +63,7 @@ def write_config(mode: str, extra: list[str], env: dict[str, str] | None = None)
     return path
 
 
-def serve(ssh_host: str = "dell321", wait_s: int = 90) -> bool:
+def serve(ssh_host: str = "bench-host", wait_s: int = 90) -> bool:
     p = subprocess.Popen(["ssh", ssh_host, f"{E3PY} {QDIAG}"],
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     end = time.time() + wait_s
@@ -82,4 +82,4 @@ if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "qwen35"
     extra = sys.argv[2:]
     write_config(mode, extra)
-    print(f"config written for {mode}; start via: ssh dell321 \"{E3PY} {QDIAG}\"")
+    print(f"config written for {mode}; start via: ssh bench-host \"{E3PY} {QDIAG}\"")

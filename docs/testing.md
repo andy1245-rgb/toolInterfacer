@@ -2,12 +2,12 @@
 
 ## Where tests run
 
-Benchmark/serve work goes to the **dell321** box over ssh — the local Lenovo
+Benchmark/serve work goes to the **bench-host** box over ssh — the local Lenovo
 is compile-only territory (5–8W/hybrid CPU, powersave governor, heavy ambient
 load makes latency numbers noisy).
 
 ```
-ssh dell321 "powershell -Command ..."   # dell321 is Windows — schedule/serve there
+ssh bench-host "powershell -Command ..."   # bench-host is Windows — schedule/serve there
 ```
 
 ## d1-3B launch recipe (measured best on this box so far)
