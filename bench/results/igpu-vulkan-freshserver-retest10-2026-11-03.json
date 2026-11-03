@@ -1,0 +1,326 @@
+{
+  "timestamp": "2026-11-03T03:33:43-0500",
+  "method": "bare d1_systemone backend per arm (resolve() bypassed: no decision cache, no heuristic pre-gate); every row asked of every arm inside one block, lead arm rotated per block; prompt imported verbatim from bench/live_probe.py",
+  "utterances": "utterances.json",
+  "block": 5,
+  "warmup_discarded_per_arm": 1,
+  "warmup_discarded_ms": {
+    "cpu": [
+      1863.1
+    ],
+    "vulkan": [
+      6759.5
+    ]
+  },
+  "model_assertion": {
+    "expect_model": "d1-3B-Q4_K_M.gguf",
+    "checked": true,
+    "per_arm": {
+      "cpu": {
+        "label": "cpu",
+        "url": "http://127.0.0.1:8080",
+        "model_path": "/home/andrew/toolInterfacer/models/d1-3B-Q4_K_M.gguf",
+        "ftype": "Q4_K - Medium",
+        "build_info": "b1-f74e2fa"
+      },
+      "vulkan": {
+        "label": "vulkan",
+        "url": "http://127.0.0.1:8081",
+        "model_path": "/home/andrew/toolInterfacer/models/d1-3B-Q4_K_M.gguf",
+        "ftype": "Q4_K - Medium",
+        "build_info": "b1-f74e2fa"
+      }
+    }
+  },
+  "per_arm": {
+    "cpu": {
+      "n": 10,
+      "p50_ms": 3510.6,
+      "p90_ms": 3636.4,
+      "p99_ms": 3737.1,
+      "mean_ms": 3462.7,
+      "min_ms": 2844.0,
+      "max_ms": 3748.3,
+      "accuracy": 0.8,
+      "malformed": 0
+    },
+    "vulkan": {
+      "n": 10,
+      "p50_ms": 10202.7,
+      "p90_ms": 10855.9,
+      "p99_ms": 10960.4,
+      "mean_ms": 10258.1,
+      "min_ms": 9808.5,
+      "max_ms": 10972.0,
+      "accuracy": 0.8,
+      "malformed": 0
+    }
+  },
+  "paired": {
+    "arms": [
+      "cpu",
+      "vulkan"
+    ],
+    "delta_definition": "vulkan minus cpu, same row, same block",
+    "median_delta_ms": 6579.0,
+    "rows_vulkan_faster": 0,
+    "rows_cpu_faster": 10,
+    "rows_tied": 0,
+    "rows_disagreeing_choice": 0,
+    "per_row": [
+      {
+        "idx": 0,
+        "vulkan_minus_cpu_ms": 7999.0,
+        "agree": true
+      },
+      {
+        "idx": 1,
+        "vulkan_minus_cpu_ms": 6550.4,
+        "agree": true
+      },
+      {
+        "idx": 2,
+        "vulkan_minus_cpu_ms": 6378.5,
+        "agree": true
+      },
+      {
+        "idx": 3,
+        "vulkan_minus_cpu_ms": 6510.2,
+        "agree": true
+      },
+      {
+        "idx": 4,
+        "vulkan_minus_cpu_ms": 6848.6,
+        "agree": true
+      },
+      {
+        "idx": 5,
+        "vulkan_minus_cpu_ms": 7411.9,
+        "agree": true
+      },
+      {
+        "idx": 6,
+        "vulkan_minus_cpu_ms": 6279.5,
+        "agree": true
+      },
+      {
+        "idx": 7,
+        "vulkan_minus_cpu_ms": 6607.7,
+        "agree": true
+      },
+      {
+        "idx": 8,
+        "vulkan_minus_cpu_ms": 6422.9,
+        "agree": true
+      },
+      {
+        "idx": 9,
+        "vulkan_minus_cpu_ms": 6945.7,
+        "agree": true
+      }
+    ]
+  },
+  "throughput": {},
+  "per_row": [
+    {
+      "arm": "cpu",
+      "idx": 0,
+      "utterance": "show me the contents of src/main.py",
+      "label": "filesys_read",
+      "choice": "decide_extract",
+      "conf": 0.39896122380580473,
+      "correct": false,
+      "ms": 2844.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 0,
+      "utterance": "show me the contents of src/main.py",
+      "label": "filesys_read",
+      "choice": "decide_extract",
+      "conf": 0.36422970483886924,
+      "correct": false,
+      "ms": 10843.0
+    },
+    {
+      "arm": "cpu",
+      "idx": 1,
+      "utterance": "read README.md and tell me what it says",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9485116009881447,
+      "correct": true,
+      "ms": 3748.3
+    },
+    {
+      "arm": "vulkan",
+      "idx": 1,
+      "utterance": "read README.md and tell me what it says",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9507402804398514,
+      "correct": true,
+      "ms": 10298.7
+    },
+    {
+      "arm": "cpu",
+      "idx": 2,
+      "utterance": "open config/defaults.json",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9662648675952658,
+      "correct": true,
+      "ms": 3456.4
+    },
+    {
+      "arm": "vulkan",
+      "idx": 2,
+      "utterance": "open config/defaults.json",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9666528919628288,
+      "correct": true,
+      "ms": 9834.9
+    },
+    {
+      "arm": "cpu",
+      "idx": 3,
+      "utterance": "what does the LICENSE file contain?",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.8872508745496298,
+      "correct": true,
+      "ms": 3596.4
+    },
+    {
+      "arm": "vulkan",
+      "idx": 3,
+      "utterance": "what does the LICENSE file contain?",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.8862640799299266,
+      "correct": true,
+      "ms": 10106.6
+    },
+    {
+      "arm": "cpu",
+      "idx": 4,
+      "utterance": "print the first 50 lines of bench/replay.py",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9359640465690914,
+      "correct": true,
+      "ms": 3624.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 4,
+      "utterance": "print the first 50 lines of bench/replay.py",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9350127387681939,
+      "correct": true,
+      "ms": 10472.6
+    },
+    {
+      "arm": "vulkan",
+      "idx": 5,
+      "utterance": "look at the pyproject.toml file",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.7388840844975822,
+      "correct": true,
+      "ms": 10972.0
+    },
+    {
+      "arm": "cpu",
+      "idx": 5,
+      "utterance": "look at the pyproject.toml file",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.7533110801233999,
+      "correct": true,
+      "ms": 3560.1
+    },
+    {
+      "arm": "vulkan",
+      "idx": 6,
+      "utterance": "read my ~/.bashrc",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9564968399073673,
+      "correct": true,
+      "ms": 9808.5
+    },
+    {
+      "arm": "cpu",
+      "idx": 6,
+      "utterance": "read my ~/.bashrc",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9578476078472365,
+      "correct": true,
+      "ms": 3529.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 7,
+      "utterance": "display service/ti/service_entry.py",
+      "label": "filesys_read",
+      "choice": "decide_extract",
+      "conf": 0.3732031161273066,
+      "correct": false,
+      "ms": 9906.7
+    },
+    {
+      "arm": "cpu",
+      "idx": 7,
+      "utterance": "display service/ti/service_entry.py",
+      "label": "filesys_read",
+      "choice": "decide_extract",
+      "conf": 0.37397283003108706,
+      "correct": false,
+      "ms": 3299.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 8,
+      "utterance": "list all python files under src/",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.9717941712746524,
+      "correct": true,
+      "ms": 9915.1
+    },
+    {
+      "arm": "cpu",
+      "idx": 8,
+      "utterance": "list all python files under src/",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.9718163977097598,
+      "correct": true,
+      "ms": 3492.2
+    },
+    {
+      "arm": "vulkan",
+      "idx": 9,
+      "utterance": "find every markdown file in docs",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.9717526476820197,
+      "correct": true,
+      "ms": 10423.1
+    },
+    {
+      "arm": "cpu",
+      "idx": 9,
+      "utterance": "find every markdown file in docs",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.9706719881961362,
+      "correct": true,
+      "ms": 3477.4
+    }
+  ]
+}

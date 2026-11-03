@@ -15,3 +15,4 @@ extern/
 
 # machine-specific bench env (see bench/lane.env.example)
 bench/lane.env
+build-vk/

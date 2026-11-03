@@ -1,0 +1,1346 @@
+{
+  "timestamp": "2026-11-03T03:45:21-0500",
+  "method": "bare d1_systemone backend per arm (resolve() bypassed: no decision cache, no heuristic pre-gate); every row asked of every arm inside one block, lead arm rotated per block; prompt imported verbatim from bench/live_probe.py",
+  "utterances": "utterances.json",
+  "block": 5,
+  "warmup_discarded_per_arm": 2,
+  "warmup_discarded_ms": {
+    "cpu": [
+      1910.5,
+      3536.7
+    ],
+    "vulkan": [
+      6683.5,
+      10093.8
+    ]
+  },
+  "model_assertion": {
+    "expect_model": "d1-3B-Q4_K_M.gguf",
+    "checked": true,
+    "per_arm": {
+      "cpu": {
+        "label": "cpu",
+        "url": "http://127.0.0.1:8080",
+        "model_path": "/home/andrew/toolInterfacer/models/d1-3B-Q4_K_M.gguf",
+        "ftype": "Q4_K - Medium",
+        "build_info": "b1-f74e2fa"
+      },
+      "vulkan": {
+        "label": "vulkan",
+        "url": "http://127.0.0.1:8081",
+        "model_path": "/home/andrew/toolInterfacer/models/d1-3B-Q4_K_M.gguf",
+        "ftype": "Q4_K - Medium",
+        "build_info": "b1-f74e2fa"
+      }
+    }
+  },
+  "per_arm": {
+    "cpu": {
+      "n": 50,
+      "p50_ms": 3283.7,
+      "p90_ms": 3543.5,
+      "p99_ms": 3702.4,
+      "mean_ms": 3328.6,
+      "min_ms": 3058.5,
+      "max_ms": 3706.0,
+      "accuracy": 0.84,
+      "malformed": 0
+    },
+    "vulkan": {
+      "n": 50,
+      "p50_ms": 8943.6,
+      "p90_ms": 9644.5,
+      "p99_ms": 11544.6,
+      "mean_ms": 9136.1,
+      "min_ms": 8482.9,
+      "max_ms": 12410.1,
+      "accuracy": 0.8,
+      "malformed": 0
+    }
+  },
+  "paired": {
+    "arms": [
+      "cpu",
+      "vulkan"
+    ],
+    "delta_definition": "vulkan minus cpu, same row, same block",
+    "median_delta_ms": 5649.6,
+    "rows_vulkan_faster": 0,
+    "rows_cpu_faster": 50,
+    "rows_tied": 0,
+    "rows_disagreeing_choice": 5,
+    "per_row": [
+      {
+        "idx": 0,
+        "vulkan_minus_cpu_ms": 6228.1,
+        "agree": false
+      },
+      {
+        "idx": 1,
+        "vulkan_minus_cpu_ms": 5353.1,
+        "agree": true
+      },
+      {
+        "idx": 2,
+        "vulkan_minus_cpu_ms": 5206.2,
+        "agree": true
+      },
+      {
+        "idx": 3,
+        "vulkan_minus_cpu_ms": 5361.5,
+        "agree": true
+      },
+      {
+        "idx": 4,
+        "vulkan_minus_cpu_ms": 5349.0,
+        "agree": true
+      },
+      {
+        "idx": 5,
+        "vulkan_minus_cpu_ms": 5310.1,
+        "agree": true
+      },
+      {
+        "idx": 6,
+        "vulkan_minus_cpu_ms": 6319.9,
+        "agree": true
+      },
+      {
+        "idx": 7,
+        "vulkan_minus_cpu_ms": 6188.0,
+        "agree": true
+      },
+      {
+        "idx": 8,
+        "vulkan_minus_cpu_ms": 5550.7,
+        "agree": true
+      },
+      {
+        "idx": 9,
+        "vulkan_minus_cpu_ms": 5354.3,
+        "agree": true
+      },
+      {
+        "idx": 10,
+        "vulkan_minus_cpu_ms": 5654.9,
+        "agree": true
+      },
+      {
+        "idx": 11,
+        "vulkan_minus_cpu_ms": 5957.5,
+        "agree": true
+      },
+      {
+        "idx": 12,
+        "vulkan_minus_cpu_ms": 6490.5,
+        "agree": true
+      },
+      {
+        "idx": 13,
+        "vulkan_minus_cpu_ms": 5216.8,
+        "agree": true
+      },
+      {
+        "idx": 14,
+        "vulkan_minus_cpu_ms": 5684.6,
+        "agree": true
+      },
+      {
+        "idx": 15,
+        "vulkan_minus_cpu_ms": 5486.5,
+        "agree": true
+      },
+      {
+        "idx": 16,
+        "vulkan_minus_cpu_ms": 5644.3,
+        "agree": false
+      },
+      {
+        "idx": 17,
+        "vulkan_minus_cpu_ms": 5932.2,
+        "agree": true
+      },
+      {
+        "idx": 18,
+        "vulkan_minus_cpu_ms": 5501.9,
+        "agree": true
+      },
+      {
+        "idx": 19,
+        "vulkan_minus_cpu_ms": 5768.8,
+        "agree": false
+      },
+      {
+        "idx": 20,
+        "vulkan_minus_cpu_ms": 5456.0,
+        "agree": false
+      },
+      {
+        "idx": 21,
+        "vulkan_minus_cpu_ms": 5300.7,
+        "agree": true
+      },
+      {
+        "idx": 22,
+        "vulkan_minus_cpu_ms": 7005.1,
+        "agree": true
+      },
+      {
+        "idx": 23,
+        "vulkan_minus_cpu_ms": 5417.7,
+        "agree": true
+      },
+      {
+        "idx": 24,
+        "vulkan_minus_cpu_ms": 5814.0,
+        "agree": true
+      },
+      {
+        "idx": 25,
+        "vulkan_minus_cpu_ms": 5816.3,
+        "agree": false
+      },
+      {
+        "idx": 26,
+        "vulkan_minus_cpu_ms": 5978.1,
+        "agree": true
+      },
+      {
+        "idx": 27,
+        "vulkan_minus_cpu_ms": 6974.7,
+        "agree": true
+      },
+      {
+        "idx": 28,
+        "vulkan_minus_cpu_ms": 6097.9,
+        "agree": true
+      },
+      {
+        "idx": 29,
+        "vulkan_minus_cpu_ms": 5526.9,
+        "agree": true
+      },
+      {
+        "idx": 30,
+        "vulkan_minus_cpu_ms": 5275.0,
+        "agree": true
+      },
+      {
+        "idx": 31,
+        "vulkan_minus_cpu_ms": 5490.0,
+        "agree": true
+      },
+      {
+        "idx": 32,
+        "vulkan_minus_cpu_ms": 6470.6,
+        "agree": true
+      },
+      {
+        "idx": 33,
+        "vulkan_minus_cpu_ms": 6105.2,
+        "agree": true
+      },
+      {
+        "idx": 34,
+        "vulkan_minus_cpu_ms": 5803.0,
+        "agree": true
+      },
+      {
+        "idx": 35,
+        "vulkan_minus_cpu_ms": 5560.5,
+        "agree": true
+      },
+      {
+        "idx": 36,
+        "vulkan_minus_cpu_ms": 6231.4,
+        "agree": true
+      },
+      {
+        "idx": 37,
+        "vulkan_minus_cpu_ms": 5673.6,
+        "agree": true
+      },
+      {
+        "idx": 38,
+        "vulkan_minus_cpu_ms": 5288.9,
+        "agree": true
+      },
+      {
+        "idx": 39,
+        "vulkan_minus_cpu_ms": 5305.2,
+        "agree": true
+      },
+      {
+        "idx": 40,
+        "vulkan_minus_cpu_ms": 5331.7,
+        "agree": true
+      },
+      {
+        "idx": 41,
+        "vulkan_minus_cpu_ms": 6306.7,
+        "agree": true
+      },
+      {
+        "idx": 42,
+        "vulkan_minus_cpu_ms": 5523.3,
+        "agree": true
+      },
+      {
+        "idx": 43,
+        "vulkan_minus_cpu_ms": 5513.6,
+        "agree": true
+      },
+      {
+        "idx": 44,
+        "vulkan_minus_cpu_ms": 5466.7,
+        "agree": true
+      },
+      {
+        "idx": 45,
+        "vulkan_minus_cpu_ms": 8880.5,
+        "agree": true
+      },
+      {
+        "idx": 46,
+        "vulkan_minus_cpu_ms": 6135.0,
+        "agree": true
+      },
+      {
+        "idx": 47,
+        "vulkan_minus_cpu_ms": 5413.9,
+        "agree": true
+      },
+      {
+        "idx": 48,
+        "vulkan_minus_cpu_ms": 5809.9,
+        "agree": true
+      },
+      {
+        "idx": 49,
+        "vulkan_minus_cpu_ms": 5844.2,
+        "agree": true
+      }
+    ]
+  },
+  "throughput": {},
+  "per_row": [
+    {
+      "arm": "cpu",
+      "idx": 0,
+      "utterance": "show me the contents of src/main.py",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9413179371391643,
+      "correct": true,
+      "ms": 3395.5
+    },
+    {
+      "arm": "vulkan",
+      "idx": 0,
+      "utterance": "show me the contents of src/main.py",
+      "label": "filesys_read",
+      "choice": "decide_extract",
+      "conf": 0.36422970483886924,
+      "correct": false,
+      "ms": 9623.6
+    },
+    {
+      "arm": "cpu",
+      "idx": 1,
+      "utterance": "read README.md and tell me what it says",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9470279877649798,
+      "correct": true,
+      "ms": 3362.9
+    },
+    {
+      "arm": "vulkan",
+      "idx": 1,
+      "utterance": "read README.md and tell me what it says",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9507402804398514,
+      "correct": true,
+      "ms": 8716.0
+    },
+    {
+      "arm": "cpu",
+      "idx": 2,
+      "utterance": "open config/defaults.json",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9644528237506486,
+      "correct": true,
+      "ms": 3307.7
+    },
+    {
+      "arm": "vulkan",
+      "idx": 2,
+      "utterance": "open config/defaults.json",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9666528919628288,
+      "correct": true,
+      "ms": 8513.9
+    },
+    {
+      "arm": "cpu",
+      "idx": 3,
+      "utterance": "what does the LICENSE file contain?",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9241216284358517,
+      "correct": true,
+      "ms": 3259.8
+    },
+    {
+      "arm": "vulkan",
+      "idx": 3,
+      "utterance": "what does the LICENSE file contain?",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.8862640799299266,
+      "correct": true,
+      "ms": 8621.3
+    },
+    {
+      "arm": "cpu",
+      "idx": 4,
+      "utterance": "print the first 50 lines of bench/replay.py",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9338033623052678,
+      "correct": true,
+      "ms": 3438.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 4,
+      "utterance": "print the first 50 lines of bench/replay.py",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9350127387681939,
+      "correct": true,
+      "ms": 8787.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 5,
+      "utterance": "look at the pyproject.toml file",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.7388840844975822,
+      "correct": true,
+      "ms": 8742.6
+    },
+    {
+      "arm": "cpu",
+      "idx": 5,
+      "utterance": "look at the pyproject.toml file",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9090167582139738,
+      "correct": true,
+      "ms": 3432.5
+    },
+    {
+      "arm": "vulkan",
+      "idx": 6,
+      "utterance": "read my ~/.bashrc",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9564968399073673,
+      "correct": true,
+      "ms": 9536.2
+    },
+    {
+      "arm": "cpu",
+      "idx": 6,
+      "utterance": "read my ~/.bashrc",
+      "label": "filesys_read",
+      "choice": "filesys_read",
+      "conf": 0.9505339999916463,
+      "correct": true,
+      "ms": 3216.3
+    },
+    {
+      "arm": "vulkan",
+      "idx": 7,
+      "utterance": "display service/ti/service_entry.py",
+      "label": "filesys_read",
+      "choice": "decide_extract",
+      "conf": 0.3732031161273066,
+      "correct": false,
+      "ms": 9640.1
+    },
+    {
+      "arm": "cpu",
+      "idx": 7,
+      "utterance": "display service/ti/service_entry.py",
+      "label": "filesys_read",
+      "choice": "decide_extract",
+      "conf": 0.2227967725581092,
+      "correct": false,
+      "ms": 3452.1
+    },
+    {
+      "arm": "vulkan",
+      "idx": 8,
+      "utterance": "list all python files under src/",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.9717941712746524,
+      "correct": true,
+      "ms": 8744.6
+    },
+    {
+      "arm": "cpu",
+      "idx": 8,
+      "utterance": "list all python files under src/",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.9682709168242151,
+      "correct": true,
+      "ms": 3193.9
+    },
+    {
+      "arm": "vulkan",
+      "idx": 9,
+      "utterance": "find every markdown file in docs",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.9717526476820197,
+      "correct": true,
+      "ms": 8482.9
+    },
+    {
+      "arm": "cpu",
+      "idx": 9,
+      "utterance": "find every markdown file in docs",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.9689394837785327,
+      "correct": true,
+      "ms": 3128.6
+    },
+    {
+      "arm": "cpu",
+      "idx": 10,
+      "utterance": "which files match tests/test_*.py",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.960934406162089,
+      "correct": true,
+      "ms": 3176.1
+    },
+    {
+      "arm": "vulkan",
+      "idx": 10,
+      "utterance": "which files match tests/test_*.py",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.9439749310220893,
+      "correct": true,
+      "ms": 8831.0
+    },
+    {
+      "arm": "cpu",
+      "idx": 11,
+      "utterance": "locate all json files in the repo",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.9617445289902647,
+      "correct": true,
+      "ms": 3129.8
+    },
+    {
+      "arm": "vulkan",
+      "idx": 11,
+      "utterance": "locate all json files in the repo",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.9684007841409014,
+      "correct": true,
+      "ms": 9087.3
+    },
+    {
+      "arm": "cpu",
+      "idx": 12,
+      "utterance": "find any .gguf files under models/",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.9572684020433647,
+      "correct": true,
+      "ms": 3110.4
+    },
+    {
+      "arm": "vulkan",
+      "idx": 12,
+      "utterance": "find any .gguf files under models/",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.9562192494676436,
+      "correct": true,
+      "ms": 9600.9
+    },
+    {
+      "arm": "cpu",
+      "idx": 13,
+      "utterance": "show me all bash scripts in extern",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.9399514529800578,
+      "correct": true,
+      "ms": 3689.1
+    },
+    {
+      "arm": "vulkan",
+      "idx": 13,
+      "utterance": "show me all bash scripts in extern",
+      "label": "filesys_glob",
+      "choice": "filesys_glob",
+      "conf": 0.9324862677744574,
+      "correct": true,
+      "ms": 8905.9
+    },
+    {
+      "arm": "cpu",
+      "idx": 14,
+      "utterance": "which files mention systemone?",
+      "label": "filesys_grep",
+      "choice": "filesys_glob",
+      "conf": 0.3625457606465998,
+      "correct": false,
+      "ms": 3259.7
+    },
+    {
+      "arm": "vulkan",
+      "idx": 14,
+      "utterance": "which files mention systemone?",
+      "label": "filesys_grep",
+      "choice": "filesys_glob",
+      "conf": 0.2758670896675018,
+      "correct": false,
+      "ms": 8944.3
+    },
+    {
+      "arm": "vulkan",
+      "idx": 15,
+      "utterance": "grep for TODO across the service dir",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "conf": 0.9628828246515891,
+      "correct": true,
+      "ms": 8545.0
+    },
+    {
+      "arm": "cpu",
+      "idx": 15,
+      "utterance": "grep for TODO across the service dir",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "conf": 0.9567927531241851,
+      "correct": true,
+      "ms": 3058.5
+    },
+    {
+      "arm": "vulkan",
+      "idx": 16,
+      "utterance": "find where gate_route is used",
+      "label": "filesys_grep",
+      "choice": "decide_extract",
+      "conf": 0.48123218105111093,
+      "correct": false,
+      "ms": 8929.3
+    },
+    {
+      "arm": "cpu",
+      "idx": 16,
+      "utterance": "find where gate_route is used",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "conf": 0.5174118090405732,
+      "correct": true,
+      "ms": 3285.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 17,
+      "utterance": "search the codebase for useTool",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "conf": 0.8674713997918669,
+      "correct": true,
+      "ms": 9299.2
+    },
+    {
+      "arm": "cpu",
+      "idx": 17,
+      "utterance": "search the codebase for useTool",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "conf": 0.8906353987585475,
+      "correct": true,
+      "ms": 3367.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 18,
+      "utterance": "which functions call urllib in tests",
+      "label": "filesys_grep",
+      "choice": "web_fetch",
+      "conf": 0.8284251078317879,
+      "correct": false,
+      "ms": 8784.3
+    },
+    {
+      "arm": "cpu",
+      "idx": 18,
+      "utterance": "which functions call urllib in tests",
+      "label": "filesys_grep",
+      "choice": "web_fetch",
+      "conf": 0.8541238097040199,
+      "correct": false,
+      "ms": 3282.4
+    },
+    {
+      "arm": "vulkan",
+      "idx": 19,
+      "utterance": "find occurrences of NotImplementedError in service/",
+      "label": "filesys_grep",
+      "choice": "filesys_glob",
+      "conf": 0.7172146438335988,
+      "correct": false,
+      "ms": 8943.0
+    },
+    {
+      "arm": "cpu",
+      "idx": 19,
+      "utterance": "find occurrences of NotImplementedError in service/",
+      "label": "filesys_grep",
+      "choice": "filesys_grep",
+      "conf": 0.7361983520159422,
+      "correct": true,
+      "ms": 3174.2
+    },
+    {
+      "arm": "cpu",
+      "idx": 20,
+      "utterance": "does any file import fastapi?",
+      "label": "filesys_grep",
+      "choice": "filesys_read",
+      "conf": 0.4156504334251136,
+      "correct": false,
+      "ms": 3267.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 20,
+      "utterance": "does any file import fastapi?",
+      "label": "filesys_grep",
+      "choice": "filesys_glob",
+      "conf": 0.36686148138424446,
+      "correct": false,
+      "ms": 8723.0
+    },
+    {
+      "arm": "cpu",
+      "idx": 21,
+      "utterance": "from these search results pick the ones worth reading",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "conf": 0.6964619488375766,
+      "correct": true,
+      "ms": 3251.6
+    },
+    {
+      "arm": "vulkan",
+      "idx": 21,
+      "utterance": "from these search results pick the ones worth reading",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "conf": 0.6684718214644979,
+      "correct": true,
+      "ms": 8552.3
+    },
+    {
+      "arm": "cpu",
+      "idx": 22,
+      "utterance": "choose the 3 best candidates from the URL list",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "conf": 0.5984676862998436,
+      "correct": true,
+      "ms": 3220.8
+    },
+    {
+      "arm": "vulkan",
+      "idx": 22,
+      "utterance": "choose the 3 best candidates from the URL list",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "conf": 0.4868259452632494,
+      "correct": true,
+      "ms": 10225.9
+    },
+    {
+      "arm": "cpu",
+      "idx": 23,
+      "utterance": "which of these forums looks most relevant?",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "conf": 0.7116808931476407,
+      "correct": true,
+      "ms": 3204.9
+    },
+    {
+      "arm": "vulkan",
+      "idx": 23,
+      "utterance": "which of these forums looks most relevant?",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "conf": 0.7030855203957315,
+      "correct": true,
+      "ms": 8622.6
+    },
+    {
+      "arm": "cpu",
+      "idx": 24,
+      "utterance": "pick top 2 links by relevance from the fetch queue",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "conf": 0.8579252824569394,
+      "correct": true,
+      "ms": 3149.2
+    },
+    {
+      "arm": "vulkan",
+      "idx": 24,
+      "utterance": "pick top 2 links by relevance from the fetch queue",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "conf": 0.8212446113352149,
+      "correct": true,
+      "ms": 8963.2
+    },
+    {
+      "arm": "vulkan",
+      "idx": 25,
+      "utterance": "among the files found, pick the one that matches the task",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "conf": 0.4058445515400372,
+      "correct": true,
+      "ms": 9281.7
+    },
+    {
+      "arm": "cpu",
+      "idx": 25,
+      "utterance": "among the files found, pick the one that matches the task",
+      "label": "decide_pick",
+      "choice": "filesys_glob",
+      "conf": 0.41160504471393056,
+      "correct": false,
+      "ms": 3465.4
+    },
+    {
+      "arm": "vulkan",
+      "idx": 26,
+      "utterance": "rank these snippets and choose the best",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "conf": 0.8254590440986896,
+      "correct": true,
+      "ms": 9684.1
+    },
+    {
+      "arm": "cpu",
+      "idx": 26,
+      "utterance": "rank these snippets and choose the best",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "conf": 0.8075377259158839,
+      "correct": true,
+      "ms": 3706.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 27,
+      "utterance": "select the most promising result from the search output",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "conf": 0.7618725243724536,
+      "correct": true,
+      "ms": 10643.7
+    },
+    {
+      "arm": "cpu",
+      "idx": 27,
+      "utterance": "select the most promising result from the search output",
+      "label": "decide_pick",
+      "choice": "decide_pick",
+      "conf": 0.7510334023891813,
+      "correct": true,
+      "ms": 3669.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 28,
+      "utterance": "turn my request into three search queries",
+      "label": "decide_extract",
+      "choice": "decide_extract",
+      "conf": 0.544253859373386,
+      "correct": true,
+      "ms": 9490.4
+    },
+    {
+      "arm": "cpu",
+      "idx": 28,
+      "utterance": "turn my request into three search queries",
+      "label": "decide_extract",
+      "choice": "decide_extract",
+      "conf": 0.4621118026742265,
+      "correct": true,
+      "ms": 3392.5
+    },
+    {
+      "arm": "vulkan",
+      "idx": 29,
+      "utterance": "what search terms should we use for this task?",
+      "label": "decide_extract",
+      "choice": "web_search",
+      "conf": 0.6945346042785475,
+      "correct": false,
+      "ms": 9202.0
+    },
+    {
+      "arm": "cpu",
+      "idx": 29,
+      "utterance": "what search terms should we use for this task?",
+      "label": "decide_extract",
+      "choice": "web_search",
+      "conf": 0.6723104173709602,
+      "correct": false,
+      "ms": 3675.1
+    },
+    {
+      "arm": "cpu",
+      "idx": 30,
+      "utterance": "extract the file paths mentioned in the user instruction",
+      "label": "decide_extract",
+      "choice": "filesys_glob",
+      "conf": 0.828214920998731,
+      "correct": false,
+      "ms": 3698.6
+    },
+    {
+      "arm": "vulkan",
+      "idx": 30,
+      "utterance": "extract the file paths mentioned in the user instruction",
+      "label": "decide_extract",
+      "choice": "filesys_glob",
+      "conf": 0.8011663044729928,
+      "correct": false,
+      "ms": 8973.6
+    },
+    {
+      "arm": "cpu",
+      "idx": 31,
+      "utterance": "list the parameter values needed for the fetch step",
+      "label": "decide_extract",
+      "choice": "decide_extract",
+      "conf": 0.5773742602896954,
+      "correct": true,
+      "ms": 3339.7
+    },
+    {
+      "arm": "vulkan",
+      "idx": 31,
+      "utterance": "list the parameter values needed for the fetch step",
+      "label": "decide_extract",
+      "choice": "decide_extract",
+      "conf": 0.5550666382015459,
+      "correct": true,
+      "ms": 8829.7
+    },
+    {
+      "arm": "cpu",
+      "idx": 32,
+      "utterance": "pull the topic names out of the command",
+      "label": "decide_extract",
+      "choice": "decide_extract",
+      "conf": 0.8848344493609133,
+      "correct": true,
+      "ms": 3394.9
+    },
+    {
+      "arm": "vulkan",
+      "idx": 32,
+      "utterance": "pull the topic names out of the command",
+      "label": "decide_extract",
+      "choice": "decide_extract",
+      "conf": 0.7479568557019197,
+      "correct": true,
+      "ms": 9865.5
+    },
+    {
+      "arm": "cpu",
+      "idx": 33,
+      "utterance": "generate query variations for the web search",
+      "label": "decide_extract",
+      "choice": "web_search",
+      "conf": 0.8255647263286647,
+      "correct": false,
+      "ms": 3293.7
+    },
+    {
+      "arm": "vulkan",
+      "idx": 33,
+      "utterance": "generate query variations for the web search",
+      "label": "decide_extract",
+      "choice": "web_search",
+      "conf": 0.8679279450828253,
+      "correct": false,
+      "ms": 9398.9
+    },
+    {
+      "arm": "cpu",
+      "idx": 34,
+      "utterance": "search the web for llama.cpp release notes",
+      "label": "web_search",
+      "choice": "web_search",
+      "conf": 0.9598604206139465,
+      "correct": true,
+      "ms": 3280.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 34,
+      "utterance": "search the web for llama.cpp release notes",
+      "label": "web_search",
+      "choice": "web_search",
+      "conf": 0.9393507491208698,
+      "correct": true,
+      "ms": 9083.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 35,
+      "utterance": "look up online what Liquid LFM2-d1 is",
+      "label": "web_search",
+      "choice": "web_search",
+      "conf": 0.9558925732530655,
+      "correct": true,
+      "ms": 8728.5
+    },
+    {
+      "arm": "cpu",
+      "idx": 35,
+      "utterance": "look up online what Liquid LFM2-d1 is",
+      "label": "web_search",
+      "choice": "web_search",
+      "conf": 0.9601536469170516,
+      "correct": true,
+      "ms": 3168.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 36,
+      "utterance": "find recent news about AVX2 CPU throttling",
+      "label": "web_search",
+      "choice": "web_search",
+      "conf": 0.9135122088084896,
+      "correct": true,
+      "ms": 9375.4
+    },
+    {
+      "arm": "cpu",
+      "idx": 36,
+      "utterance": "find recent news about AVX2 CPU throttling",
+      "label": "web_search",
+      "choice": "web_search",
+      "conf": 0.9196834433973411,
+      "correct": true,
+      "ms": 3144.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 37,
+      "utterance": "google the npm docs for request timeouts",
+      "label": "web_search",
+      "choice": "web_search",
+      "conf": 0.9357743623537179,
+      "correct": true,
+      "ms": 8766.1
+    },
+    {
+      "arm": "cpu",
+      "idx": 37,
+      "utterance": "google the npm docs for request timeouts",
+      "label": "web_search",
+      "choice": "web_search",
+      "conf": 0.8827269686729151,
+      "correct": true,
+      "ms": 3092.5
+    },
+    {
+      "arm": "vulkan",
+      "idx": 38,
+      "utterance": "check the internet for the python 3.12 release date",
+      "label": "web_search",
+      "choice": "web_search",
+      "conf": 0.9742854741862523,
+      "correct": true,
+      "ms": 8806.8
+    },
+    {
+      "arm": "cpu",
+      "idx": 38,
+      "utterance": "check the internet for the python 3.12 release date",
+      "label": "web_search",
+      "choice": "web_search",
+      "conf": 0.9727722489410658,
+      "correct": true,
+      "ms": 3517.9
+    },
+    {
+      "arm": "vulkan",
+      "idx": 39,
+      "utterance": "find documentation on ggml multi-threading",
+      "label": "web_search",
+      "choice": "web_search",
+      "conf": 0.6232390750768131,
+      "correct": true,
+      "ms": 8726.2
+    },
+    {
+      "arm": "cpu",
+      "idx": 39,
+      "utterance": "find documentation on ggml multi-threading",
+      "label": "web_search",
+      "choice": "web_search",
+      "conf": 0.5855097436929633,
+      "correct": true,
+      "ms": 3421.0
+    },
+    {
+      "arm": "cpu",
+      "idx": 40,
+      "utterance": "fetch https://github.com/ggml-org/llama.cpp",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "conf": 0.9790327551312765,
+      "correct": true,
+      "ms": 3468.5
+    },
+    {
+      "arm": "vulkan",
+      "idx": 40,
+      "utterance": "fetch https://github.com/ggml-org/llama.cpp",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "conf": 0.9776767422748891,
+      "correct": true,
+      "ms": 8800.2
+    },
+    {
+      "arm": "cpu",
+      "idx": 41,
+      "utterance": "open the pending URL and give me its contents",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "conf": 0.9514875483937564,
+      "correct": true,
+      "ms": 3331.5
+    },
+    {
+      "arm": "vulkan",
+      "idx": 41,
+      "utterance": "open the pending URL and give me its contents",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "conf": 0.9567977118329526,
+      "correct": true,
+      "ms": 9638.2
+    },
+    {
+      "arm": "cpu",
+      "idx": 42,
+      "utterance": "read the page at https://example.com/llama-bench",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "conf": 0.9678399590874112,
+      "correct": true,
+      "ms": 3377.0
+    },
+    {
+      "arm": "vulkan",
+      "idx": 42,
+      "utterance": "read the page at https://example.com/llama-bench",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "conf": 0.9269380659631583,
+      "correct": true,
+      "ms": 8900.3
+    },
+    {
+      "arm": "cpu",
+      "idx": 43,
+      "utterance": "grab the full text of the StackOverflow question at that link",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "conf": 0.9772861489065969,
+      "correct": true,
+      "ms": 3481.6
+    },
+    {
+      "arm": "vulkan",
+      "idx": 43,
+      "utterance": "grab the full text of the StackOverflow question at that link",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "conf": 0.9689612041813606,
+      "correct": true,
+      "ms": 8995.2
+    },
+    {
+      "arm": "cpu",
+      "idx": 44,
+      "utterance": "read the release notes page at the pending link",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "conf": 0.9036683233836218,
+      "correct": true,
+      "ms": 3231.7
+    },
+    {
+      "arm": "vulkan",
+      "idx": 44,
+      "utterance": "read the release notes page at the pending link",
+      "label": "web_fetch",
+      "choice": "web_fetch",
+      "conf": 0.7246373122583433,
+      "correct": true,
+      "ms": 8698.4
+    },
+    {
+      "arm": "vulkan",
+      "idx": 45,
+      "utterance": "what is r/LocalLLaMA saying about d1-3B?",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "conf": 0.8844248900692884,
+      "correct": true,
+      "ms": 12410.1
+    },
+    {
+      "arm": "cpu",
+      "idx": 45,
+      "utterance": "what is r/LocalLLaMA saying about d1-3B?",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "conf": 0.8934148687245935,
+      "correct": true,
+      "ms": 3529.6
+    },
+    {
+      "arm": "vulkan",
+      "idx": 46,
+      "utterance": "summarize top posts in r/Python this week",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "conf": 0.9503465892429276,
+      "correct": true,
+      "ms": 9371.3
+    },
+    {
+      "arm": "cpu",
+      "idx": 46,
+      "utterance": "summarize top posts in r/Python this week",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "conf": 0.9590831453970201,
+      "correct": true,
+      "ms": 3236.3
+    },
+    {
+      "arm": "vulkan",
+      "idx": 47,
+      "utterance": "digest the thread about llama.cpp quantization at that reddit url",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "conf": 0.6873137960537674,
+      "correct": true,
+      "ms": 8670.5
+    },
+    {
+      "arm": "cpu",
+      "idx": 47,
+      "utterance": "digest the thread about llama.cpp quantization at that reddit url",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "conf": 0.8110402656872707,
+      "correct": true,
+      "ms": 3256.6
+    },
+    {
+      "arm": "vulkan",
+      "idx": 48,
+      "utterance": "what are people in r/cpp discussing today?",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "conf": 0.3729562923448083,
+      "correct": true,
+      "ms": 8998.8
+    },
+    {
+      "arm": "cpu",
+      "idx": 48,
+      "utterance": "what are people in r/cpp discussing today?",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "conf": 0.8006869599385726,
+      "correct": true,
+      "ms": 3188.9
+    },
+    {
+      "arm": "vulkan",
+      "idx": 49,
+      "utterance": "check what the sub says about the new release",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "conf": 0.3180674935234353,
+      "correct": true,
+      "ms": 9103.2
+    },
+    {
+      "arm": "cpu",
+      "idx": 49,
+      "utterance": "check what the sub says about the new release",
+      "label": "reddit_digest",
+      "choice": "reddit_digest",
+      "conf": 0.47363843391854665,
+      "correct": true,
+      "ms": 3259.0
+    }
+  ],
+  "environment": {
+    "loadavg_1m_min": 1.86,
+    "loadavg_1m_median": 2.93,
+    "loadavg_1m_p90": 3.64,
+    "loadavg_1m_max": 4.14,
+    "samples": 215,
+    "note": "no other llama-server was running; a peer session on the same box was running its own benchmark suite during an earlier pass, not this one",
+    "device": "Vulkan0: Intel(R) Graphics (ADL GT2) (11787 MiB, 3508 MiB free)"
+  },
+  "offload": {
+    "n_gpu_layers": 31,
+    "of": 31,
+    "vk_model_buffer_mib": 1589.03,
+    "vk_host_buffer_mib": 205.08,
+    "vk_kv_buffer_mib": 8.0,
+    "vk_compute_buffer_mib": 79.51,
+    "source": "llama-cli -lv 4, same flags as bench/serve_vulkan.sh"
+  }
+}

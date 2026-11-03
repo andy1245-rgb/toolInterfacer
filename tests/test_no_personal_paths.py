@@ -2,7 +2,9 @@
 
 Recorded evidence under ``bench/results/`` legitimately contains the machine's
 model paths (they are the proof of the phantom-lane bug), ``extern/`` is vendored
-code, and ``service/logs/`` is runtime output — all three are skipped.
+code, ``service/logs/`` is runtime output, and the cmake build trees
+(``build/``, ``build-vk/``) are generated output that records the source path it
+was configured from — all of them are skipped.
 
 Everything else must stay portable: an environment variable, a ``~``-relative
 default, a repo-relative path, or ``<placeholder>``. If this test fails, the fix
@@ -14,7 +16,7 @@ import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SKIP_DIRS = {"bench/results", "extern", "service/logs", ".git", "node_modules",
-             "__pycache__", ".venv"}
+             "__pycache__", ".venv", "build", "build-vk"}
 SKIP_FILES = {pathlib.Path(__file__).resolve()}
 SUFFIXES = {".py", ".ts", ".json", ".sh", ".md", ".toml", ".yml", ".yaml"}
 
