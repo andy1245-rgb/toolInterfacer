@@ -128,3 +128,65 @@ number in `docs/` is 74.0% on the 150-row v2 set, but the same model scores
 literal / t2 veiled / t3 compound) are harder than the 382 set's task. Any
 comparison across the two is invalid; the harness must name which set it scored
 or the number is meaningless.
+
+---
+
+## Outcome — what was executed, and what it measured
+
+Written at the end of the run. The plan above was the intent; this is what
+happened, including the parts that changed it.
+
+### Publish blockers: closed and verified, not asserted
+
+Two independent reviews converged on the same defects. All are fixed, and the
+security ones were re-probed live against a running service:
+
+| was | now |
+|---|---|
+| an unauthenticated POST returned `/etc/hostname` and listed `/etc` | `401` without the token, `403 path_refused` for the path |
+| `filesys_glob` walked a caller-chosen root with no cap; an `os.walk` above the sshfs mount hangs uninterruptibly | run root confined to `ops.filesys.roots`, deny-list pruned before the first `lstat`, depth/hit/deadline caps |
+| `filesys_grep` compiled a caller-supplied regex; `(a+)+$` wedged a worker | four shape refusals at compile, matching against bounded windows |
+| `confidence: 1.0` on an error run with `hops: []` | the field is absent when nothing was measured; a vague intent now reports 0.215 and asks back |
+| a one-entry probability vector read as `p_max 1.0`, so `tau` could never fire | K<2 raises instead; a 0.02 answer no longer reports 0.87 |
+| the L2 research template named ops that do not exist — every "research" intent errored at step 0 | the template runs: extract → search → pick → fetch (gated, per-page `noul`) → assemble |
+| `pip install .` shipped 2 of 53 modules | 53 modules, console script, CI wheel check |
+| `tsc` reported 66 errors, the extension could not load | `tsc` exit 0, contract check 11/11 |
+| seven web-research intents routed to `filesys_glob` in production | an explicit research verb outranks `r/`; real-log regression table |
+
+**588 → 626 tests.** The suite grew by the regressions that would have caught
+each item above.
+
+### What the measurements changed
+
+**The classical baseline was not the answer, but it found the real question.**
+The 93.19% reproduces exactly and is genuinely held out — but holding out whole
+*phrasing families* instead of rows drops it to **66.23%**, and on this repo's own
+set it scores 62.7% against d1-3B's 74.0%. It *wins* the hardest band (t3
+boundary pairs, 69.1% vs 67.3% at 0.04 ms) and collapses on veiled intent (41.9%
+vs 71.0%). So the premise "a neural decision model is required" is overstated
+for a closed label set with in-vocabulary phrasing, and the boundary-pair band is
+where a lexical model belongs — worth chasing, not a default swap.
+
+**The iGPU is not compute.** On the routing workload the Iris Xe is 2.72× slower
+per decision and 6.9× slower at prompt processing, losing 50 of 50 paired rows.
+Routing is prefill-dominated, which is exactly an iGPU's worst case. It also
+surfaced a long-lived-server state bug on the Vulkan backend.
+
+**The hop log is not a decision log.** Of 1398 hop records, 14 are trainable
+choice records and all 14 carry the same label. Fine-tuning on runtime evidence
+is not available; the corpus has to be generated and teacher-labelled, which is
+what `tools/distill/` now does (414 rows, 199 teacher-labelled, $0.002).
+
+**The teacher's confidence is saturated exactly where the literature predicts.**
+t1 literal: mean 0.940, 50 of 72 rows in the 0.95–1.00 bin. t2 veiled: mean
+0.776 and genuinely spread. t3: 0.923. A confidence target from this needs
+temperature scaling per band, not trust — and t2's 78.5% agreement with its own
+frame is the band whose frames need a human audit first (`var/distill/audit.csv`).
+
+### Still open
+
+The fine-tune itself. The corpus is feedstock, not yet a trainable set — 199 rows
+against the 300-row floor in `decisionModelTuning/01` §5, and the labelling stall
+was provider congestion, not policy. Before training: finish to 414 rows, fit the
+per-band temperature, and annotate `audit.csv` so calibration stops reading
+UNKNOWN.
