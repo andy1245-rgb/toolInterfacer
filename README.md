@@ -25,6 +25,14 @@ against real candidates, and runs the operations. The LLM pays one round trip fo
 pipeline. A decision costs ~0.15 s on the hardware that served the sweep below, and zero
 generated tokens.
 
+**Whether that is cheaper is a trade, and it is measured.** Nine fixed tasks, two arms, the
+real service: the layer removes **2 of 14 round trips (14.3%)** and is **7.5 s slower** on
+the CPU-only box, because 10 decisions cost 10.6 s against 0.14 s of actual tool work. The
+two arms cross at **~5.8 s per model pass** or **~1 s per decision** — so the layer pays for
+compound intents on slow models with fast local decisions, and is pure overhead on
+single-call shapes. Full table, method and caveats:
+[`docs/roundtrips-2026-11-03.md`](docs/roundtrips-2026-11-03.md).
+
 ## Architecture
 
 ```
