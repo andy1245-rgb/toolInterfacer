@@ -9,6 +9,10 @@ Scope: `README.md`, `ARCHITECTURE.md`, `TODO.md`, `CONTRIBUTING.md`, `CHANGELOG.
 `pi-extension/README.md`, `demo/README.md`, and the docstrings of `bench/demo.py`,
 `bench/run.py`, `bench/replay.py`, `service/ti/http/api.py`.
 
+**Note added after the review.** Where it quotes a path into a private tree, the path is an
+illustration of the defect under discussion and is not resolvable by a reader; every finding,
+command and result below is as recorded at `main @ a105d50`.
+
 ---
 
 ## Verdict

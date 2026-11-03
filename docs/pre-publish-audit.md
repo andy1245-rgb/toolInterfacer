@@ -11,6 +11,10 @@ This document records exposure, not blame. Where I call something *deliberate* I
 author clearly chose to publish it; *accidental* means it is a by-product that the author
 most likely did not intend to hand to a stranger. Both are inventory, not judgement.
 
+**Note added after the audit.** The paths it cites name a private tree: they are illustrative of
+the shapes that leak and are not resolvable by a reader. Every finding, count and command output
+below is as recorded at the audited commit.
+
 The repo's own convention (`CONTRIBUTING.md:31`, `docs/testing.md:35`) is that personal
 absolute paths are written as `<placeholder>`, so this report does the same: the literal
 under discussion is `/home/<user>`, where `<user>` is the account name that appears in

@@ -208,9 +208,9 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 ```
 
 Two tests replay the recorded devskills fixtures as a read-only cross-check of
-the parsers (`TI_DEVSKILLS_FIXTURES`, default
-`~/toolInterfacerExtras/devskills`); they skip when that tree is absent. Nothing
-in the suite touches the network or a live skill CLI.
+the parsers (`TI_DEVSKILLS_FIXTURES`, default `tests/data/devskills`, which ships
+with the repo); they skip when the resolved tree is absent. Nothing in the suite
+touches the network or a live skill CLI.
 
 ## 9. The HTTP status contract
 

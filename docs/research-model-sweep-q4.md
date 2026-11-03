@@ -116,10 +116,10 @@ the documented idle-grace clause (0 v2-* files at start, 4 landed mid-run,
 dell-sweep-v2 serving again after my teardown finished).
 
 Serve recipe: e3\python.exe serve_pyhost.py (LoadLibrary llama-server-impl.dll
-from jevResearch/lab/d1bench/e3, built b11512 / a11f57ba9), foreground python,
-`-c 8192 -t 8 -ngl 99`; ssh -f -N -L 18080 tunnel; per lane: serve -> health ->
-RSS -> probe x4 (v1+run1/run2 x v2+run1/run2) -> teardown (server killed, port
-free verified, tunnel killed).
+from the benchmark host's e3 Python environment, built b11512 / a11f57ba9),
+foreground python, `-c 8192 -t 8 -ngl 99`; ssh -f -N -L 18080 tunnel; per lane:
+serve -> health -> RSS -> probe x4 (v1+run1/run2 x v2+run1/run2) -> teardown
+(server killed, port free verified, tunnel killed).
 
 ### Per-lane benchmark table (logit_read backend, frozen prompt)
 

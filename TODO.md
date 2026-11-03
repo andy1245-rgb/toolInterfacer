@@ -40,8 +40,8 @@ Routing accuracy is worth nothing until this is fixed.
       `1.96 × 0.5/√n`), so the +5.3 point cascade gain is not yet a result. Paired detection
       of 2 points needs ~1,960 rows (`docs/assets-inventory.md` §19); n=500 buys ±4.4 points
       on the arms themselves at the same convention, which is not enough either. **next**
-- [ ] **Q8 instead of Q4 under 2B.** `decisionModelTuning/04` §3 (summarised in
-      `docs/assets-inventory.md` §25) records Q4 changing the *failure mode*, not just the
+- [ ] **Q8 instead of Q4 under 2B.** A private decision-model research tree (`04` §3, summarised
+      in `docs/assets-inventory.md` §25) records Q4 changing the *failure mode*, not just the
       scale (xLAM-2-3B 58.00% → 51.75%, Qwen3-1.7B 14.50% → 8.75%). The recorded lanes are
       Q4_K_M, with two exceptions: d1-3B also has a Q8_0 lane pair
       (`bench/results/dell/v2-d1-3B-Q8*`, 73% against Q4's 74% in
@@ -55,8 +55,8 @@ Routing accuracy is worth nothing until this is fixed.
 ## 2. Grow the eval before believing anything
 
 - [ ] **Finish the distilled corpus.** The labelled count is still under the 300-row floor
-      for a small router (`docs/assets-inventory.md` §9, from `decisionModelTuning/01` §5).
-      The stall was provider congestion (0.7 s/row → 20–60 s/call), not budget. The exact
+      for a small router (`docs/assets-inventory.md` §9, from the same private synthesis's
+      `01` §5). The stall was provider congestion (0.7 s/row → 20–60 s/call), not budget. The exact
       labelled total lives in git-ignored `var/distill/`, so this file cannot quote it
       checkably: the last two snapshots were **199 of 414 rows at $0.002**
       (`docs/roadmap-2026-11.md`) and 267 of 414 at $0.0028 (an earlier draft of this item).
