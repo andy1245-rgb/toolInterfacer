@@ -1,14 +1,60 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "toolinterfacer"
 version = "0.1.0"
-description = "Modular decision-model (Jev-style / systemone) tool-interfacing layer for pi"
+description = "Modular decision-model (Jev-style / systemone) tool-interfacing layer for the pi coding agent"
+readme = "README.md"
 requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Andrew Radu", email = "72272191+andy1245-rgb@users.noreply.github.com" }]
+keywords = [
+    "llm",
+    "agents",
+    "tool-routing",
+    "decision-model",
+    "local-inference",
+    "llama.cpp",
+    "pi",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
 dependencies = []
 
-[build-system]
-requires = ["setuptools>=68"]
-build-backend = "setuptools.build_meta"
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.urls]
+Homepage = "https://github.com/andy1245-rgb/toolInterfacer"
+Repository = "https://github.com/andy1245-rgb/toolInterfacer"
+Documentation = "https://github.com/andy1245-rgb/toolInterfacer/tree/main/docs"
+Issues = "https://github.com/andy1245-rgb/toolInterfacer/issues"
+
+[project.scripts]
+ti-serve = "ti.http.api:main"
 
 [tool.setuptools]
 package-dir = {"" = "service"}
-packages = ["ti"]
+
+[tool.setuptools.packages.find]
+where = ["service"]
+include = ["ti*"]
+
+[tool.setuptools.package-data]
+ti = ["conf/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
