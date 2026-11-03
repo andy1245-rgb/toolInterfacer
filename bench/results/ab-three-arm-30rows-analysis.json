@@ -1,0 +1,284 @@
+{
+  "derived_from": "bench/results/ab-three-arm-30rows.json",
+  "timestamp": "2026-10-26T03:07:32-0400",
+  "note": "derived from that run's per_row by the committed analysis code. Where a key appears both here and in the run file's own derived block, this file is the later derivation of the two: the run file's block is what the analysis code said at measurement time.",
+  "analysis": {
+    "arms": {
+      "pair": {
+        "n": 30,
+        "errors": 0,
+        "abstains": 0,
+        "correct": 28,
+        "accuracy": 0.9333,
+        "conf_median": 0.95,
+        "latency_ms": {
+          "n": 30,
+          "p50": 4674.1,
+          "p90": 5794.0,
+          "p99": 7173.1,
+          "min": 2316.8,
+          "max": 7524.7,
+          "all_ms": [
+            2316.8,
+            2419.8,
+            2751.9,
+            3046.7,
+            3135.5,
+            3209.8,
+            3232.4,
+            3318.7,
+            3642.7,
+            4182.4,
+            4338.4,
+            4470.1,
+            4493.9,
+            4598.1,
+            4607.7,
+            4740.6,
+            4789.1,
+            4798.2,
+            4806.2,
+            4866.4,
+            5016.2,
+            5331.0,
+            5397.7,
+            5500.0,
+            5576.5,
+            5581.2,
+            5786.4,
+            5862.2,
+            6312.3,
+            7524.7
+          ]
+        },
+        "not_primary_source": 0,
+        "escalation": {
+          "n_escalated": 20,
+          "rate": 0.6667,
+          "reasons": {
+            "confident": 10,
+            "low_confidence": 20,
+            "stage1_error": 0,
+            "stage2_error": 0
+          },
+          "stage1_only_wall_ms": {
+            "n": 10,
+            "p50": 4010.8,
+            "p90": 4881.4,
+            "p99": 5002.7,
+            "min": 2316.8,
+            "max": 5016.2,
+            "all_ms": [
+              2316.8,
+              2419.8,
+              2751.9,
+              3046.7,
+              3232.4,
+              4789.1,
+              4798.2,
+              4806.2,
+              4866.4,
+              5016.2
+            ]
+          },
+          "escalated_wall_ms": {
+            "n": 20,
+            "p50": 4674.1,
+            "p90": 5907.2,
+            "p99": 7294.3,
+            "min": 3135.5,
+            "max": 7524.7,
+            "all_ms": [
+              3135.5,
+              3209.8,
+              3318.7,
+              3642.7,
+              4182.4,
+              4338.4,
+              4470.1,
+              4493.9,
+              4598.1,
+              4607.7,
+              4740.6,
+              5331.0,
+              5397.7,
+              5500.0,
+              5576.5,
+              5581.2,
+              5786.4,
+              5862.2,
+              6312.3,
+              7524.7
+            ]
+          },
+          "two_populations_by_stage": true,
+          "cleanly_separated": false,
+          "escalations_below_slowest_commit": 11,
+          "additive_residual_ms": {
+            "median": 420.9,
+            "min": -2502.0,
+            "max": 1918.4,
+            "n": 20
+          }
+        },
+        "providers": [
+          "Relace"
+        ]
+      },
+      "openrouter": {
+        "n": 30,
+        "errors": 0,
+        "abstains": 0,
+        "correct": 27,
+        "accuracy": 0.9,
+        "conf_median": 0.95,
+        "latency_ms": {
+          "n": 30,
+          "p50": 786.7,
+          "p90": 1384.7,
+          "p99": 1784.1,
+          "min": 536.3,
+          "max": 1841.2,
+          "all_ms": [
+            536.3,
+            537.9,
+            557.5,
+            590.6,
+            597.9,
+            618.2,
+            621.1,
+            638.4,
+            698.0,
+            716.5,
+            726.0,
+            764.3,
+            779.5,
+            780.0,
+            781.6,
+            791.7,
+            801.6,
+            876.6,
+            890.8,
+            921.1,
+            925.5,
+            1009.5,
+            1163.2,
+            1237.7,
+            1310.6,
+            1325.4,
+            1360.2,
+            1604.8,
+            1644.3,
+            1841.2
+          ]
+        },
+        "not_primary_source": 0
+      },
+      "d1_systemone": {
+        "n": 30,
+        "errors": 0,
+        "abstains": 0,
+        "correct": 23,
+        "accuracy": 0.7667,
+        "conf_median": 0.8185,
+        "latency_ms": {
+          "n": 30,
+          "p50": 4051.9,
+          "p90": 4573.2,
+          "p99": 5218.4,
+          "min": 2152.7,
+          "max": 5417.4,
+          "all_ms": [
+            2152.7,
+            2247.1,
+            2299.5,
+            2320.9,
+            2638.9,
+            2690.1,
+            2852.7,
+            2865.3,
+            2953.9,
+            2982.3,
+            3092.7,
+            3169.5,
+            3262.7,
+            3645.8,
+            4047.7,
+            4056.2,
+            4176.8,
+            4189.4,
+            4215.2,
+            4218.0,
+            4234.8,
+            4289.6,
+            4334.8,
+            4417.2,
+            4539.9,
+            4540.7,
+            4557.4,
+            4715.0,
+            4731.3,
+            5417.4
+          ]
+        },
+        "not_primary_source": 0
+      }
+    },
+    "mcnemar": {
+      "pair_vs_openrouter": {
+        "arm_a": "pair",
+        "arm_b": "openrouter",
+        "n_pairs": 30,
+        "both_correct": 27,
+        "neither_correct": 2,
+        "only_a_correct": 1,
+        "only_b_correct": 0,
+        "delta_accuracy": 0.0333,
+        "p_exact": 1.0
+      },
+      "pair_vs_d1_systemone": {
+        "arm_a": "pair",
+        "arm_b": "d1_systemone",
+        "n_pairs": 30,
+        "both_correct": 21,
+        "neither_correct": 0,
+        "only_a_correct": 7,
+        "only_b_correct": 2,
+        "delta_accuracy": 0.1667,
+        "p_exact": 0.1797
+      }
+    },
+    "escalation_prediction": {
+      "population": {
+        "source": "bench/results/dell/v2-d1-3B-Q4-systemone-props-asserted.json",
+        "n": 150,
+        "k": 8,
+        "tau": 0.9,
+        "escalated": 108,
+        "rate": 0.72,
+        "formula": "p_max = conf*(1-1/K)+1/K, escalate when p_max < tau"
+      },
+      "same_rows": {
+        "n": 30,
+        "rate": 0.6667,
+        "basis": "max(arm C probabilities) < tau, the same criterion the pair applies"
+      },
+      "observed": {
+        "n": 30,
+        "escalated": 20,
+        "rate": 0.6667
+      },
+      "population_test": {
+        "observed_escalations": 20,
+        "n": 30,
+        "p_predicted": 0.72,
+        "p_two_sided": 0.6381,
+        "reading": "one binomial draw of 30 rows from the population rate; a gap this size is sampling, not a policy difference"
+      }
+    },
+    "recommendation": [
+      "pair p50 4674ms vs hosted-only 787ms vs local-only 4052ms (interleaved, same 30 utterances).",
+      "highest accuracy is pair at 93.3%; pair 93.3%, hosted 90.0%, local 76.7%."
+    ]
+  }
+}

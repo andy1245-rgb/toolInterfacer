@@ -46,6 +46,22 @@
   against a live d1 server; writes per-row timing + conf to stdout/JSONL.
   `--expect-model <gguf-basename>` asserts the served model via `/props` and
   aborts before any probe traffic on a mismatch (warns loudly if omitted).
+- `ab_run.py` — three-arm A/B (`pair` / `openrouter` / `d1_systemone`) over a
+  stratified sample of `tests/data/utterances_v2.json`. All three arms run on each
+  utterance back to back with the order rotating per row, because between-arm
+  comparison across minutes is invalid on a box whose local latency swings
+  ~25%: a spike inside a row hits every arm, a spike between arms would be
+  read as a difference. Reports percentiles (never a mean), the pair's
+  bimodality split and additivity residual, McNemar on paired correctness, and
+  the four degradation paths over real dead ports and a stub 429.
+  `--summarize <run>.json` re-derives the report from a recorded run with no
+  traffic and no spend, so a reader can check the arithmetic without the model.
+
+  This is **not** the harness behind `docs/decision-pair-vs-hosted.md`: that run
+  is `results/ab-interleaved-30-run2.json`, built with `make_backend` directly,
+  and no committed script generates it. `ab_run.py` is a second interleaved run
+  of the same three arms on a different 30-row sample, driven through
+  `resolve()`, recorded at `results/ab-three-arm-30rows.json`.
 - `live_e2e.py` — the live proof that `POST /v1/useTool` runs end to end: it
   asserts the served model via `/props`, reads `/health` for the op registry *and
   the decide backend map* (a `done` from the replay fixture proves nothing), posts
@@ -58,6 +74,15 @@
 - `model_guard.py` — the `/props` served-model assertion (shared by
   `live_probe.py`, `live_e2e.py`, `run.py` and `lane.sh`); pure check plus a
   small CLI.
+- `ab_probe.py` — one process per library root: imports the `ti` package named by
+  `--service-root`, runs every `utterances_v2` row through `use_tool()` in-process,
+  and records plan shape (hop ops, status, confidence) plus a listing-quality
+  diagnostic for `filesys_glob` rows. Two lanes then compare with
+  `--report-only --compare <other.json>`. It is the only bench that A/Bs two
+  *checkouts* rather than two backends or two models, so it is the one that can
+  show a plan-shape regression between commits: `run.py` scores decisions, this
+  scores what the plan did. It writes results the way the section below
+  specifies — every home path in the record is `$HOME/...`.
 - `serve_lane.py` + `lanes.json` — argv-safe llama-server launcher for a lane;
   builds the serve argv in-process so a `--chat-template-kwargs` JSON value
   never crosses a shell command line. `--print-argv` emits the argv as JSON.
@@ -147,3 +172,47 @@ The numbers, timings, build ids, model basenames and `/props` bodies are
 byte-identical to what was recorded. `tests/test_no_personal_paths.py` covers
 `results/` now, so a new run cannot reintroduce a personal path — or a captured
 Windows directory tree — into the repo.
+
+## Unmerged branch: `bench/ab-probe`
+
+`bench/ab-probe` (one commit, `5022904`, 2026-10-26) carries `ab_probe.py` and two
+150-row result files. **The script was merged here; both result files were not.**
+
+What the two files measured, because nothing else in the repo records it. `old` is
+`6943650`, before `c5396c7` ("a listing covers the directory it names"); `new` is
+`98efee2`, which contains it. Both are in `main`'s history now. 150 rows,
+`d1-3B-Q4_K_M` on `:8080`, in-process `use_tool()`, 21 of the rows
+`filesys_glob`-labelled.
+
+- **`filesys_glob` rows: the fix returned listings and respected the constraint on
+  none of them.** Old returned a path list on **0** of the 21 (13 of them stated a
+  constraint and got no list at all). New returned one on **7**, and of the 5 the
+  diagnostic could judge, **0 respected** the constraint the utterance named and
+  **5 violated** it — each of the five was a **159-path** listing of the whole
+  tree, so "every file ending in `.toml` anywhere in the repo" was answered with
+  every file in the repo.
+- All 150 rows: hops 3.68 → 3.46 (`filesys_glob` 3.762 → 2.952), confidence mean
+  0.1202 → 0.4408, degraded rate 87.3% → 81.3%, wall mean 4559.8 → 3989.8 ms. Wall
+  is indicative only: one box, two lanes, no interleaving and no discarded warm-up,
+  which is the flaw `docs/decision-pair-vs-hosted.md` avoids by rotating arms.
+
+That is a negative result about a fix, and it was never written up: no figure in
+`docs/`, in `CHANGELOG.md`'s Measured section, or in `main`'s `bench/results/`
+traces to either file.
+
+**Why the result files stayed out.** They are 215,963 of the branch's 245,097
+bytes (107,150 + 108,813 against 27,762 for the script), they carry 47 occurrences
+of the operator's home path in the bare form `tests/test_no_personal_paths.py`
+fails on, and the defect they size is gone. Re-checked 2026-11-03 at `4951262`,
+same 21 rows, against this worktree rather than the `abharness` one the branch used:
+5 of the 6 judged rows respect the named constraint, no row returns the whole tree,
+and the remaining miss is row `57` (`bench_` prefix matched by substring instead of
+by prefix). The glob path is one hop with no decide in it, so the re-check's
+stand-in decision model cannot have influenced it; the list sizes are not comparable
+across the two frames (159 then, 286 now, for rows that name no constraint).
+Superseded rows published as if current is the failure `docs/model-sweep-consolidated.md`
+is a CORRECTION about.
+
+`ab_probe.py` itself needed no API change to run against today's `service/ti/`
+(`use_tool`, `conf.load` and `model_guard.preflight` are unchanged in signature);
+it was merged with one addition, the `$HOME/...` recording above.
