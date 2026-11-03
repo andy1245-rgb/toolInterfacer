@@ -82,19 +82,32 @@ def _apply_sgr(style: Style, params: str) -> Style:
     return Style(fg, bold, dim)
 
 
+def _output_chunks(raw: list[str]) -> list[str]:
+    """The `o` payloads from an asciinema v2 event stream, skipping what won't parse.
+
+    A recorder that is killed mid-write leaves a truncated last line, and a
+    hand-edited cast can carry an event of the wrong length; neither is a reason
+    to refuse to draw the frames that *are* there.
+    """
+    chunks: list[str] = []
+    for line in raw[1:]:
+        if not line.strip():
+            continue
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(event, list) and len(event) >= 3 and event[1] == "o":
+            chunks.append(str(event[2]))
+    return chunks
+
+
 def styled_lines(cast: pathlib.Path) -> list[list[Run]]:
     """Every line the recording wrote, as styled runs."""
-    raw = cast.read_text(encoding="utf-8").splitlines()
+    raw = cast.read_text(encoding="utf-8", errors="replace").splitlines()
     if not raw:
         return []
-    for line in raw[1:]:
-        if line.strip():
-            _t, kind, data = json.loads(line)
-            if kind == "o":
-                break
-    chunks = [json.loads(line)[2] for line in raw[1:]
-              if line.strip() and json.loads(line)[1] == "o"]
-    text = "".join(chunks).replace("\r\n", "\n").replace("\r", "\n")
+    text = "".join(_output_chunks(raw)).replace("\r\n", "\n").replace("\r", "\n")
 
     lines: list[list[Run]] = [[]]
     style = Style()
@@ -128,7 +141,12 @@ def styled_lines(cast: pathlib.Path) -> list[list[Run]]:
 
 
 def wrap(lines: list[list[Run]], width: int) -> list[list[Run]]:
-    """Hard-wrap at `width` columns, carrying the style across the break."""
+    """Hard-wrap at `width` columns, carrying the style across the break.
+
+    `width` is clamped to at least one column: at zero the loop below can never
+    advance (`room <= 0` forever), so `--cols 0` used to hang instead of drawing.
+    """
+    width = max(1, int(width))
     out: list[list[Run]] = []
     for line in lines:
         column = 0
@@ -188,7 +206,11 @@ def main() -> int:
     ap.add_argument("--cols", type=int, default=100,
                     help="wrap width in columns (default %(default)s)")
     args = ap.parse_args()
+    if args.cols < 1:
+        ap.error(f"--cols must be at least 1 (got {args.cols})")
     source = pathlib.Path(args.cast)
+    if not source.is_file():
+        ap.error(f"no such cast: {source}")
     target = pathlib.Path(args.svg) if args.svg else source.with_suffix(".svg")
     lines = wrap(styled_lines(source), args.cols)
     target.write_text(render_svg(lines, args.cols), encoding="utf-8")
