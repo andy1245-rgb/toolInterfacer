@@ -64,6 +64,23 @@ generator assigned every family to train or test before it wrote an utterance, s
 scores the other. That is the instrument `utterances_v2.json` cannot be — see
 `bench/data/heldout_v3_NOTES.md` for what it can and cannot measure.
 
+Training-corpus overlap
+-----------------------
+`bench/data/heldout_v3.json` shares its authored frame inventory with
+`data/distill/`, so a model fitted on that corpus has already seen the skeletons of
+most of the rows here. A predictor declares what it was fitted on:
+
+    class Mine(Predictor):
+        name = "mine"
+        trained_on = ("distill",)          # -> data/distill/train.jsonl + val.jsonl
+
+and every public route to an accuracy (`measure`, `score_split`) then joins the
+scored rows against that corpus's `family` column and drops what overlaps, recording
+how many rows and families it dropped in `Result.overlap` and in `render_table`'s
+output. There is no mode that includes an overlapping row silently: `drop` reports,
+`raise` refuses. `scoreable()` is the query — "which of these rows may this predictor
+legitimately be scored on" — and it is what both entry points call.
+
 Stdlib only: no numpy, no service imports. The predictors live in
 `bench/eval_signals.py`, which does import both.
 """
@@ -75,6 +92,7 @@ import random
 import re
 import statistics
 from dataclasses import dataclass, field
+from functools import lru_cache
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -89,6 +107,7 @@ R382_PATH = ROOT / "tests/data/routing_382.json"
 REGISTRY_382_PATH = ROOT / "bench/registry_382.json"
 V3_PATH = ROOT / "bench/data/heldout_v3.json"
 V3_FAMILIES_PATH = ROOT / "bench/data/heldout_v3_families.json"
+DISTILL_DIR = ROOT / "data/distill"
 
 
 # --------------------------------------------------------------------------- #
@@ -109,6 +128,10 @@ class Dataset:
     examples: list[Example]
     labels: tuple[str, ...]
     note: str = ""
+    # `family_kind = "frame"` means `Example.group` is a training corpus's own
+    # `family` value, so it is a join key rather than a name invented here. Only
+    # a dataset that declares it can be checked for overlap; see `scoreable`.
+    family_kind: str = ""
 
     @property
     def n(self) -> int:
@@ -310,12 +333,15 @@ def load_v3(path: Path | str = V3_PATH, split: str | None = "group",
     base = name or "v3 (generated, family-split)"
     ds = Dataset(name=base, examples=examples, labels=labels,
                  note="8-way generated from authored frames; family and split declared "
-                      "by the generator, not inferred here")
+                      "by the generator, not inferred here",
+                 family_kind="frame")
     if split is None:
         return ds
     if split == "group":
-        train = Dataset(name=base + " train", examples=[], labels=labels)
-        test = Dataset(name=base + " test", examples=[], labels=labels)
+        train = Dataset(name=base + " train", examples=[], labels=labels,
+                        family_kind="frame")
+        test = Dataset(name=base + " test", examples=[], labels=labels,
+                       family_kind="frame")
         for ex in examples:
             side = ex.meta.get("split")
             if side not in ("train", "test"):
@@ -347,8 +373,10 @@ def _repartition_by_row(examples: list[Example], labels: tuple[str, ...], base: 
     order = {ex.meta.get("id"): i for i, ex in enumerate(examples)}
     for side in (train, test):
         side.sort(key=lambda e: order.get(e.meta.get("id"), 0))
-    return (Dataset(name=base + " train (row split)", examples=train, labels=labels),
-            Dataset(name=base + " test (row split)", examples=test, labels=labels))
+    return (Dataset(name=base + " train (row split)", examples=train, labels=labels,
+                    family_kind="frame"),
+            Dataset(name=base + " test (row split)", examples=test, labels=labels,
+                    family_kind="frame"))
 
 
 def assert_no_family_crossing(train: Dataset, test: Dataset) -> None:
@@ -364,30 +392,42 @@ def assert_no_family_crossing(train: Dataset, test: Dataset) -> None:
 
 
 def score_split(train: Dataset, test: Dataset, predictors: list[Predictor], *,
-                n_boot: int = DEFAULT_BOOT, boot_seed: int = 0) -> list[Result]:
+                n_boot: int = DEFAULT_BOOT, boot_seed: int = 0,
+                on_contamination: str = "drop") -> list[Result]:
     """Fit each predictor on `train`, score it on the held-out families in `test`.
 
     One draw, not a seed distribution: the split is declared by the data, so there is
     no fold assignment to average over. The interval is still a cluster bootstrap over
     the test families, because rows of one family are one observation.
+
+    The scored side goes through `scoreable` first, so a predictor that declares a
+    training corpus is never scored on a test row that corpus contains. The training
+    side is not filtered: those rows are legitimately training data either way.
     """
     import copy
 
     results = []
     for predictor in predictors:
+        scored, overlap = scoreable(test, predictor,
+                                    on_contamination=on_contamination)
         p = copy.deepcopy(predictor)
         p.fit(train.examples)
-        outcomes = [1.0 if p.predict(e.text) == e.label else 0.0 for e in test.examples]
+        outcomes = [1.0 if p.predict(e.text) == e.label else 0.0 for e in scored.examples]
         acc = sum(outcomes) / len(outcomes) if outcomes else 0.0
-        lo, hi = cluster_bootstrap_ci(outcomes, test.groups, n_boot=n_boot, seed=boot_seed)
+        lo, hi = cluster_bootstrap_ci(outcomes, scored.groups, n_boot=n_boot, seed=boot_seed)
+        note = "fitted on the train families, scored on the test families"
+        if overlap is not None and overlap.excluded_rows:
+            note += f"; {overlap.note()}"
         results.append(Result(
-            predictor=p.name, split="group", n=test.n, n_groups=len(set(test.groups)),
+            predictor=p.name, split="group", n=scored.n,
+            n_groups=len(set(scored.groups)),
             k=1, seeds=1, acc_mean=round(acc, 4), acc_sd=0.0, acc_min=round(acc, 4),
             acc_max=round(acc, 4), ci_lo=lo, ci_hi=hi, per_seed=[round(acc, 4)],
             dataset=test.name,
-            atomic_row_fraction=test.group_report()["singleton_row_fraction"],
-            note="fitted on the train families, scored on the test families",
-            outcomes=outcomes, preds_per_seed=[[]], folds_per_seed=[[-1] * test.n]))
+            atomic_row_fraction=scored.group_report()["singleton_row_fraction"],
+            note=note,
+            outcomes=outcomes, preds_per_seed=[[]], folds_per_seed=[[-1] * scored.n],
+            overlap=overlap))
     return results
 
 
@@ -503,12 +543,170 @@ class Predictor:
 
     name: str = "unnamed"
     frozen: bool = False
+    # The committed corpora this signal was fitted on, as keys of TRAINING_CORPORA.
+    # Empty means "declares nothing", and the harness has nothing to check — every
+    # predictor in `bench/eval_signals.py` is fitted per fold on the dataset it is
+    # scored on, so none of them declares a corpus. A predictor fitted on
+    # `data/distill/` says so here and is scored on the rows it has not seen.
+    trained_on: tuple[str, ...] = ()
 
     def fit(self, train: list[Example]) -> None:
         raise NotImplementedError
 
     def predict(self, text: str) -> str | None:
         raise NotImplementedError
+
+
+# --------------------------------------------------------------------------- #
+# training-corpus overlap — the caveat, as a guard
+# --------------------------------------------------------------------------- #
+
+TRAINING_CORPORA: dict[str, tuple[str, ...]] = {
+    "distill": ("train.jsonl", "val.jsonl"),
+    "distill:train": ("train.jsonl",),
+    "distill:val": ("val.jsonl",),
+}
+
+
+class OverlapError(RuntimeError):
+    """A predictor would be scored on rows its own training corpus is made of."""
+
+
+def corpus_files(*declared: str) -> tuple[str, ...]:
+    """Resolve `trained_on` keys to the corpus files they name."""
+    out: list[str] = []
+    for key in declared:
+        try:
+            files = TRAINING_CORPORA[key]
+        except KeyError:
+            raise ValueError(f"unknown training corpus {key!r} "
+                             f"(known: {sorted(TRAINING_CORPORA)})") from None
+        for name in files:
+            if name not in out:
+                out.append(name)
+    return tuple(out)
+
+
+@lru_cache(maxsize=None)
+def corpus_families(files: tuple[str, ...]) -> frozenset[str]:
+    """Every `family` value the named corpus files carry.
+
+    The distill files and the v3 generator write the family id with the same grammar
+    (`tools/distill/templates.py::_row`), which is what makes this a mechanical join
+    rather than a similarity guess.
+    """
+    families: set[str] = set()
+    for name in files:
+        path = DISTILL_DIR / name
+        if not path.exists():
+            raise FileNotFoundError(f"training corpus file missing: {path}")
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                families.add(json.loads(line)["family"])
+    return frozenset(families)
+
+
+@dataclass
+class Overlap:
+    """What the join removed, and from where. Carried by every affected `Result`."""
+
+    declared: tuple[str, ...]
+    files: tuple[str, ...]
+    corpus_families: int
+    overlapping_families: tuple[str, ...]
+    excluded_rows: int
+    excluded_by_split: dict[str, int]
+    kept_rows: int
+
+    def note(self) -> str:
+        return (f"excluded {self.excluded_rows} of "
+                f"{self.excluded_rows + self.kept_rows} rows in "
+                f"{len(self.overlapping_families)} families that {'+'.join(self.files)} "
+                f"already trains on")
+
+    def row(self) -> dict:
+        return {"trained_on": list(self.declared), "files": list(self.files),
+                "corpus_families": self.corpus_families,
+                "overlapping_families": len(self.overlapping_families),
+                "excluded_rows": self.excluded_rows,
+                "excluded_by_split": dict(self.excluded_by_split),
+                "kept_rows": self.kept_rows}
+
+
+def scoreable(ds: Dataset, predictor: Predictor, *,
+              on_contamination: str = "drop") -> tuple[Dataset, Overlap | None]:
+    """The rows of `ds` this predictor may legitimately be scored on.
+
+    Returns `(dataset, overlap)`. `overlap` is None only for a predictor that
+    declares no training corpus — nothing to check. Otherwise it records the join
+    even when it removed nothing, so "checked and clean" is distinguishable from
+    "not checked".
+
+    `on_contamination` has two settings and no third: `"drop"` removes the rows the
+    predictor's own corpus trains on and reports the count, `"raise"` refuses the
+    measurement. There is deliberately no way to ask for the contaminated rows —
+    silent inclusion is the one outcome this function exists to make impossible.
+    """
+    if on_contamination not in ("drop", "raise"):
+        raise ValueError(f"unknown on_contamination {on_contamination!r} "
+                         "(expected 'drop' or 'raise')")
+    declared = tuple(getattr(predictor, "trained_on", ()) or ())
+    if not declared:
+        return ds, None
+    files = corpus_files(*declared)
+    families = corpus_families(files)
+    if ds.family_kind != "frame":
+        raise ValueError(
+            f"predictor {predictor.name!r} declares training corpora {declared} but "
+            f"dataset {ds.name!r} carries no family join key, so its rows cannot be "
+            "shown clean. Score it on a dataset whose groups are corpus family ids "
+            "(`load_v3`), or remove the declaration if the overlap truly is zero.")
+
+    hit = [ex for ex in ds.examples if ex.group in families]
+    by_split: dict[str, int] = {}
+    for ex in hit:
+        split = ex.meta.get("split") or "?"
+        by_split[split] = by_split.get(split, 0) + 1
+    overlap = Overlap(declared=declared, files=files,
+                      corpus_families=len(families),
+                      overlapping_families=tuple(sorted({ex.group for ex in hit})),
+                      excluded_rows=len(hit), excluded_by_split=by_split,
+                      kept_rows=ds.n - len(hit))
+
+    if hit and on_contamination == "raise":
+        raise OverlapError(
+            f"{overlap.note()}; scoring {predictor.name!r} here would measure "
+            f"{len(overlap.overlapping_families)} phrasings it was fitted on. "
+            "Pass on_contamination='drop' to score the rest, or use a predictor "
+            "that does not train on that corpus.")
+    if not hit:
+        return ds, overlap
+    if overlap.kept_rows == 0:
+        raise OverlapError(f"{overlap.note()}; nothing left to score")
+
+    kept = [ex for ex in ds.examples if ex.group not in families]
+    return (Dataset(name=ds.name, examples=kept, labels=ds.labels,
+                    note=ds.note, family_kind=ds.family_kind),
+            overlap)
+
+
+def _refuse_unscored_overlap(ds: Dataset, predictor: Predictor) -> None:
+    """Second gate, on the private engines.
+
+    `measure` and `score_split` already dropped the overlap, so this never fires on
+    that path. It exists for the caller that reaches past them into `_measure_cv` or
+    `_measure_frozen` directly: those two are where outcomes are computed, so they
+    refuse contaminated rows rather than trust their caller.
+    """
+    if not getattr(predictor, "trained_on", ()) or ds.family_kind != "frame":
+        return
+    families = corpus_families(corpus_files(*predictor.trained_on))
+    leaked = sorted({ex.group for ex in ds.examples if ex.group in families})
+    if leaked:
+        raise OverlapError(
+            f"dataset {ds.name!r} hands {len(leaked)} families to {predictor.name!r} "
+            f"that its training corpus contains; go through measure/score_split, "
+            "which drop them and report the count.")
 
 
 # --------------------------------------------------------------------------- #
@@ -574,6 +772,9 @@ class Result:
     outcomes: list[float] = field(default_factory=list)
     preds_per_seed: list[list] = field(default_factory=list)
     folds_per_seed: list[list[int]] = field(default_factory=list)
+    # None only when the predictor declared no training corpus; otherwise the join,
+    # including the rows it removed. A published number travels with this.
+    overlap: Overlap | None = None
 
     def row(self) -> dict:
         return {
@@ -582,10 +783,12 @@ class Result:
             "acc_mean": round(self.acc_mean, 4), "acc_sd": round(self.acc_sd, 4),
             "ci95": [self.ci_lo, self.ci_hi], "per_seed": [round(s, 4) for s in self.per_seed],
             "dataset": self.dataset, "note": self.note,
+            "overlap": self.overlap.row() if self.overlap else None,
         }
 
 
 def _measure_frozen(ds: Dataset, predictor: Predictor) -> tuple[list[float], list[list]]:
+    _refuse_unscored_overlap(ds, predictor)
     predictor.fit(ds.examples)
     preds = [predictor.predict(e.text) for e in ds.examples]
     outcomes = [1.0 if p == e.label else 0.0 for p, e in zip(preds, ds.examples)]
@@ -598,6 +801,7 @@ def _measure_cv(ds: Dataset, predictor: Predictor, split: str, k: int,
     predictions, per-seed fold assignment)."""
     import copy
 
+    _refuse_unscored_overlap(ds, predictor)
     n = ds.n
     texts = [e.text for e in ds.examples]
     labels = [e.label for e in ds.examples]
@@ -629,42 +833,51 @@ def _measure_cv(ds: Dataset, predictor: Predictor, split: str, k: int,
 
 def measure(ds: Dataset, predictors: list[Predictor], *, split: str = "group",
             k: int = DEFAULT_K, seeds: tuple[int, ...] = DEFAULT_SEEDS,
-            n_boot: int = DEFAULT_BOOT, boot_seed: int = 0) -> list[Result]:
+            n_boot: int = DEFAULT_BOOT, boot_seed: int = 0,
+            on_contamination: str = "drop") -> list[Result]:
     """Score every predictor on one dataset under one split.
 
     `split` is required in spirit: it has no default that hides the choice, and
     every Result records it. Call `measure` twice — once with `"group"`, once
     with `"row"` — to see the gap the split makes.
+
+    The dataset goes through `scoreable` per predictor, so a predictor that declares
+    a training corpus is scored only on rows that corpus does not contain, and the
+    count removed is on the Result and in the table.
     """
     if split not in ("group", "row"):
         raise ValueError(f"unknown split {split!r} (expected 'group' or 'row')")
-    groups = ds.groups
-    rep = ds.group_report()
     results = []
 
     for predictor in predictors:
+        scored, overlap = scoreable(ds, predictor, on_contamination=on_contamination)
+        rep = scored.group_report()
         folds_per_seed: list[list[int]] = []
         if predictor.frozen:
-            outcomes, preds_per_seed = _measure_frozen(ds, predictor)
-            per_seed = [round(sum(outcomes) / ds.n, 4)]
-            folds_per_seed = [[-1] * ds.n]
+            outcomes, preds_per_seed = _measure_frozen(scored, predictor)
+            per_seed = [round(sum(outcomes) / scored.n, 4)]
+            folds_per_seed = [[-1] * scored.n]
         else:
             outcomes, per_seed, preds_per_seed, folds_per_seed = _measure_cv(
-                ds, predictor, split, k, seeds)
-        acc = sum(outcomes) / ds.n
-        lo, hi = cluster_bootstrap_ci(outcomes, groups, n_boot=n_boot, seed=boot_seed)
+                scored, predictor, split, k, seeds)
+        acc = sum(outcomes) / scored.n
+        lo, hi = cluster_bootstrap_ci(outcomes, scored.groups,
+                                      n_boot=n_boot, seed=boot_seed)
         sd = statistics.pstdev(per_seed) if len(per_seed) > 1 else 0.0
+        note = ("frozen: no refit, split does not change predictions"
+                if predictor.frozen else "")
+        if overlap is not None and overlap.excluded_rows:
+            note = "; ".join(filter(None, [note, overlap.note()]))
         results.append(Result(
-            predictor=predictor.name, split=split, n=ds.n,
+            predictor=predictor.name, split=split, n=scored.n,
             n_groups=rep["groups"], k=1 if predictor.frozen else k,
             seeds=len(per_seed), acc_mean=round(acc, 4), acc_sd=round(sd, 4),
             acc_min=round(min(per_seed), 4), acc_max=round(max(per_seed), 4),
             ci_lo=lo, ci_hi=hi, per_seed=per_seed, dataset=ds.name,
             atomic_row_fraction=rep["singleton_row_fraction"],
-            note="frozen: no refit, split does not change predictions"
-                 if predictor.frozen else "",
+            note=note,
             outcomes=outcomes, preds_per_seed=preds_per_seed,
-            folds_per_seed=folds_per_seed,
+            folds_per_seed=folds_per_seed, overlap=overlap,
         ))
     return results
 
@@ -674,17 +887,28 @@ def measure(ds: Dataset, predictors: list[Predictor], *, split: str = "group",
 # --------------------------------------------------------------------------- #
 
 def render_table(results: list[Result], title: str = "") -> str:
-    head = ("| signal | split | n | groups | atomic rows | acc | 95% CI | "
+    head = ("| signal | split | n | groups | atomic rows | dropped | acc | 95% CI | "
             "seeds (min–max) |")
-    rule = "|---|---|---:|---:|---:|---:|---|---|"
+    rule = "|---|---|---:|---:|---:|---:|---:|---|---|"
     lines = [f"## {title}" if title else "", head, rule]
     for r in results:
         ci = f"{r.ci_lo * 100:.1f}–{r.ci_hi * 100:.1f}%"
         spread = (f"{r.acc_min * 100:.1f}–{r.acc_max * 100:.1f}%"
                   if r.seeds > 1 else "—")
         atomic = f"{r.atomic_row_fraction * 100:.0f}%"
+        if r.overlap is None:
+            dropped = "—"
+        elif r.overlap.excluded_rows:
+            dropped = f"**{r.overlap.excluded_rows}**"
+        else:
+            dropped = "0"
         lines.append(f"| `{r.predictor}` | {r.split} | {r.n} | {r.n_groups} | "
-                     f"{atomic} | **{r.acc_mean * 100:.1f}%** | {ci} | {spread} |")
+                     f"{atomic} | {dropped} | **{r.acc_mean * 100:.1f}%** | {ci} | "
+                     f"{spread} |")
+    footnotes = [f"> `{r.predictor}`: {r.overlap.note()} — scored on {r.n} rows."
+                 for r in results if r.overlap is not None and r.overlap.excluded_rows]
+    if footnotes:
+        lines += [""] + footnotes
     return "\n".join(line for line in lines if line != "")
 
 

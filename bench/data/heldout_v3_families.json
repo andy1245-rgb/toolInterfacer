@@ -1382,11 +1382,51 @@
   "rows": 415
  },
  "distill_overlap": {
-  "families_in_distill": 293,
-  "note": "a model trained on data/distill has seen these families; drop them by family join to score it on unseen phrasings",
-  "resolved_rows": 295,
-  "resolved_test_rows": 160,
-  "unresolved_rows": 120
+  "join": {
+   "corpus_families": 293,
+   "declared": [
+    "distill"
+   ],
+   "files": [
+    "train.jsonl",
+    "val.jsonl"
+   ],
+   "overlapping_families": 106,
+   "rows": 295,
+   "set_families": 133,
+   "test_rows": 160,
+   "train_rows": 135
+  },
+  "kept_after_join": {
+   "rows": 120,
+   "test_rows": 47
+  },
+  "note": "`join` is what a model fitted on the committed corpus (train.jsonl + val.jsonl) has already seen, and is the default the harness drops; `train_only_join` is the smaller set a model fitted on train.jsonl alone has seen. `eval_harness.scoreable()` performs this join for any predictor that declares `trained_on`.",
+  "superseded": {
+   "families_in_distill": 293,
+   "resolved_rows": 295,
+   "resolved_test_rows": 160,
+   "train_only_pair": {
+    "families_in_distill": 239,
+    "resolved_test_rows": 145
+   },
+   "unresolved_rows": 120,
+   "why": "`families_in_distill` counted the corpus's own families (293), not the 106 of this set's families that corpus contains, so the pair read as a join when only its row count was one. The 239/145 pair in the brief is the same two quantities with val.jsonl left out: a correct count of the corpus, and the row count for a predictor fitted on train.jsonl alone. Both row counts are right for their own declaration; neither pair states the intersection. Separately, `data/distill/manifest.json` records 295 families because it counts before its two excluded rows: the committed files hold 293."
+  },
+  "train_only_join": {
+   "corpus_families": 239,
+   "declared": [
+    "distill:train"
+   ],
+   "files": [
+    "train.jsonl"
+   ],
+   "overlapping_families": 89,
+   "rows": 249,
+   "set_families": 133,
+   "test_rows": 145,
+   "train_rows": 104
+  }
  },
  "dropped_families": [
   {
