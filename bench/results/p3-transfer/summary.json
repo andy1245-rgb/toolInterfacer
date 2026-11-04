@@ -1,0 +1,141 @@
+{
+ "v2": {
+  "n": 150,
+  "a": 111,
+  "b": 123,
+  "p": 0.022655844688415527,
+  "fixed": 18,
+  "broke": 6,
+  "delta": {
+   "delta": 0.08,
+   "lo": 0.02,
+   "hi": 0.14,
+   "units": 150,
+   "reps": 4000
+  }
+ },
+ "coverage": {
+  "ran": 415,
+  "planned": 415,
+  "skipped": 0
+ },
+ "v3_all": {
+  "n": 415,
+  "a": 334,
+  "b": 321,
+  "p": 0.07245426016254441,
+  "fixed": 16,
+  "broke": 29,
+  "delta": {
+   "delta": -0.0313,
+   "lo": -0.0851,
+   "hi": 0.019,
+   "units": 133,
+   "reps": 4000
+  }
+ },
+ "v3_test": {
+  "n": 207,
+  "a": 169,
+  "b": 165,
+  "p": 0.480682373046875,
+  "fixed": 7,
+  "broke": 11,
+  "delta": {
+   "delta": -0.0193,
+   "lo": -0.0841,
+   "hi": 0.0427,
+   "units": 68,
+   "reps": 4000
+  }
+ },
+ "v3_train": {
+  "n": 208,
+  "a": 165,
+  "b": 156,
+  "p": 0.12207812070846558,
+  "fixed": 9,
+  "broke": 18,
+  "delta": {
+   "delta": -0.0433,
+   "lo": -0.1286,
+   "hi": 0.0386,
+   "units": 65,
+   "reps": 4000
+  }
+ },
+ "composition": {
+  "v3_reweighted_baseline": 0.7822,
+  "v3_reweighted_targeted": 0.7652,
+  "weights": {
+   "decide_extract": 24,
+   "decide_pick": 18,
+   "filesys_glob": 21,
+   "filesys_grep": 22,
+   "filesys_read": 17,
+   "reddit_digest": 15,
+   "web_fetch": 15,
+   "web_search": 18
+  }
+ },
+ "v3_targets": {
+  "n": 103,
+  "a": 56,
+  "b": 70,
+  "p": 0.001312255859375,
+  "fixed": 16,
+  "broke": 2,
+  "delta": {
+   "delta": 0.1359,
+   "lo": 0.0345,
+   "hi": 0.2556,
+   "units": 44,
+   "reps": 4000
+  }
+ },
+ "v3_others": {
+  "n": 312,
+  "a": 278,
+  "b": 251,
+  "p": 1.4901161193847656e-08,
+  "fixed": 0,
+  "broke": 27,
+  "delta": {
+   "delta": -0.0865,
+   "lo": -0.1424,
+   "hi": -0.0404,
+   "units": 89,
+   "reps": 4000
+  }
+ },
+ "v2_targets": {
+  "n": 46,
+  "a": 14,
+  "b": 30,
+  "p": 0.00014495849609375,
+  "fixed": 17,
+  "broke": 1,
+  "delta": {
+   "delta": 0.3478,
+   "lo": 0.1957,
+   "hi": 0.5,
+   "units": 46,
+   "reps": 4000
+  }
+ },
+ "v2_others": {
+  "n": 104,
+  "a": 97,
+  "b": 93,
+  "p": 0.21875,
+  "fixed": 1,
+  "broke": 5,
+  "delta": {
+   "delta": -0.0385,
+   "lo": -0.0865,
+   "hi": 0.0,
+   "units": 104,
+   "reps": 4000
+  }
+ }
+}

@@ -120,6 +120,18 @@
   `data/heldout_v3_NOTES.md` before quoting a number from it: it is synthetic, it
   cannot speak for real user phrasing beyond the frames, and its two decision-op
   classes are largely single-form families.
+- `rewrite_transfer.py` — **the rewrite's out-of-sample test**: takes
+  `routing_diagnose.TARGETED` (two of eight option descriptions, imported unchanged)
+  and the six that stayed byte-identical, and scores both arms on
+  `data/heldout_v3.json` — 415 rows withheld by authorship, not by a split of the set
+  the rewrite was derived from. `--arm targeted` measures live (per-row JSONL, resumable,
+  decisive strata first); `--arm baseline` re-runs the frozen instrument; `--spot-v2 N`
+  re-asks N v2 rows live to check that an archived recording still describes the serving
+  endpoint. `--report` recomputes every table in
+  `docs/rewrite-transfer-2026-11-04.md` from the committed artifacts, with per-class
+  exact McNemar and family-cluster bootstrap intervals, and prints coverage as the set
+  difference rather than as a count. It settled a claim the 150 could not: the
+  description rewrite is **80.5% → 77.3%** out of sample and its headline gain is retired.
 - `distill_transfer.py` — the corpus-trained classifier, frozen, scored on the
   frozen 150 through `eval_harness` (nothing fits on v2, same `frozen` path the
   recorded 3B uses), beside the archived `d1_3B` run and `local_clf`'s cue table,

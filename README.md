@@ -475,9 +475,15 @@ can read as current.
   "leak" recomputes to 0.0 across seeds. The generalisation penalty this model class shows on a
   set that *can* be family-split is **23.5 points** (92.1% → 68.6%).
 
-One further correction is recorded in the file it belongs to: the **74.0% → 82.0%** gain from
-rewriting two op descriptions is **in-sample** and is an upper bound, not an estimate
-([`bench/results/p1-diagnose/FINDINGS.md`](bench/results/p1-diagnose/FINDINGS.md)).
+One correction has now been resolved rather than restated: the **74.0% → 82.0%** gain from
+rewriting two op descriptions was in-sample, and it was run out of sample on
+`heldout_v3.json` — 415 rows the rewrite never saw — where the same two strings score
+**80.5% → 77.3%** (16 fixed, 29 broken, p = 0.0725). The diagnosis holds and the
+`filesys_grep` line transfers (+17.3 points, 9 fixed / 0 broken); the `decide_extract`
+line was fitted to the 150 and the whole edit is net negative. **82.0% is retired as an
+improvement** — [`docs/rewrite-transfer-2026-11-04.md`](docs/rewrite-transfer-2026-11-04.md),
+and the dated correction at the end of
+[`bench/results/p1-diagnose/FINDINGS.md`](bench/results/p1-diagnose/FINDINGS.md).
 
 Full derivations and the per-signal tables: [`docs/eval-harness-2026-11-04.md`](docs/eval-harness-2026-11-04.md).
 Each affected document carries its own dated, appended correction.
