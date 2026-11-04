@@ -1,0 +1,53 @@
+{
+ "arm": "targeted",
+ "n": 2,
+ "agree": 2,
+ "rows": [
+  {
+   "arm": "targeted",
+   "id": "v2:142",
+   "utterance": "before we dump anything, write out the paths it wants",
+   "label": "decide_extract",
+   "choice": "filesys_glob",
+   "correct": false,
+   "conf": 0.6029,
+   "probabilities": {
+    "filesys_read": 0.012028833723336609,
+    "filesys_glob": 0.6525634507152303,
+    "filesys_grep": 0.01216601877618183,
+    "decide_pick": 0.021570347339367517,
+    "decide_extract": 0.28870908696628056,
+    "web_search": 0.005932643379377924,
+    "web_fetch": 0.004228711663361722,
+    "reddit_digest": 0.002800907436863549
+   },
+   "ms": 2377.8,
+   "archived_choice": "filesys_glob",
+   "archived_correct": false,
+   "agrees": true
+  },
+  {
+   "arm": "targeted",
+   "id": "v2:116",
+   "utterance": "files ending in .bak anywhere in the project?",
+   "label": "filesys_glob",
+   "choice": "filesys_glob",
+   "correct": true,
+   "conf": 0.9284,
+   "probabilities": {
+    "filesys_read": 0.0035725046493399536,
+    "filesys_glob": 0.9373241455459078,
+    "filesys_grep": 0.012116914188536113,
+    "decide_pick": 0.0035549473418531007,
+    "decide_extract": 0.035630849082015775,
+    "web_search": 0.004087074465958419,
+    "web_fetch": 0.0018328031026041906,
+    "reddit_digest": 0.0018807616237844782
+   },
+   "ms": 2288.1,
+   "archived_choice": "filesys_glob",
+   "archived_correct": true,
+   "agrees": true
+  }
+ ]
+}

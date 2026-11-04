@@ -1,0 +1,140 @@
+{
+ "v2": {
+  "n": 150,
+  "a": 111,
+  "b": 123,
+  "p": 0.022655844688415527,
+  "fixed": 18,
+  "broke": 6,
+  "delta": {
+   "delta": 0.08,
+   "lo": 0.02,
+   "hi": 0.14,
+   "units": 150,
+   "reps": 4000
+  }
+ },
+ "coverage": {
+  "ran": 102,
+  "planned": 415,
+  "skipped": 313
+ },
+ "v3_all": {
+  "n": 102,
+  "a": 75,
+  "b": 78,
+  "p": 0.548828125,
+  "fixed": 7,
+  "broke": 4,
+  "delta": {
+   "delta": 0.0294,
+   "lo": -0.0652,
+   "hi": 0.1226,
+   "units": 55,
+   "reps": 4000
+  }
+ },
+ "v3_test": {
+  "n": 102,
+  "a": 75,
+  "b": 78,
+  "p": 0.548828125,
+  "fixed": 7,
+  "broke": 4,
+  "delta": {
+   "delta": 0.0294,
+   "lo": -0.0652,
+   "hi": 0.1226,
+   "units": 55,
+   "reps": 4000
+  }
+ },
+ "v3_train": {
+  "n": 0,
+  "a": 0,
+  "b": 0,
+  "p": 1.0,
+  "fixed": 0,
+  "broke": 0,
+  "delta": {
+   "delta": null,
+   "lo": null,
+   "hi": null,
+   "units": 0
+  }
+ },
+ "composition": {
+  "v3_reweighted_baseline": 0.7773,
+  "v3_reweighted_targeted": 0.7741,
+  "weights": {
+   "decide_extract": 24,
+   "decide_pick": 18,
+   "filesys_glob": 21,
+   "filesys_grep": 22,
+   "filesys_read": 17,
+   "reddit_digest": 15,
+   "web_fetch": 15,
+   "web_search": 18
+  }
+ },
+ "v3_targets": {
+  "n": 52,
+  "a": 30,
+  "b": 37,
+  "p": 0.015625,
+  "fixed": 7,
+  "broke": 0,
+  "delta": {
+   "delta": 0.1346,
+   "lo": 0.0303,
+   "hi": 0.2889,
+   "units": 23,
+   "reps": 4000
+  }
+ },
+ "v3_others": {
+  "n": 50,
+  "a": 45,
+  "b": 41,
+  "p": 0.125,
+  "fixed": 0,
+  "broke": 4,
+  "delta": {
+   "delta": -0.08,
+   "lo": -0.2128,
+   "hi": 0.0,
+   "units": 32,
+   "reps": 4000
+  }
+ },
+ "v2_targets": {
+  "n": 46,
+  "a": 14,
+  "b": 30,
+  "p": 0.00014495849609375,
+  "fixed": 17,
+  "broke": 1,
+  "delta": {
+   "delta": 0.3478,
+   "lo": 0.1957,
+   "hi": 0.5,
+   "units": 46,
+   "reps": 4000
+  }
+ },
+ "v2_others": {
+  "n": 104,
+  "a": 97,
+  "b": 93,
+  "p": 0.21875,
+  "fixed": 1,
+  "broke": 5,
+  "delta": {
+   "delta": -0.0385,
+   "lo": -0.0865,
+   "hi": 0.0,
+   "units": 104,
+   "reps": 4000
+  }
+ }
+}
