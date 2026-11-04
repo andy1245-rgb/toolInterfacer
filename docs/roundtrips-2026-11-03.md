@@ -72,6 +72,21 @@ runs the CLI in — so it is not a comparison; it is recorded and excluded from 
 artefact: a grep intent was answered as a file read, so B returned a file reference where A
 returned grep hits.
 
+**Provenance of the recorded JSON (2026-11-04).** The project directory in the `l2_reddit`
+paragraph is a placeholder, not what the bench printed. The run recorded one literal project
+directory two levels down inside a `Documents` tree and one directly under `$HOME`; both
+were replaced by `$HOME/Documents/<private-project>/<project>` and `$HOME/<project>` in both
+replays, three occurrences each, so a recorded error still shows *which candidates the op
+tried* without showing where. Those are rules 5 and 6 of the six-rule reverse table in
+[`tests/data/routing_382_PROVENANCE.md`](../tests/data/routing_382_PROVENANCE.md); rules 1–4
+are that file's dataset substitution, which touched project names and never reached these
+two files. With all six applied,
+`bench/results/roundtrips-2026-11-03.json` and
+`bench/results/repro2-roundtrips-2026-11-03.json` reverse to their pre-change bytes exactly —
+the other five files in that provenance's enumeration do too — and their digests before and
+after are recorded there. Nothing else in either file moved: no task, no hop, no ms figure,
+and no number in this document changed (the two are −126 B each, which is the only delta).
+
 ## Where the crossover is
 
 `A = round_trips_A x p + tool_ms_A`, `B = round_trips_B x p + service_ms_B`, with

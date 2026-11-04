@@ -31,8 +31,11 @@ night's plan and is not rewritten.)*
 - The pair-vs-hosted experiment is measured (`docs/decision-pair-vs-hosted.md`,
   n=30, pair 90.0% / 3118 ms p50, openrouter 93.3% / 827 ms p50, McNemar p=1.000).
   The shipped default stays `pair` for availability, not for latency.
-- `service/logs/hops.jsonl` holds 1202 hop records; how many are *trainable
-  decision records* rather than execution trace is unknown and is being counted.
+- The hop log held 1202 hop records *(that night's reading, from the then-default
+  `service/logs/hops.jsonl`; capture is opt-in now and writes to
+  `~/.local/state/ti/logs/hops.jsonl`, so a fresh clone starts empty)*; how many are
+  *trainable decision records* rather than execution trace is unknown and is being
+  counted.
 
 ## Phases
 

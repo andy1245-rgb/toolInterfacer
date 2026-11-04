@@ -116,7 +116,7 @@ Dell-side driver (new files, this run): `qdiag.py`
 (config-in-json pyhost; fd-redirect gives full load/offload lines at `-lv 5`),
 `qdiag_b10.py` (same, pointed at the b11510 engine dir), plus
 `qdiag_config.json` / `qdiag.log` state and `mkrexe.py` (AV-safe carve of
-exes from the zips into toolInterfacerLab; used for E-exe-1 and the rpc
+exes from the zips into the lab dir; used for E-exe-1 and the rpc
 server test). Local repo copy: `bench/pyhost_qwen35.py`.
 
 Acceptance bar not met: best qwen3.5-4B lane p50 measured ≈1100 ms (probe
@@ -129,4 +129,4 @@ rpcsrv/llama processes running. AV consumed the treated exes
 (`d1srv_fix.exe`, `rpcsrv_fix.exe`, `serve_fix.cmd`, `rpc_launch.cmd`) per
 the known-§7.2 pattern; the retained diagnostics (`qdiag.py`, `qdiag_b10.py`,
 `mkrexe.py`, `mkrpc.cmd`, `qdiag_config.json`, `logs/qdiag.log`) sit in
-`toolInterfacerLab/`.
+the lab dir.

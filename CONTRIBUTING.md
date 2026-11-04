@@ -35,9 +35,14 @@ variable, a `~`-relative default, a repo-relative path, or a `<placeholder>`.
 
 `tests/test_no_personal_paths.py` scans the tree and fails the suite if one
 appears. The fix is always to parameterise the path, never to add an exception.
-Two trees are skipped by path, on purpose: `extern/` (vendored) and
-`service/logs/` (runtime output); generated trees are skipped by directory name
-(`node_modules`, `__pycache__`, `.venv`, `.git`, `build`, `build-vk`).
+Two trees are skipped by path, on purpose: `extern/` (vendored) and `service/logs/`.
+Generated trees are skipped by directory name (`node_modules`, `__pycache__`,
+`.venv`, `.git`, `build`, `build-vk`). `service/logs/` is a leftover of the
+pre-opt-in layout — the guard still skips it and `.gitignore` still names it, but
+nothing writes there any more: runtime output is off by default and, when you turn
+it on, lands in `~/.local/state/ti/logs/`, outside the tree, so the guard never
+reaches it. A pre-opt-in clone can still hold files there; that is what the skip is
+for now.
 `bench/results/` used to be exempt and is not any more: the recorded model paths
 are redacted to `$HOME/` and `C:\Users\<user>`, and the basenames that prove the
 phantom-lane point are kept, so the evidence is still guarded.
