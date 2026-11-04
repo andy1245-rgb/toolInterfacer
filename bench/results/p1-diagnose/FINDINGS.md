@@ -296,3 +296,44 @@ accuracy.
 `docs/eval-harness-2026-11-04.md` §1–§2 (the atomic-row fraction and the three
 failed family-reconstruction routes), §4 (the row-versus-family gap for every
 signal on this set), §6 ("Not settled").
+
+---
+
+## Correction — 2026-11-04 (second): the rewrite was run out of sample, and it fails
+
+The first correction said a held-out validation was running on another track and
+that this file holds no held-out number. It has one now.
+`docs/rewrite-transfer-2026-11-04.md` applies `TARGETED` **unchanged** to
+`bench/data/heldout_v3.json` — 415 rows, 133 families, authored after these two
+strings were written — with the archived v2 run as the in-sample reference.
+
+| set | n | baseline | targeted | fixed / broken | exact McNemar |
+|---|---:|---|---|---|---:|
+| v2 (in-sample, §3 above) | 150 | 74.0% | 82.0% | 18 / 6 | 0.0227 |
+| **v3, all rows** | **415** | **80.5%** | **77.3%** | **16 / 29** | **0.0725** |
+| v3, test side | 207 | 81.6% | 79.7% | 7 / 11 | 0.4807 |
+| v3, the two rewritten classes | 103 | 54.4% | 68.0% | 16 / 2 | **0.0013** |
+| v3, the six untouched classes | 312 | 89.1% | 80.5% | 0 / 27 | **< 0.0001** |
+
+**The 82.0% does not generalise and must not be quoted as an improvement.** The
+mechanism in §1–§2 stands and the `filesys_grep` line transfers on its own
+(+17.3 pts, 9 fixed / 0 broken, p = 0.0039), but `decide_extract`'s +54.2 falls to
++9.8 (p = 0.18) out of sample, and the edit breaks 27 rows in the six classes it
+does not touch — 20 of them by turning `decide_extract` into a sink for
+question-shaped utterances. Net: −3.1 points over 415 rows.
+
+Two specific claims above are retired with it:
+
+- **§3's "the rewrite must not be applied to all eight descriptions" implied that
+  changing two would avoid the equilibrium shift.** It does not. Editing two
+  descriptions re-normalises the other six: 10 broken rows are two
+  `reddit_digest` families that moved to `web_search` and `decide_extract`
+  although neither description was touched.
+- **§6's residual lever** (`filesys_grep → web_fetch`, 0 of 6 on v2) is not
+  exercised by v3 at all: v3's grep families contain no package-noun frames. What
+  v3 does show is that the grep line fixes the *other* families strongly enough to
+  be significant on held-out phrasing.
+
+§3's tables and per-row artifacts are unchanged and still re-derive exactly
+(`python3 bench/routing_diagnose.py --report`). What changed is their status: they
+are the in-sample fit, and the out-of-sample measurement is now on record.

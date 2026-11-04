@@ -15,57 +15,58 @@
   }
  },
  "coverage": {
-  "ran": 102,
+  "ran": 415,
   "planned": 415,
-  "skipped": 313
+  "skipped": 0
  },
  "v3_all": {
-  "n": 102,
-  "a": 75,
-  "b": 78,
-  "p": 0.548828125,
-  "fixed": 7,
-  "broke": 4,
+  "n": 415,
+  "a": 334,
+  "b": 321,
+  "p": 0.07245426016254441,
+  "fixed": 16,
+  "broke": 29,
   "delta": {
-   "delta": 0.0294,
-   "lo": -0.0652,
-   "hi": 0.1226,
-   "units": 55,
+   "delta": -0.0313,
+   "lo": -0.0851,
+   "hi": 0.019,
+   "units": 133,
    "reps": 4000
   }
  },
  "v3_test": {
-  "n": 102,
-  "a": 75,
-  "b": 78,
-  "p": 0.548828125,
+  "n": 207,
+  "a": 169,
+  "b": 165,
+  "p": 0.480682373046875,
   "fixed": 7,
-  "broke": 4,
+  "broke": 11,
   "delta": {
-   "delta": 0.0294,
-   "lo": -0.0652,
-   "hi": 0.1226,
-   "units": 55,
+   "delta": -0.0193,
+   "lo": -0.0841,
+   "hi": 0.0427,
+   "units": 68,
    "reps": 4000
   }
  },
  "v3_train": {
-  "n": 0,
-  "a": 0,
-  "b": 0,
-  "p": 1.0,
-  "fixed": 0,
-  "broke": 0,
+  "n": 208,
+  "a": 165,
+  "b": 156,
+  "p": 0.12207812070846558,
+  "fixed": 9,
+  "broke": 18,
   "delta": {
-   "delta": null,
-   "lo": null,
-   "hi": null,
-   "units": 0
+   "delta": -0.0433,
+   "lo": -0.1286,
+   "hi": 0.0386,
+   "units": 65,
+   "reps": 4000
   }
  },
  "composition": {
-  "v3_reweighted_baseline": 0.7773,
-  "v3_reweighted_targeted": 0.7741,
+  "v3_reweighted_baseline": 0.7822,
+  "v3_reweighted_targeted": 0.7652,
   "weights": {
    "decide_extract": 24,
    "decide_pick": 18,
@@ -78,32 +79,32 @@
   }
  },
  "v3_targets": {
-  "n": 52,
-  "a": 30,
-  "b": 37,
-  "p": 0.015625,
-  "fixed": 7,
-  "broke": 0,
+  "n": 103,
+  "a": 56,
+  "b": 70,
+  "p": 0.001312255859375,
+  "fixed": 16,
+  "broke": 2,
   "delta": {
-   "delta": 0.1346,
-   "lo": 0.0303,
-   "hi": 0.2889,
-   "units": 23,
+   "delta": 0.1359,
+   "lo": 0.0345,
+   "hi": 0.2556,
+   "units": 44,
    "reps": 4000
   }
  },
  "v3_others": {
-  "n": 50,
-  "a": 45,
-  "b": 41,
-  "p": 0.125,
+  "n": 312,
+  "a": 278,
+  "b": 251,
+  "p": 1.4901161193847656e-08,
   "fixed": 0,
-  "broke": 4,
+  "broke": 27,
   "delta": {
-   "delta": -0.08,
-   "lo": -0.2128,
-   "hi": 0.0,
-   "units": 32,
+   "delta": -0.0865,
+   "lo": -0.1424,
+   "hi": -0.0404,
+   "units": 89,
    "reps": 4000
   }
  },

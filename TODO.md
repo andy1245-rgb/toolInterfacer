@@ -83,6 +83,17 @@ Routing accuracy is worth nothing until this is fixed.
       vs 25.0%, `filesys_grep` 63.6% vs 36.4%) and loses `web_search` 38.9% vs 100%. Not
       shipped. Recipe at `data/distill/clf_recipe.json`, report at
       `docs/distill-classifier-2026-11-04.md`.
+- [x] **Score the op-description rewrite out of sample, before shipping it.** Done, and it
+      fails: `TARGETED` unchanged on `heldout_v3.json` (415 rows, authored after the two
+      strings were written) is **80.5% → 77.3%**, 16 fixed / 29 broken, exact McNemar
+      p = 0.0725 — against the in-sample 74.0% → 82.0%. The two classes it targets do
+      gain (+13.6 pts, p = 0.0013), but 20 of the 29 broken rows are one side effect:
+      `decide_extract`'s new text claims questions, so it absorbs rows owned by six other
+      labels. `filesys_grep`'s line alone transfers (+17.3 pts, 9/0, p = 0.0039); the
+      extract line was fitted to the 150. **82.0% is retired as an improvement**, and any
+      further description edit is measured on v3-test with the paired protocol before it
+      is believed. Report at `docs/rewrite-transfer-2026-11-04.md`, probe at
+      `bench/rewrite_transfer.py`.
 - [ ] **Give the corpus a split that holds slot values out.** The reason the arm above is
       negative is not only the label bands: family-held-out CV ranks seven candidates
       **backwards** against transfer (Spearman ρ = −0.71, `docs/distill-classifier-2026-11-04.md`
