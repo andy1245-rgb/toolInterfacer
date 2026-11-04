@@ -122,7 +122,7 @@ Verified by running it, not by reading the spec:
 | `pair` (local, escalating to hosted) and `openrouter` | implemented and measured by the author; running them needs a local llama.cpp server, and the hosted stage needs `TI_OPENROUTER_API_KEY` — [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md) |
 | Bounded decision state (structural, not conventional) | works — `session_digest.sanitize` projects each digest turn onto `{role, summary, mentions}` and each antecedent onto `{phrase, resolved}`, keeps the last 8 of each and clips every string that survives (240 chars per turn, 6 mentions, 1024 per path, `cwd` included), so a key the shape does not list is dropped rather than forwarded; `context.packer` is the backstop, stubbing the digest if the decide state still exceeds `conf.context.state_max_tokens` |
 | pi extension: `useTool`, `/ti` command, service spawn on session start | complete — `npm ci && npx tsc --noEmit` exits 0, and `contract-check` passes every schema case plus the live leg against a stub service on a loopback port; the case counts and the case-by-case enumeration live in [`pi-extension/README.md`](pi-extension/README.md) |
-| Test suite | **847 tests, 579 subtests**, no network, no model. This row is the only place the current count is written — every other document links here, tells you to run `pytest`, or states a floor (`700+`), so a track that adds tests edits one line |
+| Test suite | **850 tests, 579 subtests**, no network, no model. This row is the only place the current count is written — every other document links here, tells you to run `pytest`, or states a floor (`700+`), so a track that adds tests edits one line |
 
 ### Honest gaps
 
