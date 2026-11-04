@@ -50,7 +50,12 @@ decides whether it is good enough.
 A stage that produces nothing (None, an answer with no choice, one with no
 probabilities, or — for stage1 — one probability where a distribution was
 needed) produced no decision and is treated as a stage error: None must never
-reach ops/decisions.run_pick. When neither stage produces one, choice() raises.
+reach ops/decisions.run_pick. When neither stage produces one, choice() raises
+a RuntimeError whose message names what each configured stage needs before it
+can answer, and the offline way out, because a fresh install meets exactly this
+path (RELEASE.md §8) and "no stage produced a choice" alone tells it nothing to
+do. Both stage errors travel in the same message; the DEBUG line keeps carrying
+them for a run that has logging on.
 
 ``noul`` has no p_max — one probability for one question is not a distribution
 over candidates — so tau does not apply to it and it never escalates on a
@@ -198,7 +203,7 @@ class PairBackend(DecideBackend):
             both = "; ".join(part for part in (detail, f"stage2: {exc}") if part)
             if stage1 is None:
                 self._record("", STAGE2_ERROR, escalated=True, detail=both)
-                raise RuntimeError("pair: no stage produced a choice") from exc
+                raise RuntimeError(_no_choice_message(self._stages, both)) from exc
             self._record(STAGE1, STAGE2_ERROR, escalated=True, detail=both)
             return stage1
         self._record(STAGE2, reason, escalated=True, detail=detail)
@@ -219,6 +224,59 @@ class PairBackend(DecideBackend):
         log.debug("pair: stage=%s escalated=%s reason=%s stage1_p_max=%.3f%s",
                   stage or "-", escalated, reason, self._last_stage1_conf,
                   f" ({detail})" if detail else "")
+
+
+# What a stage needs before it can answer at all, by the name decide.pair.stage1 /
+# .stage2 uses. A name this map does not know gets no prerequisite sentence: a stage
+# swapped in by config must not be handed a requirement it may not have, and its own
+# error still travels in the message.
+_STAGE_NEEDS = {
+    "d1_systemone": ("d1_systemone", "a llama.cpp server serving d1 at "),
+    "logit_read": ("logit_read", "a llama.cpp server serving the logit model at "),
+}
+
+# The deciding backends that need no server and no key: the way out of the failure.
+OFFLINE_CHOICE = ("heuristic_micro", "classical")
+
+
+def _block(name: str) -> dict[str, Any]:
+    """One decide.<name> config block (load() hands out the shared cache)."""
+    from ..conf import load
+    return dict((load().get("decide") or {}).get(name) or {})
+
+
+def _stage_need(position: str, stage: DecideBackend) -> str:
+    """What `stage` needs before it can answer, or "" when this file cannot say."""
+    kind = str(getattr(stage, "name", "") or "")
+    llama = _STAGE_NEEDS.get(kind)
+    if llama is not None:
+        block, phrasing = llama
+        url = _block(block).get("base_url")
+        return (f"{position} ({kind}) needs {phrasing}decide.{block}.base_url"
+                + (f" = {url}" if url else ""))
+    if kind == "openrouter":
+        env = str(_block("openrouter").get("key_env") or "TI_OPENROUTER_API_KEY")
+        return (f"{position} ({kind}) needs decide.openrouter.key_env = {env} in "
+                f"the environment")
+    return ""
+
+
+def _no_choice_message(stages: Sequence[DecideBackend], detail: str) -> str:
+    """The failure, plus what a fresh install has to change to get past it.
+
+    `detail` is the per-stage error text, which used to reach log.debug alone while
+    the caller got a sentence it could not act on (docs/audit-2026-11-03.md row 4).
+    """
+    needs = [need for need in (_stage_need(position, stage)
+                               for position, stage in zip((STAGE1, STAGE2), stages)) if need]
+    message = "pair: no stage produced a choice"
+    if needs:
+        message += ". " + "; ".join(needs)
+    message += (". For a decision with no server and no key, set "
+                "decide.backends_in_use.choice to "
+                + " or ".join(OFFLINE_CHOICE)
+                + " (docs/decision-pair-vs-hosted.md)")
+    return f"{message}. Stage errors: {detail}" if detail else message
 
 
 def _configured_stages(cfg: dict[str, Any]) -> list[DecideBackend]:

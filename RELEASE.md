@@ -129,6 +129,32 @@ print(f"{wheel}: {len(shipped)} entries, {sum(x.endswith('.py') for x in shipped
 PY
 ```
 
+And that the sdist carries the tree §8 says it does — contents asserted rather than
+assumed, then the suite and the offline harness actually run from the unpacked copy,
+because "a distribution can retest from it" is a claim that rots the moment a test reads a
+file the manifest does not ship:
+
+```sh
+python3 - <<'PY'
+import glob, tarfile
+sdist = glob.glob("dist/*.tar.gz")[0]
+tar = tarfile.open(sdist)
+names = tar.getnames()
+prefix = names[0].split("/")[0] + "/"
+for required in ("tests/test_pair.py", "tests/data/utterances.json", "bench/run.py",
+                 "bench/demo.py", "docs/ops.md", "MANIFEST.in"):
+    assert prefix + required in names, required
+assert not any("__pycache__" in n or n.endswith(".pyc") for n in names), "bytecode shipped"
+print(f"{sdist}: {len(names)} entries")
+# 0.1.0: NNN entries — the number is measured, not remembered
+PY
+
+rm -rf /tmp/sdistcheck && mkdir /tmp/sdistcheck
+tar xzf dist/*.tar.gz -C /tmp/sdistcheck --strip-components=1
+(cd /tmp/sdistcheck && python3 -m pytest tests/ -q && python3 bench/run.py selftest \
+   && python3 bench/demo.py > /dev/null && echo "sdist retests green")
+```
+
 And that the console script works from the wheel, with nowhere to fetch a dependency:
 
 ```sh
@@ -288,8 +314,14 @@ the CHANGELOG in the next commit so it does not disagree with what was published
 - **The pi extension does not go to npm.** It is installed from source
   (`cd pi-extension && npm ci`); `pi-extension/` is not in the wheel and should not be.
 - **`bench/`, `tests/` and `docs/` are not installed** by `pip install toolinterfacer`.
-  They ship in the **sdist**, so a distribution can rebuild and retest from it — but a
-  wheel install gives you the `ti` package and `ti-serve`, nothing else.
+  They ship in the **sdist**, which carries the tree they run against — `tests/data/`, the
+  two `bench/results/` artifacts the suite pins, `tools/`, `demo/`, `pi-extension/src/` —
+  so a distribution can retest from it: unpack, `pip install -e ".[dev]"`, and
+  `python3 -m pytest tests/ -q`, `bench/run.py selftest` and `bench/demo.py` all run
+  offline, from the unpacked directory, with no network and no model. What the sdist does
+  **not** buy is the numbers: reproducing the measurements in `docs/` additionally needs
+  the llama.cpp server and the CLIs the next bullet lists. A wheel install gives you the
+  `ti` package and `ti-serve`, nothing else.
 - **No model and no CLI is vendored.** `d1_systemone` and `logit_read` need a llama.cpp
   server; `web_search`, `web_fetch` and `reddit_digest` need the scripts named in
   `service/ti/conf/defaults.json`. A fresh install answers `/health` and L0 file

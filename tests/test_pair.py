@@ -217,6 +217,35 @@ class HardFallbackTest(unittest.TestCase):
         self.assertIn("no stage produced a choice", str(ctx.exception))
         self.assertEqual((pair.last_stage, pair.last_reason), ("", STAGE2_ERROR))
 
+    def test_the_failure_names_what_a_fresh_install_must_set(self):
+        """The composed stage detail used to reach log.debug and nothing else.
+
+        A machine with no llama.cpp server and no hosted key is the state RELEASE.md
+        §8 says a fresh install is in, so the one message it gets has to name the
+        keys rather than stopping at "no stage produced a choice"
+        (docs/audit-2026-11-03.md row 4).
+        """
+        stage1 = _Stage("d1_systemone", error=_Boom("d1 down"))
+        stage2 = _Stage("openrouter", error=_Boom("hosted down"))
+        with self.assertRaises(RuntimeError) as ctx:
+            _pair(stage1, stage2).choice(STATE, INSTRUCTION, CRITERIA)
+        for fragment in ("decide.d1_systemone.base_url", "decide.openrouter.key_env",
+                         "TI_OPENROUTER_API_KEY", "decide.backends_in_use.choice",
+                         "heuristic_micro", "stage1: d1 down", "stage2: hosted down"):
+            with self.subTest(fragment=fragment):
+                self.assertIn(fragment, str(ctx.exception))
+
+    def test_an_undescribed_stage_gets_no_invented_prerequisite(self):
+        """A stage a pair was configured with by hand is left to its own error."""
+        stage1 = _Stage("some_future_backend", error=_Boom("down"))
+        stage2 = _Stage("another_backend", error=_Boom("down too"))
+        with self.assertRaises(RuntimeError) as ctx:
+            _pair(stage1, stage2).choice(STATE, INSTRUCTION, CRITERIA)
+        message = str(ctx.exception)
+        self.assertNotIn("llama.cpp", message)
+        self.assertNotIn("TI_OPENROUTER_API_KEY", message)
+        self.assertIn("stage1: down", message)
+
 
 class DegradedStage2Test(unittest.TestCase):
     """Rule 5: a failed escalation must not turn a usable answer into an error."""
