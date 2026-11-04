@@ -13,6 +13,13 @@ Scope: `README.md`, `ARCHITECTURE.md`, `TODO.md`, `CONTRIBUTING.md`, `CHANGELOG.
 illustration of the defect under discussion and is not resolvable by a reader; every finding,
 command and result below is as recorded at `main @ a105d50`.
 
+**Edit — 2026-11-04: one private path abstracted.** `:53` quoted a `docs/ops.md` default as a
+path under the home root, and that path named a private tree. It now reads
+`~/<sibling-project>/devskills` — the placeholder `docs/pre-publish-audit.md` uses for the same
+shape, standing for any private project directory under the home root and not resolvable for a
+reader. What the row is about is unchanged: the real default is repo-relative
+(`ROOT/tests/data/devskills`), the two tests run and pass, and they do not skip.
+
 ---
 
 ## Verdict
@@ -50,7 +57,7 @@ own guarantee", all fixed, none marked superseded, and none reachable by a link.
 | `bench/replay.py:2-4` | docstring: "Runs a plan (fixture decide backend, zero network)" | Same as above — the fixture backend is only used when `TI_CONF_OVERLAY` points `decide.backends_in_use.choice` at it | `bench/replay.py:38-41` reads the configured backend via `load()` |
 | `bench/README.md:60` | "`baseline.py` (P4) — scripted LLM-driver baseline for the research template comparison" | No such file; `bench/` has no `baseline.py` | `ls bench/` |
 | `docs/testing.md:63-70` | Presents `bench/live_e2e.py --serve` as how you "prove the wire" | The probe sends no token (`headers = {"Content-Type": "application/json"}`) and every POST is refused 401, so all four cases fail | `bench/live_e2e.py:104`; `docs/live-e2e-2026-11-03.md:377-397` records `0/4 cases passed`, `HTTP 401` |
-| `docs/ops.md:209-210` | "Two tests replay the recorded devskills fixtures … (`TI_DEVSKILLS_FIXTURES`, default `~/<private-tree>/devskills`); they skip when that tree is absent" | The default is repo-relative and ships: `ROOT/tests/data/devskills`. The two tests run and pass; they do not skip | `tests/test_ops_web.py:30-34`; `pytest tests/test_ops_web.py -k recorded -v` → `2 passed` |
+| `docs/ops.md:209-210` | "Two tests replay the recorded devskills fixtures … (`TI_DEVSKILLS_FIXTURES`, default `~/<sibling-project>/devskills`); they skip when that tree is absent" | The default is repo-relative and ships: `ROOT/tests/data/devskills`. The two tests run and pass; they do not skip | `tests/test_ops_web.py:30-34`; `pytest tests/test_ops_web.py -k recorded -v` → `2 passed` |
 | `docs/live-e2e-2026-11-03.md:349-351` | "`pi-extension/node_modules` is a symlink to pi's own install tree …, as the extension README documents" | The extension README says the opposite: "do not symlink it to pi's own install tree — that would bypass the pinned versions" | `pi-extension/README.md:136-139` |
 | `docs/live-e2e-2026-11-03.md:337` | `node scripts/contract-check.ts` → "10/10 contract cases passed" | 11 static cases (`console.log(cases.length - failed / cases.length)`); 10 is the *stub* total (`served.size + 3`) | `pi-extension/scripts/contract-check.ts:29-121,136,249`; `pi-extension/README.md:132` says 11/11 |
 | `README.md:312-314` | CI "builds the wheel, asserting the four service modules it names — `ti/http/api.py`, `ti/decide/resolve.py`, `ti/ops/op_api.py`, `ti/conf/defaults.json` — are inside it" | CI names no modules: it asserts the whole `service/ti` file set is present with no strays, plus `defaults.json` | `.github/workflows/ci.yml:106-128` |

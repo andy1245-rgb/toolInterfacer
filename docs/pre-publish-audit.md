@@ -27,9 +27,18 @@ rewritten, but naming unrelated private projects was never what the findings nee
 2026-11-04, here and in the other dated docs, a sibling project is now *a sibling project* in
 prose and `<sibling-project>` inside a path, a list of private tree names is now their count, and
 two characterisations of unrelated private work are now described only as characterisations. No
-finding, count, command output or verdict changed. The attribution row in §4 that names its
-sources for imported data is untouched on purpose: removing it would leave the import
-unattributable.
+finding, count, command output or verdict changed. The attribution row in §4 for imported data
+is kept on purpose: removing it would leave the import unattributable. Its wording is corrected
+in the note below, because the names it reprinted were removed from the dataset the same night.
+
+**Edit — 2026-11-04: three index claims corrected in place.** The dated analysis here is still
+unrewritten, but three of its items are not analysis: an attribution row, a document pointer and
+a digest claim, each of which a reader acts on directly, and a correction appended two hundred
+lines below travels with none of them. §4's attribution row, §4's `docs/roadmap-2026-11.md`
+pointer and §5's "byte-identical" sentence now say what is true of this tree; the correction
+appended at the end of this document still records what moved them and why. The two private
+project names that row used to reprint are gone from this file, including from the appended
+correction's heading and first bullet, which had reproduced them while reporting their removal.
 
 The repo's own convention (`CONTRIBUTING.md:31`, `docs/testing.md:35`) is that personal
 absolute paths are written as `<placeholder>`, so this report does the same: the literal
@@ -315,8 +324,8 @@ Given that, the remaining disclosures are about **machine and projects**, not pe
 | A sibling project given a substantive characterisation of what it does | `docs/assets-inventory.md:62` | **accidental** — a characterisation of unrelated private work |
 | A sibling project described as a small research sweep, with a dated `RESEARCH_…` filename | `docs/assets-inventory.md:63` | accidental |
 | Byte sizes of private checkpoints/adapters (242,047,978 B; 35,335,380 B; LoRA exports at 15.4/27.4/63.4 MB) | `docs/assets-inventory.md:41-44` | accidental — unnecessary detail for a case study |
-| A checkout of a web portal project as a future data source | `docs/roadmap-2026-11.md:77` | **deliberate** — one line in a roadmap, no private detail |
-| `localAlexa` / `jevResearch` provenance for imported data | `tests/data/routing_382_PROVENANCE.md:9` | **deliberate and correct** — this is attribution for imported data, and should stay |
+| A checkout of a web portal project as a future data source | `docs/roadmap-2026-11.md:102` (`:77` at the audit commit) | **deliberate** — one line in a roadmap, no private detail |
+| Provenance for imported data — origin, generator, byte sizes, and sha256 digests for the source, for what was imported and for what ships | `tests/data/routing_382_PROVENANCE.md:12-32`, digests `:104-112` | **deliberate and correct** — this is attribution for imported data, and it should stay. It is recorded by digest and by an origin description ("a private sibling benchmark tree") rather than by project name, which is the form a public repo can carry |
 | Hostname `<host>` as env-var prefix | `bench/lane.env.example:7-16`, `bench/lane.sh:25-32` | deliberate anonymisation that stops one step short (machine called "bench-host" in prose) |
 | Hardware: Intel Arc 140V iGPU, `-ngl 99`, Python 3.10.12 | `README.md:347`, `docs/classical-baseline-2026-11-03.md:28` | deliberate — it is the measurement context, and a reader needs it |
 | Canada (Ubuntu `ca.archive.ubuntu.com` mirror) + `-0400`/`-0500` commit offsets | `docs/vulkan-igpu-2026-11-03.md:78` | accidental, low value: timezone is in every commit anyway |
@@ -368,10 +377,13 @@ fingerprint machinery exists. That is an API-fidelity claim to keep honest, not 
 problem to fix.
 
 **Imported data has attribution.** `tests/data/routing_382.json` and `bench/registry_382.json`
-are byte-identical copies from a sibling project, with sha256 digests and the origin
-recorded in `tests/data/routing_382_PROVENANCE.md:1-29`. That is the owner's own prior work,
-so no third-party licence is implicated — but the provenance record is the thing that makes
-the claim auditable, and it should stay.
+were byte-identical copies from a sibling project **when imported** on 2026-11-03, and they are
+not any more: four tokens of the `projects_query` slot vocabulary were rewritten on 2026-11-04,
+so `7c91fa06…`/`7408ef5a…` are the imported digests and `dc63af16…`/`ec27371a…` are what ships.
+The origin is recorded at `tests/data/routing_382_PROVENANCE.md:12-21`, the import and shipping
+digests at `:25-32` and `:104-112`, and the edit itself at `:40-70`. That is the owner's own
+prior work, so no third-party licence is implicated — but the provenance record is the thing
+that makes the claim auditable, and it should stay.
 
 ---
 
@@ -549,9 +561,11 @@ them.
 
 ## Correction — appended 2026-11-04: two rows went stale with the dataset
 
-*Appended. Nothing above has been rewritten: §4's table and §5's attribution paragraph
-were accurate when measured and are not accurate now. This section says which two rows
-moved, what moved them, and what a reader should substitute.*
+*Appended. §4's table and §5's attribution paragraph were accurate when measured and were
+not accurate when this section was written. Both have since been substituted in place — see the
+second edit note at the top of this document — because a reader acts on that row and on that
+digest claim directly, and a correction down here travels with neither. This section keeps the
+record of what moved them and why.*
 
 **What changed.** The four private project names in the `projects_query` slot vocabulary
 were replaced with neutral names of the same shape, across `tests/data/routing_382.json`,
@@ -561,19 +575,19 @@ record the substitution as a documented exception, with the digests for the sour
 what was imported, and for what ships. That rewriting is what invalidated the two rows —
 not a change in the findings, and not a change in the data's shape.
 
-### §4's attribution row ("`localAlexa` / `jevResearch` provenance for imported data")
+### §4's attribution row (the provenance row for imported data)
 
-Two things about that row are now wrong, and one thing is still right.
+Two things about that row were wrong, and one thing is still right.
 
-- **The names are gone.** `localAlexa` and `jevResearch` now occur exactly once in the
-  repository: in that row, which records them. `git grep -n 'localAlexa\|jevResearch'`
-  returned ten files before the substitution and returns this document alone after it.
-  The row is now the last place either name survives, which is the opposite of the
-  attribution it was praising.
+- **The names are gone.** The two private project names the row used to reprint occurred in ten
+  files before the substitution and in none after it. That row was the last place either one
+  survived in plaintext — the opposite of the attribution it was praising. It prints neither
+  now, and neither does this note: the row describes the record by its shape instead.
 - **The citation no longer lands.** `tests/data/routing_382_PROVENANCE.md:9` used to be
   the blank line just above the `## Origin` table. The file now opens with a paragraph
   documenting the exception, so line 9 sits mid-sentence in it. The provenance *record*
-  is still there and is now larger.
+  is still there and is now larger; the row cites it as `:12-32` for the origin and the
+  import, with the digest record at `:104-112`.
 - **The judgement stands.** Attribution for imported data is still deliberate, and still
   should stay. What the substitution changed is that the attribution now describes four
   tokens by fingerprint instead of by name: `PROVENANCE.md` would have had to quote the
@@ -581,10 +595,10 @@ Two things about that row are now wrong, and one thing is still right.
   `sha256(bytes)[:12]`, a length, and the neutral name that replaced each one. Anyone
   holding the source tree can still check all four.
 
-Substitute this for the row's "where" and "my read": the provenance record for the
-imported set is `tests/data/routing_382_PROVENANCE.md`, its 2026-11-04 exception section
-is the part that matters, and it is deliberate and correct *and now abstracted* — the
-four names were removed from it in the same pass.
+The row now reads what a reader should substitute: the provenance record for the imported
+set is `tests/data/routing_382_PROVENANCE.md`, its 2026-11-04 exception section is the part
+that matters, and it is deliberate and correct *and now abstracted* — the four names were
+removed from it in the same pass.
 
 ### §5's "Imported data has attribution" paragraph
 
@@ -622,4 +636,4 @@ every recorded number intact; the pre- and post-substitution digests are both in
 **Neither correction changes a verdict.** §5's conclusion — imported data carries
 attribution, and the provenance record is what makes the claim auditable — is unaffected;
 the record got stronger, and the only thing that weakened is a byte claim that was true
-on 2026-11-03 and is not true of the bytes that ship.
+on 2026-11-03 and is not true of the bytes that ship. §5's paragraph now says that itself.

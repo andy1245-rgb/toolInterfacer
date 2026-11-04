@@ -18,6 +18,12 @@ run), `igpu-vulkan-throughput-2026-11-03.json`, `igpu-vulkan-liveprobe-cpu-2026-
 (canonical probe, CPU arm), `igpu-vulkan-freshserver-retest10-2026-11-03.json`
 (the server-state check in "One thing that went wrong").
 
+**Edit — 2026-11-04: one platform name abstracted.** The box table, the memory finding and the
+first caveat named the platform the two resident VMs were running on; they say "two VMs" now.
+The platform belongs to an unrelated private workload and is not what any of those three
+sentences needs. The load confound they rest on — two guests were resident and holding shared
+memory — is unchanged, as are every measurement, delta and conclusion below.
+
 ## Box
 
 | | |
