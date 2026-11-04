@@ -22,6 +22,15 @@ most likely did not intend to hand to a stranger. Both are inventory, not judgem
 the shapes that leak and are not resolvable by a reader. Every finding, count and command output
 below is as recorded at the audited commit.
 
+**Edit — 2026-11-04: private names abstracted.** This document is dated and its analysis is not
+rewritten, but naming unrelated private projects was never what the findings needed. On
+2026-11-04, here and in the other dated docs, a sibling project is now *a sibling project* in
+prose and `<sibling-project>` inside a path, a list of private tree names is now their count, and
+two characterisations of unrelated private work are now described only as characterisations. No
+finding, count, command output or verdict changed. The attribution row in §4 that names its
+sources for imported data is untouched on purpose: removing it would leave the import
+unattributable.
+
 The repo's own convention (`CONTRIBUTING.md:31`, `docs/testing.md:35`) is that personal
 absolute paths are written as `<placeholder>`, so this report does the same: the literal
 under discussion is `/home/<user>`, where `<user>` is the account name that appears in
@@ -122,14 +131,14 @@ From the history alone, not from any single file:
   committed blob — not a placeholder.
   This is the single most informative historical artefact — one line gives the account name,
   the directory convention and the sibling-project path.
-- **Sibling project names in the history**, even where HEAD redacts them:
-  `PersonalCodingProjects`, `jevResearch`, `localAlexa`, `d1bench`.
+- **Sibling project names in the history**, even where HEAD redacts them: four of them, in the
+  committed trees.
 
 HEAD redacts the Windows user to `C:\Users\<user>` but leaves the rest of the path, so the
 **directory structure remains visible at HEAD** in **41 tracked files under `bench/`** (40
 result JSONs under `bench/results/dell/` and `bench/results/dell/props/`, plus
 `bench/README.md:75` where the placeholder is documented). Every one carries
-`Documents\PersonalCodingProjects\personal\Research\jevResearch\lab\d1bench\models\<model>.gguf`.
+`Documents\<workspace>\personal\Research\<sibling-project>\lab\<project>\models\<model>.gguf`.
 
 **Status of §2.2 and §2.3.** Both were fixed in a forward commit after this audit: the `_HOME`
 pattern now matches the bare form, both files in §2.2 are redacted, the 41 files in §2.3 carry
@@ -302,11 +311,11 @@ Given that, the remaining disclosures are about **machine and projects**, not pe
 | finding | where | my read |
 |---|---|---|
 | Survey of **35 private sibling project directories** (39 table rows), with file inventories, byte sizes and what to import from each | `docs/assets-inventory.md` (300 lines) | **deliberate inclusion, accidental disclosure.** Committed on purpose (`73cc66d`, "inventory the sibling projects for reusable decision-model assets") but written for the operator as a working note. This is the single largest disclosure surface in the repo. |
-| `~/agentFleet`, `~/swarmHarness`, `~/decisionModelTuning`, `~/toolInterfacerExtras` named, plus `mirror/.../localAlexa/{jevResearchCompiled,minicpmTune,...}` and `Research/{jevResearch,localLLMfunReseach,moneyLM}` | `docs/assets-inventory.md:29-53` | same |
-| A sibling project characterised as "grey-market compound price/consensus gathering" | `docs/assets-inventory.md:62` | **accidental** — a substantive characterisation of unrelated private work |
-| A sibling project described as "a 10.5 KB money-making research sweep", filename `RESEARCH_money_ideas_2026-10-09.md` | `docs/assets-inventory.md:63` | accidental |
+| **Four private project trees** named at the home root, plus a `mirror/` subtree and a `Research/` tree with their per-project entries | `docs/assets-inventory.md:29-53` | same |
+| A sibling project given a substantive characterisation of what it does | `docs/assets-inventory.md:62` | **accidental** — a characterisation of unrelated private work |
+| A sibling project described as a small research sweep, with a dated `RESEARCH_…` filename | `docs/assets-inventory.md:63` | accidental |
 | Byte sizes of private checkpoints/adapters (242,047,978 B; 35,335,380 B; LoRA exports at 15.4/27.4/63.4 MB) | `docs/assets-inventory.md:41-44` | accidental — unnecessary detail for a case study |
-| `mcm-portal` (a university course portal checkout) as a future data source | `docs/roadmap-2026-11.md:77` | **deliberate** — one line in a roadmap, no private detail |
+| A checkout of a web portal project as a future data source | `docs/roadmap-2026-11.md:77` | **deliberate** — one line in a roadmap, no private detail |
 | `localAlexa` / `jevResearch` provenance for imported data | `tests/data/routing_382_PROVENANCE.md:9` | **deliberate and correct** — this is attribution for imported data, and should stay |
 | Hostname `<host>` as env-var prefix | `bench/lane.env.example:7-16`, `bench/lane.sh:25-32` | deliberate anonymisation that stops one step short (machine called "bench-host" in prose) |
 | Hardware: Intel Arc 140V iGPU, `-ngl 99`, Python 3.10.12 | `README.md:347`, `docs/classical-baseline-2026-11-03.md:28` | deliberate — it is the measurement context, and a reader needs it |
@@ -399,7 +408,7 @@ case studies, and each sends a reader to a dead link on first contact:
 
 | reference | cited at | status |
 |---|---|---|
-| `docs/session-recall.md` | `docs/roadmap-2026-11.md:32` | missing — and the row is about recalling work across `toolInterfacer, jevResearch, localAlexa, cactus/needle`, which compounds the §4 exposure |
+| `docs/session-recall.md` | `docs/roadmap-2026-11.md:32` | missing — and the row is about recalling work across this project and several private sibling trees, which compounds the §4 exposure |
 | `docs/dataset-spec.md` | `docs/assets-inventory.md:222` | missing |
 | `docs/project_reference.md` | `docs/assets-inventory.md:62` | missing (a path inside a *different private project*, so it can never resolve here) |
 
@@ -428,8 +437,7 @@ requires a rewrite, so none of them forecloses §2.6 option B later.
 
 2. **Decide what `docs/assets-inventory.md` is for, and cut it to that.** Publishing 35
    private sibling directories, checkpoint byte sizes, and the characterisation of two
-   unrelated private projects ("grey-market compound price/consensus gathering", "a
-   money-making research sweep") is the largest disclosure in the repo and the least
+   unrelated private projects is the largest disclosure in the repo and the least
    connected to what a stranger needs. The import conclusions survive the cut; the
    directory listings do not.
 

@@ -23,7 +23,7 @@ run), `igpu-vulkan-throughput-2026-11-03.json`, `igpu-vulkan-liveprobe-cpu-2026-
 | | |
 |---|---|
 | CPU | i5-1235U, 2P + 8E, 12 threads |
-| RAM | 15.7 GB, shared with everything else (two Whonix VMs were resident) |
+| RAM | 15.7 GB, shared with everything else (two VMs were resident) |
 | GPU | Intel Graphics (ADL GT2), 0x8086:0x46a8, Xe-LP, 96 EU |
 | Driver | Mesa 23.2.1 ANV, Vulkan 1.3.255 device / 1.3.204 loader |
 | Model | d1-3B-Q4_K_M.gguf, 1.67 GB, Q4_K - Medium |
@@ -226,7 +226,7 @@ is ~9–11 s. There is nothing left for the GPU to win back.
 **The iGPU loses, and it is not close.** 2.72× slower at p50 over 50 paired rows,
 0/50 wins, 6.9× slower at the prefill that *is* the workload. It also costs
 **1.64 GiB** of shared memory (not ~800 MB), which on this box is 1.64 GiB the
-Whonix VMs and the CPU arm cannot use. Do not switch the routing lane to Vulkan,
+VMs and the CPU arm cannot use. Do not switch the routing lane to Vulkan,
 and do not spend the memory.
 
 Why, in order of how confident the evidence makes me:
@@ -275,7 +275,7 @@ taken with a freshly started server and no generation probe in the same process.
 ## Caveats
 
 - **Absolute latencies are on a busy laptop.** The clean pass ran at load-average
-  1.86–4.14 with two Whonix VMs resident; the CPU arm's p50 moved ~28% between a
+  1.86–4.14 with two VMs resident; the CPU arm's p50 moved ~28% between a
   loaded pass (4190 ms) and the clean pass (3284 ms). The *paired* deltas are the
   headline for that reason, and they are all one-directional (50/50), so noise
   cannot be manufacturing the result — only its exact size.
