@@ -43,6 +43,9 @@ Interface for a later agent
     rows = measure(ds, [MyPredictor()], split="group")
     print(render_table(rows))
 
+    train, test = load_v3(split="group")            # 8-way, family split by construction
+    print(render_table(score_split(train, test, [MyPredictor()])))
+
 A frozen predictor (a served model, a recorded run: nothing to fit) sets
 `frozen = True`; the harness then skips the CV loop and scores it once, still
 with a cluster-bootstrap CI. Anything registered through this interface lands in
@@ -54,6 +57,12 @@ Splits
 `split="group"`  — whole families held out (the honest split).
 `split="row"`    — stratified per label, groups ignored (the mirage split).
 Both are reported side by side; the gap is the quantity of interest.
+
+`load_v3` is the one dataset where the split is not reconstructed but *declared*: its
+generator assigned every family to train or test before it wrote an utterance, so
+`load_v3(split="group")` returns `(train, test)` and `score_split` fits on one and
+scores the other. That is the instrument `utterances_v2.json` cannot be — see
+`bench/data/heldout_v3_NOTES.md` for what it can and cannot measure.
 
 Stdlib only: no numpy, no service imports. The predictors live in
 `bench/eval_signals.py`, which does import both.
@@ -78,6 +87,8 @@ CI_LEVEL = 0.95
 V2_PATH = ROOT / "tests/data/utterances_v2.json"
 R382_PATH = ROOT / "tests/data/routing_382.json"
 REGISTRY_382_PATH = ROOT / "bench/registry_382.json"
+V3_PATH = ROOT / "bench/data/heldout_v3.json"
+V3_FAMILIES_PATH = ROOT / "bench/data/heldout_v3_families.json"
 
 
 # --------------------------------------------------------------------------- #
@@ -273,6 +284,111 @@ def load_v2(path: Path | str = V2_PATH, grouping: str = "boundary",
     return Dataset(name=name or f"v2 (group={grouping})", examples=examples,
                    labels=labels,
                    note="8-way hand-authored, t1/t2/t3 bands; no family field")
+
+
+def load_v3(path: Path | str = V3_PATH, split: str | None = "group",
+            name: str | None = None) -> Dataset | tuple[Dataset, Dataset]:
+    """The generated 8-way set, whose families the *generator* fixed before writing it.
+
+    Unlike `load_v2`, this set carries a `family` column on every row and a `split`
+    column that was assigned from the frame inventory before any utterance existed
+    (`bench/gen_heldout_v3.py`). There is nothing to reconstruct and nothing to
+    cluster: the family is the authored frame, the split is the generator's decision,
+    and this function's job is to return both halves and refuse a crossing.
+
+    `split="group"` returns `(train, test)` as declared, whole families per side.
+    `split="row"`  returns the same row counts repartitioned per label with families
+    ignored — the mirage side of the comparison, on the identical data.
+    `split=None`    returns the single unsplit `Dataset`, for scoring a frozen model.
+    """
+    rows = json.loads(Path(path).read_text())
+    examples = [Example(text=r["utterance"], label=r["label"], group=r["family"],
+                        meta={"band": r.get("band"), "tier_target": r.get("tier_target"),
+                              "split": r.get("split"), "id": r.get("id")})
+                for r in rows]
+    labels = tuple(sorted({r["label"] for r in rows}))
+    base = name or "v3 (generated, family-split)"
+    ds = Dataset(name=base, examples=examples, labels=labels,
+                 note="8-way generated from authored frames; family and split declared "
+                      "by the generator, not inferred here")
+    if split is None:
+        return ds
+    if split == "group":
+        train = Dataset(name=base + " train", examples=[], labels=labels)
+        test = Dataset(name=base + " test", examples=[], labels=labels)
+        for ex in examples:
+            side = ex.meta.get("split")
+            if side not in ("train", "test"):
+                raise ValueError(f"row {ex.meta.get('id')} carries no train/test split")
+            (train if side == "train" else test).examples.append(ex)
+        assert_no_family_crossing(train, test)
+        return train, test
+    if split == "row":
+        return _repartition_by_row(examples, labels, base)
+    raise ValueError(f"unknown v3 split {split!r} (expected 'group', 'row' or None)")
+
+
+def _repartition_by_row(examples: list[Example], labels: tuple[str, ...], base: str,
+                        seed: int = 0) -> tuple[Dataset, Dataset]:
+    """The declared split's sizes, refilled row-wise — families deliberately crossed."""
+    rng = random.Random(seed)
+    declared_test: dict[str, int] = {}
+    for ex in examples:
+        if ex.meta.get("split") == "test":
+            declared_test[ex.label] = declared_test.get(ex.label, 0) + 1
+    train: list[Example] = []
+    test: list[Example] = []
+    for lab in labels:
+        pool = [ex for ex in examples if ex.label == lab]
+        rng.shuffle(pool)
+        cut = declared_test.get(lab, 0)
+        test += pool[:cut]
+        train += pool[cut:]
+    order = {ex.meta.get("id"): i for i, ex in enumerate(examples)}
+    for side in (train, test):
+        side.sort(key=lambda e: order.get(e.meta.get("id"), 0))
+    return (Dataset(name=base + " train (row split)", examples=train, labels=labels),
+            Dataset(name=base + " test (row split)", examples=test, labels=labels))
+
+
+def assert_no_family_crossing(train: Dataset, test: Dataset) -> None:
+    """The guarantee the whole instrument rests on. Raises with the offending families."""
+    sides: dict[str, set[str]] = {}
+    for group in train.groups:
+        sides.setdefault(group, set()).add("train")
+    for group in test.groups:
+        sides.setdefault(group, set()).add("test")
+    crossing = sorted(g for g, s in sides.items() if len(s) > 1)
+    if crossing:
+        raise ValueError(f"families on both sides of the split: {crossing}")
+
+
+def score_split(train: Dataset, test: Dataset, predictors: list[Predictor], *,
+                n_boot: int = DEFAULT_BOOT, boot_seed: int = 0) -> list[Result]:
+    """Fit each predictor on `train`, score it on the held-out families in `test`.
+
+    One draw, not a seed distribution: the split is declared by the data, so there is
+    no fold assignment to average over. The interval is still a cluster bootstrap over
+    the test families, because rows of one family are one observation.
+    """
+    import copy
+
+    results = []
+    for predictor in predictors:
+        p = copy.deepcopy(predictor)
+        p.fit(train.examples)
+        outcomes = [1.0 if p.predict(e.text) == e.label else 0.0 for e in test.examples]
+        acc = sum(outcomes) / len(outcomes) if outcomes else 0.0
+        lo, hi = cluster_bootstrap_ci(outcomes, test.groups, n_boot=n_boot, seed=boot_seed)
+        results.append(Result(
+            predictor=p.name, split="group", n=test.n, n_groups=len(set(test.groups)),
+            k=1, seeds=1, acc_mean=round(acc, 4), acc_sd=0.0, acc_min=round(acc, 4),
+            acc_max=round(acc, 4), ci_lo=lo, ci_hi=hi, per_seed=[round(acc, 4)],
+            dataset=test.name,
+            atomic_row_fraction=test.group_report()["singleton_row_fraction"],
+            note="fitted on the train families, scored on the test families",
+            outcomes=outcomes, preds_per_seed=[[]], folds_per_seed=[[-1] * test.n]))
+    return results
 
 
 def load_382(path: Path | str = R382_PATH, grouping: str = "template",
