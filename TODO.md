@@ -112,7 +112,7 @@ Routing accuracy is worth nothing until this is fixed.
 ## 3. Close the P2 gap — let the model choose the plan
 
 Today `planner/inspector.py` is an ordered keyword list, which the runtime proved wrong:
-seven web-research intents in `service/logs/hops.jsonl` were executed as `filesys_glob`,
+seven web-research intents recorded in the hop log were executed as `filesys_glob`,
 globbing the filesystem for a song title. Those seven are fixed and pinned by
 `tests/test_route_traffic_shapes.py`, but the *class* of bug survives because the layer is
 still keywords.
