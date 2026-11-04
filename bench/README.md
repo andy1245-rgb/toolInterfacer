@@ -98,6 +98,15 @@
   near/far and template-grouped CV checks it omitted, then scores the same backend
   on this repo's 150-row set. Every number in
   `docs/classical-baseline-2026-11-03.md` comes from it.
+- `eval_harness.py` — **the measurement instrument**: group-aware splits (whole
+  phrasing families held out), repeated splits across seeds, cluster-bootstrap
+  intervals, and one `Predictor` interface so any signal lands in the same table
+  under the same split. It refuses to emit a number without a split, because the
+  repo already published one figure (93.19%) that reads as generalisation and is
+  template reuse. `eval_signals.py` registers this repo's signals through it;
+  `docs/eval-harness-2026-11-04.md` is the report, and its headline is that the
+  150-row set has no families to hold out (63% of rows are atomic) while the
+  382-row set does (−23.5 points when its templates are held out).
 - `or_bench.py` — the hosted sweep: one chat completion per utterance per model
   against OpenRouter, an accuracy pass at bounded concurrency plus a strictly
   sequential latency pass (the concurrent pass's timings are never reported as

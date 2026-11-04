@@ -1,0 +1,1177 @@
+{
+ "generated": "2026-11-04T00:17-0500",
+ "instrument": "bench/eval_harness.py",
+ "driver": "bench/eval_signals.py",
+ "protocol": {
+  "k": 5,
+  "seeds": 5,
+  "bootstrap": 2000,
+  "ci": "cluster bootstrap over groups, 95%",
+  "note": "every row carries its split, n and CI"
+ },
+ "results": [
+  {
+   "predictor": "rules",
+   "split": "group",
+   "n": 150,
+   "groups": 106,
+   "k": 1,
+   "seeds": 1,
+   "acc_mean": 0.7867,
+   "acc_sd": 0.0,
+   "ci95": [
+    0.7231,
+    0.8532
+   ],
+   "per_seed": [
+    0.7867
+   ],
+   "dataset": "v2 (group=boundary)"
+  },
+  {
+   "predictor": "lr",
+   "split": "group",
+   "n": 150,
+   "groups": 106,
+   "k": 5,
+   "seeds": 5,
+   "acc_mean": 0.6707,
+   "acc_sd": 0.0177,
+   "ci95": [
+    0.5957,
+    0.7389
+   ],
+   "per_seed": [
+    0.6667,
+    0.6533,
+    0.68,
+    0.7,
+    0.6533
+   ],
+   "dataset": "v2 (group=boundary)"
+  },
+  {
+   "predictor": "1nn",
+   "split": "group",
+   "n": 150,
+   "groups": 106,
+   "k": 5,
+   "seeds": 5,
+   "acc_mean": 0.5133,
+   "acc_sd": 0.0267,
+   "ci95": [
+    0.4444,
+    0.577
+   ],
+   "per_seed": [
+    0.48,
+    0.52,
+    0.56,
+    0.5,
+    0.5067
+   ],
+   "dataset": "v2 (group=boundary)"
+  },
+  {
+   "predictor": "d1_3B[run2]",
+   "split": "group",
+   "n": 150,
+   "groups": 106,
+   "k": 1,
+   "seeds": 1,
+   "acc_mean": 0.74,
+   "acc_sd": 0.0,
+   "ci95": [
+    0.6645,
+    0.8134
+   ],
+   "per_seed": [
+    0.74
+   ],
+   "dataset": "v2 (group=boundary)"
+  },
+  {
+   "predictor": "d1_3B[run1]",
+   "split": "group",
+   "n": 150,
+   "groups": 106,
+   "k": 1,
+   "seeds": 1,
+   "acc_mean": 0.74,
+   "acc_sd": 0.0,
+   "ci95": [
+    0.6645,
+    0.8134
+   ],
+   "per_seed": [
+    0.74
+   ],
+   "dataset": "v2 (group=boundary)"
+  },
+  {
+   "predictor": "classical_svm",
+   "split": "group",
+   "n": 150,
+   "groups": 106,
+   "k": 5,
+   "seeds": 5,
+   "acc_mean": 0.6573,
+   "acc_sd": 0.015,
+   "ci95": [
+    0.5819,
+    0.7278
+   ],
+   "per_seed": [
+    0.6733,
+    0.66,
+    0.6733,
+    0.64,
+    0.64
+   ],
+   "dataset": "v2 (group=boundary)"
+  },
+  {
+   "predictor": "rules",
+   "split": "row",
+   "n": 150,
+   "groups": 150,
+   "k": 1,
+   "seeds": 1,
+   "acc_mean": 0.7867,
+   "acc_sd": 0.0,
+   "ci95": [
+    0.72,
+    0.8533
+   ],
+   "per_seed": [
+    0.7867
+   ],
+   "dataset": "v2 (group=row)"
+  },
+  {
+   "predictor": "lr",
+   "split": "row",
+   "n": 150,
+   "groups": 150,
+   "k": 5,
+   "seeds": 5,
+   "acc_mean": 0.6667,
+   "acc_sd": 0.0112,
+   "ci95": [
+    0.5987,
+    0.7333
+   ],
+   "per_seed": [
+    0.6867,
+    0.66,
+    0.6667,
+    0.6667,
+    0.6533
+   ],
+   "dataset": "v2 (group=row)"
+  },
+  {
+   "predictor": "1nn",
+   "split": "row",
+   "n": 150,
+   "groups": 150,
+   "k": 5,
+   "seeds": 5,
+   "acc_mean": 0.5507,
+   "acc_sd": 0.01,
+   "ci95": [
+    0.4853,
+    0.6187
+   ],
+   "per_seed": [
+    0.5667,
+    0.5533,
+    0.54,
+    0.5533,
+    0.54
+   ],
+   "dataset": "v2 (group=row)"
+  },
+  {
+   "predictor": "d1_3B[run2]",
+   "split": "row",
+   "n": 150,
+   "groups": 150,
+   "k": 1,
+   "seeds": 1,
+   "acc_mean": 0.74,
+   "acc_sd": 0.0,
+   "ci95": [
+    0.6733,
+    0.8067
+   ],
+   "per_seed": [
+    0.74
+   ],
+   "dataset": "v2 (group=row)"
+  },
+  {
+   "predictor": "d1_3B[run1]",
+   "split": "row",
+   "n": 150,
+   "groups": 150,
+   "k": 1,
+   "seeds": 1,
+   "acc_mean": 0.74,
+   "acc_sd": 0.0,
+   "ci95": [
+    0.6733,
+    0.8067
+   ],
+   "per_seed": [
+    0.74
+   ],
+   "dataset": "v2 (group=row)"
+  },
+  {
+   "predictor": "classical_svm",
+   "split": "row",
+   "n": 150,
+   "groups": 150,
+   "k": 5,
+   "seeds": 5,
+   "acc_mean": 0.6253,
+   "acc_sd": 0.0258,
+   "ci95": [
+    0.5573,
+    0.6973
+   ],
+   "per_seed": [
+    0.62,
+    0.6267,
+    0.6733,
+    0.6067,
+    0.6
+   ],
+   "dataset": "v2 (group=row)"
+  },
+  {
+   "predictor": "rules",
+   "split": "group",
+   "n": 150,
+   "groups": 102,
+   "k": 1,
+   "seeds": 1,
+   "acc_mean": 0.7867,
+   "acc_sd": 0.0,
+   "ci95": [
+    0.7194,
+    0.8511
+   ],
+   "per_seed": [
+    0.7867
+   ],
+   "dataset": "v2 (group=surface)"
+  },
+  {
+   "predictor": "lr",
+   "split": "group",
+   "n": 150,
+   "groups": 102,
+   "k": 5,
+   "seeds": 5,
+   "acc_mean": 0.6667,
+   "acc_sd": 0.0313,
+   "ci95": [
+    0.592,
+    0.7329
+   ],
+   "per_seed": [
+    0.66,
+    0.72,
+    0.68,
+    0.64,
+    0.6333
+   ],
+   "dataset": "v2 (group=surface)"
+  },
+  {
+   "predictor": "1nn",
+   "split": "group",
+   "n": 150,
+   "groups": 102,
+   "k": 5,
+   "seeds": 5,
+   "acc_mean": 0.5013,
+   "acc_sd": 0.0383,
+   "ci95": [
+    0.4375,
+    0.5611
+   ],
+   "per_seed": [
+    0.5067,
+    0.56,
+    0.52,
+    0.4667,
+    0.4533
+   ],
+   "dataset": "v2 (group=surface)"
+  },
+  {
+   "predictor": "d1_3B[run2]",
+   "split": "group",
+   "n": 150,
+   "groups": 102,
+   "k": 1,
+   "seeds": 1,
+   "acc_mean": 0.74,
+   "acc_sd": 0.0,
+   "ci95": [
+    0.6667,
+    0.8169
+   ],
+   "per_seed": [
+    0.74
+   ],
+   "dataset": "v2 (group=surface)"
+  },
+  {
+   "predictor": "d1_3B[run1]",
+   "split": "group",
+   "n": 150,
+   "groups": 102,
+   "k": 1,
+   "seeds": 1,
+   "acc_mean": 0.74,
+   "acc_sd": 0.0,
+   "ci95": [
+    0.6667,
+    0.8169
+   ],
+   "per_seed": [
+    0.74
+   ],
+   "dataset": "v2 (group=surface)"
+  },
+  {
+   "predictor": "classical_svm",
+   "split": "group",
+   "n": 150,
+   "groups": 102,
+   "k": 5,
+   "seeds": 5,
+   "acc_mean": 0.636,
+   "acc_sd": 0.0187,
+   "ci95": [
+    0.5625,
+    0.7053
+   ],
+   "per_seed": [
+    0.64,
+    0.64,
+    0.6667,
+    0.6133,
+    0.62
+   ],
+   "dataset": "v2 (group=surface)"
+  },
+  {
+   "predictor": "classical_svm",
+   "split": "group",
+   "n": 382,
+   "groups": 110,
+   "k": 5,
+   "seeds": 5,
+   "acc_mean": 0.6859,
+   "acc_sd": 0.0181,
+   "ci95": [
+    0.5731,
+    0.7909
+   ],
+   "per_seed": [
+    0.6702,
+    0.6806,
+    0.7016,
+    0.712,
+    0.6649
+   ],
+   "dataset": "382 (group=template)"
+  },
+  {
+   "predictor": "classical_refs(93.19% protocol)",
+   "split": "group",
+   "n": 382,
+   "groups": 110,
+   "k": 1,
+   "seeds": 1,
+   "acc_mean": 0.9319,
+   "acc_sd": 0.0,
+   "ci95": [
+    0.8784,
+    0.9785
+   ],
+   "per_seed": [
+    0.9319
+   ],
+   "dataset": "382 (group=template)"
+  },
+  {
+   "predictor": "classical_svm",
+   "split": "row",
+   "n": 382,
+   "groups": 382,
+   "k": 5,
+   "seeds": 5,
+   "acc_mean": 0.9209,
+   "acc_sd": 0.0071,
+   "ci95": [
+    0.8942,
+    0.9455
+   ],
+   "per_seed": [
+    0.9084,
+    0.9241,
+    0.9241,
+    0.9188,
+    0.9293
+   ],
+   "dataset": "382 (group=row)"
+  },
+  {
+   "predictor": "classical_refs(93.19% protocol)",
+   "split": "row",
+   "n": 382,
+   "groups": 382,
+   "k": 1,
+   "seeds": 1,
+   "acc_mean": 0.9319,
+   "acc_sd": 0.0,
+   "ci95": [
+    0.9058,
+    0.9555
+   ],
+   "per_seed": [
+    0.9319
+   ],
+   "dataset": "382 (group=row)"
+  },
+  {
+   "predictor": "classical_svm",
+   "split": "group",
+   "n": 382,
+   "groups": 7,
+   "k": 5,
+   "seeds": 5,
+   "acc_mean": 0.0,
+   "acc_sd": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "per_seed": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "dataset": "382 (group=topic)"
+  },
+  {
+   "predictor": "classical_refs(93.19% protocol)",
+   "split": "group",
+   "n": 382,
+   "groups": 7,
+   "k": 1,
+   "seeds": 1,
+   "acc_mean": 0.9319,
+   "acc_sd": 0.0,
+   "ci95": [
+    0.8531,
+    0.9738
+   ],
+   "per_seed": [
+    0.9319
+   ],
+   "dataset": "382 (group=topic)"
+  }
+ ],
+ "blocks": {
+  "v2/boundary/group": {
+   "group_report": {
+    "n": 150,
+    "groups": 106,
+    "largest_group": 7,
+    "singleton_groups": 95,
+    "singleton_row_fraction": 0.6333,
+    "size_histogram": {
+     "1": 95,
+     "2": 1,
+     "3": 1,
+     "4": 2,
+     "5": 2,
+     "6": 3,
+     "7": 2
+    }
+   },
+   "rows": [
+    {
+     "predictor": "rules",
+     "split": "group",
+     "n": 150,
+     "groups": 106,
+     "k": 1,
+     "seeds": 1,
+     "acc_mean": 0.7867,
+     "acc_sd": 0.0,
+     "ci95": [
+      0.7231,
+      0.8532
+     ],
+     "per_seed": [
+      0.7867
+     ],
+     "dataset": "v2 (group=boundary)"
+    },
+    {
+     "predictor": "lr",
+     "split": "group",
+     "n": 150,
+     "groups": 106,
+     "k": 5,
+     "seeds": 5,
+     "acc_mean": 0.6707,
+     "acc_sd": 0.0177,
+     "ci95": [
+      0.5957,
+      0.7389
+     ],
+     "per_seed": [
+      0.6667,
+      0.6533,
+      0.68,
+      0.7,
+      0.6533
+     ],
+     "dataset": "v2 (group=boundary)"
+    },
+    {
+     "predictor": "1nn",
+     "split": "group",
+     "n": 150,
+     "groups": 106,
+     "k": 5,
+     "seeds": 5,
+     "acc_mean": 0.5133,
+     "acc_sd": 0.0267,
+     "ci95": [
+      0.4444,
+      0.577
+     ],
+     "per_seed": [
+      0.48,
+      0.52,
+      0.56,
+      0.5,
+      0.5067
+     ],
+     "dataset": "v2 (group=boundary)"
+    },
+    {
+     "predictor": "d1_3B[run2]",
+     "split": "group",
+     "n": 150,
+     "groups": 106,
+     "k": 1,
+     "seeds": 1,
+     "acc_mean": 0.74,
+     "acc_sd": 0.0,
+     "ci95": [
+      0.6645,
+      0.8134
+     ],
+     "per_seed": [
+      0.74
+     ],
+     "dataset": "v2 (group=boundary)"
+    },
+    {
+     "predictor": "d1_3B[run1]",
+     "split": "group",
+     "n": 150,
+     "groups": 106,
+     "k": 1,
+     "seeds": 1,
+     "acc_mean": 0.74,
+     "acc_sd": 0.0,
+     "ci95": [
+      0.6645,
+      0.8134
+     ],
+     "per_seed": [
+      0.74
+     ],
+     "dataset": "v2 (group=boundary)"
+    },
+    {
+     "predictor": "classical_svm",
+     "split": "group",
+     "n": 150,
+     "groups": 106,
+     "k": 5,
+     "seeds": 5,
+     "acc_mean": 0.6573,
+     "acc_sd": 0.015,
+     "ci95": [
+      0.5819,
+      0.7278
+     ],
+     "per_seed": [
+      0.6733,
+      0.66,
+      0.6733,
+      0.64,
+      0.64
+     ],
+     "dataset": "v2 (group=boundary)"
+    }
+   ]
+  },
+  "v2_bands": {
+   "d1_3B[run2]/group": {
+    "t1": {
+     "n": 64,
+     "acc": 0.8125
+    },
+    "t2": {
+     "n": 31,
+     "acc": 0.7097
+    },
+    "t3": {
+     "n": 55,
+     "acc": 0.6727
+    }
+   },
+   "d1_3B[run1]/group": {
+    "t1": {
+     "n": 64,
+     "acc": 0.8125
+    },
+    "t2": {
+     "n": 31,
+     "acc": 0.7097
+    },
+    "t3": {
+     "n": 55,
+     "acc": 0.6727
+    }
+   },
+   "d1_3B[run2]/row": {
+    "t1": {
+     "n": 64,
+     "acc": 0.8125
+    },
+    "t2": {
+     "n": 31,
+     "acc": 0.7097
+    },
+    "t3": {
+     "n": 55,
+     "acc": 0.6727
+    }
+   },
+   "d1_3B[run1]/row": {
+    "t1": {
+     "n": 64,
+     "acc": 0.8125
+    },
+    "t2": {
+     "n": 31,
+     "acc": 0.7097
+    },
+    "t3": {
+     "n": 55,
+     "acc": 0.6727
+    }
+   }
+  },
+  "v2/row/row": {
+   "group_report": {
+    "n": 150,
+    "groups": 150,
+    "largest_group": 1,
+    "singleton_groups": 150,
+    "singleton_row_fraction": 1.0,
+    "size_histogram": {
+     "1": 150
+    }
+   },
+   "rows": [
+    {
+     "predictor": "rules",
+     "split": "row",
+     "n": 150,
+     "groups": 150,
+     "k": 1,
+     "seeds": 1,
+     "acc_mean": 0.7867,
+     "acc_sd": 0.0,
+     "ci95": [
+      0.72,
+      0.8533
+     ],
+     "per_seed": [
+      0.7867
+     ],
+     "dataset": "v2 (group=row)"
+    },
+    {
+     "predictor": "lr",
+     "split": "row",
+     "n": 150,
+     "groups": 150,
+     "k": 5,
+     "seeds": 5,
+     "acc_mean": 0.6667,
+     "acc_sd": 0.0112,
+     "ci95": [
+      0.5987,
+      0.7333
+     ],
+     "per_seed": [
+      0.6867,
+      0.66,
+      0.6667,
+      0.6667,
+      0.6533
+     ],
+     "dataset": "v2 (group=row)"
+    },
+    {
+     "predictor": "1nn",
+     "split": "row",
+     "n": 150,
+     "groups": 150,
+     "k": 5,
+     "seeds": 5,
+     "acc_mean": 0.5507,
+     "acc_sd": 0.01,
+     "ci95": [
+      0.4853,
+      0.6187
+     ],
+     "per_seed": [
+      0.5667,
+      0.5533,
+      0.54,
+      0.5533,
+      0.54
+     ],
+     "dataset": "v2 (group=row)"
+    },
+    {
+     "predictor": "d1_3B[run2]",
+     "split": "row",
+     "n": 150,
+     "groups": 150,
+     "k": 1,
+     "seeds": 1,
+     "acc_mean": 0.74,
+     "acc_sd": 0.0,
+     "ci95": [
+      0.6733,
+      0.8067
+     ],
+     "per_seed": [
+      0.74
+     ],
+     "dataset": "v2 (group=row)"
+    },
+    {
+     "predictor": "d1_3B[run1]",
+     "split": "row",
+     "n": 150,
+     "groups": 150,
+     "k": 1,
+     "seeds": 1,
+     "acc_mean": 0.74,
+     "acc_sd": 0.0,
+     "ci95": [
+      0.6733,
+      0.8067
+     ],
+     "per_seed": [
+      0.74
+     ],
+     "dataset": "v2 (group=row)"
+    },
+    {
+     "predictor": "classical_svm",
+     "split": "row",
+     "n": 150,
+     "groups": 150,
+     "k": 5,
+     "seeds": 5,
+     "acc_mean": 0.6253,
+     "acc_sd": 0.0258,
+     "ci95": [
+      0.5573,
+      0.6973
+     ],
+     "per_seed": [
+      0.62,
+      0.6267,
+      0.6733,
+      0.6067,
+      0.6
+     ],
+     "dataset": "v2 (group=row)"
+    }
+   ]
+  },
+  "v2/surface/group": {
+   "group_report": {
+    "n": 150,
+    "groups": 102,
+    "largest_group": 7,
+    "singleton_groups": 87,
+    "singleton_row_fraction": 0.58,
+    "size_histogram": {
+     "1": 87,
+     "2": 5,
+     "3": 1,
+     "4": 2,
+     "5": 2,
+     "6": 3,
+     "7": 2
+    }
+   },
+   "rows": [
+    {
+     "predictor": "rules",
+     "split": "group",
+     "n": 150,
+     "groups": 102,
+     "k": 1,
+     "seeds": 1,
+     "acc_mean": 0.7867,
+     "acc_sd": 0.0,
+     "ci95": [
+      0.7194,
+      0.8511
+     ],
+     "per_seed": [
+      0.7867
+     ],
+     "dataset": "v2 (group=surface)"
+    },
+    {
+     "predictor": "lr",
+     "split": "group",
+     "n": 150,
+     "groups": 102,
+     "k": 5,
+     "seeds": 5,
+     "acc_mean": 0.6667,
+     "acc_sd": 0.0313,
+     "ci95": [
+      0.592,
+      0.7329
+     ],
+     "per_seed": [
+      0.66,
+      0.72,
+      0.68,
+      0.64,
+      0.6333
+     ],
+     "dataset": "v2 (group=surface)"
+    },
+    {
+     "predictor": "1nn",
+     "split": "group",
+     "n": 150,
+     "groups": 102,
+     "k": 5,
+     "seeds": 5,
+     "acc_mean": 0.5013,
+     "acc_sd": 0.0383,
+     "ci95": [
+      0.4375,
+      0.5611
+     ],
+     "per_seed": [
+      0.5067,
+      0.56,
+      0.52,
+      0.4667,
+      0.4533
+     ],
+     "dataset": "v2 (group=surface)"
+    },
+    {
+     "predictor": "d1_3B[run2]",
+     "split": "group",
+     "n": 150,
+     "groups": 102,
+     "k": 1,
+     "seeds": 1,
+     "acc_mean": 0.74,
+     "acc_sd": 0.0,
+     "ci95": [
+      0.6667,
+      0.8169
+     ],
+     "per_seed": [
+      0.74
+     ],
+     "dataset": "v2 (group=surface)"
+    },
+    {
+     "predictor": "d1_3B[run1]",
+     "split": "group",
+     "n": 150,
+     "groups": 102,
+     "k": 1,
+     "seeds": 1,
+     "acc_mean": 0.74,
+     "acc_sd": 0.0,
+     "ci95": [
+      0.6667,
+      0.8169
+     ],
+     "per_seed": [
+      0.74
+     ],
+     "dataset": "v2 (group=surface)"
+    },
+    {
+     "predictor": "classical_svm",
+     "split": "group",
+     "n": 150,
+     "groups": 102,
+     "k": 5,
+     "seeds": 5,
+     "acc_mean": 0.636,
+     "acc_sd": 0.0187,
+     "ci95": [
+      0.5625,
+      0.7053
+     ],
+     "per_seed": [
+      0.64,
+      0.64,
+      0.6667,
+      0.6133,
+      0.62
+     ],
+     "dataset": "v2 (group=surface)"
+    }
+   ]
+  },
+  "v2_union/group": {
+   "predictor": "oracle union(lr|d1_3B[run2])",
+   "split": "group",
+   "n": 150,
+   "groups": 106,
+   "k": 5,
+   "seeds": 5,
+   "acc_mean": 0.928,
+   "acc_sd": 0.0,
+   "ci95": [
+    0.8855,
+    0.9656
+   ],
+   "per_seed": [
+    0.928
+   ]
+  },
+  "v2_union/row": {
+   "predictor": "oracle union(lr|d1_3B[run2])",
+   "split": "row",
+   "n": 150,
+   "groups": 150,
+   "k": 5,
+   "seeds": 5,
+   "acc_mean": 0.9347,
+   "acc_sd": 0.0,
+   "ci95": [
+    0.8987,
+    0.968
+   ],
+   "per_seed": [
+    0.9347
+   ]
+  },
+  "382/template/group": {
+   "group_report": {
+    "n": 382,
+    "groups": 110,
+    "largest_group": 25,
+    "singleton_groups": 28,
+    "singleton_row_fraction": 0.0733,
+    "size_histogram": {
+     "1": 28,
+     "2": 10,
+     "3": 17,
+     "4": 23,
+     "5": 24,
+     "6": 4,
+     "7": 2,
+     "8": 1,
+     "25": 1
+    }
+   },
+   "rows": [
+    {
+     "predictor": "classical_svm",
+     "split": "group",
+     "n": 382,
+     "groups": 110,
+     "k": 5,
+     "seeds": 5,
+     "acc_mean": 0.6859,
+     "acc_sd": 0.0181,
+     "ci95": [
+      0.5731,
+      0.7909
+     ],
+     "per_seed": [
+      0.6702,
+      0.6806,
+      0.7016,
+      0.712,
+      0.6649
+     ],
+     "dataset": "382 (group=template)"
+    },
+    {
+     "predictor": "classical_refs(93.19% protocol)",
+     "split": "group",
+     "n": 382,
+     "groups": 110,
+     "k": 1,
+     "seeds": 1,
+     "acc_mean": 0.9319,
+     "acc_sd": 0.0,
+     "ci95": [
+      0.8784,
+      0.9785
+     ],
+     "per_seed": [
+      0.9319
+     ],
+     "dataset": "382 (group=template)"
+    }
+   ]
+  },
+  "382/row/row": {
+   "group_report": {
+    "n": 382,
+    "groups": 382,
+    "largest_group": 1,
+    "singleton_groups": 382,
+    "singleton_row_fraction": 1.0,
+    "size_histogram": {
+     "1": 382
+    }
+   },
+   "rows": [
+    {
+     "predictor": "classical_svm",
+     "split": "row",
+     "n": 382,
+     "groups": 382,
+     "k": 5,
+     "seeds": 5,
+     "acc_mean": 0.9209,
+     "acc_sd": 0.0071,
+     "ci95": [
+      0.8942,
+      0.9455
+     ],
+     "per_seed": [
+      0.9084,
+      0.9241,
+      0.9241,
+      0.9188,
+      0.9293
+     ],
+     "dataset": "382 (group=row)"
+    },
+    {
+     "predictor": "classical_refs(93.19% protocol)",
+     "split": "row",
+     "n": 382,
+     "groups": 382,
+     "k": 1,
+     "seeds": 1,
+     "acc_mean": 0.9319,
+     "acc_sd": 0.0,
+     "ci95": [
+      0.9058,
+      0.9555
+     ],
+     "per_seed": [
+      0.9319
+     ],
+     "dataset": "382 (group=row)"
+    }
+   ]
+  },
+  "382/topic/group": {
+   "group_report": {
+    "n": 382,
+    "groups": 7,
+    "largest_group": 96,
+    "singleton_groups": 0,
+    "singleton_row_fraction": 0.0,
+    "size_histogram": {
+     "25": 1,
+     "48": 1,
+     "50": 2,
+     "56": 1,
+     "57": 1,
+     "96": 1
+    }
+   },
+   "rows": [
+    {
+     "predictor": "classical_svm",
+     "split": "group",
+     "n": 382,
+     "groups": 7,
+     "k": 5,
+     "seeds": 5,
+     "acc_mean": 0.0,
+     "acc_sd": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "per_seed": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "dataset": "382 (group=topic)"
+    },
+    {
+     "predictor": "classical_refs(93.19% protocol)",
+     "split": "group",
+     "n": 382,
+     "groups": 7,
+     "k": 1,
+     "seeds": 1,
+     "acc_mean": 0.9319,
+     "acc_sd": 0.0,
+     "ci95": [
+      0.8531,
+      0.9738
+     ],
+     "per_seed": [
+      0.9319
+     ],
+     "dataset": "382 (group=topic)"
+    }
+   ]
+  }
+ }
+}
