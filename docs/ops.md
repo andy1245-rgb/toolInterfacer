@@ -100,8 +100,10 @@ even when every URL failed. Every op therefore reads the document.
   `{"enabled": false, "path": "~/.local/state/ti/logs/hops.jsonl"}`. `enabled`
   ships **false** — a decision-routing tool should not record the intents it is
   handed — so a fresh install writes nothing. Turn it on without copying the live
-  file:
-  `TI_CONF_OVERLAY='{"hops_log": {"enabled": true}}'`. `path` is `~`-expanded and
+  file by writing a fragment and pointing the environment at that *path* (the variable
+  takes a filename, not a JSON string):
+  `printf '{"hops_log": {"enabled": true}}' > /tmp/ti-hops.json`, then
+  `TI_CONF_OVERLAY=/tmp/ti-hops.json ti-serve`. `path` is `~`-expanded and
   never resolved against the working directory; the directory is created `0700` and
   the file `0600`, and a file that group or other can already read is narrowed rather
   than refused (a log is not a credential). A write that cannot happen does not fail
@@ -118,8 +120,8 @@ any CLI honouring the contract in §2 works. Until you do, the op raises
 `CliMissingBinary` naming the exact key to set ("ops.web_search.script is not
 set: …") rather than failing somewhere inside a subprocess.
 
-`TI_CONF` selects a whole alternate config file; `TI_CONF_OVERLAY` deep-merges a
-partial one on top (dicts recurse, lists replace). The overlay is how tests and
+`TI_CONF` selects a whole alternate config file; `TI_CONF_OVERLAY` names the **path** to a
+partial one, deep-merged on top (dicts recurse, lists replace). The overlay is how tests and
 a dev bench repoint `ops.*` without copying the live file.
 
 ## 5. Op shapes

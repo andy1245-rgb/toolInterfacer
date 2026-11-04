@@ -68,14 +68,26 @@ If it fails, re-run it alone before assuming the tree is bad.
 ## 2. Version and changelog agree
 
 ```sh
-grep '^version' pyproject.toml          # expect: version = "0.1.0"
-sed -n '1,12p' CHANGELOG.md             # expect: an "## [0.1.0] — <today>" heading
-grep -n 'Unreleased' CHANGELOG.md       # expect: no match, or an empty Unreleased section
+grep '^version' pyproject.toml          # expect: the version you are about to tag
+grep -n '^## ' CHANGELOG.md             # expect: `## [0.1.0] — 2026-11-03`, the `## Corrections —
+                                       #         <date>` block, then at most one `## Unreleased —
+                                       #         <date>` as the last section
+grep -c '^## Unreleased' CHANGELOG.md   # expect: 1, or 0 if nothing landed since the last tag
 ```
 
 The version string lives in exactly one place (`[project] version` in `pyproject.toml`).
-If you bump it, bump the CHANGELOG heading in the same commit, and let that commit go
-through CI like any other.
+If you bump it, bump the CHANGELOG in the same commit, and let that commit go through CI
+like any other.
+
+**`Unreleased` is not supposed to be empty or absent — it is the section you are about to
+release.** The tree as it ships carries exactly one, `## Unreleased — 2026-11-04`, as the
+last section of `CHANGELOG.md` (it has no following `## [` heading because nothing comes
+after it), and it holds the work that landed after the `0.1.0` tag under `### Changed` /
+`### Removed` / `### Fixed`. Tagging means renaming that heading to the version and date
+you are cutting — `## [<version>] — <date>` — not finding it empty. The pass condition is
+one `Unreleased` heading whose entries appear nowhere else: two of them, an `Unreleased`
+block with nothing under it, or entries that also sit under an already-released heading
+each mean the merge went wrong.
 
 ## 3. Build, inspect, and prove a clean tree installs
 

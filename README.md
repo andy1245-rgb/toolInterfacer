@@ -267,20 +267,26 @@ It runs the real engine, the real ops and the real gates, and prints the chain:
 ```
 == summary ==
 status=done wall_ms=18.6 hops=3
-  filesys_glob       2.5ms conf=1.00  path_list[179]  e.g. LICENSE
+  filesys_glob       2.5ms conf=1.00  path_list[359]  e.g. TODO.md
   decide_pick       15.9ms conf=0.95  picked_items[1]  e.g. README.md
   filesys_read       0.1ms conf=1.00  file_content :: # toolInterfacer
   decide-max conf=0.95 (gate=0.7)
 ```
 
-Three hops, 18 ms, and the only decision — which of 179 candidate files the intent meant —
-came back at 0.95 against a 0.7 gate. (The script truncates its JSON dump at 4000
-characters, so on a long result body the block above the summary is cut mid-string and the
-summary is the part that stays parseable.)
+Three hops, 18 ms, and the only decision — which candidate file the intent meant — came
+back at 0.95 against a 0.7 gate. `path_list[359]` is the one number here that is a property
+of the **checkout** rather than of the code: the L1 slot fill globs the files it walks from
+the repo root, so the count tracks the tree and moves whenever a file is added or removed.
+An earlier recording of this same block read `path_list[179] e.g. LICENSE`; each is right
+for its own tree, and neither is a claim the suite asserts. The `ms` and wall figures are
+the other way round — they move with load on the same tree, which is why the latency rows
+further down come from a sweep and not from this replay. (The script truncates its JSON dump
+at 4000 characters, so on a long result body the block above the summary is cut mid-string
+and the summary is the part that stays parseable.)
 
-`TI_CONF_OVERLAY` deep-merges a partial config over the defaults (`TI_CONF` selects a whole
-alternate file). It is how the tests and the bench repoint `ops.*` and `decide.*` without
-copying `conf/defaults.json`.
+`TI_CONF_OVERLAY` names a file holding a partial config, deep-merged over the defaults
+(`TI_CONF` selects a whole alternate file). It is how the tests and the bench repoint
+`ops.*` and `decide.*` without copying `conf/defaults.json`.
 
 ### The pi extension
 
@@ -308,9 +314,18 @@ notes are in [`pi-extension/README.md`](pi-extension/README.md).
 
 Neither runtime log writes by default. `hops.jsonl` (one record per executed hop, for
 the dataset pipeline) is gated by `conf.hops_log.enabled` and lives under
-`~/.local/state/ti/logs/`; opt in with
-`TI_CONF_OVERLAY='{"hops_log": {"enabled": true}}'`. The extension's `live.jsonl` (one
-record per `useTool` call) is off until `/ti capture on`, which persists to
+`~/.local/state/ti/logs/`. Opt in by writing a partial config and pointing the service at
+it — `TI_CONF_OVERLAY` takes a **path**, not a JSON string:
+
+```sh
+printf '{"hops_log": {"enabled": true}}' > /tmp/ti-hops.json
+TI_CONF_OVERLAY=/tmp/ti-hops.json ti-serve
+```
+
+That file is merged over `conf/defaults.json` at startup, so nothing else has to be
+copied. (Setting the variable to the JSON text itself does not parse it — it opens it as a
+filename and fails with `FileNotFoundError`.) The extension's `live.jsonl` (one record per
+`useTool` call) is off until `/ti capture on`, which persists to
 `~/.local/state/ti/capture.json` — the toggle survives a restart, and `/ti capture off`
 stays off. What a record holds once enabled: the utterance, the argument *names*, sizes
 and confidences — no working directory, no argument values, no artifact text, no error
@@ -520,11 +535,11 @@ also **no "grep alone" arm** — both arms carried all eight options with both e
 Full derivations and the per-signal tables: [`docs/eval-harness-2026-11-04.md`](docs/eval-harness-2026-11-04.md).
 Each affected document carries its own dated, appended correction.
 
-### Dated audits, probes and plans — 2026-11-03
+### Dated audits, probes and plans — 2026-11-03 and 2026-11-04
 
-One tree, not reference material. These were written on 2026-11-03 against the tree of that
-day — most name the commit — and none is rewritten afterwards except by an appended
-Resolution section.
+One tree, not reference material. These were written on 2026-11-03 and 2026-11-04 against
+the tree of the day — most name the commit — and none is rewritten afterwards except by an
+appended Resolution section.
 
 | file | contents |
 |---|---|
@@ -540,6 +555,7 @@ Resolution section.
 | [`docs/router-policy-2026-11-04.md`](docs/router-policy-2026-11-04.md) | the per-class routing figure measured without the answer: 84.7% was an oracle applied on the true label, its deployable replacement is **79.3% [73.6–84.8], n=150**, family-grouped 5-fold × 5 seeds — separately better than the cheap expert (+12.3 pts) and *not* separable from the 3B (+5.3 pts, CI −1.4 to +12.3), with the cascade's accuracy/cost curve (81.6% at 38% escalation), the finding that a top-2 margin gate is no better than top-1 probability, and the 14 of 22 confident 3B misses a class-level policy recovers where no confidence gate can — *not* the same 79.3% as the classical front gate in the baseline row above: same digits, different device, 30% coverage against 44% |
 | [`docs/consistency-review-2026-11-04.md`](docs/consistency-review-2026-11-04.md) | the consistency pass over the whole night's corrections: a contradiction matrix for every retired number (84.7 / 93.19 / 66.23 / 62.7 / 82.0 / 74.0 / the 8.0-point "leak" / the "17-point gap"), which of the conflicts are a dated body doing its job and which are a reader being misled, the reachability ledger (a correction 342 lines below the number it retires is not a correction), the figures the first sweep's grep could not see, and the pointers this pass added |
 | [`docs/logging-2026-11-04.md`](docs/logging-2026-11-04.md) | what the tool records by default, asked of the consumer first: one reader takes two fields out of `hops.jsonl`, so `artifact_summary` (200 chars of a file that was read) and `params` (verbatim argument values) had no reader at all — the conclusion is opt-in capture, a reduced record, a `~`-rooted path and `0600`/`0700` modes that narrow rather than refuse, plus what that costs |
+| [`docs/security-surface-2026-11-04.md`](docs/security-surface-2026-11-04.md) | what a token holder can reach, written down because nothing said it: a valid `X-TI-Token` authorises reading **any file the operator owns**, and with the shipped config that is enumerated from `confine.py` rather than argued — `~/.ssh` (every private key, and the document's own end-to-end request returns one), `~/.gnupg`, `~/.aws`, `~/.local/state/ti` (the token file that authorised the request), `~/.kube` and `~/.docker`, `~/.netrc` / `~/.git-credentials`, shell histories, browser and keyring stores — three body fields and a header, no guard bypassed. It then says why the default is what it is: `roots: ["~", ".", "/tmp"]` closed a real `403` on a clone outside `$HOME` and was documented as a portability fix, never re-read as an authority grant. Recommendation: **keep the roots, ship a short `deny_roots` over the credential subtrees no `useTool` intent needs**, and write the incompleteness in as the headline, because a denylist reduces exposure and does not close it — with what a tighter default would cost and §8's account of the review that measured the widening in only one direction |
 
 ## Layout
 
