@@ -93,6 +93,17 @@
   tool calls (arm A, no LLM: the round-trip count is a property of the shape, the
   per-pass cost is a stated number you can replace) against one `useTool` call (arm
   B), in round trips and wall time. Recorded: `docs/roundtrips-2026-11-03.md`.
+- `d1_382.py` — the **row-wise** 382 figure and its template-grouped companion, both
+  measured here: `d1-3B` scores **90.58%** (346/382) against the imported benchmark's
+  recorded 91.36%, a 0.78-point difference consistent with a different llama.cpp build
+  rather than a different measurement. The grouping does **not** move the point estimate
+  and the reason is worth the bullet: `d1-3B` is frozen, nothing fits on these rows, so
+  there is no template the model could have memorised — unlike `classical_baseline.py`,
+  which trains on them and drops 93.19% → 66.23% when templates are held out. What the
+  grouping changes is the **interval**: [87.23, 93.12] Wilson becomes [80.00, 98.35]
+  clustered over 110 templates, **3.1× wider**. `--recompute` re-derives both aggregates
+  from the committed per-row data with no server.
+
 - `classical_baseline.py` — the non-model baseline: re-runs the sibling
   benchmark's TF-IDF + linear-SVM protocol in-repo with the provenance, overlap,
   near/far and template-grouped CV checks it omitted, then scores the same backend

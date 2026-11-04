@@ -1,0 +1,4962 @@
+{
+ "schema": "ti-bench/d1-382/1",
+ "generated": "2026-11-04T04:12:13-0500",
+ "task_context": {
+  "set": "tests/data/routing_382.json",
+  "rows": 382,
+  "classes": 18,
+  "labels": [
+   "__none__",
+   "calendar_today",
+   "docs_query",
+   "email_unread",
+   "light_query",
+   "light_set",
+   "projects_query",
+   "reminder_cancel",
+   "reminder_create",
+   "research_deep",
+   "shoppinglist_add",
+   "shoppinglist_remove",
+   "shoppinglist_view",
+   "thermostat_offset",
+   "thermostat_set",
+   "timer_cancel",
+   "timer_create",
+   "timer_status"
+  ],
+  "note": "the imported benchmark's 18 smart-home classes; disjoint from this repo's 8 file/web ops, so no figure here is comparable with a v1/v2 number"
+ },
+ "protocol": {
+  "question": "Which single operation should handle the user command?",
+  "ballot": "one criterion per class, described by its own name (__none__ included)",
+  "backend": "d1_systemone \u2014 POST /v1/systemone, state = the utterance",
+  "base_url": "http://127.0.0.1:8080",
+  "grouping": "template",
+  "grouping_unit": "reconstructed generating template (bench/eval_harness.py::load_382)",
+  "n_groups": 110,
+  "bootstrap": {
+   "n_boot": 2000,
+   "seed": 0,
+   "cluster": "template"
+  },
+  "warmup_calls_discarded": 0,
+  "topic_families_present": 7,
+  "topic_grouping_note": "the shipped `family` column is 7 topics, not templates; excluded from the headline figure because holding a topic out deletes whole label classes (bench/d1_382.py docstring)",
+  "argv": [
+   "--out",
+   "bench/results/d1-382-2026-11-04.json",
+   "--grouping",
+   "template"
+  ]
+ },
+ "model_assertion": {
+  "required": [
+   "llama-server"
+  ],
+  "checked": true,
+  "expect_model": "d1-3B-Q4_K_M.gguf",
+  "served_basename": "d1-3B-Q4_K_M.gguf",
+  "source": "http://127.0.0.1:8080/props",
+  "ftype": "Q4_K - Medium",
+  "build_info": "b1-f74e2fa",
+  "api_key_env": "",
+  "api_key_present": null,
+  "served_path": "models/d1-3B-Q4_K_M.gguf"
+ },
+ "server_props": {
+  "path": "models/d1-3B-Q4_K_M.gguf",
+  "basename": "d1-3B-Q4_K_M.gguf",
+  "ftype": "Q4_K - Medium",
+  "build_info": "b1-f74e2fa"
+ },
+ "row_wise": {
+  "accuracy": 0.9058,
+  "correct": 346,
+  "n": 382,
+  "unit": "row",
+  "ci": {
+   "method": "wilson",
+   "level": 0.95,
+   "lo": 0.8723,
+   "hi": 0.9312
+  }
+ },
+ "template_held_out": {
+  "accuracy": 0.9058,
+  "n_rows": 382,
+  "n_groups": 110,
+  "grouping": "template",
+  "unit": "reconstructed generating template (bench/eval_harness.py::load_382)",
+  "ci": {
+   "method": "cluster_bootstrap",
+   "level": 0.95,
+   "n_boot": 2000,
+   "seed": 0,
+   "lo": 0.8,
+   "hi": 0.9835
+  },
+  "note": "d1-3B is frozen: nothing fits on these rows, so the point estimate is identical to row_wise by construction. The grouping changes the interval, not the estimate \u2014 the cluster interval is the one a held-out claim may make."
+ },
+ "interval_width_ratio_cluster_over_wilson": 3.117,
+ "per_group": {
+  "n_groups": 110,
+  "rows_per_group": {
+   "min": 1,
+   "median": 3.5,
+   "max": 25
+  },
+  "singleton_groups": 28,
+  "accuracy": {
+   "macro_mean_over_groups": 0.9607,
+   "median": 1.0,
+   "min": 0.0,
+   "max": 1.0,
+   "groups_at_1.0": 103,
+   "groups_at_0.0": 1
+  },
+  "per_group": {
+   "__none__::unmatched": {
+    "n": 25,
+    "correct": 4,
+    "accuracy": 0.16
+   },
+   "calendar_today::am I free {span}": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "calendar_today::any meetings {day}": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "calendar_today::show me the schedule for {day}": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "calendar_today::what does my {span} look like": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "calendar_today::what's my agenda {day}": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "calendar_today::what's on my calendar {day}": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "docs_query::find documentation on {topic}": {
+    "n": 2,
+    "correct": 2,
+    "accuracy": 1.0
+   },
+   "docs_query::how does {topic} work in the documentation": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "docs_query::look up {topic} in the docs": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "docs_query::pull up what's documented about {topic}": {
+    "n": 6,
+    "correct": 6,
+    "accuracy": 1.0
+   },
+   "docs_query::search the docs for {topic}": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "docs_query::what do the docs say about {topic}": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "email_unread::any mail I haven't seen": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "email_unread::any unread emails this morning": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "email_unread::check the inbox for anything new": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "email_unread::do I have new mail": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "email_unread::how many emails are unread": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "email_unread::read my unread messages": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "email_unread::what's sitting in my inbox": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "light_query::are the {room} lights on": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "light_query::check the {room} light status": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "light_query::did I leave the {room} lights on": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "light_query::is the {room} lamp off": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "light_query::is the {room} light still on": {
+    "n": 5,
+    "correct": 4,
+    "accuracy": 0.8
+   },
+   "light_query::what's the state of the {room} lights": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "light_set::fire up the {room} lights": {
+    "n": 2,
+    "correct": 2,
+    "accuracy": 1.0
+   },
+   "light_set::kill the {room} lights": {
+    "n": 2,
+    "correct": 2,
+    "accuracy": 1.0
+   },
+   "light_set::switch the {room} light {state}": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "light_set::turn the {room} lamp {state}": {
+    "n": 7,
+    "correct": 7,
+    "accuracy": 1.0
+   },
+   "light_set::turn {state} the {room} lights": {
+    "n": 7,
+    "correct": 7,
+    "accuracy": 1.0
+   },
+   "light_set::{room} lights {state} please": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "projects_query::give me a summary of the {project} project": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "projects_query::how is {project} doing": {
+    "n": 5,
+    "correct": 2,
+    "accuracy": 0.4
+   },
+   "projects_query::what am I working on these days": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "projects_query::what's happening in {project}": {
+    "n": 5,
+    "correct": 2,
+    "accuracy": 0.4
+   },
+   "projects_query::what's the status of my projects": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "projects_query::which repos are active right now": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "reminder_cancel::cancel all my reminders": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "reminder_cancel::cancel the reminder for {task}": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "reminder_cancel::delete my reminder about {task}": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "reminder_cancel::delete the reminder set for {time}": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "reminder_cancel::get rid of the {task} reminder": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "reminder_cancel::remove the reminder to {task}": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "reminder_cancel::remove the {time} reminder": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "reminder_create::don't let me forget to {task} {time}": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "reminder_create::remember to {task} {time}": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "reminder_create::remind me about {task} {time}": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "reminder_create::remind me at {time} to {task}": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "reminder_create::remind me to {task} at {time}": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "reminder_create::set a reminder to {task} {time}": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "research_deep::dig into {topic} for me": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "research_deep::dive into {topic}": {
+    "n": 8,
+    "correct": 8,
+    "accuracy": 1.0
+   },
+   "research_deep::find out about {topic}": {
+    "n": 2,
+    "correct": 2,
+    "accuracy": 1.0
+   },
+   "research_deep::investigate {topic} and give me options": {
+    "n": 2,
+    "correct": 2,
+    "accuracy": 1.0
+   },
+   "research_deep::look into {topic}": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "research_deep::research {topic}": {
+    "n": 6,
+    "correct": 6,
+    "accuracy": 1.0
+   },
+   "shoppinglist_add::add some {item} to the grocery list": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "shoppinglist_add::add {item} to my list": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "shoppinglist_add::add {item} to the shopping list": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "shoppinglist_add::put {item} on the grocery list": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "shoppinglist_add::throw {item} on the shopping list": {
+    "n": 6,
+    "correct": 6,
+    "accuracy": 1.0
+   },
+   "shoppinglist_add::we're out of {item}, add it to groceries": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "shoppinglist_remove::cross {item} off the shopping list": {
+    "n": 6,
+    "correct": 6,
+    "accuracy": 1.0
+   },
+   "shoppinglist_remove::delete {item} from my list": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "shoppinglist_remove::remove the {item} from groceries": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "shoppinglist_remove::remove {item} from the shopping list": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "shoppinglist_remove::take {item} off the grocery list": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "shoppinglist_remove::take {item} off the list please": {
+    "n": 2,
+    "correct": 2,
+    "accuracy": 1.0
+   },
+   "shoppinglist_view::list out my shopping items": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "shoppinglist_view::read the shopping list to me": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "shoppinglist_view::show my shopping list": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "shoppinglist_view::what do I need to buy": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "shoppinglist_view::what's on the grocery list today": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "shoppinglist_view::what's on the list right now": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "thermostat_offset::bump the thermostat {direction} a couple degrees": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "thermostat_offset::it's {direction} in here, fix it": {
+    "n": 4,
+    "correct": 0,
+    "accuracy": 0.0
+   },
+   "thermostat_offset::make it {direction} in here": {
+    "n": 3,
+    "correct": 2,
+    "accuracy": 0.6667
+   },
+   "thermostat_offset::make the living room {direction}": {
+    "n": 4,
+    "correct": 1,
+    "accuracy": 0.25
+   },
+   "thermostat_offset::turn the temperature {direction} a bit": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "thermostat_offset::{direction} the heat a little": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "thermostat_set::change the thermostat to {temp}": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "thermostat_set::drop the temperature to {temp} degrees": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "thermostat_set::make it {temp} degrees in here": {
+    "n": 2,
+    "correct": 2,
+    "accuracy": 1.0
+   },
+   "thermostat_set::put the thermostat on {temp}": {
+    "n": 2,
+    "correct": 2,
+    "accuracy": 1.0
+   },
+   "thermostat_set::set the heat to {temp} degrees": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "thermostat_set::set the house temperature to {temp}": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "thermostat_set::set the temperature to {temp} degrees": {
+    "n": 2,
+    "correct": 2,
+    "accuracy": 1.0
+   },
+   "thermostat_set::turn the heat up to {temp} degrees": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "timer_cancel::abort the {duration} countdown": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "timer_cancel::cancel my countdown please": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "timer_cancel::cancel the countdown": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "timer_cancel::cancel the {duration} timer": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "timer_cancel::kill that timer": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "timer_cancel::shut off the running timer": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "timer_cancel::stop the {duration} timer now": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "timer_create::I need a {duration} timer": {
+    "n": 2,
+    "correct": 2,
+    "accuracy": 1.0
+   },
+   "timer_create::give me a {duration} timer please": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "timer_create::kick off a {duration} countdown": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "timer_create::run a timer for {duration}": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "timer_create::set a timer for {duration}": {
+    "n": 3,
+    "correct": 3,
+    "accuracy": 1.0
+   },
+   "timer_create::start a countdown of {duration}": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "timer_create::start a {duration} timer": {
+    "n": 5,
+    "correct": 5,
+    "accuracy": 1.0
+   },
+   "timer_status::check how long is left on the timer": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "timer_status::how much longer on the timer": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "timer_status::how much time is left on the {duration} timer": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "timer_status::is the {duration} timer still going": {
+    "n": 4,
+    "correct": 4,
+    "accuracy": 1.0
+   },
+   "timer_status::time left on the timer please": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "timer_status::what's remaining on the countdown": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   },
+   "timer_status::when does the countdown finish": {
+    "n": 1,
+    "correct": 1,
+    "accuracy": 1.0
+   }
+  }
+ },
+ "accuracy_by_label": {
+  "__none__": {
+   "n": 25,
+   "accuracy": 0.16
+  },
+  "calendar_today": {
+   "n": 21,
+   "accuracy": 1.0
+  },
+  "docs_query": {
+   "n": 25,
+   "accuracy": 1.0
+  },
+  "email_unread": {
+   "n": 7,
+   "accuracy": 1.0
+  },
+  "light_query": {
+   "n": 25,
+   "accuracy": 0.96
+  },
+  "light_set": {
+   "n": 25,
+   "accuracy": 1.0
+  },
+  "projects_query": {
+   "n": 18,
+   "accuracy": 0.6667
+  },
+  "reminder_cancel": {
+   "n": 25,
+   "accuracy": 1.0
+  },
+  "reminder_create": {
+   "n": 25,
+   "accuracy": 1.0
+  },
+  "research_deep": {
+   "n": 25,
+   "accuracy": 1.0
+  },
+  "shoppinglist_add": {
+   "n": 25,
+   "accuracy": 1.0
+  },
+  "shoppinglist_remove": {
+   "n": 25,
+   "accuracy": 1.0
+  },
+  "shoppinglist_view": {
+   "n": 6,
+   "accuracy": 1.0
+  },
+  "thermostat_offset": {
+   "n": 23,
+   "accuracy": 0.6522
+  },
+  "thermostat_set": {
+   "n": 25,
+   "accuracy": 1.0
+  },
+  "timer_cancel": {
+   "n": 19,
+   "accuracy": 1.0
+  },
+  "timer_create": {
+   "n": 25,
+   "accuracy": 1.0
+  },
+  "timer_status": {
+   "n": 13,
+   "accuracy": 1.0
+  }
+ },
+ "malformed_responses": 0,
+ "errors": 1,
+ "latency_ms": {
+  "p50": 4562.4,
+  "p90": 8180.2,
+  "p95": 9683.7,
+  "p99": 19474.5,
+  "mean": 5435.7
+ },
+ "confidence": {
+  "p50": 0.9624,
+  "mean": 0.8518
+ },
+ "per_row": [
+  {
+   "idx": 0,
+   "utterance": "run a timer for 2 hours",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.981867,
+   "latency_ms": 1909.071,
+   "group": "timer_create::run a timer for {duration}",
+   "error": null
+  },
+  {
+   "idx": 1,
+   "utterance": "set a timer for 90 seconds",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.982995,
+   "latency_ms": 1836.02,
+   "group": "timer_create::set a timer for {duration}",
+   "error": null
+  },
+  {
+   "idx": 2,
+   "utterance": "I need a 90 seconds timer",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.980372,
+   "latency_ms": 2402.376,
+   "group": "timer_create::I need a {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 3,
+   "utterance": "run a timer for 1 hour",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.981504,
+   "latency_ms": 6138.304,
+   "group": "timer_create::run a timer for {duration}",
+   "error": null
+  },
+  {
+   "idx": 4,
+   "utterance": "set a timer for 5 minutes",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.983967,
+   "latency_ms": 5007.096,
+   "group": "timer_create::set a timer for {duration}",
+   "error": null
+  },
+  {
+   "idx": 5,
+   "utterance": "run a timer for 45 seconds",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.982532,
+   "latency_ms": 4875.787,
+   "group": "timer_create::run a timer for {duration}",
+   "error": null
+  },
+  {
+   "idx": 6,
+   "utterance": "start a 10 minutes timer",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.983561,
+   "latency_ms": 4837.774,
+   "group": "timer_create::start a {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 7,
+   "utterance": "give me a 3 minutes timer please",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.981465,
+   "latency_ms": 4029.709,
+   "group": "timer_create::give me a {duration} timer please",
+   "error": null
+  },
+  {
+   "idx": 8,
+   "utterance": "set a timer for 1 hour",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.982379,
+   "latency_ms": 4063.555,
+   "group": "timer_create::set a timer for {duration}",
+   "error": null
+  },
+  {
+   "idx": 9,
+   "utterance": "run a timer for half an hour",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.983024,
+   "latency_ms": 3836.197,
+   "group": "timer_create::run a timer for {duration}",
+   "error": null
+  },
+  {
+   "idx": 10,
+   "utterance": "kick off a half an hour countdown",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.971422,
+   "latency_ms": 3542.436,
+   "group": "timer_create::kick off a {duration} countdown",
+   "error": null
+  },
+  {
+   "idx": 11,
+   "utterance": "start a 90 seconds timer",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.983069,
+   "latency_ms": 3908.419,
+   "group": "timer_create::start a {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 12,
+   "utterance": "start a countdown of 25 minutes",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.979463,
+   "latency_ms": 3867.403,
+   "group": "timer_create::start a countdown of {duration}",
+   "error": null
+  },
+  {
+   "idx": 13,
+   "utterance": "start a countdown of half an hour",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.973177,
+   "latency_ms": 4738.589,
+   "group": "timer_create::start a countdown of {duration}",
+   "error": null
+  },
+  {
+   "idx": 14,
+   "utterance": "start a 25 minutes timer",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.98432,
+   "latency_ms": 4126.728,
+   "group": "timer_create::start a {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 15,
+   "utterance": "I need a 5 minutes timer",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.98044,
+   "latency_ms": 4181.096,
+   "group": "timer_create::I need a {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 16,
+   "utterance": "start a countdown of 12 minutes",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.977528,
+   "latency_ms": 4273.403,
+   "group": "timer_create::start a countdown of {duration}",
+   "error": null
+  },
+  {
+   "idx": 17,
+   "utterance": "kick off a 3 minutes countdown",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.973029,
+   "latency_ms": 4307.819,
+   "group": "timer_create::kick off a {duration} countdown",
+   "error": null
+  },
+  {
+   "idx": 18,
+   "utterance": "start a countdown of 10 minutes",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.976274,
+   "latency_ms": 5231.143,
+   "group": "timer_create::start a countdown of {duration}",
+   "error": null
+  },
+  {
+   "idx": 19,
+   "utterance": "give me a 90 seconds timer please",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.980468,
+   "latency_ms": 4082.683,
+   "group": "timer_create::give me a {duration} timer please",
+   "error": null
+  },
+  {
+   "idx": 20,
+   "utterance": "start a countdown of 5 minutes",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.976948,
+   "latency_ms": 4737.516,
+   "group": "timer_create::start a countdown of {duration}",
+   "error": null
+  },
+  {
+   "idx": 21,
+   "utterance": "give me a half an hour timer please",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.979027,
+   "latency_ms": 5003.633,
+   "group": "timer_create::give me a {duration} timer please",
+   "error": null
+  },
+  {
+   "idx": 22,
+   "utterance": "kick off a 1 hour countdown",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.973311,
+   "latency_ms": 4714.794,
+   "group": "timer_create::kick off a {duration} countdown",
+   "error": null
+  },
+  {
+   "idx": 23,
+   "utterance": "start a 5 minutes timer",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.983847,
+   "latency_ms": 4845.819,
+   "group": "timer_create::start a {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 24,
+   "utterance": "start a 12 minutes timer",
+   "expected": "timer_create",
+   "predicted": "timer_create",
+   "correct": true,
+   "confidence": 0.983813,
+   "latency_ms": 4410.307,
+   "group": "timer_create::start a {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 25,
+   "utterance": "cancel the 30 second timer",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.968118,
+   "latency_ms": 5598.925,
+   "group": "timer_cancel::cancel the {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 26,
+   "utterance": "stop the 1 hour timer now",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.972958,
+   "latency_ms": 4286.824,
+   "group": "timer_cancel::stop the {duration} timer now",
+   "error": null
+  },
+  {
+   "idx": 27,
+   "utterance": "cancel the countdown",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.906511,
+   "latency_ms": 4049.738,
+   "group": "timer_cancel::cancel the countdown",
+   "error": null
+  },
+  {
+   "idx": 28,
+   "utterance": "shut off the running timer",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.973042,
+   "latency_ms": 4043.767,
+   "group": "timer_cancel::shut off the running timer",
+   "error": null
+  },
+  {
+   "idx": 29,
+   "utterance": "abort the 10 minute countdown",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.956544,
+   "latency_ms": 5277.49,
+   "group": "timer_cancel::abort the {duration} countdown",
+   "error": null
+  },
+  {
+   "idx": 30,
+   "utterance": "abort the 1 hour countdown",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.953539,
+   "latency_ms": 8256.241,
+   "group": "timer_cancel::abort the {duration} countdown",
+   "error": null
+  },
+  {
+   "idx": 31,
+   "utterance": "kill that timer",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.963252,
+   "latency_ms": 4635.39,
+   "group": "timer_cancel::kill that timer",
+   "error": null
+  },
+  {
+   "idx": 32,
+   "utterance": "stop the 3 minute timer now",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.974013,
+   "latency_ms": 4366.53,
+   "group": "timer_cancel::stop the {duration} timer now",
+   "error": null
+  },
+  {
+   "idx": 33,
+   "utterance": "abort the 30 second countdown",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.943135,
+   "latency_ms": 3894.509,
+   "group": "timer_cancel::abort the {duration} countdown",
+   "error": null
+  },
+  {
+   "idx": 34,
+   "utterance": "stop the 5 minute timer now",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.974331,
+   "latency_ms": 3820.553,
+   "group": "timer_cancel::stop the {duration} timer now",
+   "error": null
+  },
+  {
+   "idx": 35,
+   "utterance": "cancel the 5 minute timer",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.971789,
+   "latency_ms": 4240.402,
+   "group": "timer_cancel::cancel the {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 36,
+   "utterance": "abort the 5 minute countdown",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.955659,
+   "latency_ms": 4351.482,
+   "group": "timer_cancel::abort the {duration} countdown",
+   "error": null
+  },
+  {
+   "idx": 37,
+   "utterance": "cancel the 1 hour timer",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.969063,
+   "latency_ms": 4102.605,
+   "group": "timer_cancel::cancel the {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 38,
+   "utterance": "stop the 10 minute timer now",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.974434,
+   "latency_ms": 4453.334,
+   "group": "timer_cancel::stop the {duration} timer now",
+   "error": null
+  },
+  {
+   "idx": 39,
+   "utterance": "stop the 30 second timer now",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.969771,
+   "latency_ms": 4062.225,
+   "group": "timer_cancel::stop the {duration} timer now",
+   "error": null
+  },
+  {
+   "idx": 40,
+   "utterance": "cancel the 10 minute timer",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.971916,
+   "latency_ms": 3955.843,
+   "group": "timer_cancel::cancel the {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 41,
+   "utterance": "cancel my countdown please",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.87495,
+   "latency_ms": 4008.928,
+   "group": "timer_cancel::cancel my countdown please",
+   "error": null
+  },
+  {
+   "idx": 42,
+   "utterance": "abort the 3 minute countdown",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.956635,
+   "latency_ms": 4362.24,
+   "group": "timer_cancel::abort the {duration} countdown",
+   "error": null
+  },
+  {
+   "idx": 43,
+   "utterance": "cancel the 3 minute timer",
+   "expected": "timer_cancel",
+   "predicted": "timer_cancel",
+   "correct": true,
+   "confidence": 0.971391,
+   "latency_ms": 4198.749,
+   "group": "timer_cancel::cancel the {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 44,
+   "utterance": "how much time is left on the 1 hour timer",
+   "expected": "timer_status",
+   "predicted": "timer_status",
+   "correct": true,
+   "confidence": 0.964619,
+   "latency_ms": 4501.56,
+   "group": "timer_status::how much time is left on the {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 45,
+   "utterance": "what's remaining on the countdown",
+   "expected": "timer_status",
+   "predicted": "timer_status",
+   "correct": true,
+   "confidence": 0.860966,
+   "latency_ms": 4822.178,
+   "group": "timer_status::what's remaining on the countdown",
+   "error": null
+  },
+  {
+   "idx": 46,
+   "utterance": "check how long is left on the timer",
+   "expected": "timer_status",
+   "predicted": "timer_status",
+   "correct": true,
+   "confidence": 0.972367,
+   "latency_ms": 4413.8,
+   "group": "timer_status::check how long is left on the timer",
+   "error": null
+  },
+  {
+   "idx": 47,
+   "utterance": "when does the countdown finish",
+   "expected": "timer_status",
+   "predicted": "timer_status",
+   "correct": true,
+   "confidence": 0.788304,
+   "latency_ms": 4494.642,
+   "group": "timer_status::when does the countdown finish",
+   "error": null
+  },
+  {
+   "idx": 48,
+   "utterance": "is the 1 hour timer still going",
+   "expected": "timer_status",
+   "predicted": "timer_status",
+   "correct": true,
+   "confidence": 0.960319,
+   "latency_ms": 4308.522,
+   "group": "timer_status::is the {duration} timer still going",
+   "error": null
+  },
+  {
+   "idx": 49,
+   "utterance": "is the 10 minute timer still going",
+   "expected": "timer_status",
+   "predicted": "timer_status",
+   "correct": true,
+   "confidence": 0.962964,
+   "latency_ms": 4593.442,
+   "group": "timer_status::is the {duration} timer still going",
+   "error": null
+  },
+  {
+   "idx": 50,
+   "utterance": "is the 25 minute timer still going",
+   "expected": "timer_status",
+   "predicted": "timer_status",
+   "correct": true,
+   "confidence": 0.959856,
+   "latency_ms": 4650.564,
+   "group": "timer_status::is the {duration} timer still going",
+   "error": null
+  },
+  {
+   "idx": 51,
+   "utterance": "time left on the timer please",
+   "expected": "timer_status",
+   "predicted": "timer_status",
+   "correct": true,
+   "confidence": 0.972034,
+   "latency_ms": 4439.804,
+   "group": "timer_status::time left on the timer please",
+   "error": null
+  },
+  {
+   "idx": 52,
+   "utterance": "how much time is left on the 5 minute timer",
+   "expected": "timer_status",
+   "predicted": "timer_status",
+   "correct": true,
+   "confidence": 0.963395,
+   "latency_ms": 4603.215,
+   "group": "timer_status::how much time is left on the {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 53,
+   "utterance": "is the 5 minute timer still going",
+   "expected": "timer_status",
+   "predicted": "timer_status",
+   "correct": true,
+   "confidence": 0.960302,
+   "latency_ms": 4099.25,
+   "group": "timer_status::is the {duration} timer still going",
+   "error": null
+  },
+  {
+   "idx": 54,
+   "utterance": "how much time is left on the 10 minute timer",
+   "expected": "timer_status",
+   "predicted": "timer_status",
+   "correct": true,
+   "confidence": 0.964675,
+   "latency_ms": 4223.719,
+   "group": "timer_status::how much time is left on the {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 55,
+   "utterance": "how much longer on the timer",
+   "expected": "timer_status",
+   "predicted": "timer_status",
+   "correct": true,
+   "confidence": 0.95718,
+   "latency_ms": 6140.154,
+   "group": "timer_status::how much longer on the timer",
+   "error": null
+  },
+  {
+   "idx": 56,
+   "utterance": "how much time is left on the 25 minute timer",
+   "expected": "timer_status",
+   "predicted": "timer_status",
+   "correct": true,
+   "confidence": 0.962026,
+   "latency_ms": 6923.264,
+   "group": "timer_status::how much time is left on the {duration} timer",
+   "error": null
+  },
+  {
+   "idx": 57,
+   "utterance": "remind me at next Monday to feed the cat",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.973883,
+   "latency_ms": 4628.695,
+   "group": "reminder_create::remind me at {time} to {task}",
+   "error": null
+  },
+  {
+   "idx": 58,
+   "utterance": "remind me at in 20 minutes to charge the scooter",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.931255,
+   "latency_ms": 5645.045,
+   "group": "reminder_create::remind me at {time} to {task}",
+   "error": null
+  },
+  {
+   "idx": 59,
+   "utterance": "set a reminder to feed the cat on Friday",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.977008,
+   "latency_ms": 4535.766,
+   "group": "reminder_create::set a reminder to {task} {time}",
+   "error": null
+  },
+  {
+   "idx": 60,
+   "utterance": "remember to water the plants tomorrow at 9am",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.926606,
+   "latency_ms": 4241.593,
+   "group": "reminder_create::remember to {task} {time}",
+   "error": null
+  },
+  {
+   "idx": 61,
+   "utterance": "remind me to water the plants at at 7:30am",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.971133,
+   "latency_ms": 4493.718,
+   "group": "reminder_create::remind me to {task} at {time}",
+   "error": null
+  },
+  {
+   "idx": 62,
+   "utterance": "remember to feed the cat next Monday",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.961783,
+   "latency_ms": 4176.936,
+   "group": "reminder_create::remember to {task} {time}",
+   "error": null
+  },
+  {
+   "idx": 63,
+   "utterance": "remember to charge the scooter tomorrow at 9am",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.92298,
+   "latency_ms": 4351.767,
+   "group": "reminder_create::remember to {task} {time}",
+   "error": null
+  },
+  {
+   "idx": 64,
+   "utterance": "remind me about charge the scooter in 20 minutes",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.940959,
+   "latency_ms": 4423.282,
+   "group": "reminder_create::remind me about {task} {time}",
+   "error": null
+  },
+  {
+   "idx": 65,
+   "utterance": "remind me at at 7:30am to feed the cat",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.962401,
+   "latency_ms": 4941.435,
+   "group": "reminder_create::remind me at {time} to {task}",
+   "error": null
+  },
+  {
+   "idx": 66,
+   "utterance": "remind me about water the plants next Monday",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.970976,
+   "latency_ms": 5468.742,
+   "group": "reminder_create::remind me about {task} {time}",
+   "error": null
+  },
+  {
+   "idx": 67,
+   "utterance": "remind me to take the cookies out at at 6pm",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.969657,
+   "latency_ms": 4821.427,
+   "group": "reminder_create::remind me to {task} at {time}",
+   "error": null
+  },
+  {
+   "idx": 68,
+   "utterance": "remind me about water the plants on Friday",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.970659,
+   "latency_ms": 6087.624,
+   "group": "reminder_create::remind me about {task} {time}",
+   "error": null
+  },
+  {
+   "idx": 69,
+   "utterance": "remember to feed the cat on Friday",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.959347,
+   "latency_ms": 4702.662,
+   "group": "reminder_create::remember to {task} {time}",
+   "error": null
+  },
+  {
+   "idx": 70,
+   "utterance": "remind me about check the laundry in 20 minutes",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.933718,
+   "latency_ms": 4912.305,
+   "group": "reminder_create::remind me about {task} {time}",
+   "error": null
+  },
+  {
+   "idx": 71,
+   "utterance": "remind me to lock the back door at at 7:30am",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.969167,
+   "latency_ms": 4240.187,
+   "group": "reminder_create::remind me to {task} at {time}",
+   "error": null
+  },
+  {
+   "idx": 72,
+   "utterance": "don't let me forget to feed the cat tomorrow at 9am",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.947546,
+   "latency_ms": 3756.899,
+   "group": "reminder_create::don't let me forget to {task} {time}",
+   "error": null
+  },
+  {
+   "idx": 73,
+   "utterance": "don't let me forget to charge the scooter at 6pm",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.940911,
+   "latency_ms": 4584.325,
+   "group": "reminder_create::don't let me forget to {task} {time}",
+   "error": null
+  },
+  {
+   "idx": 74,
+   "utterance": "remember to water the plants at 6pm",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.928522,
+   "latency_ms": 4071.801,
+   "group": "reminder_create::remember to {task} {time}",
+   "error": null
+  },
+  {
+   "idx": 75,
+   "utterance": "remind me about take the cookies out next Monday",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.970149,
+   "latency_ms": 3766.101,
+   "group": "reminder_create::remind me about {task} {time}",
+   "error": null
+  },
+  {
+   "idx": 76,
+   "utterance": "remind me at tomorrow at 9am to charge the scooter",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.971182,
+   "latency_ms": 3843.951,
+   "group": "reminder_create::remind me at {time} to {task}",
+   "error": null
+  },
+  {
+   "idx": 77,
+   "utterance": "remind me to submit the tax form at this evening",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.96843,
+   "latency_ms": 4418.928,
+   "group": "reminder_create::remind me to {task} at {time}",
+   "error": null
+  },
+  {
+   "idx": 78,
+   "utterance": "remind me to water the plants at tomorrow at 9am",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.973304,
+   "latency_ms": 4427.403,
+   "group": "reminder_create::remind me to {task} at {time}",
+   "error": null
+  },
+  {
+   "idx": 79,
+   "utterance": "don't let me forget to feed the cat next Monday",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.962069,
+   "latency_ms": 4244.801,
+   "group": "reminder_create::don't let me forget to {task} {time}",
+   "error": null
+  },
+  {
+   "idx": 80,
+   "utterance": "don't let me forget to submit the tax form on Friday",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.949247,
+   "latency_ms": 4502.537,
+   "group": "reminder_create::don't let me forget to {task} {time}",
+   "error": null
+  },
+  {
+   "idx": 81,
+   "utterance": "remind me at on Friday to charge the scooter",
+   "expected": "reminder_create",
+   "predicted": "reminder_create",
+   "correct": true,
+   "confidence": 0.971366,
+   "latency_ms": 5314.309,
+   "group": "reminder_create::remind me at {time} to {task}",
+   "error": null
+  },
+  {
+   "idx": 82,
+   "utterance": "remove the reminder to trash",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.947552,
+   "latency_ms": 5046.849,
+   "group": "reminder_cancel::remove the reminder to {task}",
+   "error": null
+  },
+  {
+   "idx": 83,
+   "utterance": "delete my reminder about dentist",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.97648,
+   "latency_ms": 4247.725,
+   "group": "reminder_cancel::delete my reminder about {task}",
+   "error": null
+  },
+  {
+   "idx": 84,
+   "utterance": "get rid of the meeting reminder",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.968886,
+   "latency_ms": 3509.751,
+   "group": "reminder_cancel::get rid of the {task} reminder",
+   "error": null
+  },
+  {
+   "idx": 85,
+   "utterance": "cancel the reminder for meeting",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.973802,
+   "latency_ms": 3409.547,
+   "group": "reminder_cancel::cancel the reminder for {task}",
+   "error": null
+  },
+  {
+   "idx": 86,
+   "utterance": "cancel the reminder for dentist",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.97693,
+   "latency_ms": 3676.519,
+   "group": "reminder_cancel::cancel the reminder for {task}",
+   "error": null
+  },
+  {
+   "idx": 87,
+   "utterance": "remove the 6pm reminder",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.964043,
+   "latency_ms": 4635.392,
+   "group": "reminder_cancel::remove the {time} reminder",
+   "error": null
+  },
+  {
+   "idx": 88,
+   "utterance": "delete my reminder about meeting",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.973915,
+   "latency_ms": 4338.7,
+   "group": "reminder_cancel::delete my reminder about {task}",
+   "error": null
+  },
+  {
+   "idx": 89,
+   "utterance": "cancel the reminder for package",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.971977,
+   "latency_ms": 4771.973,
+   "group": "reminder_cancel::cancel the reminder for {task}",
+   "error": null
+  },
+  {
+   "idx": 90,
+   "utterance": "get rid of the package reminder",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.970203,
+   "latency_ms": 4029.031,
+   "group": "reminder_cancel::get rid of the {task} reminder",
+   "error": null
+  },
+  {
+   "idx": 91,
+   "utterance": "remove the 9am reminder",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.96294,
+   "latency_ms": 4422.772,
+   "group": "reminder_cancel::remove the {time} reminder",
+   "error": null
+  },
+  {
+   "idx": 92,
+   "utterance": "delete the reminder set for noon",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.966824,
+   "latency_ms": 4147.705,
+   "group": "reminder_cancel::delete the reminder set for {time}",
+   "error": null
+  },
+  {
+   "idx": 93,
+   "utterance": "delete the reminder set for 9am",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.969288,
+   "latency_ms": 4437.737,
+   "group": "reminder_cancel::delete the reminder set for {time}",
+   "error": null
+  },
+  {
+   "idx": 94,
+   "utterance": "remove the 5pm reminder",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.969635,
+   "latency_ms": 4427.468,
+   "group": "reminder_cancel::remove the {time} reminder",
+   "error": null
+  },
+  {
+   "idx": 95,
+   "utterance": "remove the reminder to dentist",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.968271,
+   "latency_ms": 5719.125,
+   "group": "reminder_cancel::remove the reminder to {task}",
+   "error": null
+  },
+  {
+   "idx": 96,
+   "utterance": "cancel all my reminders",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.976748,
+   "latency_ms": 4713.37,
+   "group": "reminder_cancel::cancel all my reminders",
+   "error": null
+  },
+  {
+   "idx": 97,
+   "utterance": "delete my reminder about laundry",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.977259,
+   "latency_ms": 4163.909,
+   "group": "reminder_cancel::delete my reminder about {task}",
+   "error": null
+  },
+  {
+   "idx": 98,
+   "utterance": "cancel the reminder for trash",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.975066,
+   "latency_ms": 4148.518,
+   "group": "reminder_cancel::cancel the reminder for {task}",
+   "error": null
+  },
+  {
+   "idx": 99,
+   "utterance": "delete the reminder set for 5pm",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.971953,
+   "latency_ms": 4217.51,
+   "group": "reminder_cancel::delete the reminder set for {time}",
+   "error": null
+  },
+  {
+   "idx": 100,
+   "utterance": "remove the reminder to package",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.956943,
+   "latency_ms": 4280.081,
+   "group": "reminder_cancel::remove the reminder to {task}",
+   "error": null
+  },
+  {
+   "idx": 101,
+   "utterance": "get rid of the dentist reminder",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.976469,
+   "latency_ms": 4378.933,
+   "group": "reminder_cancel::get rid of the {task} reminder",
+   "error": null
+  },
+  {
+   "idx": 102,
+   "utterance": "remove the reminder to meeting",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.963933,
+   "latency_ms": 4375.192,
+   "group": "reminder_cancel::remove the reminder to {task}",
+   "error": null
+  },
+  {
+   "idx": 103,
+   "utterance": "remove the reminder to laundry",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.970554,
+   "latency_ms": 4018.282,
+   "group": "reminder_cancel::remove the reminder to {task}",
+   "error": null
+  },
+  {
+   "idx": 104,
+   "utterance": "delete my reminder about package",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.974078,
+   "latency_ms": 4140.244,
+   "group": "reminder_cancel::delete my reminder about {task}",
+   "error": null
+  },
+  {
+   "idx": 105,
+   "utterance": "remove the noon reminder",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.964111,
+   "latency_ms": 3914.924,
+   "group": "reminder_cancel::remove the {time} reminder",
+   "error": null
+  },
+  {
+   "idx": 106,
+   "utterance": "delete my reminder about trash",
+   "expected": "reminder_cancel",
+   "predicted": "reminder_cancel",
+   "correct": true,
+   "confidence": 0.974705,
+   "latency_ms": 4255.789,
+   "group": "reminder_cancel::delete my reminder about {task}",
+   "error": null
+  },
+  {
+   "idx": 107,
+   "utterance": "add some paper towels to the grocery list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.984336,
+   "latency_ms": 4362.194,
+   "group": "shoppinglist_add::add some {item} to the grocery list",
+   "error": null
+  },
+  {
+   "idx": 108,
+   "utterance": "add paper towels to the shopping list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.985365,
+   "latency_ms": 5382.173,
+   "group": "shoppinglist_add::add {item} to the shopping list",
+   "error": null
+  },
+  {
+   "idx": 109,
+   "utterance": "throw pasta on the shopping list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.983354,
+   "latency_ms": 5612.268,
+   "group": "shoppinglist_add::throw {item} on the shopping list",
+   "error": null
+  },
+  {
+   "idx": 110,
+   "utterance": "we're out of dish soap, add it to groceries",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.981868,
+   "latency_ms": 3949.674,
+   "group": "shoppinglist_add::we're out of {item}, add it to groceries",
+   "error": null
+  },
+  {
+   "idx": 111,
+   "utterance": "we're out of olive oil, add it to groceries",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.979599,
+   "latency_ms": 4543.312,
+   "group": "shoppinglist_add::we're out of {item}, add it to groceries",
+   "error": null
+  },
+  {
+   "idx": 112,
+   "utterance": "throw chicken on the shopping list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.981768,
+   "latency_ms": 3652.77,
+   "group": "shoppinglist_add::throw {item} on the shopping list",
+   "error": null
+  },
+  {
+   "idx": 113,
+   "utterance": "we're out of bread, add it to groceries",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.980642,
+   "latency_ms": 5552.722,
+   "group": "shoppinglist_add::we're out of {item}, add it to groceries",
+   "error": null
+  },
+  {
+   "idx": 114,
+   "utterance": "throw olive oil on the shopping list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.984163,
+   "latency_ms": 4632.688,
+   "group": "shoppinglist_add::throw {item} on the shopping list",
+   "error": null
+  },
+  {
+   "idx": 115,
+   "utterance": "add batteries to the shopping list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.982837,
+   "latency_ms": 4623.929,
+   "group": "shoppinglist_add::add {item} to the shopping list",
+   "error": null
+  },
+  {
+   "idx": 116,
+   "utterance": "we're out of bananas, add it to groceries",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.979709,
+   "latency_ms": 4898.681,
+   "group": "shoppinglist_add::we're out of {item}, add it to groceries",
+   "error": null
+  },
+  {
+   "idx": 117,
+   "utterance": "add olive oil to my list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.980394,
+   "latency_ms": 4337.76,
+   "group": "shoppinglist_add::add {item} to my list",
+   "error": null
+  },
+  {
+   "idx": 118,
+   "utterance": "put milk on the grocery list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.985138,
+   "latency_ms": 4389.364,
+   "group": "shoppinglist_add::put {item} on the grocery list",
+   "error": null
+  },
+  {
+   "idx": 119,
+   "utterance": "we're out of batteries, add it to groceries",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.979623,
+   "latency_ms": 4759.428,
+   "group": "shoppinglist_add::we're out of {item}, add it to groceries",
+   "error": null
+  },
+  {
+   "idx": 120,
+   "utterance": "add some bananas to the grocery list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.983741,
+   "latency_ms": 4341.387,
+   "group": "shoppinglist_add::add some {item} to the grocery list",
+   "error": null
+  },
+  {
+   "idx": 121,
+   "utterance": "add olive oil to the shopping list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.985165,
+   "latency_ms": 4430.935,
+   "group": "shoppinglist_add::add {item} to the shopping list",
+   "error": null
+  },
+  {
+   "idx": 122,
+   "utterance": "throw rice on the shopping list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.976907,
+   "latency_ms": 4713.145,
+   "group": "shoppinglist_add::throw {item} on the shopping list",
+   "error": null
+  },
+  {
+   "idx": 123,
+   "utterance": "add bananas to the shopping list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.984623,
+   "latency_ms": 4237.356,
+   "group": "shoppinglist_add::add {item} to the shopping list",
+   "error": null
+  },
+  {
+   "idx": 124,
+   "utterance": "throw batteries on the shopping list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.982834,
+   "latency_ms": 4383.55,
+   "group": "shoppinglist_add::throw {item} on the shopping list",
+   "error": null
+  },
+  {
+   "idx": 125,
+   "utterance": "add bread to my list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.975534,
+   "latency_ms": 5517.383,
+   "group": "shoppinglist_add::add {item} to my list",
+   "error": null
+  },
+  {
+   "idx": 126,
+   "utterance": "add chicken to my list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.974368,
+   "latency_ms": 5172.07,
+   "group": "shoppinglist_add::add {item} to my list",
+   "error": null
+  },
+  {
+   "idx": 127,
+   "utterance": "add some batteries to the grocery list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.984168,
+   "latency_ms": 5126.534,
+   "group": "shoppinglist_add::add some {item} to the grocery list",
+   "error": null
+  },
+  {
+   "idx": 128,
+   "utterance": "add some rice to the grocery list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.982888,
+   "latency_ms": 4880.286,
+   "group": "shoppinglist_add::add some {item} to the grocery list",
+   "error": null
+  },
+  {
+   "idx": 129,
+   "utterance": "throw dish soap on the shopping list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.981355,
+   "latency_ms": 4543.819,
+   "group": "shoppinglist_add::throw {item} on the shopping list",
+   "error": null
+  },
+  {
+   "idx": 130,
+   "utterance": "add chicken to the shopping list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.985435,
+   "latency_ms": 4821.871,
+   "group": "shoppinglist_add::add {item} to the shopping list",
+   "error": null
+  },
+  {
+   "idx": 131,
+   "utterance": "add batteries to my list",
+   "expected": "shoppinglist_add",
+   "predicted": "shoppinglist_add",
+   "correct": true,
+   "confidence": 0.973853,
+   "latency_ms": 4854.284,
+   "group": "shoppinglist_add::add {item} to my list",
+   "error": null
+  },
+  {
+   "idx": 132,
+   "utterance": "remove bananas from the shopping list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.980949,
+   "latency_ms": 4970.148,
+   "group": "shoppinglist_remove::remove {item} from the shopping list",
+   "error": null
+  },
+  {
+   "idx": 133,
+   "utterance": "take pasta off the grocery list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.979589,
+   "latency_ms": 5848.639,
+   "group": "shoppinglist_remove::take {item} off the grocery list",
+   "error": null
+  },
+  {
+   "idx": 134,
+   "utterance": "cross bananas off the shopping list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.980783,
+   "latency_ms": 5097.716,
+   "group": "shoppinglist_remove::cross {item} off the shopping list",
+   "error": null
+  },
+  {
+   "idx": 135,
+   "utterance": "delete coffee from my list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.970452,
+   "latency_ms": 3816.319,
+   "group": "shoppinglist_remove::delete {item} from my list",
+   "error": null
+  },
+  {
+   "idx": 136,
+   "utterance": "take pasta off the list please",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.953264,
+   "latency_ms": 3827.261,
+   "group": "shoppinglist_remove::take {item} off the list please",
+   "error": null
+  },
+  {
+   "idx": 137,
+   "utterance": "delete pasta from my list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.96982,
+   "latency_ms": 3992.915,
+   "group": "shoppinglist_remove::delete {item} from my list",
+   "error": null
+  },
+  {
+   "idx": 138,
+   "utterance": "remove the bread from groceries",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.969595,
+   "latency_ms": 3704.342,
+   "group": "shoppinglist_remove::remove the {item} from groceries",
+   "error": null
+  },
+  {
+   "idx": 139,
+   "utterance": "remove the chicken from groceries",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.971417,
+   "latency_ms": 3985.101,
+   "group": "shoppinglist_remove::remove the {item} from groceries",
+   "error": null
+  },
+  {
+   "idx": 140,
+   "utterance": "remove bread from the shopping list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.980238,
+   "latency_ms": 4655.576,
+   "group": "shoppinglist_remove::remove {item} from the shopping list",
+   "error": null
+  },
+  {
+   "idx": 141,
+   "utterance": "cross batteries off the shopping list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.975387,
+   "latency_ms": 6033.618,
+   "group": "shoppinglist_remove::cross {item} off the shopping list",
+   "error": null
+  },
+  {
+   "idx": 142,
+   "utterance": "delete rice from my list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.97263,
+   "latency_ms": 5298.057,
+   "group": "shoppinglist_remove::delete {item} from my list",
+   "error": null
+  },
+  {
+   "idx": 143,
+   "utterance": "delete chicken from my list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.973058,
+   "latency_ms": 3951.589,
+   "group": "shoppinglist_remove::delete {item} from my list",
+   "error": null
+  },
+  {
+   "idx": 144,
+   "utterance": "cross eggs off the shopping list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.97913,
+   "latency_ms": 4269.482,
+   "group": "shoppinglist_remove::cross {item} off the shopping list",
+   "error": null
+  },
+  {
+   "idx": 145,
+   "utterance": "cross coffee off the shopping list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.980561,
+   "latency_ms": 5279.383,
+   "group": "shoppinglist_remove::cross {item} off the shopping list",
+   "error": null
+  },
+  {
+   "idx": 146,
+   "utterance": "take coffee off the grocery list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.977689,
+   "latency_ms": 5133.771,
+   "group": "shoppinglist_remove::take {item} off the grocery list",
+   "error": null
+  },
+  {
+   "idx": 147,
+   "utterance": "cross rice off the shopping list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.981952,
+   "latency_ms": 6279.385,
+   "group": "shoppinglist_remove::cross {item} off the shopping list",
+   "error": null
+  },
+  {
+   "idx": 148,
+   "utterance": "cross bread off the shopping list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.980934,
+   "latency_ms": 4869.791,
+   "group": "shoppinglist_remove::cross {item} off the shopping list",
+   "error": null
+  },
+  {
+   "idx": 149,
+   "utterance": "take batteries off the grocery list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.977355,
+   "latency_ms": 4086.216,
+   "group": "shoppinglist_remove::take {item} off the grocery list",
+   "error": null
+  },
+  {
+   "idx": 150,
+   "utterance": "remove chicken from the shopping list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.980464,
+   "latency_ms": 4385.882,
+   "group": "shoppinglist_remove::remove {item} from the shopping list",
+   "error": null
+  },
+  {
+   "idx": 151,
+   "utterance": "remove olive oil from the shopping list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.980612,
+   "latency_ms": 5298.157,
+   "group": "shoppinglist_remove::remove {item} from the shopping list",
+   "error": null
+  },
+  {
+   "idx": 152,
+   "utterance": "remove the milk from groceries",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.971072,
+   "latency_ms": 4265.584,
+   "group": "shoppinglist_remove::remove the {item} from groceries",
+   "error": null
+  },
+  {
+   "idx": 153,
+   "utterance": "delete olive oil from my list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.976767,
+   "latency_ms": 3865.34,
+   "group": "shoppinglist_remove::delete {item} from my list",
+   "error": null
+  },
+  {
+   "idx": 154,
+   "utterance": "remove pasta from the shopping list",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.979503,
+   "latency_ms": 4104.953,
+   "group": "shoppinglist_remove::remove {item} from the shopping list",
+   "error": null
+  },
+  {
+   "idx": 155,
+   "utterance": "remove the pasta from groceries",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.96624,
+   "latency_ms": 4250.822,
+   "group": "shoppinglist_remove::remove the {item} from groceries",
+   "error": null
+  },
+  {
+   "idx": 156,
+   "utterance": "take bread off the list please",
+   "expected": "shoppinglist_remove",
+   "predicted": "shoppinglist_remove",
+   "correct": true,
+   "confidence": 0.964157,
+   "latency_ms": 4089.592,
+   "group": "shoppinglist_remove::take {item} off the list please",
+   "error": null
+  },
+  {
+   "idx": 157,
+   "utterance": "what's on the grocery list today",
+   "expected": "shoppinglist_view",
+   "predicted": "shoppinglist_view",
+   "correct": true,
+   "confidence": 0.970749,
+   "latency_ms": 4226.524,
+   "group": "shoppinglist_view::what's on the grocery list today",
+   "error": null
+  },
+  {
+   "idx": 158,
+   "utterance": "list out my shopping items",
+   "expected": "shoppinglist_view",
+   "predicted": "shoppinglist_view",
+   "correct": true,
+   "confidence": 0.975644,
+   "latency_ms": 4174.64,
+   "group": "shoppinglist_view::list out my shopping items",
+   "error": null
+  },
+  {
+   "idx": 159,
+   "utterance": "read the shopping list to me",
+   "expected": "shoppinglist_view",
+   "predicted": "shoppinglist_view",
+   "correct": true,
+   "confidence": 0.978434,
+   "latency_ms": 5019.228,
+   "group": "shoppinglist_view::read the shopping list to me",
+   "error": null
+  },
+  {
+   "idx": 160,
+   "utterance": "what's on the list right now",
+   "expected": "shoppinglist_view",
+   "predicted": "shoppinglist_view",
+   "correct": true,
+   "confidence": 0.790063,
+   "latency_ms": 5210.416,
+   "group": "shoppinglist_view::what's on the list right now",
+   "error": null
+  },
+  {
+   "idx": 161,
+   "utterance": "show my shopping list",
+   "expected": "shoppinglist_view",
+   "predicted": "shoppinglist_view",
+   "correct": true,
+   "confidence": 0.978849,
+   "latency_ms": 5780.873,
+   "group": "shoppinglist_view::show my shopping list",
+   "error": null
+  },
+  {
+   "idx": 162,
+   "utterance": "what do I need to buy",
+   "expected": "shoppinglist_view",
+   "predicted": "shoppinglist_view",
+   "correct": true,
+   "confidence": 0.601283,
+   "latency_ms": 6716.901,
+   "group": "shoppinglist_view::what do I need to buy",
+   "error": null
+  },
+  {
+   "idx": 163,
+   "utterance": "put the thermostat on 25",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.974096,
+   "latency_ms": 6281.837,
+   "group": "thermostat_set::put the thermostat on {temp}",
+   "error": null
+  },
+  {
+   "idx": 164,
+   "utterance": "set the temperature to 26 degrees",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.975011,
+   "latency_ms": 4531.503,
+   "group": "thermostat_set::set the temperature to {temp} degrees",
+   "error": null
+  },
+  {
+   "idx": 165,
+   "utterance": "change the thermostat to 22",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.971381,
+   "latency_ms": 4680.587,
+   "group": "thermostat_set::change the thermostat to {temp}",
+   "error": null
+  },
+  {
+   "idx": 166,
+   "utterance": "drop the temperature to 21 degrees",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.921336,
+   "latency_ms": 4884.608,
+   "group": "thermostat_set::drop the temperature to {temp} degrees",
+   "error": null
+  },
+  {
+   "idx": 167,
+   "utterance": "drop the temperature to 19 degrees",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.918582,
+   "latency_ms": 4471.014,
+   "group": "thermostat_set::drop the temperature to {temp} degrees",
+   "error": null
+  },
+  {
+   "idx": 168,
+   "utterance": "set the house temperature to 20",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.978069,
+   "latency_ms": 4997.703,
+   "group": "thermostat_set::set the house temperature to {temp}",
+   "error": null
+  },
+  {
+   "idx": 169,
+   "utterance": "turn the heat up to 21 degrees",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.944653,
+   "latency_ms": 5101.25,
+   "group": "thermostat_set::turn the heat up to {temp} degrees",
+   "error": null
+  },
+  {
+   "idx": 170,
+   "utterance": "drop the temperature to 25 degrees",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.917806,
+   "latency_ms": 4588.933,
+   "group": "thermostat_set::drop the temperature to {temp} degrees",
+   "error": null
+  },
+  {
+   "idx": 171,
+   "utterance": "turn the heat up to 20 degrees",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.924681,
+   "latency_ms": 4562.415,
+   "group": "thermostat_set::turn the heat up to {temp} degrees",
+   "error": null
+  },
+  {
+   "idx": 172,
+   "utterance": "change the thermostat to 26",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.971395,
+   "latency_ms": 5233.305,
+   "group": "thermostat_set::change the thermostat to {temp}",
+   "error": null
+  },
+  {
+   "idx": 173,
+   "utterance": "set the heat to 25 degrees",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.978308,
+   "latency_ms": 3768.726,
+   "group": "thermostat_set::set the heat to {temp} degrees",
+   "error": null
+  },
+  {
+   "idx": 174,
+   "utterance": "set the house temperature to 19",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.977458,
+   "latency_ms": 4110.515,
+   "group": "thermostat_set::set the house temperature to {temp}",
+   "error": null
+  },
+  {
+   "idx": 175,
+   "utterance": "set the heat to 20 degrees",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.976402,
+   "latency_ms": 4015.045,
+   "group": "thermostat_set::set the heat to {temp} degrees",
+   "error": null
+  },
+  {
+   "idx": 176,
+   "utterance": "put the thermostat on 21",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.970138,
+   "latency_ms": 3702.432,
+   "group": "thermostat_set::put the thermostat on {temp}",
+   "error": null
+  },
+  {
+   "idx": 177,
+   "utterance": "drop the temperature to 26 degrees",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.903947,
+   "latency_ms": 3639.148,
+   "group": "thermostat_set::drop the temperature to {temp} degrees",
+   "error": null
+  },
+  {
+   "idx": 178,
+   "utterance": "make it 24 degrees in here",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.774725,
+   "latency_ms": 3893.167,
+   "group": "thermostat_set::make it {temp} degrees in here",
+   "error": null
+  },
+  {
+   "idx": 179,
+   "utterance": "turn the heat up to 18 degrees",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.920174,
+   "latency_ms": 4109.35,
+   "group": "thermostat_set::turn the heat up to {temp} degrees",
+   "error": null
+  },
+  {
+   "idx": 180,
+   "utterance": "make it 19 degrees in here",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.741652,
+   "latency_ms": 3911.334,
+   "group": "thermostat_set::make it {temp} degrees in here",
+   "error": null
+  },
+  {
+   "idx": 181,
+   "utterance": "set the heat to 23 degrees",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.977716,
+   "latency_ms": 3902.383,
+   "group": "thermostat_set::set the heat to {temp} degrees",
+   "error": null
+  },
+  {
+   "idx": 182,
+   "utterance": "set the temperature to 23 degrees",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.976826,
+   "latency_ms": 4267.408,
+   "group": "thermostat_set::set the temperature to {temp} degrees",
+   "error": null
+  },
+  {
+   "idx": 183,
+   "utterance": "change the thermostat to 25",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.975359,
+   "latency_ms": 4877.52,
+   "group": "thermostat_set::change the thermostat to {temp}",
+   "error": null
+  },
+  {
+   "idx": 184,
+   "utterance": "set the heat to 21 degrees",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.976845,
+   "latency_ms": 5705.491,
+   "group": "thermostat_set::set the heat to {temp} degrees",
+   "error": null
+  },
+  {
+   "idx": 185,
+   "utterance": "drop the temperature to 22 degrees",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.922806,
+   "latency_ms": 6481.117,
+   "group": "thermostat_set::drop the temperature to {temp} degrees",
+   "error": null
+  },
+  {
+   "idx": 186,
+   "utterance": "set the heat to 19 degrees",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.977236,
+   "latency_ms": 5366.548,
+   "group": "thermostat_set::set the heat to {temp} degrees",
+   "error": null
+  },
+  {
+   "idx": 187,
+   "utterance": "set the house temperature to 18",
+   "expected": "thermostat_set",
+   "predicted": "thermostat_set",
+   "correct": true,
+   "confidence": 0.977606,
+   "latency_ms": 5015.204,
+   "group": "thermostat_set::set the house temperature to {temp}",
+   "error": null
+  },
+  {
+   "idx": 188,
+   "utterance": "make the living room colder",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_set",
+   "correct": false,
+   "confidence": 0.574846,
+   "latency_ms": 5812.109,
+   "group": "thermostat_offset::make the living room {direction}",
+   "error": null
+  },
+  {
+   "idx": 189,
+   "utterance": "make it hotter in here",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_offset",
+   "correct": true,
+   "confidence": 0.521462,
+   "latency_ms": 6039.883,
+   "group": "thermostat_offset::make it {direction} in here",
+   "error": null
+  },
+  {
+   "idx": 190,
+   "utterance": "it's warmer in here, fix it",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_set",
+   "correct": false,
+   "confidence": 0.493257,
+   "latency_ms": 6548.957,
+   "group": "thermostat_offset::it's {direction} in here, fix it",
+   "error": null
+  },
+  {
+   "idx": 191,
+   "utterance": "turn the temperature warmer a bit",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_offset",
+   "correct": true,
+   "confidence": 0.499199,
+   "latency_ms": 5275.77,
+   "group": "thermostat_offset::turn the temperature {direction} a bit",
+   "error": null
+  },
+  {
+   "idx": 192,
+   "utterance": "it's cooler in here, fix it",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_set",
+   "correct": false,
+   "confidence": 0.453181,
+   "latency_ms": 5077.832,
+   "group": "thermostat_offset::it's {direction} in here, fix it",
+   "error": null
+  },
+  {
+   "idx": 193,
+   "utterance": "make it cooler in here",
+   "expected": "thermostat_offset",
+   "predicted": "light_set",
+   "correct": false,
+   "confidence": 0.374453,
+   "latency_ms": 4649.305,
+   "group": "thermostat_offset::make it {direction} in here",
+   "error": null
+  },
+  {
+   "idx": 194,
+   "utterance": "warmer the heat a little",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_offset",
+   "correct": true,
+   "confidence": 0.600162,
+   "latency_ms": 4519.456,
+   "group": "thermostat_offset::{direction} the heat a little",
+   "error": null
+  },
+  {
+   "idx": 195,
+   "utterance": "bump the thermostat cooler a couple degrees",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_offset",
+   "correct": true,
+   "confidence": 0.674664,
+   "latency_ms": 4115.495,
+   "group": "thermostat_offset::bump the thermostat {direction} a couple degrees",
+   "error": null
+  },
+  {
+   "idx": 196,
+   "utterance": "bump the thermostat hotter a couple degrees",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_offset",
+   "correct": true,
+   "confidence": 0.666859,
+   "latency_ms": 5825.708,
+   "group": "thermostat_offset::bump the thermostat {direction} a couple degrees",
+   "error": null
+  },
+  {
+   "idx": 197,
+   "utterance": "cooler the heat a little",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_offset",
+   "correct": true,
+   "confidence": 0.57166,
+   "latency_ms": 7540.31,
+   "group": "thermostat_offset::{direction} the heat a little",
+   "error": null
+  },
+  {
+   "idx": 198,
+   "utterance": "make the living room warmer",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_offset",
+   "correct": true,
+   "confidence": 0.393332,
+   "latency_ms": 6869.096,
+   "group": "thermostat_offset::make the living room {direction}",
+   "error": null
+  },
+  {
+   "idx": 199,
+   "utterance": "make it colder in here",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_offset",
+   "correct": true,
+   "confidence": 0.48389,
+   "latency_ms": 4723.779,
+   "group": "thermostat_offset::make it {direction} in here",
+   "error": null
+  },
+  {
+   "idx": 200,
+   "utterance": "turn the temperature colder a bit",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_offset",
+   "correct": true,
+   "confidence": 0.533003,
+   "latency_ms": 6220.496,
+   "group": "thermostat_offset::turn the temperature {direction} a bit",
+   "error": null
+  },
+  {
+   "idx": 201,
+   "utterance": "make the living room hotter",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_set",
+   "correct": false,
+   "confidence": 0.563051,
+   "latency_ms": 5487.311,
+   "group": "thermostat_offset::make the living room {direction}",
+   "error": null
+  },
+  {
+   "idx": 202,
+   "utterance": "it's hotter in here, fix it",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_set",
+   "correct": false,
+   "confidence": 0.512177,
+   "latency_ms": 4815.707,
+   "group": "thermostat_offset::it's {direction} in here, fix it",
+   "error": null
+  },
+  {
+   "idx": 203,
+   "utterance": "bump the thermostat warmer a couple degrees",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_offset",
+   "correct": true,
+   "confidence": 0.569147,
+   "latency_ms": 6455.943,
+   "group": "thermostat_offset::bump the thermostat {direction} a couple degrees",
+   "error": null
+  },
+  {
+   "idx": 204,
+   "utterance": "make the living room cooler",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_set",
+   "correct": false,
+   "confidence": 0.507148,
+   "latency_ms": 5317.063,
+   "group": "thermostat_offset::make the living room {direction}",
+   "error": null
+  },
+  {
+   "idx": 205,
+   "utterance": "turn the temperature hotter a bit",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_offset",
+   "correct": true,
+   "confidence": 0.557253,
+   "latency_ms": 8546.609,
+   "group": "thermostat_offset::turn the temperature {direction} a bit",
+   "error": null
+  },
+  {
+   "idx": 206,
+   "utterance": "it's colder in here, fix it",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_set",
+   "correct": false,
+   "confidence": 0.552335,
+   "latency_ms": 8082.506,
+   "group": "thermostat_offset::it's {direction} in here, fix it",
+   "error": null
+  },
+  {
+   "idx": 207,
+   "utterance": "colder the heat a little",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_offset",
+   "correct": true,
+   "confidence": 0.505156,
+   "latency_ms": 5743.723,
+   "group": "thermostat_offset::{direction} the heat a little",
+   "error": null
+  },
+  {
+   "idx": 208,
+   "utterance": "turn the temperature cooler a bit",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_offset",
+   "correct": true,
+   "confidence": 0.466592,
+   "latency_ms": 5633.166,
+   "group": "thermostat_offset::turn the temperature {direction} a bit",
+   "error": null
+  },
+  {
+   "idx": 209,
+   "utterance": "bump the thermostat colder a couple degrees",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_offset",
+   "correct": true,
+   "confidence": 0.731779,
+   "latency_ms": 5102.424,
+   "group": "thermostat_offset::bump the thermostat {direction} a couple degrees",
+   "error": null
+  },
+  {
+   "idx": 210,
+   "utterance": "hotter the heat a little",
+   "expected": "thermostat_offset",
+   "predicted": "thermostat_offset",
+   "correct": true,
+   "confidence": 0.51188,
+   "latency_ms": 4037.013,
+   "group": "thermostat_offset::{direction} the heat a little",
+   "error": null
+  },
+  {
+   "idx": 211,
+   "utterance": "turn on the bedroom lights",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.974487,
+   "latency_ms": 4426.782,
+   "group": "light_set::turn {state} the {room} lights",
+   "error": null
+  },
+  {
+   "idx": 212,
+   "utterance": "turn the bathroom lamp off",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.958092,
+   "latency_ms": 4375.331,
+   "group": "light_set::turn the {room} lamp {state}",
+   "error": null
+  },
+  {
+   "idx": 213,
+   "utterance": "bedroom lights off please",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.960021,
+   "latency_ms": 4488.326,
+   "group": "light_set::{room} lights {state} please",
+   "error": null
+  },
+  {
+   "idx": 214,
+   "utterance": "switch the garage light off",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.964515,
+   "latency_ms": 5693.404,
+   "group": "light_set::switch the {room} light {state}",
+   "error": null
+  },
+  {
+   "idx": 215,
+   "utterance": "turn off the living room lights",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.973464,
+   "latency_ms": 3970.767,
+   "group": "light_set::turn {state} the {room} lights",
+   "error": null
+  },
+  {
+   "idx": 216,
+   "utterance": "bathroom lights on please",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.966223,
+   "latency_ms": 3631.963,
+   "group": "light_set::{room} lights {state} please",
+   "error": null
+  },
+  {
+   "idx": 217,
+   "utterance": "switch the living room light on",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.972314,
+   "latency_ms": 4030.34,
+   "group": "light_set::switch the {room} light {state}",
+   "error": null
+  },
+  {
+   "idx": 218,
+   "utterance": "bedroom lights on please",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.967911,
+   "latency_ms": 4647.992,
+   "group": "light_set::{room} lights {state} please",
+   "error": null
+  },
+  {
+   "idx": 219,
+   "utterance": "kill the porch lights",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.963846,
+   "latency_ms": 5945.447,
+   "group": "light_set::kill the {room} lights",
+   "error": null
+  },
+  {
+   "idx": 220,
+   "utterance": "turn the hallway lamp on",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.969128,
+   "latency_ms": 5587.561,
+   "group": "light_set::turn the {room} lamp {state}",
+   "error": null
+  },
+  {
+   "idx": 221,
+   "utterance": "turn the kitchen lamp off",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.957653,
+   "latency_ms": 5366.442,
+   "group": "light_set::turn the {room} lamp {state}",
+   "error": null
+  },
+  {
+   "idx": 222,
+   "utterance": "kill the bathroom lights",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.962616,
+   "latency_ms": 4924.948,
+   "group": "light_set::kill the {room} lights",
+   "error": null
+  },
+  {
+   "idx": 223,
+   "utterance": "turn the office lamp on",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.965555,
+   "latency_ms": 4625.632,
+   "group": "light_set::turn the {room} lamp {state}",
+   "error": null
+  },
+  {
+   "idx": 224,
+   "utterance": "fire up the bathroom lights",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.964528,
+   "latency_ms": 4890.268,
+   "group": "light_set::fire up the {room} lights",
+   "error": null
+  },
+  {
+   "idx": 225,
+   "utterance": "turn on the hallway lights",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.974626,
+   "latency_ms": 4780.112,
+   "group": "light_set::turn {state} the {room} lights",
+   "error": null
+  },
+  {
+   "idx": 226,
+   "utterance": "turn the bathroom lamp on",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.966016,
+   "latency_ms": 4415.319,
+   "group": "light_set::turn the {room} lamp {state}",
+   "error": null
+  },
+  {
+   "idx": 227,
+   "utterance": "switch the porch light on",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.972403,
+   "latency_ms": 4164.9,
+   "group": "light_set::switch the {room} light {state}",
+   "error": null
+  },
+  {
+   "idx": 228,
+   "utterance": "turn on the kitchen lights",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.974653,
+   "latency_ms": 4120.461,
+   "group": "light_set::turn {state} the {room} lights",
+   "error": null
+  },
+  {
+   "idx": 229,
+   "utterance": "turn the porch lamp off",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.959259,
+   "latency_ms": 4208.192,
+   "group": "light_set::turn the {room} lamp {state}",
+   "error": null
+  },
+  {
+   "idx": 230,
+   "utterance": "turn off the garage lights",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.971783,
+   "latency_ms": 4202.894,
+   "group": "light_set::turn {state} the {room} lights",
+   "error": null
+  },
+  {
+   "idx": 231,
+   "utterance": "turn on the garage lights",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.973474,
+   "latency_ms": 4112.656,
+   "group": "light_set::turn {state} the {room} lights",
+   "error": null
+  },
+  {
+   "idx": 232,
+   "utterance": "turn the garage lamp off",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.959821,
+   "latency_ms": 4633.504,
+   "group": "light_set::turn the {room} lamp {state}",
+   "error": null
+  },
+  {
+   "idx": 233,
+   "utterance": "turn on the living room lights",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.974309,
+   "latency_ms": 4247.894,
+   "group": "light_set::turn {state} the {room} lights",
+   "error": null
+  },
+  {
+   "idx": 234,
+   "utterance": "fire up the office lights",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.963834,
+   "latency_ms": 5230.862,
+   "group": "light_set::fire up the {room} lights",
+   "error": null
+  },
+  {
+   "idx": 235,
+   "utterance": "garage lights off please",
+   "expected": "light_set",
+   "predicted": "light_set",
+   "correct": true,
+   "confidence": 0.957852,
+   "latency_ms": 4179.714,
+   "group": "light_set::{room} lights {state} please",
+   "error": null
+  },
+  {
+   "idx": 236,
+   "utterance": "check the living room light status",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.972577,
+   "latency_ms": 4216.116,
+   "group": "light_query::check the {room} light status",
+   "error": null
+  },
+  {
+   "idx": 237,
+   "utterance": "what's the state of the bathroom lights",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.951105,
+   "latency_ms": 5434.748,
+   "group": "light_query::what's the state of the {room} lights",
+   "error": null
+  },
+  {
+   "idx": 238,
+   "utterance": "is the living room lamp off",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.964519,
+   "latency_ms": 4844.119,
+   "group": "light_query::is the {room} lamp off",
+   "error": null
+  },
+  {
+   "idx": 239,
+   "utterance": "is the office light still on",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.960694,
+   "latency_ms": 4358.347,
+   "group": "light_query::is the {room} light still on",
+   "error": null
+  },
+  {
+   "idx": 240,
+   "utterance": "are the garage lights on",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.956588,
+   "latency_ms": 3772.869,
+   "group": "light_query::are the {room} lights on",
+   "error": null
+  },
+  {
+   "idx": 241,
+   "utterance": "what's the state of the garage lights",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.942745,
+   "latency_ms": 3962.416,
+   "group": "light_query::what's the state of the {room} lights",
+   "error": null
+  },
+  {
+   "idx": 242,
+   "utterance": "are the bathroom lights on",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.957954,
+   "latency_ms": 3783.394,
+   "group": "light_query::are the {room} lights on",
+   "error": null
+  },
+  {
+   "idx": 243,
+   "utterance": "what's the state of the living room lights",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.94796,
+   "latency_ms": 3846.474,
+   "group": "light_query::what's the state of the {room} lights",
+   "error": null
+  },
+  {
+   "idx": 244,
+   "utterance": "did I leave the office lights on",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.966259,
+   "latency_ms": 4360.268,
+   "group": "light_query::did I leave the {room} lights on",
+   "error": null
+  },
+  {
+   "idx": 245,
+   "utterance": "is the porch lamp off",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.957458,
+   "latency_ms": 6851.85,
+   "group": "light_query::is the {room} lamp off",
+   "error": null
+  },
+  {
+   "idx": 246,
+   "utterance": "are the living room lights on",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.964995,
+   "latency_ms": 4152.999,
+   "group": "light_query::are the {room} lights on",
+   "error": null
+  },
+  {
+   "idx": 247,
+   "utterance": "did I leave the living room lights on",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.970002,
+   "latency_ms": 4265.13,
+   "group": "light_query::did I leave the {room} lights on",
+   "error": null
+  },
+  {
+   "idx": 248,
+   "utterance": "is the bedroom light still on",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.96477,
+   "latency_ms": 5396.797,
+   "group": "light_query::is the {room} light still on",
+   "error": null
+  },
+  {
+   "idx": 249,
+   "utterance": "is the bathroom light still on",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.962532,
+   "latency_ms": 10987.41,
+   "group": "light_query::is the {room} light still on",
+   "error": null
+  },
+  {
+   "idx": 250,
+   "utterance": "did I leave the bedroom lights on",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.96907,
+   "latency_ms": 8401.17,
+   "group": "light_query::did I leave the {room} lights on",
+   "error": null
+  },
+  {
+   "idx": 251,
+   "utterance": "what's the state of the bedroom lights",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.958461,
+   "latency_ms": 7597.914,
+   "group": "light_query::what's the state of the {room} lights",
+   "error": null
+  },
+  {
+   "idx": 252,
+   "utterance": "is the office lamp off",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.956757,
+   "latency_ms": 10276.352,
+   "group": "light_query::is the {room} lamp off",
+   "error": null
+  },
+  {
+   "idx": 253,
+   "utterance": "is the garage lamp off",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.96078,
+   "latency_ms": 10853.713,
+   "group": "light_query::is the {room} lamp off",
+   "error": null
+  },
+  {
+   "idx": 254,
+   "utterance": "are the porch lights on",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.955069,
+   "latency_ms": 19955.827,
+   "group": "light_query::are the {room} lights on",
+   "error": null
+  },
+  {
+   "idx": 255,
+   "utterance": "are the hallway lights on",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.957075,
+   "latency_ms": 24798.72,
+   "group": "light_query::are the {room} lights on",
+   "error": null
+  },
+  {
+   "idx": 256,
+   "utterance": "check the bathroom light status",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.971186,
+   "latency_ms": 30064.961,
+   "group": "light_query::check the {room} light status",
+   "error": null
+  },
+  {
+   "idx": 257,
+   "utterance": "is the hallway light still on",
+   "expected": "light_query",
+   "predicted": null,
+   "correct": false,
+   "confidence": null,
+   "latency_ms": 30076.939,
+   "group": "light_query::is the {room} light still on",
+   "error": "timed out"
+  },
+  {
+   "idx": 258,
+   "utterance": "check the garage light status",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.969863,
+   "latency_ms": 12596.18,
+   "group": "light_query::check the {room} light status",
+   "error": null
+  },
+  {
+   "idx": 259,
+   "utterance": "check the bedroom light status",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.973983,
+   "latency_ms": 19354.204,
+   "group": "light_query::check the {room} light status",
+   "error": null
+  },
+  {
+   "idx": 260,
+   "utterance": "is the porch light still on",
+   "expected": "light_query",
+   "predicted": "light_query",
+   "correct": true,
+   "confidence": 0.966045,
+   "latency_ms": 16241.685,
+   "group": "light_query::is the {room} light still on",
+   "error": null
+  },
+  {
+   "idx": 261,
+   "utterance": "look up error envelopes in the docs",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.952502,
+   "latency_ms": 26324.121,
+   "group": "docs_query::look up {topic} in the docs",
+   "error": null
+  },
+  {
+   "idx": 262,
+   "utterance": "what do the docs say about the knowledge layer",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.923582,
+   "latency_ms": 13079.697,
+   "group": "docs_query::what do the docs say about {topic}",
+   "error": null
+  },
+  {
+   "idx": 263,
+   "utterance": "look up the voice pipeline in the docs",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.955882,
+   "latency_ms": 15284.721,
+   "group": "docs_query::look up {topic} in the docs",
+   "error": null
+  },
+  {
+   "idx": 264,
+   "utterance": "pull up what's documented about the knowledge layer",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.808056,
+   "latency_ms": 16680.251,
+   "group": "docs_query::pull up what's documented about {topic}",
+   "error": null
+  },
+  {
+   "idx": 265,
+   "utterance": "look up the knowledge layer in the docs",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.931506,
+   "latency_ms": 11690.738,
+   "group": "docs_query::look up {topic} in the docs",
+   "error": null
+  },
+  {
+   "idx": 266,
+   "utterance": "find documentation on tool calling",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.92126,
+   "latency_ms": 11581.752,
+   "group": "docs_query::find documentation on {topic}",
+   "error": null
+  },
+  {
+   "idx": 267,
+   "utterance": "how does the docs tool work in the documentation",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.847646,
+   "latency_ms": 8075.098,
+   "group": "docs_query::how does {topic} work in the documentation",
+   "error": null
+  },
+  {
+   "idx": 268,
+   "utterance": "pull up what's documented about the splitter",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.962444,
+   "latency_ms": 9740.09,
+   "group": "docs_query::pull up what's documented about {topic}",
+   "error": null
+  },
+  {
+   "idx": 269,
+   "utterance": "how does the splitter work in the documentation",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.928811,
+   "latency_ms": 9130.006,
+   "group": "docs_query::how does {topic} work in the documentation",
+   "error": null
+  },
+  {
+   "idx": 270,
+   "utterance": "look up the splitter in the docs",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.966591,
+   "latency_ms": 9765.394,
+   "group": "docs_query::look up {topic} in the docs",
+   "error": null
+  },
+  {
+   "idx": 271,
+   "utterance": "search the docs for tool calling",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.948248,
+   "latency_ms": 10996.904,
+   "group": "docs_query::search the docs for {topic}",
+   "error": null
+  },
+  {
+   "idx": 272,
+   "utterance": "pull up what's documented about session init",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.932232,
+   "latency_ms": 11652.514,
+   "group": "docs_query::pull up what's documented about {topic}",
+   "error": null
+  },
+  {
+   "idx": 273,
+   "utterance": "search the docs for the knowledge layer",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.942396,
+   "latency_ms": 7797.045,
+   "group": "docs_query::search the docs for {topic}",
+   "error": null
+  },
+  {
+   "idx": 274,
+   "utterance": "pull up what's documented about error envelopes",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.949173,
+   "latency_ms": 9183.306,
+   "group": "docs_query::pull up what's documented about {topic}",
+   "error": null
+  },
+  {
+   "idx": 275,
+   "utterance": "what do the docs say about the voice pipeline",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.938286,
+   "latency_ms": 8218.64,
+   "group": "docs_query::what do the docs say about {topic}",
+   "error": null
+  },
+  {
+   "idx": 276,
+   "utterance": "how does model serving work in the documentation",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.946894,
+   "latency_ms": 8101.428,
+   "group": "docs_query::how does {topic} work in the documentation",
+   "error": null
+  },
+  {
+   "idx": 277,
+   "utterance": "what do the docs say about session init",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.929983,
+   "latency_ms": 9463.432,
+   "group": "docs_query::what do the docs say about {topic}",
+   "error": null
+  },
+  {
+   "idx": 278,
+   "utterance": "find documentation on the knowledge layer",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.891882,
+   "latency_ms": 8912.635,
+   "group": "docs_query::find documentation on {topic}",
+   "error": null
+  },
+  {
+   "idx": 279,
+   "utterance": "pull up what's documented about the docs tool",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.904875,
+   "latency_ms": 8272.71,
+   "group": "docs_query::pull up what's documented about {topic}",
+   "error": null
+  },
+  {
+   "idx": 280,
+   "utterance": "search the docs for model serving",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.970614,
+   "latency_ms": 4930.078,
+   "group": "docs_query::search the docs for {topic}",
+   "error": null
+  },
+  {
+   "idx": 281,
+   "utterance": "look up tool calling in the docs",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.939841,
+   "latency_ms": 9356.866,
+   "group": "docs_query::look up {topic} in the docs",
+   "error": null
+  },
+  {
+   "idx": 282,
+   "utterance": "pull up what's documented about model serving",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.943756,
+   "latency_ms": 9225.4,
+   "group": "docs_query::pull up what's documented about {topic}",
+   "error": null
+  },
+  {
+   "idx": 283,
+   "utterance": "how does the knowledge layer work in the documentation",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.668465,
+   "latency_ms": 8606.389,
+   "group": "docs_query::how does {topic} work in the documentation",
+   "error": null
+  },
+  {
+   "idx": 284,
+   "utterance": "what do the docs say about model serving",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.946872,
+   "latency_ms": 9526.377,
+   "group": "docs_query::what do the docs say about {topic}",
+   "error": null
+  },
+  {
+   "idx": 285,
+   "utterance": "what do the docs say about error envelopes",
+   "expected": "docs_query",
+   "predicted": "docs_query",
+   "correct": true,
+   "confidence": 0.943015,
+   "latency_ms": 8365.11,
+   "group": "docs_query::what do the docs say about {topic}",
+   "error": null
+  },
+  {
+   "idx": 286,
+   "utterance": "how is electronicsProjects doing",
+   "expected": "projects_query",
+   "predicted": "projects_query",
+   "correct": true,
+   "confidence": 0.968826,
+   "latency_ms": 8347.286,
+   "group": "projects_query::how is {project} doing",
+   "error": null
+  },
+  {
+   "idx": 287,
+   "utterance": "what's happening in todo app",
+   "expected": "projects_query",
+   "predicted": "__none__",
+   "correct": false,
+   "confidence": 0.415769,
+   "latency_ms": 4742.735,
+   "group": "projects_query::what's happening in {project}",
+   "error": null
+  },
+  {
+   "idx": 288,
+   "utterance": "how is todo app doing",
+   "expected": "projects_query",
+   "predicted": "light_query",
+   "correct": false,
+   "confidence": 0.214578,
+   "latency_ms": 4201.045,
+   "group": "projects_query::how is {project} doing",
+   "error": null
+  },
+  {
+   "idx": 289,
+   "utterance": "what's happening in minicpmTune",
+   "expected": "projects_query",
+   "predicted": "projects_query",
+   "correct": true,
+   "confidence": 0.250583,
+   "latency_ms": 3989.862,
+   "group": "projects_query::what's happening in {project}",
+   "error": null
+  },
+  {
+   "idx": 290,
+   "utterance": "what's happening in localAlexa",
+   "expected": "projects_query",
+   "predicted": "__none__",
+   "correct": false,
+   "confidence": 0.178501,
+   "latency_ms": 4628.368,
+   "group": "projects_query::what's happening in {project}",
+   "error": null
+  },
+  {
+   "idx": 291,
+   "utterance": "give me a summary of the electronicsProjects project",
+   "expected": "projects_query",
+   "predicted": "projects_query",
+   "correct": true,
+   "confidence": 0.943505,
+   "latency_ms": 6757.684,
+   "group": "projects_query::give me a summary of the {project} project",
+   "error": null
+  },
+  {
+   "idx": 292,
+   "utterance": "how is localAlexa doing",
+   "expected": "projects_query",
+   "predicted": "__none__",
+   "correct": false,
+   "confidence": 0.398128,
+   "latency_ms": 6193.839,
+   "group": "projects_query::how is {project} doing",
+   "error": null
+  },
+  {
+   "idx": 293,
+   "utterance": "what's happening in liveCaptions",
+   "expected": "projects_query",
+   "predicted": "__none__",
+   "correct": false,
+   "confidence": 0.350896,
+   "latency_ms": 6210.605,
+   "group": "projects_query::what's happening in {project}",
+   "error": null
+  },
+  {
+   "idx": 294,
+   "utterance": "how is minicpmTune doing",
+   "expected": "projects_query",
+   "predicted": "projects_query",
+   "correct": true,
+   "confidence": 0.253224,
+   "latency_ms": 4840.896,
+   "group": "projects_query::how is {project} doing",
+   "error": null
+  },
+  {
+   "idx": 295,
+   "utterance": "what's happening in electronicsProjects",
+   "expected": "projects_query",
+   "predicted": "projects_query",
+   "correct": true,
+   "confidence": 0.964812,
+   "latency_ms": 4006.75,
+   "group": "projects_query::what's happening in {project}",
+   "error": null
+  },
+  {
+   "idx": 296,
+   "utterance": "which repos are active right now",
+   "expected": "projects_query",
+   "predicted": "projects_query",
+   "correct": true,
+   "confidence": 0.785215,
+   "latency_ms": 4220.388,
+   "group": "projects_query::which repos are active right now",
+   "error": null
+  },
+  {
+   "idx": 297,
+   "utterance": "give me a summary of the localAlexa project",
+   "expected": "projects_query",
+   "predicted": "projects_query",
+   "correct": true,
+   "confidence": 0.896898,
+   "latency_ms": 7935.465,
+   "group": "projects_query::give me a summary of the {project} project",
+   "error": null
+  },
+  {
+   "idx": 298,
+   "utterance": "give me a summary of the liveCaptions project",
+   "expected": "projects_query",
+   "predicted": "projects_query",
+   "correct": true,
+   "confidence": 0.59868,
+   "latency_ms": 7255.22,
+   "group": "projects_query::give me a summary of the {project} project",
+   "error": null
+  },
+  {
+   "idx": 299,
+   "utterance": "what am I working on these days",
+   "expected": "projects_query",
+   "predicted": "projects_query",
+   "correct": true,
+   "confidence": 0.917109,
+   "latency_ms": 7704.23,
+   "group": "projects_query::what am I working on these days",
+   "error": null
+  },
+  {
+   "idx": 300,
+   "utterance": "give me a summary of the todo app project",
+   "expected": "projects_query",
+   "predicted": "projects_query",
+   "correct": true,
+   "confidence": 0.459732,
+   "latency_ms": 8759.474,
+   "group": "projects_query::give me a summary of the {project} project",
+   "error": null
+  },
+  {
+   "idx": 301,
+   "utterance": "what's the status of my projects",
+   "expected": "projects_query",
+   "predicted": "projects_query",
+   "correct": true,
+   "confidence": 0.978179,
+   "latency_ms": 7894.383,
+   "group": "projects_query::what's the status of my projects",
+   "error": null
+  },
+  {
+   "idx": 302,
+   "utterance": "how is liveCaptions doing",
+   "expected": "projects_query",
+   "predicted": "__none__",
+   "correct": false,
+   "confidence": 0.341633,
+   "latency_ms": 7039.003,
+   "group": "projects_query::how is {project} doing",
+   "error": null
+  },
+  {
+   "idx": 303,
+   "utterance": "give me a summary of the minicpmTune project",
+   "expected": "projects_query",
+   "predicted": "projects_query",
+   "correct": true,
+   "confidence": 0.61958,
+   "latency_ms": 8613.357,
+   "group": "projects_query::give me a summary of the {project} project",
+   "error": null
+  },
+  {
+   "idx": 304,
+   "utterance": "read my unread messages",
+   "expected": "email_unread",
+   "predicted": "email_unread",
+   "correct": true,
+   "confidence": 0.970409,
+   "latency_ms": 9683.651,
+   "group": "email_unread::read my unread messages",
+   "error": null
+  },
+  {
+   "idx": 305,
+   "utterance": "how many emails are unread",
+   "expected": "email_unread",
+   "predicted": "email_unread",
+   "correct": true,
+   "confidence": 0.974996,
+   "latency_ms": 7352.392,
+   "group": "email_unread::how many emails are unread",
+   "error": null
+  },
+  {
+   "idx": 306,
+   "utterance": "do I have new mail",
+   "expected": "email_unread",
+   "predicted": "email_unread",
+   "correct": true,
+   "confidence": 0.964934,
+   "latency_ms": 6046.591,
+   "group": "email_unread::do I have new mail",
+   "error": null
+  },
+  {
+   "idx": 307,
+   "utterance": "what's sitting in my inbox",
+   "expected": "email_unread",
+   "predicted": "email_unread",
+   "correct": true,
+   "confidence": 0.880581,
+   "latency_ms": 6436.632,
+   "group": "email_unread::what's sitting in my inbox",
+   "error": null
+  },
+  {
+   "idx": 308,
+   "utterance": "any unread emails this morning",
+   "expected": "email_unread",
+   "predicted": "email_unread",
+   "correct": true,
+   "confidence": 0.976487,
+   "latency_ms": 6202.161,
+   "group": "email_unread::any unread emails this morning",
+   "error": null
+  },
+  {
+   "idx": 309,
+   "utterance": "any mail I haven't seen",
+   "expected": "email_unread",
+   "predicted": "email_unread",
+   "correct": true,
+   "confidence": 0.975389,
+   "latency_ms": 6584.24,
+   "group": "email_unread::any mail I haven't seen",
+   "error": null
+  },
+  {
+   "idx": 310,
+   "utterance": "check the inbox for anything new",
+   "expected": "email_unread",
+   "predicted": "email_unread",
+   "correct": true,
+   "confidence": 0.960458,
+   "latency_ms": 5780.535,
+   "group": "email_unread::check the inbox for anything new",
+   "error": null
+  },
+  {
+   "idx": 311,
+   "utterance": "what does my morning look like",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.5551,
+   "latency_ms": 6664.814,
+   "group": "calendar_today::what does my {span} look like",
+   "error": null
+  },
+  {
+   "idx": 312,
+   "utterance": "what's my agenda today",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.96614,
+   "latency_ms": 7917.754,
+   "group": "calendar_today::what's my agenda {day}",
+   "error": null
+  },
+  {
+   "idx": 313,
+   "utterance": "any meetings this weekend",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.585781,
+   "latency_ms": 8565.355,
+   "group": "calendar_today::any meetings {day}",
+   "error": null
+  },
+  {
+   "idx": 314,
+   "utterance": "show me the schedule for today",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.972468,
+   "latency_ms": 5815.237,
+   "group": "calendar_today::show me the schedule for {day}",
+   "error": null
+  },
+  {
+   "idx": 315,
+   "utterance": "what's my agenda this weekend",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.804571,
+   "latency_ms": 4038.847,
+   "group": "calendar_today::what's my agenda {day}",
+   "error": null
+  },
+  {
+   "idx": 316,
+   "utterance": "what's on my calendar on Friday",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.879202,
+   "latency_ms": 4349.979,
+   "group": "calendar_today::what's on my calendar {day}",
+   "error": null
+  },
+  {
+   "idx": 317,
+   "utterance": "am I free afternoon",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.886151,
+   "latency_ms": 3813.737,
+   "group": "calendar_today::am I free {span}",
+   "error": null
+  },
+  {
+   "idx": 318,
+   "utterance": "what's on my calendar tomorrow",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.90496,
+   "latency_ms": 3924.623,
+   "group": "calendar_today::what's on my calendar {day}",
+   "error": null
+  },
+  {
+   "idx": 319,
+   "utterance": "what does my afternoon look like",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.869663,
+   "latency_ms": 4570.155,
+   "group": "calendar_today::what does my {span} look like",
+   "error": null
+  },
+  {
+   "idx": 320,
+   "utterance": "any meetings on Friday",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.719382,
+   "latency_ms": 5302.343,
+   "group": "calendar_today::any meetings {day}",
+   "error": null
+  },
+  {
+   "idx": 321,
+   "utterance": "what's on my calendar this weekend",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.865663,
+   "latency_ms": 4953.636,
+   "group": "calendar_today::what's on my calendar {day}",
+   "error": null
+  },
+  {
+   "idx": 322,
+   "utterance": "show me the schedule for tomorrow",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.895949,
+   "latency_ms": 5215.38,
+   "group": "calendar_today::show me the schedule for {day}",
+   "error": null
+  },
+  {
+   "idx": 323,
+   "utterance": "am I free week",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.277811,
+   "latency_ms": 4242.038,
+   "group": "calendar_today::am I free {span}",
+   "error": null
+  },
+  {
+   "idx": 324,
+   "utterance": "what's my agenda tomorrow",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.908305,
+   "latency_ms": 4755.065,
+   "group": "calendar_today::what's my agenda {day}",
+   "error": null
+  },
+  {
+   "idx": 325,
+   "utterance": "am I free day",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.750185,
+   "latency_ms": 4448.693,
+   "group": "calendar_today::am I free {span}",
+   "error": null
+  },
+  {
+   "idx": 326,
+   "utterance": "what does my week look like",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.89047,
+   "latency_ms": 3923.006,
+   "group": "calendar_today::what does my {span} look like",
+   "error": null
+  },
+  {
+   "idx": 327,
+   "utterance": "any meetings tomorrow",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.735612,
+   "latency_ms": 4075.782,
+   "group": "calendar_today::any meetings {day}",
+   "error": null
+  },
+  {
+   "idx": 328,
+   "utterance": "show me the schedule for this weekend",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.853031,
+   "latency_ms": 4521.708,
+   "group": "calendar_today::show me the schedule for {day}",
+   "error": null
+  },
+  {
+   "idx": 329,
+   "utterance": "show me the schedule for on Friday",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.824013,
+   "latency_ms": 3868.813,
+   "group": "calendar_today::show me the schedule for {day}",
+   "error": null
+  },
+  {
+   "idx": 330,
+   "utterance": "am I free morning",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.688102,
+   "latency_ms": 3973.603,
+   "group": "calendar_today::am I free {span}",
+   "error": null
+  },
+  {
+   "idx": 331,
+   "utterance": "what's my agenda on Friday",
+   "expected": "calendar_today",
+   "predicted": "calendar_today",
+   "correct": true,
+   "confidence": 0.813404,
+   "latency_ms": 4976.602,
+   "group": "calendar_today::what's my agenda {day}",
+   "error": null
+  },
+  {
+   "idx": 332,
+   "utterance": "dig into llama.cpp quantization formats for me",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.533542,
+   "latency_ms": 4567.555,
+   "group": "research_deep::dig into {topic} for me",
+   "error": null
+  },
+  {
+   "idx": 333,
+   "utterance": "dive into openWakeWord custom models",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.679908,
+   "latency_ms": 4167.992,
+   "group": "research_deep::dive into {topic}",
+   "error": null
+  },
+  {
+   "idx": 334,
+   "utterance": "dive into llama.cpp quantization formats",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.540903,
+   "latency_ms": 3809.674,
+   "group": "research_deep::dive into {topic}",
+   "error": null
+  },
+  {
+   "idx": 335,
+   "utterance": "investigate MiniCPM fine-tuning data requirements and give me options",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.413596,
+   "latency_ms": 3600.036,
+   "group": "research_deep::investigate {topic} and give me options",
+   "error": null
+  },
+  {
+   "idx": 336,
+   "utterance": "find out about wyoming protocol internals",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.533098,
+   "latency_ms": 3490.977,
+   "group": "research_deep::find out about {topic}",
+   "error": null
+  },
+  {
+   "idx": 337,
+   "utterance": "research esp32-s3 box alternatives",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.883435,
+   "latency_ms": 3849.067,
+   "group": "research_deep::research {topic}",
+   "error": null
+  },
+  {
+   "idx": 338,
+   "utterance": "dig into home assistant voice pipeline latency for me",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.532925,
+   "latency_ms": 5945.038,
+   "group": "research_deep::dig into {topic} for me",
+   "error": null
+  },
+  {
+   "idx": 339,
+   "utterance": "research openWakeWord custom models",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.7601,
+   "latency_ms": 8180.197,
+   "group": "research_deep::research {topic}",
+   "error": null
+  },
+  {
+   "idx": 340,
+   "utterance": "dive into home assistant voice pipeline latency",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.312142,
+   "latency_ms": 4263.396,
+   "group": "research_deep::dive into {topic}",
+   "error": null
+  },
+  {
+   "idx": 341,
+   "utterance": "research MiniCPM fine-tuning data requirements",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.695638,
+   "latency_ms": 3635.777,
+   "group": "research_deep::research {topic}",
+   "error": null
+  },
+  {
+   "idx": 342,
+   "utterance": "investigate piper voice quality and give me options",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.714154,
+   "latency_ms": 3747.958,
+   "group": "research_deep::investigate {topic} and give me options",
+   "error": null
+  },
+  {
+   "idx": 343,
+   "utterance": "dive into esp32-s3 box alternatives",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.833585,
+   "latency_ms": 4039.051,
+   "group": "research_deep::dive into {topic}",
+   "error": null
+  },
+  {
+   "idx": 344,
+   "utterance": "dig into piper voice quality for me",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.782704,
+   "latency_ms": 3903.204,
+   "group": "research_deep::dig into {topic} for me",
+   "error": null
+  },
+  {
+   "idx": 345,
+   "utterance": "dive into esp32 voice satellite options",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.840989,
+   "latency_ms": 4014.867,
+   "group": "research_deep::dive into {topic}",
+   "error": null
+  },
+  {
+   "idx": 346,
+   "utterance": "look into llama.cpp quantization formats",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.405805,
+   "latency_ms": 4390.534,
+   "group": "research_deep::look into {topic}",
+   "error": null
+  },
+  {
+   "idx": 347,
+   "utterance": "find out about piper voice quality",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.542969,
+   "latency_ms": 3641.478,
+   "group": "research_deep::find out about {topic}",
+   "error": null
+  },
+  {
+   "idx": 348,
+   "utterance": "dive into piper voice quality",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.759342,
+   "latency_ms": 3353.55,
+   "group": "research_deep::dive into {topic}",
+   "error": null
+  },
+  {
+   "idx": 349,
+   "utterance": "look into esp32 voice satellite options",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.751949,
+   "latency_ms": 4179.161,
+   "group": "research_deep::look into {topic}",
+   "error": null
+  },
+  {
+   "idx": 350,
+   "utterance": "dive into wyoming protocol internals",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.753048,
+   "latency_ms": 4011.507,
+   "group": "research_deep::dive into {topic}",
+   "error": null
+  },
+  {
+   "idx": 351,
+   "utterance": "look into wyoming protocol internals",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.664563,
+   "latency_ms": 3650.641,
+   "group": "research_deep::look into {topic}",
+   "error": null
+  },
+  {
+   "idx": 352,
+   "utterance": "research esp32 voice satellite options",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.886352,
+   "latency_ms": 3840.732,
+   "group": "research_deep::research {topic}",
+   "error": null
+  },
+  {
+   "idx": 353,
+   "utterance": "research home assistant voice pipeline latency",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.842314,
+   "latency_ms": 3765.143,
+   "group": "research_deep::research {topic}",
+   "error": null
+  },
+  {
+   "idx": 354,
+   "utterance": "dive into MiniCPM fine-tuning data requirements",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.497278,
+   "latency_ms": 5001.503,
+   "group": "research_deep::dive into {topic}",
+   "error": null
+  },
+  {
+   "idx": 355,
+   "utterance": "research wyoming protocol internals",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.800674,
+   "latency_ms": 5038.875,
+   "group": "research_deep::research {topic}",
+   "error": null
+  },
+  {
+   "idx": 356,
+   "utterance": "dig into MiniCPM fine-tuning data requirements for me",
+   "expected": "research_deep",
+   "predicted": "research_deep",
+   "correct": true,
+   "confidence": 0.499741,
+   "latency_ms": 5497.844,
+   "group": "research_deep::dig into {topic} for me",
+   "error": null
+  },
+  {
+   "idx": 357,
+   "utterance": "what's the tallest mountain in the world",
+   "expected": "__none__",
+   "predicted": "docs_query",
+   "correct": false,
+   "confidence": 0.440177,
+   "latency_ms": 4403.474,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 358,
+   "utterance": "tell me something interesting about space",
+   "expected": "__none__",
+   "predicted": "research_deep",
+   "correct": false,
+   "confidence": 0.473721,
+   "latency_ms": 5575.112,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 359,
+   "utterance": "how far is the moon",
+   "expected": "__none__",
+   "predicted": "docs_query",
+   "correct": false,
+   "confidence": 0.330566,
+   "latency_ms": 5061.369,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 360,
+   "utterance": "what should I have for dinner",
+   "expected": "__none__",
+   "predicted": "__none__",
+   "correct": true,
+   "confidence": 0.451214,
+   "latency_ms": 4096.332,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 361,
+   "utterance": "give me a recipe for pancakes",
+   "expected": "__none__",
+   "predicted": "docs_query",
+   "correct": false,
+   "confidence": 0.490817,
+   "latency_ms": 4333.987,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 362,
+   "utterance": "who invented the telephone",
+   "expected": "__none__",
+   "predicted": "research_deep",
+   "correct": false,
+   "confidence": 0.498028,
+   "latency_ms": 4559.002,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 363,
+   "utterance": "what's the weather this weekend",
+   "expected": "__none__",
+   "predicted": "__none__",
+   "correct": true,
+   "confidence": 0.31097,
+   "latency_ms": 5405.35,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 364,
+   "utterance": "recommend me a good book",
+   "expected": "__none__",
+   "predicted": "research_deep",
+   "correct": false,
+   "confidence": 0.343898,
+   "latency_ms": 5464.511,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 365,
+   "utterance": "how do you say thank you in Japanese",
+   "expected": "__none__",
+   "predicted": "docs_query",
+   "correct": false,
+   "confidence": 0.473231,
+   "latency_ms": 4962.093,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 366,
+   "utterance": "what's a good workout for beginners",
+   "expected": "__none__",
+   "predicted": "research_deep",
+   "correct": false,
+   "confidence": 0.31468,
+   "latency_ms": 5420.795,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 367,
+   "utterance": "explain quantum computing simply",
+   "expected": "__none__",
+   "predicted": "docs_query",
+   "correct": false,
+   "confidence": 0.402791,
+   "latency_ms": 3882.357,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 368,
+   "utterance": "when is the next lunar eclipse",
+   "expected": "__none__",
+   "predicted": "calendar_today",
+   "correct": false,
+   "confidence": 0.211912,
+   "latency_ms": 3665.424,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 369,
+   "utterance": "what's the difference between a fruit and a vegetable",
+   "expected": "__none__",
+   "predicted": "docs_query",
+   "correct": false,
+   "confidence": 0.484285,
+   "latency_ms": 3493.043,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 370,
+   "utterance": "help me write a birthday message",
+   "expected": "__none__",
+   "predicted": "__none__",
+   "correct": true,
+   "confidence": 0.586501,
+   "latency_ms": 3383.525,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 371,
+   "utterance": "what's the stock price of Apple",
+   "expected": "__none__",
+   "predicted": "research_deep",
+   "correct": false,
+   "confidence": 0.453889,
+   "latency_ms": 3302.843,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 372,
+   "utterance": "how many bones are in the human body",
+   "expected": "__none__",
+   "predicted": "research_deep",
+   "correct": false,
+   "confidence": 0.390997,
+   "latency_ms": 3355.184,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 373,
+   "utterance": "tell me about the roman empire",
+   "expected": "__none__",
+   "predicted": "docs_query",
+   "correct": false,
+   "confidence": 0.359121,
+   "latency_ms": 3130.135,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 374,
+   "utterance": "what's a good name for a dog",
+   "expected": "__none__",
+   "predicted": "__none__",
+   "correct": true,
+   "confidence": 0.303019,
+   "latency_ms": 3347.125,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 375,
+   "utterance": "why is the sky blue",
+   "expected": "__none__",
+   "predicted": "light_query",
+   "correct": false,
+   "confidence": 0.31823,
+   "latency_ms": 3366.96,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 376,
+   "utterance": "how do I fix a leaky faucet",
+   "expected": "__none__",
+   "predicted": "docs_query",
+   "correct": false,
+   "confidence": 0.620976,
+   "latency_ms": 3478.045,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 377,
+   "utterance": "what language do they speak in Brazil",
+   "expected": "__none__",
+   "predicted": "light_query",
+   "correct": false,
+   "confidence": 0.360084,
+   "latency_ms": 3443.657,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 378,
+   "utterance": "suggest a movie for tonight",
+   "expected": "__none__",
+   "predicted": "projects_query",
+   "correct": false,
+   "confidence": 0.361617,
+   "latency_ms": 3209.767,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 379,
+   "utterance": "what's the speed of light",
+   "expected": "__none__",
+   "predicted": "light_query",
+   "correct": false,
+   "confidence": 0.91543,
+   "latency_ms": 3289.539,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 380,
+   "utterance": "how do I remove a stain from a shirt",
+   "expected": "__none__",
+   "predicted": "research_deep",
+   "correct": false,
+   "confidence": 0.395565,
+   "latency_ms": 3624.656,
+   "group": "__none__::unmatched",
+   "error": null
+  },
+  {
+   "idx": 381,
+   "utterance": "who is the president of France",
+   "expected": "__none__",
+   "predicted": "docs_query",
+   "correct": false,
+   "confidence": 0.496293,
+   "latency_ms": 3703.055,
+   "group": "__none__::unmatched",
+   "error": null
+  }
+ ]
+}
