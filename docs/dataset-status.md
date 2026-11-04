@@ -58,7 +58,7 @@ The 14 records, with how many hop lines each one summarises:
 
 | # | observations | label | intent |
 |---|---|---|---|
-| 1 | 1 | filesys_glob | web_search: The Sundown Collective "Lantern Song" 1974 mono stereo mix alternate take master take |
+| 1 | 1 | filesys_glob | web_search: The Placeholder Collective "Example Song" 1974 mono stereo mix alternate take master take |
 | 2 | 75 | filesys_glob | list the files |
 | 3 | 18 | filesys_glob | what files are in the ghost directory |
 | 4 | 18 | filesys_glob | list the files in the bench directory |
@@ -66,19 +66,23 @@ The 14 records, with how many hop lines each one summarises:
 | 6 | 18 | filesys_glob | ls |
 | 7 | 15 | filesys_glob | list the .txt files |
 | 8 | 15 | filesys_glob | list the .sh files in the bench directory |
-| 9 | 1 | filesys_glob | web search for Northwind Forge 4.2 asset extraction tools GlintHandle Hatchcrate |
-| 10 | 1 | filesys_glob | Find published measurements of sub-gigahertz (NX4100/NX4200) ranging accuracy and maximum range |
-| 11 | 1 | filesys_glob | search the web for the Okonkwo 2019 Systems Robotics Letters paper on optimised flocking of ground robots |
-| 12 | 1 | filesys_glob | Find the arXiv ID and title for the paper "TOOLHAZE: A Benchmark for Tool Output Poisoning in Agent Runtimes" |
-| 13 | 1 | filesys_glob | Search the web for measured LoRa mesh latency and throughput benchmarks between NX4100 radio modules, and head-to-head comparisons |
-| 14 | 1 | filesys_glob | Find Meridian court judgments (caselaw.example.org, High Court, district courts) that describe escrow disputes |
+| 9 | 1 | filesys_glob | web search for Exampleco Forge 4.2 asset extraction tools GlintHandle Hatchcrate |
+| 10 | 1 | filesys_glob | Find published measurements of sub-gigahertz (RX-0000/RX-0001) ranging accuracy and maximum range |
+| 11 | 1 | filesys_glob | search the web for the Example 2019 Journal of Example Robotics paper on optimised flocking of ground robots |
+| 12 | 1 | filesys_glob | Find the arXiv ID and title for the paper "EXAMPLE-BENCH: A Benchmark for Tool Output Poisoning in Agent Runtimes" |
+| 13 | 1 | filesys_glob | Search the web for measured LoRa mesh latency and throughput benchmarks between RX-0000 radio modules, and head-to-head comparisons |
+| 14 | 1 | filesys_glob | Find Exampleco court judgments (caselaw.example.org, High Court, district courts) that describe escrow disputes |
 
 The observation counts and the labels in that table are measured; the intent text
 on the seven mislabelled rows is not. Rows 1 and 9–14 show a same-shape synthetic
 substitute: the marker, the grammar and the class of artefact are the log's, the
 subject is invented, because the log's own subjects are the operator's query
-history and a public repository is not where it belongs. The shape each one
-carries is pinned in `tests/test_route_traffic_shapes.py`, which uses the same
+history and a public repository is not where it belongs. The shapes use the
+reserved placeholder labels — `Exampleco`, `Example`, `Placeholder`,
+`RX-0000`, `EXAMPLE-BENCH`, and the RFC 2606 `caselaw.example.org` — rather than
+invented names, so no row names a real company, a real party to a dispute, or a
+real paper. The shape each one carries is pinned in
+`tests/test_route_traffic_shapes.py`, which uses the same
 seven rows. Rows 2–8 are as logged — a listing of a repo-relative tree names no
 subject of the caller's, which is why only the seven were substituted.
 

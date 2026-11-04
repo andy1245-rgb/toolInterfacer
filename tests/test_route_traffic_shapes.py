@@ -23,6 +23,18 @@ below pins each row to the marker it was written for, because a rewrite that kep
 the words and lost the marker would leave seven rows the router answers for a
 reason the old bug never touched.
 
+And an invented subject is not by itself a safe one. A plausible company name in
+front of "court judgments" reads as a real litigant, and a real surname in front
+of an invented journal reads as a citation — which, in a repository that sells
+itself as a measurement record, is worse than the query it replaced. Nor can an
+invented benchmark title be told apart from a real one: `TOOLHAZE` sits in the
+same all-caps family as the benchmarks it was modelled on, and a reader who goes
+looking for it on arXiv finds nothing. So the substitutes are the reserved
+placeholder labels and nothing else: `Exampleco`, `Example`, `Placeholder`,
+`RX-0000`, `EXAMPLE-BENCH` and the RFC 2606 `caselaw.example.org` already in the
+last row. Those name nothing real by construction and cannot be taken later,
+which an invented name can only promise until somebody registers it.
+
 The eight disk rows are kept as the log recorded them — `list the files`, `ls`,
 and friends — because their subject is the working tree rather than the caller.
 They are the half of the log where `filesys_glob` really was the right answer, and
@@ -51,25 +63,25 @@ from ti.service_entry import use_tool  # noqa: E402
 # artefact asked for by name fell through to the disk template.
 RESEARCH_ROWS = (
     # the underscore marker, at the head of the string, ahead of the subject
-    'web_search: The Sundown Collective "Lantern Song" 1974 mono stereo mix '
+    'web_search: The Placeholder Collective "Example Song" 1974 mono stereo mix '
     "alternate take master take",
     # the two-word marker, lowercase, in "<marker> for <product> <capability>"
-    "web search for Northwind Forge 4.2 asset extraction tools GlintHandle "
+    "web search for Exampleco Forge 4.2 asset extraction tools GlintHandle "
     "Hatchcrate",
     # "Find" + a publication adjective, with no channel named at all
-    "Find published measurements of sub-gigahertz (NX4100/NX4200) ranging "
+    "Find published measurements of sub-gigahertz (RX-0000/RX-0001) ranging "
     "accuracy and maximum range",
     # verb-then-channel order, lowercase, with the artefact named afterwards
-    "search the web for the Okonkwo 2019 Systems Robotics Letters paper on "
+    "search the web for the Example 2019 Journal of Example Robotics paper on "
     "optimised flocking of ground robots",
     # an identifier that only exists off-disk: an arXiv id, plus a quoted title
-    'Find the arXiv ID and title for the paper "TOOLHAZE: A Benchmark for Tool '
-    'Output Poisoning in Agent Runtimes"',
+    'Find the arXiv ID and title for the paper "EXAMPLE-BENCH: A Benchmark for '
+    'Tool Output Poisoning in Agent Runtimes"',
     # the same verb-then-channel order, sentence-capitalised, two asks joined
     "Search the web for measured LoRa mesh latency and throughput benchmarks "
-    "between NX4100 radio modules, and head-to-head comparisons",
+    "between RX-0000 radio modules, and head-to-head comparisons",
     # "Find" + a legal artefact, with the reporting domain in the parenthetical
-    "Find Meridian court judgments (caselaw.example.org, High Court, district "
+    "Find Exampleco court judgments (caselaw.example.org, High Court, district "
     "courts) that describe escrow disputes",
 )
 
@@ -240,8 +252,8 @@ class UnseenPhrasingTest(unittest.TestCase):
 
     EXTERNAL_SOURCE_HITS = (
         "find the arXiv preprint on tool poisoning",
-        "look up the published throughput numbers for the DW3000",
-        "pull the canlii judgment for that case",
+        "look up the published throughput numbers for the RX-0000",
+        "pull the law report for that case",
         "what do the proceedings say about the flocking model",
     )
     EXTERNAL_SOURCE_MISSES = (
@@ -257,7 +269,7 @@ class UnseenPhrasingTest(unittest.TestCase):
         "how do other projects handle graceful shutdowns",
         "compare tokio and async-std",
         "what's the latest on the d1 weights",
-        "where can I find the DW3000 errata",
+        "where can I find the RX-0000 errata",
     )
     RESEARCH_FRAME_MISSES = (
         "find the file named foo.py",
@@ -334,7 +346,7 @@ class ExplicitResearchVerbTest(unittest.TestCase):
     def test_a_research_verb_plus_a_subreddit_is_research(self):
         for intent in (
             "research what r/MechanicalKeyboards says about hall effect switches",
-            "research how people rate the DW3000 ranging accuracy",
+            "research how people rate the RX-0000 ranging accuracy",
             "research the literature on tool poisoning benchmarks",
         ):
             with self.subTest(intent=intent):
