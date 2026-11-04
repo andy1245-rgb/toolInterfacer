@@ -114,7 +114,7 @@ Routing accuracy is worth nothing until this is fixed.
 Today `planner/inspector.py` is an ordered keyword list, which the runtime proved wrong:
 seven web-research intents in `service/logs/hops.jsonl` were executed as `filesys_glob`,
 globbing the filesystem for a song title. Those seven are fixed and pinned by
-`tests/test_route_real_traffic.py`, but the *class* of bug survives because the layer is
+`tests/test_route_traffic_shapes.py`, but the *class* of bug survives because the layer is
 still keywords.
 
 - [ ] **Route the plan choice through the decision model** — spec §2's **L3**, not the

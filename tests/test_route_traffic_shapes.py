@@ -1,24 +1,37 @@
-"""Routing regression table for real traffic: 15 intents lifted from the hop log.
+"""Routing regression table: 15 intents, seven of them off-disk.
 
-Every utterance below is verbatim from `service/logs/hops.jsonl` — the
-`soft.intent_context` string of a hop line. The logger clamps that field to 100
-characters, so the rows that end mid-phrase (`... maximum range be`,
-`... Real-Wor`, `... that describe `) are truncated by the evidence itself and
-are reproduced as they were logged rather than tidied; the trailing blank in the
-last one is part of the string.
+The shapes are recorded traffic; the subjects on the seven off-disk rows are not.
+`service/logs/hops.jsonl` held seven web-research intents and the rule set of the
+time executed every one of them as `filesys_glob` — the disk template walked the
+filesystem looking for a file named after the subject. This table exists so that
+cannot come back quietly, and what it holds fixed is the *shape* of each of the
+seven: the marker that announces a web channel (`web_search:`, `web search for`,
+`search the web`, `Search the web`), the capitalised `Find` a published artefact
+arrives behind, the two `Find <published thing>` variants (one asking for a
+measurement, one for an arXiv id and title), and the `Find <court judgments>` row
+whose parenthetical carries a law-report domain. Every subject has been replaced
+with a synthetic one, so no row reproduces a query the log recorded; the shapes
+are the part the router answers to and the part that has to stay.
 
-Nothing here is synthesised. `docs/dataset-status.md` audited that log and found
-16 distinct intents, of which seven ask for something off-disk — a record, a
-paper, a measurement, a court judgment — and all seven were executed as
-`filesys_glob`: the disk template walked the filesystem looking for a file named
-after the subject. The other eight are listings and reads whose `filesys_glob`
-answer was sound, and the same audit names them as the sound rows.
+Two consequences of that substitution, stated so neither reads as an accident:
+the log clamped `soft.intent_context` to 100 characters and three of the original
+rows ended mid-phrase, but a truncated tail was evidence about the logger rather
+than the router, so the syntheses are complete sentences; and `RESEARCH_SHAPES`
+below pins each row to the marker it was written for, because a rewrite that kept
+the words and lost the marker would leave seven rows the router answers for a
+reason the old bug never touched.
 
-So this file is a regression table for a bug the log proves happened, not a
-fixture set: seven rows that must leave the disk path, eight that must stay on
-it, and — below them — phrasings that never appeared in the log, because a rule
-that only matches the words in it has memorised seven sentences instead of
-learning what a web-research intent looks like.
+The eight disk rows are kept as the log recorded them — `list the files`, `ls`,
+and friends — because their subject is the working tree rather than the caller.
+They are the half of the log where `filesys_glob` really was the right answer, and
+the audit in `docs/dataset-status.md` counts them as the sound rows; its table
+shows the same synthetic substitutes on the seven mislabelled lines, for the same
+reason as here.
+
+So: seven rows that must leave the disk path, eight that must stay on it, and —
+below them — phrasings that never appeared in the log at all, because a rule that
+only matches the words in it has memorised seven sentences instead of learning
+what a web-research intent looks like.
 """
 import pathlib
 import sys
@@ -27,33 +40,59 @@ import unittest
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "service"))
 
-from ti.planner.inspector import inspect  # noqa: E402
+from ti.planner.inspector import EXTERNAL_SOURCE, WEB_CHANNEL, inspect  # noqa: E402
 from ti.service_entry import use_tool  # noqa: E402
 
-# The seven. Between them they carry every phrasing the old rule set could not
-# see: an explicit "web_search:" marker, "web search for", "search the web",
-# "Search the web", two "Find <published thing>" rows and one "Find <court
-# judgments>" row — and the ones starting with "Find" are the point, because
-# only two words ("research", "compare") ever reached the research template.
-RESEARCH_TRAFFIC = (
-    'web_search: Sam Cooke "Bring It On Home to Me" 1962 mono stereo mix '
+# The seven. Between them they carry every shape the old rule set could not see,
+# one per row, and the ones starting with "Find" are the point: only two words
+# ("research", "compare") ever reached the research template, so a published
+# artefact asked for by name fell through to the disk template.
+RESEARCH_ROWS = (
+    # the underscore marker, at the head of the string, ahead of the subject
+    'web_search: The Sundown Collective "Lantern Song" 1974 mono stereo mix '
     "alternate take master take",
-    "web search for Clickteam Fusion 2.5 asset extraction tools CTFAK Anaconda",
-    "Find published measurements of ultra-wideband (DW3000/DWM3000) ranging "
-    "accuracy and maximum range be",
-    "search the web for the Vasarhelyi 2018 Science Robotics paper on optimized "
-    "flocking of autonomous dr",
-    'Find the arXiv ID and title for the paper "MCPTox: A Benchmark for Tool '
-    "Poisoning Attack on Real-Wor",
-    "Search the web for measured ESP-NOW latency and throughput benchmarks "
-    "between ESP32 devices, and aca",
-    "Find Canadian court judgments (canlii.org, Federal Court, provincial "
-    "superior courts) that describe ",
+    # the two-word marker, lowercase, in "<marker> for <product> <capability>"
+    "web search for Northwind Forge 4.2 asset extraction tools GlintHandle "
+    "Hatchcrate",
+    # "Find" + a publication adjective, with no channel named at all
+    "Find published measurements of sub-gigahertz (NX4100/NX4200) ranging "
+    "accuracy and maximum range",
+    # verb-then-channel order, lowercase, with the artefact named afterwards
+    "search the web for the Okonkwo 2019 Systems Robotics Letters paper on "
+    "optimised flocking of ground robots",
+    # an identifier that only exists off-disk: an arXiv id, plus a quoted title
+    'Find the arXiv ID and title for the paper "TOOLHAZE: A Benchmark for Tool '
+    'Output Poisoning in Agent Runtimes"',
+    # the same verb-then-channel order, sentence-capitalised, two asks joined
+    "Search the web for measured LoRa mesh latency and throughput benchmarks "
+    "between NX4100 radio modules, and head-to-head comparisons",
+    # "Find" + a legal artefact, with the reporting domain in the parenthetical
+    "Find Meridian court judgments (caselaw.example.org, High Court, district "
+    "courts) that describe escrow disputes",
 )
 
-# The eight sound rows, verbatim, with the audit's observation counts for the
-# seven it tabulates by count (it leaves the eighth off its table).
-DISK_TRAFFIC = (
+# The shape each row is here to carry, index-aligned with RESEARCH_ROWS: the
+# marker form pinned at the start of the string, and the rule that form fires.
+# Two rows land on EXTERNAL_SOURCE rather than WEB_CHANNEL — the measurement row
+# on "published", the arXiv row on "arxiv" — and the last row fires WEB_CHANNEL
+# rather than EXTERNAL_SOURCE because R3 matches the domain in its parenthetical
+# before R4 can see "court judgments". That ordering is the design; pinning which
+# rule each shape reaches is how a change to it becomes visible here.
+RESEARCH_SHAPES = (
+    (r"^web_search:\s", WEB_CHANNEL),
+    (r"^web search for\s", WEB_CHANNEL),
+    (r"^Find published\b", EXTERNAL_SOURCE),
+    (r"^search the web for\s", WEB_CHANNEL),
+    (r"^Find the arXiv ID and title for the paper\s", EXTERNAL_SOURCE),
+    (r"^Search the web for\s", WEB_CHANNEL),
+    (r"^Find \w+ court judgments \([\w.-]+\.(?:com|org|net)", WEB_CHANNEL),
+)
+
+# The eight sound rows, verbatim from the log, with the audit's observation counts
+# for the seven it tabulates by count (it leaves the eighth off its table). A
+# listing or a read of a repo-relative tree names no subject of the caller's, so
+# these are reproduced as logged rather than substituted.
+DISK_ROWS = (
     "list the files",                              # 75 hop lines
     "ls",                                          # 18
     "list all the files in the repo",              # 18
@@ -77,23 +116,29 @@ def _plan(intent: str) -> list[str]:
     return [step["op"] for step in out["steps"]]
 
 
-class TheLogRowsTest(unittest.TestCase):
+class TheTrafficTableTest(unittest.TestCase):
     def test_the_table_is_the_measured_one(self):
-        self.assertEqual(len(RESEARCH_TRAFFIC), 7)
-        self.assertEqual(len(DISK_TRAFFIC), 8)
-        self.assertEqual(len(set(RESEARCH_TRAFFIC) | set(DISK_TRAFFIC)), 15)
+        self.assertEqual(len(RESEARCH_ROWS), 7)
+        self.assertEqual(len(RESEARCH_SHAPES), 7)
+        self.assertEqual(len(DISK_ROWS), 8)
+        self.assertEqual(len(set(RESEARCH_ROWS) | set(DISK_ROWS)), 15)
 
     def test_the_seven_research_intents_leave_the_disk_path(self):
-        for intent in RESEARCH_TRAFFIC:
+        for intent, (marker, rule) in zip(RESEARCH_ROWS, RESEARCH_SHAPES):
             with self.subTest(intent=intent):
+                # the shape before the route: a row that lost its marker would
+                # still have to pass the rest of this and could do it for a
+                # reason that has nothing to do with the bug the row records
+                self.assertRegex(intent, marker, intent)
                 meta = inspect(intent, {}, {})
                 self.assertEqual(meta["level"], "L2", meta)
                 self.assertEqual(meta["template"], "research", meta)
                 self.assertIn(meta["rule"], ("WEB_CHANNEL", "EXTERNAL_SOURCE",
                                              "RESEARCH_FRAME"), meta)
+                self.assertEqual(meta["rule"], rule, meta)
 
     def test_the_eight_disk_intents_stay_on_the_disk_path(self):
-        for intent in DISK_TRAFFIC:
+        for intent in DISK_ROWS:
             with self.subTest(intent=intent):
                 meta = inspect(intent, {}, {})
                 self.assertEqual(meta["level"], "L1", meta)
@@ -108,14 +153,14 @@ class TheLogRowsTest(unittest.TestCase):
         # which is why every research intent errored (docs/review B1). Pinning
         # that string here would have re-pinned the bug.
         from ti.ops.op_api import all_ops
-        for intent in RESEARCH_TRAFFIC:
+        for intent in RESEARCH_ROWS:
             with self.subTest(kind="research", intent=intent):
                 ops = _plan(intent)
                 self.assertIn(ops[0], all_ops(), ops)
                 self.assertEqual(ops[0], "decide_extract", ops)
                 self.assertIn("web_search", ops, ops)
                 self.assertEqual(set(ops) & DISK_OPS, set(), ops)
-        for intent in DISK_TRAFFIC:
+        for intent in DISK_ROWS:
             with self.subTest(kind="disk", intent=intent):
                 ops = _plan(intent)
                 self.assertEqual(ops[0], "filesys_glob", ops)
@@ -171,7 +216,7 @@ class UnseenPhrasingTest(unittest.TestCase):
 
     None of these strings is in the log. The negatives are where the rules could
     do damage, and "find the file named foo.py" is the hard one — it carries the
-    same verb as three of the seven real rows and is a disk lookup.
+    same verb as three of the seven off-disk rows and is a disk lookup.
     """
 
     WEB_CHANNEL_HITS = (
