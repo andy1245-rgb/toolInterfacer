@@ -47,7 +47,9 @@ def run(params: dict[str, Any], store: Any) -> tuple[str, Any, float]:
     fetch_cfg = ops.get("web_fetch") or {}
     script = fetch_cfg.get("script")
     if not script:
-        raise cli.CliMissingBinary("ops.web_fetch.script is not configured")
+        raise cli.CliMissingBinary(
+            "ops.web_fetch.script is not set: point it at a web-fetch CLI that "
+            "prints the RESULT_FILE footer (see docs/ops.md §5)")
     cli.launcher(str(script))   # a missing script is a config error, not a page result
     max_chars = int(fetch_cfg.get("max_chars") or DEFAULT_MAX_CHARS)
     timeout_s = cli.timeout_from_conf(ops)

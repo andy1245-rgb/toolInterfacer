@@ -2,7 +2,7 @@
 
 The baseline the sibling router benchmark recorded at 93.19% accuracy / 0.60
 none-detection / 0.61 ms p50 over 382 utterances and 18 classes
-(`jevResearchCompiled/experiments/exp_classic.py`, model `tfidf-word+linearsvc`).
+(`experiments/exp_classic.py`, model `tfidf-word+linearsvc`).
 scikit-learn is not installed in this repo and it declares no third-party
 dependencies, so the vectoriser and the solver are the stdlib
 re-implementation in `..linear_text` rather than the original objects.

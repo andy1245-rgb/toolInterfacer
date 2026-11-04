@@ -12,7 +12,7 @@ is to parameterise the path, not to add an exception.
 
 What the guard covers
 ---------------------
-Three patterns, all built from parts so this file does not trip its own check:
+Four patterns, all built from parts so this file does not trip its own check:
 
 ``_HOME``
     ``/home/<name>`` in path position. The account segment is matched whether or
@@ -34,6 +34,19 @@ Three patterns, all built from parts so this file does not trip its own check:
     hardcode one machine's layout, so the rule flags the generic shape of "a
     captured absolute path from a Windows tree" instead.
 
+``_HOME_TREE``
+    ``~/Documents/<name>`` — a ``~``-relative path that descends into the
+    personal document tree. This is the one home-relative shape the guard used
+    to wave through, and it shipped: ``service/ti/conf/defaults.json`` (package
+    data, inside the wheel) carried
+    ``~/Documents/<private-project>/Research/<project>`` as the default for
+    ``ops.reddit.cwd`` and both of its candidates, so every install was told to
+    look in one operator's documents folder. "Portable" cannot mean "starts
+    with a tilde": ``~/Documents/...`` names a private tree just as surely as
+    ``/home/<account>/...`` does. ``~/mnt/somehost`` and
+    ``~/.local/state/ti/...`` stay legal, because a mount point and an XDG
+    runtime path are generic locations, not one machine's documents.
+
 What it does not cover
 ----------------------
 - **History.** It scans the working tree, not committed blobs. A path removed in
@@ -44,8 +57,12 @@ What it does not cover
   repo's placeholder convention is angle-bracketed, and ``/home/<user>`` and
   ``C:\\Users\\<user>`` do not match because ``<`` is not a name character.
 - **Placeholder forms are allowed.** ``/home/<user>``, ``C:\\Users\\<user>``,
-  ``<workspace>\\models\\<model>.gguf`` and anything ``~``-relative
-  (``~/mnt/somehost``) are portable by the repo's own rule and are never flagged.
+  ``<workspace>\\models\\<model>.gguf``, ``~/mnt/somehost`` and
+  ``~/Documents/<project>/x`` are portable by the repo's own rule and are never
+  flagged — ``<`` is not a name character, so a bracketed placeholder reads as a
+  placeholder. What is *not* portable is a tilde-relative path into the
+  documents tree with a real name in it (``_HOME_TREE``); the tilde makes the
+  path resolve, not generic.
 - **Sibling project names are not matched by name.** They are only caught when
   they sit behind a drive-rooted ``Documents\\`` or ``models\\``. A prose mention
   in provenance attribution is not a leak and stays.
@@ -91,7 +108,8 @@ _WIN_STRUCTURE = re.compile(
     + r"(?:[A-Za-z0-9_.<> -]+[\\/]+)*?"
     + r"(?:Doc" + r"uments|models)[\\/]+"
 )
-PATTERNS = (_HOME, _USERS, _WIN_STRUCTURE)
+_HOME_TREE = re.compile("~" + r"/" + "Doc" + "uments" + r"/" + _NAME + _END)
+PATTERNS = (_HOME, _USERS, _WIN_STRUCTURE, _HOME_TREE)
 
 
 def _skipped(rel: pathlib.Path) -> bool:
@@ -158,6 +176,10 @@ class GuardPatternTest(unittest.TestCase):
                 self.assertMatches(_WIN_STRUCTURE, text)
 
     def test_structure_ignores_placeholders_urls_and_home_relative(self):
+        # `~/Documents/sibling/Research/x` is deliberately in this list: the
+        # Windows-structure rule must not fire on a home-relative path. It is
+        # caught by `_HOME_TREE` instead -- the two rules answer different
+        # questions and neither may absorb the other.
         for text in (r"<workspace>\models\d1-3B-Q4_K_M.gguf",
                      "https://unsloth.ai/docs/models/",
                      "~/Documents/sibling/Research/x",
@@ -166,6 +188,25 @@ class GuardPatternTest(unittest.TestCase):
                      "$DELL_MOUNT/Documents/x"):
             with self.subTest(text=text):
                 self.assertNoMatch(_WIN_STRUCTURE, text)
+
+    def test_home_tree_matches_a_private_documents_tree(self):
+        """The shape that shipped in `conf/defaults.json`: what the old guard
+        waved through as "`~`-relative, therefore portable"."""
+        for text in ("cwd: ~/Documents/some-machines-tree/Research/some-project",
+                     '"~/Documents/sibling/Research/x"',
+                     "~/Documents/sibling`",
+                     "~/Documents/proj",
+                     "~/Documents/a-private-tree"):
+            with self.subTest(text=text):
+                self.assertMatches(_HOME_TREE, text)
+
+    def test_home_tree_ignores_generic_home_locations_and_placeholders(self):
+        for text in ("~/Documents/<project>/x", "~/mnt/somehost",
+                     "~/.local/state/ti/http.token", "~/redditScrapingSearching",
+                     "~/Documents", "~/.pi/profiles/registry/x",
+                     "Documents/x"):
+            with self.subTest(text=text):
+                self.assertNoMatch(_HOME_TREE, text)
 
 
 class NoPersonalPathsTest(unittest.TestCase):

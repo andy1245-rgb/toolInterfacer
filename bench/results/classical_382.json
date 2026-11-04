@@ -2605,7 +2605,7 @@
     "pmax": 0.21552253229279128
    },
    {
-    "text": "how is electronicsProjects doing",
+    "text": "how is workshopProjects doing",
     "gold": "projects_query",
     "pick": "projects_query",
     "correct": true,
@@ -2632,7 +2632,7 @@
     "pmax": 0.09173803322106935
    },
    {
-    "text": "what's happening in minicpmTune",
+    "text": "what's happening in nimbusTune",
     "gold": "projects_query",
     "pick": "projects_query",
     "correct": true,
@@ -2641,7 +2641,7 @@
     "pmax": 0.09602124389695901
    },
    {
-    "text": "what's happening in localAlexa",
+    "text": "what's happening in localSpeaker",
     "gold": "projects_query",
     "pick": "projects_query",
     "correct": true,
@@ -2650,7 +2650,7 @@
     "pmax": 0.0909096218750567
    },
    {
-    "text": "give me a summary of the electronicsProjects project",
+    "text": "give me a summary of the workshopProjects project",
     "gold": "projects_query",
     "pick": "projects_query",
     "correct": true,
@@ -2659,7 +2659,7 @@
     "pmax": 0.18273822050432842
    },
    {
-    "text": "how is localAlexa doing",
+    "text": "how is localSpeaker doing",
     "gold": "projects_query",
     "pick": "projects_query",
     "correct": true,
@@ -2668,7 +2668,7 @@
     "pmax": 0.10696721077083647
    },
    {
-    "text": "what's happening in liveCaptions",
+    "text": "what's happening in liveSubtitles",
     "gold": "projects_query",
     "pick": "shoppinglist_view",
     "correct": false,
@@ -2677,7 +2677,7 @@
     "pmax": 0.08379967189484046
    },
    {
-    "text": "how is minicpmTune doing",
+    "text": "how is nimbusTune doing",
     "gold": "projects_query",
     "pick": "projects_query",
     "correct": true,
@@ -2686,7 +2686,7 @@
     "pmax": 0.11100895295005384
    },
    {
-    "text": "what's happening in electronicsProjects",
+    "text": "what's happening in workshopProjects",
     "gold": "projects_query",
     "pick": "shoppinglist_view",
     "correct": false,
@@ -2704,7 +2704,7 @@
     "pmax": 0.10090475634283814
    },
    {
-    "text": "give me a summary of the localAlexa project",
+    "text": "give me a summary of the localSpeaker project",
     "gold": "projects_query",
     "pick": "projects_query",
     "correct": true,
@@ -2713,7 +2713,7 @@
     "pmax": 0.21951277148021317
    },
    {
-    "text": "give me a summary of the liveCaptions project",
+    "text": "give me a summary of the liveSubtitles project",
     "gold": "projects_query",
     "pick": "projects_query",
     "correct": true,
@@ -2749,7 +2749,7 @@
     "pmax": 0.2149084872965696
    },
    {
-    "text": "how is liveCaptions doing",
+    "text": "how is liveSubtitles doing",
     "gold": "projects_query",
     "pick": "projects_query",
     "correct": true,
@@ -2758,7 +2758,7 @@
     "pmax": 0.09173803322106935
    },
    {
-    "text": "give me a summary of the minicpmTune project",
+    "text": "give me a summary of the nimbusTune project",
     "gold": "projects_query",
     "pick": "projects_query",
     "correct": true,

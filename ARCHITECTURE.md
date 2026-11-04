@@ -159,10 +159,12 @@ The service is a local HTTP endpoint that reads files on behalf of whoever asks,
 - **Confinement.** A run root must resolve inside `ops.filesys.roots` (default `~`, the
   service's start directory, and `/tmp`). Paths resolve component by component, refusing a
   `..` escape and a symlink whose target leaves the root.
-- **The deny list.** `ops.filesys.deny_roots` (default `~/mnt`) is refused *before the first
-  `lstat`* and pruned before descent. This is not paranoia: an `os.walk` rooted above a dead
-  network mount blocks in uninterruptible sleep on this box, measured from 22 minutes to 9.8
-  hours, and no timeout or signal releases it.
+- **The deny list.** `ops.filesys.deny_roots` ships empty and is refused *before the first
+  `lstat`* and pruned before descent. It is empty because a deny root is a mount point on the
+  operator's own machine (`~/mnt`, an sshfs target) and there is no portable value for it.
+  This is not paranoia: an `os.walk` rooted above a dead network mount blocks in
+  uninterruptible sleep on this box, measured from 22 minutes to 9.8 hours, and no timeout or
+  signal releases it.
 - **Bounds.** Body size, worker count, walk depth, walk hits, walk deadline, grep pattern
   length, grep line width, and three pattern *shapes* refused before compilation — a
   quantified group holding a quantified atom, two adjacent unbounded atoms that can match the

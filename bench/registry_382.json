@@ -510,9 +510,9 @@
       "references": [
         "what am I working on",
         "what projects do I have",
-        "how is the localAlexa project doing",
+        "how is the localSpeaker project doing",
         "give me a summary of my repos",
-        "what's the status of minicpmTune",
+        "what's the status of nimbusTune",
         "which projects have open todos",
         "what did I work on recently",
         "show me my project list",
@@ -528,7 +528,7 @@
         "what's happening in {project}"
       ],
       "slots": {
-        "project": ["minicpmTune", "electronicsProjects", "localAlexa", "todo app", "liveCaptions"]
+        "project": ["nimbusTune", "workshopProjects", "localSpeaker", "todo app", "liveSubtitles"]
       }
     },
     {

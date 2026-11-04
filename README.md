@@ -152,9 +152,11 @@ These are not wired, and the README would be lying if it did not say so:
   `reddit-research` CLI contract but that project is not vendored, and its parser was
   inferred from the skill's docs rather than observed. `docs/ops.md` §6.
 - **`web_search` / `web_fetch` shell out to CLIs you must configure.**
-  `ops.web_search.script` and `ops.web_fetch.script` default to the author's
-  `~/.pi/profiles/registry/...` skill scripts. Point them at any CLI that honours the
-  contract in [`docs/ops.md`](docs/ops.md), or the ops raise `CliMissingBinary`.
+  `ops.web_search.script`, `ops.web_search_provider.script` and `ops.web_fetch.script`
+  ship **empty** — they name a third-party CLI's install path, which is different on
+  every machine, so a filled-in default would only ever be right on its author's. Point
+  them at any CLI that honours the contract in [`docs/ops.md`](docs/ops.md); until you
+  do, the ops raise `CliMissingBinary` naming the key to set.
 - **L3 (model-planned DAG) is a placeholder** — `service/ti/planner/free.py` is a docstring.
   **L4 (browser)** is a row in the spec's level table and nothing else: no adapter, no code
   path, and no reference to one anywhere in `service/`.

@@ -1430,7 +1430,7 @@
   "family": "knowledge"
  },
  {
-  "text": "how is electronicsProjects doing",
+  "text": "how is workshopProjects doing",
   "tool": "projects_query",
   "family": "knowledge"
  },
@@ -1445,37 +1445,37 @@
   "family": "knowledge"
  },
  {
-  "text": "what's happening in minicpmTune",
+  "text": "what's happening in nimbusTune",
   "tool": "projects_query",
   "family": "knowledge"
  },
  {
-  "text": "what's happening in localAlexa",
+  "text": "what's happening in localSpeaker",
   "tool": "projects_query",
   "family": "knowledge"
  },
  {
-  "text": "give me a summary of the electronicsProjects project",
+  "text": "give me a summary of the workshopProjects project",
   "tool": "projects_query",
   "family": "knowledge"
  },
  {
-  "text": "how is localAlexa doing",
+  "text": "how is localSpeaker doing",
   "tool": "projects_query",
   "family": "knowledge"
  },
  {
-  "text": "what's happening in liveCaptions",
+  "text": "what's happening in liveSubtitles",
   "tool": "projects_query",
   "family": "knowledge"
  },
  {
-  "text": "how is minicpmTune doing",
+  "text": "how is nimbusTune doing",
   "tool": "projects_query",
   "family": "knowledge"
  },
  {
-  "text": "what's happening in electronicsProjects",
+  "text": "what's happening in workshopProjects",
   "tool": "projects_query",
   "family": "knowledge"
  },
@@ -1485,12 +1485,12 @@
   "family": "knowledge"
  },
  {
-  "text": "give me a summary of the localAlexa project",
+  "text": "give me a summary of the localSpeaker project",
   "tool": "projects_query",
   "family": "knowledge"
  },
  {
-  "text": "give me a summary of the liveCaptions project",
+  "text": "give me a summary of the liveSubtitles project",
   "tool": "projects_query",
   "family": "knowledge"
  },
@@ -1510,12 +1510,12 @@
   "family": "knowledge"
  },
  {
-  "text": "how is liveCaptions doing",
+  "text": "how is liveSubtitles doing",
   "tool": "projects_query",
   "family": "knowledge"
  },
  {
-  "text": "give me a summary of the minicpmTune project",
+  "text": "give me a summary of the nimbusTune project",
   "tool": "projects_query",
   "family": "knowledge"
  },

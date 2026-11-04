@@ -8,13 +8,13 @@ pyhost recipe (LoadLibrary llama-server-impl.dll, python.exe hardlinked into
 the llama.cpp bin dir), with per-run config through a local JSON sidecar so no
 PowerShell quoting is needed over ssh.
 
-NEW FILE (serving-fix run, 2026-10-17). Does not modify
-.../jevResearch/lab/** or any of the research-space scripts.
+NEW FILE (serving-fix run, 2026-10-17). Does not modify the sibling research
+lab tree or any of the research-space scripts.
 
 Paths
 -----
-dell-side copy of this driver: toolInterfacerLab/qdiag.py (same logic; reads
-qdiag_config.json next to itself). See service.example in the docs:
+dell-side copy of this driver: `qdiag.py` in the lab dir `DELL_LAB` names (same
+logic; reads `qdiag_config.json` next to itself). See service.example in the docs:
   bench/ results/dell/fix-*.json  - per-row lane artifacts
   docs/serving-fix-qwen35.md      - root-cause analysis + validation numbers
 
@@ -28,7 +28,7 @@ GGUF). d1 (lfm2-d1) lanes remain GPU-fast through this driver.
 Usage (from a machine with ssh access to bench-host):
   # 1. write dell-side qdiag_config.json (mode/args/env/log)
   # 2. launch:
-  ssh bench-host "C:\\...\\d1bench\\e3\\python.exe C:\\...\\toolInterfacerLab\\qdiag.py"
+  ssh bench-host "C:\\...\\d1bench\\e3\\python.exe C:\\...\\qdiag.py"
   # 3. /health on dell:8080, probe over the 18080 tunnel, then taskkill PIDs.
 """
 from __future__ import annotations
@@ -41,6 +41,7 @@ import urllib.request
 
 E3PY = os.environ.get("DELL_E3_PY", "")
 LAB = os.environ.get("DELL_LAB", "")
+QDIAG_CONFIG = os.environ.get("DELL_QDIAG_CONFIG", "")
 QDIAG = LAB + r"\qdiag.py"
 MODELS = LAB + r"\models"
 
@@ -58,7 +59,11 @@ def write_config(mode: str, extra: list[str], env: dict[str, str] | None = None)
            "args": args + extra,
            "env": env or {},
            "log": LAB + r"\logs\qdiag.log"}
-    path = os.path.join(os.environ.get("DELL_MOUNT", ""), "Documents/PersonalCodingProjects/personal/toolInterfacerLab/qdiag_config.json")
+    path = QDIAG_CONFIG
+    if not path:
+        raise SystemExit("set DELL_QDIAG_CONFIG to the qdiag_config.json path on "
+                         "bench-host, inside the mounted share "
+                         "(see bench/lane.env.example)")
     open(path, "w").write(json.dumps(cfg, indent=1))
     return path
 
