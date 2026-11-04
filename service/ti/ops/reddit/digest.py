@@ -1,14 +1,13 @@
 """reddit.digest — reddit-research CLI search, projected into a thread digest.
 
-**The CLI this op drives is currently unavailable on this box.** The skill's
-project lives on an external mount that is not mounted here, and the path
-``service/ti/conf/defaults.json`` ships
-(``~/Documents/PersonalCodingProjects/Research/redditScrapingSearching``) does
-not exist either. So the op probes ``ops.reddit.cwd`` and every path in
-``ops.reddit.cwd_candidates`` and, when none is a directory, raises
-``CliMissingBinary`` listing what it tried. That is deliberate: an unmounted
-project and a query that legitimately found no posts must not look alike, and a
-no-op must not be reported as a success.
+**The CLI this op drives ships unconfigured.** It is not vendored here and the
+``ops.reddit.cwd`` in ``service/ti/conf/defaults.json`` is empty on purpose: the
+project lives wherever its owner cloned it, so a default would name one machine.
+The op probes ``ops.reddit.cwd`` and every path in ``ops.reddit.cwd_candidates``
+and, when none is a directory, raises ``CliMissingBinary`` naming what it tried
+and which key to set. That is deliberate: an unconfigured or unmounted project
+and a query that legitimately found no posts must not look alike, and a no-op
+must not be reported as a success.
 
 The contract it is written against comes from the ``reddit-research`` SKILL.md,
 not from a running binary:
@@ -24,8 +23,8 @@ off stdout, follows ``raw_json``, and takes that document's ``posts[]``.
 ``posts[]`` keys are **inferred, not observed**: no recorded response exists to
 check them against, so each post is projected through a known-key list and any
 absent field stays ``None`` rather than becoming an invented value. The first
-session with the mount available should record a real response and replace the
-guess — see toolInterfacerExtras/devskills/reddit-research/fixtures/README.md.
+session with a configured project should record a real response under
+tests/data/devskills/reddit-research/fixtures/ and replace the guess.
 
 Data: ``{"query", "subreddit", "fetched_at", "posts": [post…]}`` with posts
 capped at ``thread_cap`` (``ops.reddit.thread_cap``, default 5). conf is 1.0
@@ -98,13 +97,14 @@ def resolve_project(reddit_cfg: dict[str, Any]) -> Path:
             return path
     if not tried:
         raise cli.CliMissingBinary(
-            "reddit-research is not configured: set ops.reddit.cwd to the project "
-            "directory")
+            "reddit-research is not configured: set ops.reddit.cwd to the "
+            "reddit-research project directory (the clone holding .venv/ and "
+            "reddit_research/)")
     raise cli.CliMissingBinary(
         "reddit-research CLI unavailable: no project directory found; tried:\n  "
         + "\n  ".join(tried)
-        + "\nThe project lives on an external mount — mount it, or point "
-          "ops.reddit.cwd at it, then record a real response for the fixture tree.")
+        + "\nSet ops.reddit.cwd (or ops.reddit.cwd_candidates) to the "
+          "reddit-research project directory.")
 
 
 def _conf_thread_cap() -> int | None:

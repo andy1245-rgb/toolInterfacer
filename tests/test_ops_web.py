@@ -6,7 +6,7 @@ Every test points ``ops.*.script`` at ``tests/data/fake_cli.py`` through
 real — as a subprocess — without a skill registry or a socket.
 
 Two tests replay the recorded devskills fixtures when that tree is present
-(``TI_DEVSKILLS_FIXTURES``, default ``~/toolInterfacerExtras/devskills/*/fixtures``)
+(``TI_DEVSKILLS_FIXTURES``, default ``tests/data/devskills/*/fixtures``)
 so the parsers are also checked against a payload the live CLIs actually wrote.
 """
 import json

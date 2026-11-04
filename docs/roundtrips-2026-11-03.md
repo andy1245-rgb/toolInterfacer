@@ -64,8 +64,9 @@ B 35,662 ms (**B is 7,523 ms, 26.7% slower**), 43 hops across 12 round trips (3.
 round trip), correctness 8/9 vs 7/9.
 
 `l2_reddit` fails on **both** arms — the `reddit-research` binary is installed on this box but
-`ops.reddit.cwd` points at `~/Documents/.../redditScrapingSearching`, which does not exist
-(the project lives under `~/mirror/...`), so the op cannot find the project directory it
+`ops.reddit.cwd` then defaulted to `~/Documents/<private-project>/…`, which does not exist
+(the project lives under `~/mirror/…`; the default is empty now, so the op names the key to
+set instead of a wrong path), so the op cannot find the project directory it
 runs the CLI in — so it is not a comparison; it is recorded and excluded from the correctness count's meaning.
 `l1_symbol` is the one real disagreement and it is a routing defect, not a measurement
 artefact: a grep intent was answered as a file read, so B returned a file reference where A

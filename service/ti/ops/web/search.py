@@ -106,12 +106,16 @@ def _select_backend(backend: str,
         cfg = ops.get("web_search_provider") or {}
         script = cfg.get("script")
         if not script:
-            raise cli.CliMissingBinary("ops.web_search_provider.script is not configured")
+            raise cli.CliMissingBinary(
+                "ops.web_search_provider.script is not set: point it at a "
+                "web-search CLI that takes --provider (see docs/ops.md §5)")
         return str(script), _argv_web_search, _items_from_web_search
     if backend == DEFAULT_BACKEND:
         script = (ops.get("web_search") or {}).get("script")
         if not script:
-            raise cli.CliMissingBinary("ops.web_search.script is not configured")
+            raise cli.CliMissingBinary(
+                "ops.web_search.script is not set: point it at a free-search CLI "
+                "that prints the RESULT_FILE footer (see docs/ops.md §5)")
         return str(script), _argv_free_search, _items_from_free_search
     raise ValueError(f"unknown web_search backend {backend!r}; "
                      f"known: {DEFAULT_BACKEND}, web-search")

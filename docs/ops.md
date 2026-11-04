@@ -76,14 +76,10 @@ even when every URL failed. Every op therefore reads the document.
 ```json
 "ops": {
   "cli_timeout_s": 60,
-  "web_search":          {"script": "…/web-search/scripts/free-search",
-                          "backend": "free-search", "brave": "auto"},
-  "web_search_provider": {"script": "…/web-search/scripts/web-search",
-                          "provider": "duckduckgo"},
-  "web_fetch":           {"script": "…/web-fetch/scripts/web-fetch",
-                          "max_chars": 20000},
-  "reddit":              {"cwd": "~/…/redditScrapingSearching",
-                          "cwd_candidates": ["~/…/redditScrapingSearching"],
+  "web_search":          {"script": "", "backend": "free-search", "brave": "auto"},
+  "web_search_provider": {"script": "", "provider": "duckduckgo"},
+  "web_fetch":           {"script": "", "max_chars": 20000},
+  "reddit":              {"cwd": "", "cwd_candidates": [],
                           "cli": [".venv/bin/python", "-m", "reddit_research.cli"]}
 }
 ```
@@ -94,8 +90,19 @@ even when every URL failed. Every op therefore reads the document.
 - `web_search.backend` `free-search` (default) or `web-search`; the `backend`
   op param overrides it, and the provider path reads `web_search_provider`.
 - `web_fetch.max_chars` mirrors the CLI's `--max-chars` (20000 default).
+- `filesys.deny_roots` ships empty. A deny root is a mount point on *your*
+  machine (`~/mnt`, an sshfs target), so there is no portable value to ship; set
+  it to whatever local tree must never be stat'ed. `~` is expanded, so the entry
+  itself stays portable between homes.
 - `ops.dev_mode` (absent in live defaults) is the replay hook for the devskill
   wrappers.
+
+Every `script` and `cwd` above ships **empty**, and that is deliberate: each one
+names a third-party CLI's location on one machine, so a filled-in default would
+point a stranger at a path that exists nowhere. Point each at your own install —
+any CLI honouring the contract in §2 works. Until you do, the op raises
+`CliMissingBinary` naming the exact key to set ("ops.web_search.script is not
+set: …") rather than failing somewhere inside a subprocess.
 
 `TI_CONF` selects a whole alternate config file; `TI_CONF_OVERLAY` deep-merges a
 partial one on top (dicts recurse, lists replace). The overlay is how tests and
@@ -152,16 +159,20 @@ been averaged away. conf is the mean over URLs of 1.0 / 0.5 (degraded) / 0.0.
 `{"query", "subreddit", "fetched_at", "posts": [ … ]}`, posts capped at
 `thread_cap` (`ops.reddit.thread_cap`, default 5). conf 1.0 with ≥1 post.
 
-**Currently unavailable.** See §7.
+**Not configured out of the box.** See §6.
 
-## 6. reddit-research: the op that cannot run yet
+## 6. reddit-research: what the op needs from you
 
-The skill's project lives on an external mount that is not mounted, and
-`ops.reddit.cwd` points at a path that does not exist either. The op probes `cwd` then every
-entry in `cwd_candidates`, and when none is a directory it raises `CliMissingBinary` naming
-each path it tried. It does not hang, does not return an empty digest,
-and does not pretend a no-op was a success — an unmounted project and "the query
-found nothing" must not look alike.
+`ops.reddit.cwd` ships empty, and `cwd_candidates` with it. The project is not
+vendored here — it is someone's clone, so no default can name it. Set
+`ops.reddit.cwd` to the clone (the directory holding `.venv/` and
+`reddit_research/`); `cwd_candidates` takes further paths and lets one machine
+carry two layouts. The op probes `cwd` then every candidate, and when none is a
+directory it raises `CliMissingBinary` naming each path it tried and the key to
+set. With nothing configured at all it says so instead of listing nothing. It
+does not hang, does not return an empty digest, and does not pretend a no-op was
+a success — an unconfigured project and "the query found nothing" must not look
+alike.
 
 The adapter itself is written against the SKILL.md contract, not against an
 observed binary:
@@ -175,22 +186,23 @@ That CLI prints no machine footer — its machine-readable handle is the
 advert convention alongside the two in §2. The op reads the summary off stdout,
 follows `raw_json`, and projects each `posts[]` entry onto a known-key list
 (`POST_FIELDS`); absent keys stay `None` rather than becoming invented values.
-That projection is **inferred, not observed** — the first session with the mount
-available should record a real response (`devskills/reddit-research/fixtures/`)
-and confirm or correct the field list.
+That projection is **inferred, not observed** — the first session with a real
+project path available should record a real response
+(`devskills/reddit-research/fixtures/`) and confirm or correct the field list.
 
 ## 7. Mismatches found between the live CLIs and what was assumed
 
-1. **CRLF shebang.** `~/.pi/profiles/registry/web-search/scripts/free-search` is
-   stored with `#!/usr/bin/env python3\r\n`. Executing it directly dies with
+1. **CRLF shebang.** The `free-search` skill script is stored with
+   `#!/usr/bin/env python3\r\n`. Executing it directly dies with
    `exit 127: /usr/bin/env: 'python3\r': No such file or directory` and produces
    no artifact, so the failure looks like "every query failed" rather than "the
    interpreter line is broken". `web-fetch` is LF and unaffected. The adapter
    detects a CRLF shebang and runs the script under the service interpreter;
    `launcher()` is covered by a regression test.
-2. **`ops.reddit.cwd` disagrees with the skill's documented location**, and
-   neither exists on this box. Both are carried (`cwd` + `cwd_candidates`) so the
-   error message lists the real candidates instead of guessing.
+2. **A configured `ops.reddit.cwd` can disagree with the skill's documented
+   location.** Both are carried (`cwd` + `cwd_candidates`) so the error message
+   lists the real candidates instead of guessing; the shipped values are empty,
+   so the first thing a new user gets is the key to set, not a wrong path.
 3. **web-fetch batch mode is a trap**, as predicted: no footer, one run dir per
    URL, exit 0 on total failure. Not used — see §5.
 4. Everything else matched: `--no-preview` keeps the footer in both scripts, the

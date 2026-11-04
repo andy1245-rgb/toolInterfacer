@@ -2,7 +2,7 @@
 """classical_baseline.py — measure the `classical` backend the way the sibling
 router benchmark measured it, plus the checks that number needed.
 
-The recorded result (jevResearchCompiled `exp_classic.py`, model
+The recorded result (the sibling benchmark's `exp_classic.py`, model
 `tfidf-word+linearsvc`) is 93.19% / none-detection 0.60 / p50 0.61 ms on 382
 utterances, 18-way. This script reproduces that protocol in-repo and adds the
 four things it did not report:

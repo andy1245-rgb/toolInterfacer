@@ -3904,7 +3904,7 @@
   },
   {
    "idx": 286,
-   "utterance": "how is electronicsProjects doing",
+   "utterance": "how is workshopProjects doing",
    "expected": "projects_query",
    "predicted": "projects_query",
    "correct": true,
@@ -3937,7 +3937,7 @@
   },
   {
    "idx": 289,
-   "utterance": "what's happening in minicpmTune",
+   "utterance": "what's happening in nimbusTune",
    "expected": "projects_query",
    "predicted": "projects_query",
    "correct": true,
@@ -3948,7 +3948,7 @@
   },
   {
    "idx": 290,
-   "utterance": "what's happening in localAlexa",
+   "utterance": "what's happening in localSpeaker",
    "expected": "projects_query",
    "predicted": "__none__",
    "correct": false,
@@ -3959,7 +3959,7 @@
   },
   {
    "idx": 291,
-   "utterance": "give me a summary of the electronicsProjects project",
+   "utterance": "give me a summary of the workshopProjects project",
    "expected": "projects_query",
    "predicted": "projects_query",
    "correct": true,
@@ -3970,7 +3970,7 @@
   },
   {
    "idx": 292,
-   "utterance": "how is localAlexa doing",
+   "utterance": "how is localSpeaker doing",
    "expected": "projects_query",
    "predicted": "__none__",
    "correct": false,
@@ -3981,7 +3981,7 @@
   },
   {
    "idx": 293,
-   "utterance": "what's happening in liveCaptions",
+   "utterance": "what's happening in liveSubtitles",
    "expected": "projects_query",
    "predicted": "__none__",
    "correct": false,
@@ -3992,7 +3992,7 @@
   },
   {
    "idx": 294,
-   "utterance": "how is minicpmTune doing",
+   "utterance": "how is nimbusTune doing",
    "expected": "projects_query",
    "predicted": "projects_query",
    "correct": true,
@@ -4003,7 +4003,7 @@
   },
   {
    "idx": 295,
-   "utterance": "what's happening in electronicsProjects",
+   "utterance": "what's happening in workshopProjects",
    "expected": "projects_query",
    "predicted": "projects_query",
    "correct": true,
@@ -4025,7 +4025,7 @@
   },
   {
    "idx": 297,
-   "utterance": "give me a summary of the localAlexa project",
+   "utterance": "give me a summary of the localSpeaker project",
    "expected": "projects_query",
    "predicted": "projects_query",
    "correct": true,
@@ -4036,7 +4036,7 @@
   },
   {
    "idx": 298,
-   "utterance": "give me a summary of the liveCaptions project",
+   "utterance": "give me a summary of the liveSubtitles project",
    "expected": "projects_query",
    "predicted": "projects_query",
    "correct": true,
@@ -4080,7 +4080,7 @@
   },
   {
    "idx": 302,
-   "utterance": "how is liveCaptions doing",
+   "utterance": "how is liveSubtitles doing",
    "expected": "projects_query",
    "predicted": "__none__",
    "correct": false,
@@ -4091,7 +4091,7 @@
   },
   {
    "idx": 303,
-   "utterance": "give me a summary of the minicpmTune project",
+   "utterance": "give me a summary of the nimbusTune project",
    "expected": "projects_query",
    "predicted": "projects_query",
    "correct": true,

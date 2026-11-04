@@ -114,24 +114,21 @@
   },
   "ops": {
     "web_fetch": {
-      "script": "~/.pi/profiles/registry/web-fetch/scripts/web-fetch",
+      "script": "",
       "max_chars": 20000
     },
     "web_search": {
-      "script": "~/.pi/profiles/registry/web-search/scripts/free-search",
+      "script": "",
       "backend": "free-search",
       "brave": "auto"
     },
     "web_search_provider": {
-      "script": "~/.pi/profiles/registry/web-search/scripts/web-search",
+      "script": "",
       "provider": "duckduckgo"
     },
     "reddit": {
-      "cwd": "~/Documents/PersonalCodingProjects/Research/redditScrapingSearching",
-      "cwd_candidates": [
-        "~/Documents/PersonalCodingProjects/Research/redditScrapingSearching",
-        "~/redditScrapingSearching"
-      ],
+      "cwd": "",
+      "cwd_candidates": [],
       "cli": [
         ".venv/bin/python",
         "-m",
@@ -145,9 +142,7 @@
         ".",
         "/tmp"
       ],
-      "deny_roots": [
-        "~/mnt"
-      ],
+      "deny_roots": [],
       "max_depth": 12,
       "max_files": 20000,
       "deadline_s": 5.0,

@@ -40,8 +40,8 @@ in stdlib Python and the recorded hyper-parameters were copied exactly.
 | `service/ti/decide/linear_text.py` | `TfidfVectorizer` (word 1–2-grams, `min_df=1`, sublinear tf, smoothed idf, L2 rows — sklearn's defaults) and a one-vs-rest squared-hinge linear SVM trained by SGD with Polyak averaging and an `eta0/(1+eta0*l2*t)` schedule. `log` loss (multinomial logistic) is the alternative. ~300 lines, stdlib only. |
 | `service/ti/decide/backends/classical.py` | The `choice` backend. Fits lazily from a corpus resolved out of `decide.classical.corpus_path`, caches per (config, corpus), reports a full `probabilities` dict and `confidence`. |
 | `service/ti/conf/defaults.json` | `decide.classical` — corpus path, loss, `C`, epochs, step, n-grams, seed, abstain label, temperature. Registration is by config + the package import in `backends/__init__.py`; `primitives.make_backend` was not touched. |
-| `tests/data/routing_382.json` | The 382 rows, verbatim. |
-| `bench/registry_382.json` | The 17-tool + `none_route` registry, verbatim — this is the **training** corpus the recorded number was fitted on. |
+| `tests/data/routing_382.json` | The 382 rows, verbatim except the `projects_query` slot vocabulary — 15 utterances had the source's own project names substituted (see `tests/data/routing_382_PROVENANCE.md`); labels, families, row order and template structure unchanged. |
+| `bench/registry_382.json` | The 17-tool + `none_route` registry, verbatim apart from the same substitution in one slot list and two references — this is the **training** corpus the recorded number was fitted on. |
 | `tests/data/routing_382_PROVENANCE.md` | Origin, digests, label distribution, the exact command. |
 | `bench/classical_baseline.py` | Every number in this document. Writes `bench/results/classical_382.json` and `classical_v2.json` — *by default, over the recorded copies*; pass `--out-dir` unless replacing them is what you mean. See §10. |
 

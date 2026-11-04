@@ -1,7 +1,8 @@
 """Cascade gate tests — banded policy against the stored per-row lane data.
 
-The offline validation (toolInterfacerExtras/research/round2/A2-frontier-corrected.md
-§4.2/§5.2) fit the banded sys→lr policy on per-row probabilities recorded from the
+The offline validation (a private sibling research tree, `research/round2/A2-frontier-corrected.md`
+§4.2/§5.2 — not published, which is why the reference values below are quoted
+inline) fit the banded sys→lr policy on per-row probabilities recorded from the
 dell re-run. These tests rebuild that loop out of injectable stage backends fed
 from the same stored rows, so the shipped implementation is checked against the
 numbers the design was accepted on — not against a re-derivation of them.

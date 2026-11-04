@@ -226,3 +226,36 @@ also `README.md`'s correction block.
 
 Corrected in: `bench/results/p1-diagnose/FINDINGS.md` (two appended 2026-11-04 corrections),
 `docs/rewrite-transfer-2026-11-04.md`, `README.md`.
+
+## Unreleased — 2026-11-04
+
+### Changed
+
+- **The CLI-backed ops ship unconfigured.** `service/ti/conf/defaults.json` is package data (it
+  is inside the wheel), and it carried four values that were one machine's layout:
+  `ops.web_fetch.script`, `ops.web_search.script` and `ops.web_search_provider.script` pointed at
+  a bespoke personal skill directory, and `ops.reddit.cwd` plus both of its `cwd_candidates`
+  pointed at a private project directory that did not exist on the author's own box either — so
+  `reddit_digest` failed for everyone, including its author. All four now ship as `""` / `[]`, and
+  each op raises `CliMissingBinary` naming the exact key to set (`ops.web_search.script is not
+  set: point it at a free-search CLI that prints the RESULT_FILE footer`). `ops.filesys.deny_roots`
+  loses its one entry for the same reason: a deny root is a mount point on *your* machine, so
+  there is no portable default and it ships empty.
+
+### Removed
+
+- **Private project names from published data.** `bench/registry_382.json` carried the operator's
+  own project list as the `projects_query` slot vocabulary, and `tests/data/routing_382.json`
+  published the 15 utterances generated from it. Four names were replaced by neutral
+  shape-preserving ones (same slot, same token count, same length class), the three recorded
+  replays that quote those rows were substituted identically, and
+  `tests/data/routing_382_PROVENANCE.md` now records the source digest, the post-edit digest and
+  the substitution table — the edit is byte-reversible and every recorded score is unchanged.
+
+### Fixed
+
+- **The portability guard can see the class it missed.** `tests/test_no_personal_paths.py`
+  treated anything `~`-relative as portable, and its own near-miss test pinned a home-relative
+  documents path as *not* an offence — which is how a private tree shipped in `defaults.json`
+  with the suite green. A fourth pattern now flags `~/Documents/<name>`, the docstring says why,
+  and the near-miss test carries a comment pointing at the rule that does catch it.

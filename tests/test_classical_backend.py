@@ -175,7 +175,11 @@ class VectoriserTest(unittest.TestCase):
 
 
 class ImportedDataTest(unittest.TestCase):
-    def test_the_382_rows_are_verbatim_the_imported_set(self):
+    def test_the_382_rows_keep_the_imported_shape(self):
+        """Not `verbatim`: the `projects_query` slot vocabulary was substituted
+        2026-11-04 (four private project names). Shape is what a reader of the
+        score depends on, and `routing_382_PROVENANCE.md` records the digests on
+        both sides of that edit."""
         rows = json.loads((ROOT / "tests/data/routing_382.json").read_text())
         self.assertEqual(len(rows), 382)
         self.assertEqual(len({r["tool"] for r in rows}), 18)

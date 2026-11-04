@@ -13,12 +13,15 @@ op is allowed to act on, or raises `PathRefused`. Two policies decide the answer
 
   the deny list
         roots that must not be stat'ed, let alone walked (`ops.filesys.deny_roots`,
-        default `~/mnt`). They exist because a path can resolve onto a network
+        shipped empty). They exist because a path can resolve onto a network
         filesystem whose session is dead: one `os.stat` inside it blocks in
         uninterruptible sleep, and neither a deadline nor a thread kill reaches
         it. Measured on this box, four separate times, for 22 minutes to 9.8
         hours. Nothing in this process can recover from that, so the refusal has
-        to happen before the first syscall.
+        to happen before the first syscall. The default is empty because a deny
+        root is a mount point on *this* machine: there is no portable value for
+        it, so the operator sets their own (`~` is expanded, so an entry stays
+        portable between homes).
 
 Why this is a resolver rather than `os.path.realpath`: realpath stats every
 component of the path it is given, so asking "is this path inside the deny list?"
@@ -68,8 +71,9 @@ def filesys_conf() -> dict[str, Any]:
 
 
 def deny_roots() -> list[str]:
-    """Configured deny roots, absolute and normalised. `~` is expanded, so the
-    shipped default is portable; a relative entry is taken from the process cwd."""
+    """Configured deny roots, absolute and normalised. `~` is expanded, so an
+    operator's own entry can be written portably; a relative entry is taken from
+    the process cwd. Ships empty — see the module docstring for why."""
     out: list[str] = []
     for entry in filesys_conf().get("deny_roots") or []:
         text = os.path.expanduser(str(entry))
