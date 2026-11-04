@@ -1,0 +1,37 @@
+# What goes in the sdist, and why it is the whole tree.
+#
+# RELEASE.md §8 promises a distribution can retest from the sdist, and the suite
+# reads the tree it lives in: `tests/data/` for the fixtures, `bench/results/` for the
+# two artifacts a test pins, `tools/`, `demo/`, `pi-extension/src/` for sources it
+# greps, and at least one `.yml` because the privacy walk floors every suffix it claims
+# to read. An enumeration of those paths would be a second copy of the import graph,
+# silently wrong the first time a test reads something new — so the manifest grafts the
+# directories and lets the suite decide.
+#
+# `pi-extension/node_modules` is the one prune: 178 MB of installed packages that
+# `npm ci` regenerates from the lockfile that does ship.
+graft service
+graft tests
+graft bench
+graft docs
+graft tools
+graft demo
+graft data
+graft spec
+graft pi-extension
+graft .github
+
+include README.md
+include CHANGELOG.md
+include ARCHITECTURE.md
+include RELEASE.md
+include CONTRIBUTING.md
+include TODO.md
+include LICENSE
+include pyproject.toml
+
+prune pi-extension/node_modules
+
+global-exclude __pycache__
+global-exclude *.py[cod]
+global-exclude *.pyo

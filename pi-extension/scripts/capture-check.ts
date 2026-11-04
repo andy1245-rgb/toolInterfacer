@@ -98,7 +98,7 @@ async function main(): Promise<void> {
 	eq("builder: numeric fields", [built.ts, built.wall_ms, built.confidence], [1_700_000_000_000, 41, 0.87]);
 
 	const sparse = buildRecord(
-		baseCall({ mode: null, confidence: undefined, hops: [], error: undefined, questionKind: undefined, digest: digestSizes(undefined) }),
+		baseCall({ mode: null, confidence: undefined, hops: [], errorKind: undefined, questionKind: undefined, digest: digestSizes(undefined) }),
 		1,
 	);
 	eq("builder: optionals become null, not undefined", [sparse.mode, sparse.confidence, sparse.error_kind, sparse.question_kind], [null, null, null, null]);
