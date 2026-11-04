@@ -1,0 +1,274 @@
+{
+  "experiment": "minimal_pairs",
+  "n": 14,
+  "recovered": 5,
+  "recovered_frac": 0.35714285714285715,
+  "pairs": [
+    {
+      "label": "filesys_grep",
+      "original": "which functions call urllib in the test suite?",
+      "edited": "which functions call helper_fn in the test suite?",
+      "before": {
+        "choice": "web_fetch",
+        "correct": false,
+        "truth_mass": 0.0169,
+        "conf": 0.8145
+      },
+      "after": {
+        "choice": "filesys_grep",
+        "correct": true,
+        "truth_mass": 0.2478,
+        "conf": 0.1403
+      },
+      "flipped": true,
+      "recovered": true
+    },
+    {
+      "label": "filesys_grep",
+      "original": "find any use of the requests module in src",
+      "edited": "find any use of the numpy module in src",
+      "before": {
+        "choice": "web_fetch",
+        "correct": false,
+        "truth_mass": 0.0104,
+        "conf": 0.869
+      },
+      "after": {
+        "choice": "filesys_read",
+        "correct": false,
+        "truth_mass": 0.1806,
+        "conf": 0.1535
+      },
+      "flipped": true,
+      "recovered": false
+    },
+    {
+      "label": "filesys_grep",
+      "original": "where is the http client wired up in service/net?",
+      "edited": "where is the parser wired up in service/net?",
+      "before": {
+        "choice": "web_fetch",
+        "correct": false,
+        "truth_mass": 0.0235,
+        "conf": 0.7484
+      },
+      "after": {
+        "choice": "decide_extract",
+        "correct": false,
+        "truth_mass": 0.1527,
+        "conf": 0.1792
+      },
+      "flipped": true,
+      "recovered": false
+    },
+    {
+      "label": "filesys_grep",
+      "original": "locate each place we catch HTTPError",
+      "edited": "locate each place we catch ValueError",
+      "before": {
+        "choice": "web_fetch",
+        "correct": false,
+        "truth_mass": 0.1232,
+        "conf": 0.5266
+      },
+      "after": {
+        "choice": "filesys_grep",
+        "correct": true,
+        "truth_mass": 0.7449,
+        "conf": 0.7085
+      },
+      "flipped": true,
+      "recovered": true
+    },
+    {
+      "label": "filesys_grep",
+      "original": "where is handle_stream defined?",
+      "edited": "where is compute_offsets defined?",
+      "before": {
+        "choice": "web_fetch",
+        "correct": false,
+        "truth_mass": 0.0858,
+        "conf": 0.4808
+      },
+      "after": {
+        "choice": "web_search",
+        "correct": false,
+        "truth_mass": 0.1413,
+        "conf": 0.1633
+      },
+      "flipped": true,
+      "recovered": false
+    },
+    {
+      "label": "filesys_grep",
+      "original": "does anything here still call the v1 endpoint?",
+      "edited": "does anything here still call the legacy helper?",
+      "before": {
+        "choice": "web_fetch",
+        "correct": false,
+        "truth_mass": 0.0624,
+        "conf": 0.2064
+      },
+      "after": {
+        "choice": "decide_extract",
+        "correct": false,
+        "truth_mass": 0.1773,
+        "conf": 0.1189
+      },
+      "flipped": true,
+      "recovered": false
+    },
+    {
+      "label": "filesys_grep",
+      "original": "any references to wallet.json left in the tree?",
+      "edited": "any references to wallet_config left in the tree?",
+      "before": {
+        "choice": "filesys_glob",
+        "correct": false,
+        "truth_mass": 0.1351,
+        "conf": 0.7181
+      },
+      "after": {
+        "choice": "filesys_grep",
+        "correct": true,
+        "truth_mass": 0.7672,
+        "conf": 0.734
+      },
+      "flipped": true,
+      "recovered": true
+    },
+    {
+      "label": "filesys_grep",
+      "original": "which files under src discuss the shard map?",
+      "edited": "which code under src discusses the shard map?",
+      "before": {
+        "choice": "filesys_glob",
+        "correct": false,
+        "truth_mass": 0.2352,
+        "conf": 0.5317
+      },
+      "after": {
+        "choice": "filesys_glob",
+        "correct": false,
+        "truth_mass": 0.0816,
+        "conf": 0.2136
+      },
+      "flipped": false,
+      "recovered": false
+    },
+    {
+      "label": "decide_extract",
+      "original": "extract the file paths mentioned in the last message",
+      "edited": "extract the items mentioned in the last message",
+      "before": {
+        "choice": "filesys_glob",
+        "correct": false,
+        "truth_mass": 0.0208,
+        "conf": 0.88
+      },
+      "after": {
+        "choice": "filesys_grep",
+        "correct": false,
+        "truth_mass": 0.0684,
+        "conf": 0.2259
+      },
+      "flipped": true,
+      "recovered": false
+    },
+    {
+      "label": "decide_extract",
+      "original": "name the dirs the request refers to",
+      "edited": "name the things the request refers to",
+      "before": {
+        "choice": "filesys_glob",
+        "correct": false,
+        "truth_mass": 0.0644,
+        "conf": 0.8161
+      },
+      "after": {
+        "choice": "decide_extract",
+        "correct": true,
+        "truth_mass": 0.391,
+        "conf": 0.304
+      },
+      "flipped": true,
+      "recovered": true
+    },
+    {
+      "label": "decide_extract",
+      "original": "what literal paths show up in that instruction?",
+      "edited": "what literal values show up in that instruction?",
+      "before": {
+        "choice": "filesys_glob",
+        "correct": false,
+        "truth_mass": 0.0632,
+        "conf": 0.7499
+      },
+      "after": {
+        "choice": "decide_extract",
+        "correct": true,
+        "truth_mass": 0.7089,
+        "conf": 0.6673
+      },
+      "flipped": true,
+      "recovered": true
+    },
+    {
+      "label": "decide_extract",
+      "original": "what search terms fit this ask?",
+      "edited": "what terms fit this ask?",
+      "before": {
+        "choice": "web_search",
+        "correct": false,
+        "truth_mass": 0.1893,
+        "conf": 0.6396
+      },
+      "after": {
+        "choice": "web_search",
+        "correct": false,
+        "truth_mass": 0.1953,
+        "conf": 0.3195
+      },
+      "flipped": false,
+      "recovered": false
+    },
+    {
+      "label": "decide_extract",
+      "original": "give me keyword variants for the upcoming lookup",
+      "edited": "give me variants for the upcoming attempt",
+      "before": {
+        "choice": "web_search",
+        "correct": false,
+        "truth_mass": 0.2961,
+        "conf": 0.5164
+      },
+      "after": {
+        "choice": "decide_pick",
+        "correct": false,
+        "truth_mass": 0.0547,
+        "conf": 0.3697
+      },
+      "flipped": true,
+      "recovered": false
+    },
+    {
+      "label": "decide_extract",
+      "original": "write out the file names the request refers to",
+      "edited": "write out the words the request refers to",
+      "before": {
+        "choice": "filesys_glob",
+        "correct": false,
+        "truth_mass": 0.0224,
+        "conf": 0.9266
+      },
+      "after": {
+        "choice": "web_fetch",
+        "correct": false,
+        "truth_mass": 0.192,
+        "conf": 0.1609
+      },
+      "flipped": true,
+      "recovered": false
+    }
+  ]
+}
