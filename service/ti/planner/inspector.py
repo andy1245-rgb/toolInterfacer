@@ -103,7 +103,13 @@ _WEB_CHANNEL = _clauses(
 )
 
 
-# R4 — an artefact that is published rather than stored.
+# R4 — an artefact that is published rather than stored. The legal clause names
+# the artefact class — case law, a law report, a legal database — and never the
+# service that hosts it. A jurisdiction-specific case-law site is a disclosure
+# written into shipped routing code: it says where the operator's own queries
+# came from, and one brand generalises to every other reporter not at all.
+# `wikipedia` and `stack overflow` stay because they belong to no jurisdiction
+# and to every developer, which a provincial reporter does not.
 _EXTERNAL_SOURCE = _clauses(
     r"\barxiv\b",
     r"\bpreprints?\b",
@@ -111,7 +117,9 @@ _EXTERNAL_SOURCE = _clauses(
     r"\bpublications?\b|\bpublished\b|\bpeer[-\s]?reviewed\b",
     r"\bjournals?\b|\bproceedings\b",
     r"\bdoi\b|\bcitations?\b|\bbibliograph\w*\b",
-    r"\bcanlii\b|\bcase\s+law\b|\bcourts?\b|\bjudg?ments?\b",
+    r"\bcase\s+law\b|\blaw\s+reports?\b"
+    r"|\blegal\s+(?:database|reports?|records?|search)\b"
+    r"|\bcourts?\b|\bjudg?ments?\b",
     r"\bwikipedia\b|\bstack\s*overflow\b",
 )
 

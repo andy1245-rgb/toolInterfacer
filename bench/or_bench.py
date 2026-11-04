@@ -14,7 +14,7 @@ Two passes per model:
              the p50/p95 is not inflated by concurrency
 
 Usage:
-  export OPENROUTER_API_KEY=...        # from your funBot .env
+  export OPENROUTER_API_KEY=...        # from your .env
   python bench/or_bench.py [--models z-ai/glm-5.3-flash,...] [--limit N]
                            [--providers Relace|order:Relace+Wafer|sort:price]
                            [--variants full,compact] [--answers json,letter]
@@ -840,7 +840,7 @@ def main() -> None:
 
     key = os.environ.get(args.key_env, "")
     if not key:
-        raise SystemExit(f"{args.key_env} is not set — export it from your funBot .env first")
+        raise SystemExit(f"{args.key_env} is not set — export it from your .env first")
 
     # sequential latency slice, deterministically spread across the dataset
     stride = max(1, len(rows) // max(args.latency_n, 1))

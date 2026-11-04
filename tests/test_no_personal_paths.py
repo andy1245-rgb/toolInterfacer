@@ -111,7 +111,7 @@ Five patterns, all built from parts so this file does not trip its own check:
     personal document tree. This is the one home-relative shape the guard used
     to wave through, and it shipped: ``service/ti/conf/defaults.json`` (package
     data, inside the wheel) carried
-    ``~/Documents/<private-project>/Research/<project>`` as the default for
+    ``~/Documents/<private-project>/<project>`` as the default for
     ``ops.reddit.cwd`` and both of its candidates, so every install was told to
     look in one operator's documents folder. "Portable" cannot mean "starts
     with a tilde": ``~/Documents/...`` names a private tree just as surely as
@@ -353,13 +353,13 @@ class GuardPatternTest(unittest.TestCase):
                 self.assertMatches(_WIN_STRUCTURE, text)
 
     def test_structure_ignores_placeholders_urls_and_home_relative(self):
-        # `~/Documents/sibling/Research/x` is deliberately in this list: the
+        # `~/Documents/sibling/x` is deliberately in this list: the
         # Windows-structure rule must not fire on a home-relative path. It is
         # caught by `_HOME_TREE` instead -- the two rules answer different
         # questions and neither may absorb the other.
         for text in (r"<workspace>\models\d1-3B-Q4_K_M.gguf",
                      "https://unsloth.ai/docs/models/",
-                     "~/Documents/sibling/Research/x",
+                     "~/Documents/sibling/x",
                      r"tried:\n  .../Documents/sibling/x",
                      r"C:\fixture\lab\d1-3B-Q4_K_M.gguf",
                      "$DELL_MOUNT/Documents/x"):
@@ -369,8 +369,8 @@ class GuardPatternTest(unittest.TestCase):
     def test_home_tree_matches_a_private_documents_tree(self):
         """The shape that shipped in `conf/defaults.json`: what the old guard
         waved through as "`~`-relative, therefore portable"."""
-        for text in ("cwd: ~/Documents/some-machines-tree/Research/some-project",
-                     '"~/Documents/sibling/Research/x"',
+        for text in ("cwd: ~/Documents/some-machines-tree/some-project",
+                     '"~/Documents/sibling/x"',
                      "~/Documents/sibling`",
                      "~/Documents/proj",
                      "~/Documents/a-private-tree"):
@@ -393,8 +393,8 @@ class GuardPatternTest(unittest.TestCase):
     def test_home_var_tree_matches_the_shell_spelling(self):
         """The `$HOME` form of the leak `_HOME_TREE` pins: same tree, same
         account, different prefix, and no other pattern saw it."""
-        for text in ('cwd: $HOME/Documents/some-machines-tree/Research/proj',
-                     "HOME_CWD=${HOME}/Documents/sibling/Research/x",
+        for text in ('cwd: $HOME/Documents/some-machines-tree/proj',
+                     "HOME_CWD=${HOME}/Documents/sibling/x",
                      '"$HOME/Documents/sibling"',
                      "$HOME/Documents/a-private-tree\n",
                      "tried:\n  $HOME/Documents/proj`"):
@@ -438,7 +438,7 @@ class WalkerTest(unittest.TestCase):
         # the shape that shipped: a home path with a real account in it, in a
         # file type the guard reads
         (self.root / "src" / "conf.json").write_text(
-            '{"cwd": "/home/someone/Research/some-project"}\n', encoding="utf-8")
+            '{"cwd": "/home/someone/some-project"}\n', encoding="utf-8")
         # portable files: read, counted, and not reported
         (self.root / "docs" / "note.md").write_text("a portable note\n", encoding="utf-8")
         (self.root / "docs" / "budget.csv").write_text("name,count\n", encoding="utf-8")
