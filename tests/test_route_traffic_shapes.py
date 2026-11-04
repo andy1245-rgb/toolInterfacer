@@ -14,9 +14,11 @@ with a synthetic one, so no row reproduces a query the log recorded; the shapes
 are the part the router answers to and the part that has to stay.
 
 Two consequences of that substitution, stated so neither reads as an accident:
-the log clamped `soft.intent_context` to 100 characters and three of the original
-rows ended mid-phrase, but a truncated tail was evidence about the logger rather
-than the router, so the syntheses are complete sentences; and `RESEARCH_SHAPES`
+the log clamped `soft.intent_context` to 100 characters and five of the original
+rows — the third through the seventh, every one of them exactly 100 characters,
+ending mid-word or mid-phrase — were cut off, but a truncated tail was evidence
+about the logger rather than the router, so the syntheses are complete
+sentences; and `RESEARCH_SHAPES`
 below pins each row to the marker it was written for, because a rewrite that kept
 the words and lost the marker would leave seven rows the router answers for a
 reason the old bug never touched.
@@ -170,9 +172,13 @@ class TheTrafficTableTest(unittest.TestCase):
 class CollisionTest(unittest.TestCase):
     """The rows that a broadened "find / search / look up" rule could swallow.
 
-    Each is real traffic too — the first is the live.jsonl row the audit calls
-    "visibly not a glob decision", the second pins the file-open reading of a
-    verb that "look up" sits next to.
+    The first is real traffic — the `live.jsonl` row the audit calls "visibly not
+    a glob decision". The second is **synthetic**: "open the ops matcher
+    implementation" appears in no log the repo holds, and no recorded row carries
+    this shape. It is kept anyway because the shape, not the provenance, is what
+    is under test — the file-open reading of a verb that "look up" sits next to —
+    and nothing else in the table produces a bare imperative open with a code
+    object and no channel named.
     """
 
     def test_a_read_with_a_downstream_pick_is_a_read(self):        # "read the service logs live.jsonl and summarize the last few records"
