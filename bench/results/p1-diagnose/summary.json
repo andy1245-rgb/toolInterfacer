@@ -1,0 +1,857 @@
+{
+  "generated": "2026-11-04T00:45:06-0500",
+  "base_url": "http://127.0.0.1:8080",
+  "served": {
+    "path": "models/d1-3B-Q4_K_M.gguf",
+    "ftype": "Q4_K - Medium",
+    "build_info": "b1-f74e2fa"
+  },
+  "baseline": {
+    "timestamp": "2026-11-03T23:57:04-0500",
+    "backend": "d1_systemone",
+    "host": "localhost",
+    "base_url": "http://127.0.0.1:8080",
+    "server_threads": 8,
+    "model": {
+      "path": "models/d1-3B-Q4_K_M.gguf",
+      "ftype": "Q4_K - Medium",
+      "build_info": "b1-f74e2fa"
+    },
+    "model_assertion": {
+      "expect_model": "d1-3B-Q4_K_M.gguf",
+      "checked": true,
+      "served_basename": "d1-3B-Q4_K_M.gguf"
+    },
+    "n_rows": 150,
+    "malformed_responses": 0,
+    "abstains": 0,
+    "accuracy": 0.74,
+    "latency_ms": {
+      "p50": 3591.6,
+      "p95": 7540.3,
+      "mean": 4353.1,
+      "min": 0.0,
+      "max": 16763.5
+    },
+    "accuracy_by_op": {
+      "decide_extract": {
+        "n": 24,
+        "accuracy": 0.25
+      },
+      "decide_pick": {
+        "n": 18,
+        "accuracy": 1.0
+      },
+      "filesys_glob": {
+        "n": 21,
+        "accuracy": 0.9524
+      },
+      "filesys_grep": {
+        "n": 22,
+        "accuracy": 0.3636
+      },
+      "filesys_read": {
+        "n": 17,
+        "accuracy": 0.7059
+      },
+      "reddit_digest": {
+        "n": 15,
+        "accuracy": 1.0
+      },
+      "web_fetch": {
+        "n": 15,
+        "accuracy": 0.9333
+      },
+      "web_search": {
+        "n": 18,
+        "accuracy": 1.0
+      }
+    },
+    "conf_distribution": {
+      "min": 0.0902,
+      "mean": 0.6935,
+      "max": 0.99
+    }
+  },
+  "experiments": {
+    "k3": {
+      "experiment": "k3",
+      "n": 46,
+      "k": 3,
+      "summary": {
+        "overall": {
+          "correct": 20,
+          "n": 46,
+          "accuracy": 0.4348,
+          "wilson95": {
+            "low": 0.3021,
+            "high": 0.5775
+          }
+        },
+        "per_label": {
+          "decide_extract": {
+            "correct": 8,
+            "n": 24,
+            "accuracy": 0.3333,
+            "wilson95": {
+              "low": 0.1797,
+              "high": 0.5329
+            }
+          },
+          "filesys_grep": {
+            "correct": 12,
+            "n": 22,
+            "accuracy": 0.5455,
+            "wilson95": {
+              "low": 0.3466,
+              "high": 0.7308
+            }
+          }
+        },
+        "confusion": {
+          "filesys_grep": {
+            "web_fetch": 5,
+            "filesys_glob": 5
+          },
+          "decide_extract": {
+            "web_search": 9,
+            "filesys_glob": 7
+          }
+        }
+      }
+    },
+    "neutral6": {
+      "experiment": "neutral6",
+      "n": 46,
+      "k": 6,
+      "dropped": [
+        "reddit_digest",
+        "decide_pick"
+      ],
+      "summary": {
+        "overall": {
+          "correct": 15,
+          "n": 46,
+          "accuracy": 0.3261,
+          "wilson95": {
+            "low": 0.2087,
+            "high": 0.4703
+          }
+        },
+        "per_label": {
+          "decide_extract": {
+            "correct": 7,
+            "n": 24,
+            "accuracy": 0.2917,
+            "wilson95": {
+              "low": 0.1491,
+              "high": 0.4917
+            }
+          },
+          "filesys_grep": {
+            "correct": 8,
+            "n": 22,
+            "accuracy": 0.3636,
+            "wilson95": {
+              "low": 0.1973,
+              "high": 0.5705
+            }
+          }
+        },
+        "confusion": {
+          "filesys_grep": {
+            "web_fetch": 6,
+            "filesys_read": 1,
+            "filesys_glob": 4,
+            "decide_extract": 2,
+            "web_search": 1
+          },
+          "decide_extract": {
+            "web_search": 7,
+            "filesys_glob": 8,
+            "filesys_grep": 2
+          }
+        }
+      }
+    },
+    "orders": {
+      "experiment": "orders",
+      "n": 46,
+      "canonical": {
+        "overall": {
+          "correct": 14,
+          "n": 46,
+          "accuracy": 0.3043,
+          "wilson95": {
+            "low": 0.1908,
+            "high": 0.4481
+          }
+        },
+        "per_label": {
+          "decide_extract": {
+            "correct": 6,
+            "n": 24,
+            "accuracy": 0.25,
+            "wilson95": {
+              "low": 0.12,
+              "high": 0.449
+            }
+          },
+          "filesys_grep": {
+            "correct": 8,
+            "n": 22,
+            "accuracy": 0.3636,
+            "wilson95": {
+              "low": 0.1973,
+              "high": 0.5705
+            }
+          }
+        },
+        "confusion": {
+          "filesys_grep": {
+            "web_fetch": 6,
+            "filesys_read": 1,
+            "filesys_glob": 4,
+            "decide_extract": 2,
+            "web_search": 1
+          },
+          "decide_extract": {
+            "web_search": 8,
+            "filesys_glob": 8,
+            "decide_pick": 2
+          }
+        }
+      },
+      "reversed": {
+        "overall": {
+          "correct": 13,
+          "n": 46,
+          "accuracy": 0.2826,
+          "wilson95": {
+            "low": 0.1732,
+            "high": 0.4255
+          }
+        },
+        "per_label": {
+          "decide_extract": {
+            "correct": 6,
+            "n": 24,
+            "accuracy": 0.25,
+            "wilson95": {
+              "low": 0.12,
+              "high": 0.449
+            }
+          },
+          "filesys_grep": {
+            "correct": 7,
+            "n": 22,
+            "accuracy": 0.3182,
+            "wilson95": {
+              "low": 0.1636,
+              "high": 0.5268
+            }
+          }
+        },
+        "confusion": {
+          "filesys_grep": {
+            "filesys_read": 2,
+            "filesys_glob": 5,
+            "web_fetch": 5,
+            "web_search": 1,
+            "decide_extract": 2
+          },
+          "decide_extract": {
+            "web_search": 10,
+            "filesys_glob": 7,
+            "decide_pick": 1
+          }
+        }
+      },
+      "canonical_source": "baseline sweep",
+      "argmax_moved": 8,
+      "argmax_moved_frac": 0.17391304347826086,
+      "changed_rows": [
+        {
+          "label": "filesys_grep",
+          "utterance": "where is handle_stream defined?",
+          "forward": "web_fetch",
+          "reversed": "filesys_read"
+        },
+        {
+          "label": "decide_extract",
+          "utterance": "turn 'setup guides for llama quantization' into several distinct queries",
+          "forward": "decide_extract",
+          "reversed": "web_search"
+        },
+        {
+          "label": "decide_extract",
+          "utterance": "list the exact identifiers the user mentioned",
+          "forward": "filesys_glob",
+          "reversed": "decide_extract"
+        },
+        {
+          "label": "decide_extract",
+          "utterance": "what should the search string be for this goal?",
+          "forward": "decide_extract",
+          "reversed": "web_search"
+        },
+        {
+          "label": "filesys_grep",
+          "utterance": "where do we define the hop budget?",
+          "forward": "decide_extract",
+          "reversed": "web_search"
+        },
+        {
+          "label": "filesys_grep",
+          "utterance": "which files talk about the eviction policy?",
+          "forward": "filesys_grep",
+          "reversed": "filesys_glob"
+        },
+        {
+          "label": "filesys_grep",
+          "utterance": "do any modules pull in pydantic here?",
+          "forward": "web_search",
+          "reversed": "decide_extract"
+        },
+        {
+          "label": "decide_extract",
+          "utterance": "generate a few phrasings of the lookup before we hit the web",
+          "forward": "decide_pick",
+          "reversed": "decide_extract"
+        }
+      ]
+    },
+    "minimal_pairs": {
+      "experiment": "minimal_pairs",
+      "n": 14,
+      "recovered": 5,
+      "recovered_frac": 0.35714285714285715,
+      "pairs": [
+        {
+          "label": "filesys_grep",
+          "original": "which functions call urllib in the test suite?",
+          "edited": "which functions call helper_fn in the test suite?",
+          "before": {
+            "choice": "web_fetch",
+            "correct": false,
+            "truth_mass": 0.0169,
+            "conf": 0.8145
+          },
+          "after": {
+            "choice": "filesys_grep",
+            "correct": true,
+            "truth_mass": 0.2478,
+            "conf": 0.1403
+          },
+          "flipped": true,
+          "recovered": true
+        },
+        {
+          "label": "filesys_grep",
+          "original": "find any use of the requests module in src",
+          "edited": "find any use of the numpy module in src",
+          "before": {
+            "choice": "web_fetch",
+            "correct": false,
+            "truth_mass": 0.0104,
+            "conf": 0.869
+          },
+          "after": {
+            "choice": "filesys_read",
+            "correct": false,
+            "truth_mass": 0.1806,
+            "conf": 0.1535
+          },
+          "flipped": true,
+          "recovered": false
+        },
+        {
+          "label": "filesys_grep",
+          "original": "where is the http client wired up in service/net?",
+          "edited": "where is the parser wired up in service/net?",
+          "before": {
+            "choice": "web_fetch",
+            "correct": false,
+            "truth_mass": 0.0235,
+            "conf": 0.7484
+          },
+          "after": {
+            "choice": "decide_extract",
+            "correct": false,
+            "truth_mass": 0.1527,
+            "conf": 0.1792
+          },
+          "flipped": true,
+          "recovered": false
+        },
+        {
+          "label": "filesys_grep",
+          "original": "locate each place we catch HTTPError",
+          "edited": "locate each place we catch ValueError",
+          "before": {
+            "choice": "web_fetch",
+            "correct": false,
+            "truth_mass": 0.1232,
+            "conf": 0.5266
+          },
+          "after": {
+            "choice": "filesys_grep",
+            "correct": true,
+            "truth_mass": 0.7449,
+            "conf": 0.7085
+          },
+          "flipped": true,
+          "recovered": true
+        },
+        {
+          "label": "filesys_grep",
+          "original": "where is handle_stream defined?",
+          "edited": "where is compute_offsets defined?",
+          "before": {
+            "choice": "web_fetch",
+            "correct": false,
+            "truth_mass": 0.0858,
+            "conf": 0.4808
+          },
+          "after": {
+            "choice": "web_search",
+            "correct": false,
+            "truth_mass": 0.1413,
+            "conf": 0.1633
+          },
+          "flipped": true,
+          "recovered": false
+        },
+        {
+          "label": "filesys_grep",
+          "original": "does anything here still call the v1 endpoint?",
+          "edited": "does anything here still call the legacy helper?",
+          "before": {
+            "choice": "web_fetch",
+            "correct": false,
+            "truth_mass": 0.0624,
+            "conf": 0.2064
+          },
+          "after": {
+            "choice": "decide_extract",
+            "correct": false,
+            "truth_mass": 0.1773,
+            "conf": 0.1189
+          },
+          "flipped": true,
+          "recovered": false
+        },
+        {
+          "label": "filesys_grep",
+          "original": "any references to wallet.json left in the tree?",
+          "edited": "any references to wallet_config left in the tree?",
+          "before": {
+            "choice": "filesys_glob",
+            "correct": false,
+            "truth_mass": 0.1351,
+            "conf": 0.7181
+          },
+          "after": {
+            "choice": "filesys_grep",
+            "correct": true,
+            "truth_mass": 0.7672,
+            "conf": 0.734
+          },
+          "flipped": true,
+          "recovered": true
+        },
+        {
+          "label": "filesys_grep",
+          "original": "which files under src discuss the shard map?",
+          "edited": "which code under src discusses the shard map?",
+          "before": {
+            "choice": "filesys_glob",
+            "correct": false,
+            "truth_mass": 0.2352,
+            "conf": 0.5317
+          },
+          "after": {
+            "choice": "filesys_glob",
+            "correct": false,
+            "truth_mass": 0.0816,
+            "conf": 0.2136
+          },
+          "flipped": false,
+          "recovered": false
+        },
+        {
+          "label": "decide_extract",
+          "original": "extract the file paths mentioned in the last message",
+          "edited": "extract the items mentioned in the last message",
+          "before": {
+            "choice": "filesys_glob",
+            "correct": false,
+            "truth_mass": 0.0208,
+            "conf": 0.88
+          },
+          "after": {
+            "choice": "filesys_grep",
+            "correct": false,
+            "truth_mass": 0.0684,
+            "conf": 0.2259
+          },
+          "flipped": true,
+          "recovered": false
+        },
+        {
+          "label": "decide_extract",
+          "original": "name the dirs the request refers to",
+          "edited": "name the things the request refers to",
+          "before": {
+            "choice": "filesys_glob",
+            "correct": false,
+            "truth_mass": 0.0644,
+            "conf": 0.8161
+          },
+          "after": {
+            "choice": "decide_extract",
+            "correct": true,
+            "truth_mass": 0.391,
+            "conf": 0.304
+          },
+          "flipped": true,
+          "recovered": true
+        },
+        {
+          "label": "decide_extract",
+          "original": "what literal paths show up in that instruction?",
+          "edited": "what literal values show up in that instruction?",
+          "before": {
+            "choice": "filesys_glob",
+            "correct": false,
+            "truth_mass": 0.0632,
+            "conf": 0.7499
+          },
+          "after": {
+            "choice": "decide_extract",
+            "correct": true,
+            "truth_mass": 0.7089,
+            "conf": 0.6673
+          },
+          "flipped": true,
+          "recovered": true
+        },
+        {
+          "label": "decide_extract",
+          "original": "what search terms fit this ask?",
+          "edited": "what terms fit this ask?",
+          "before": {
+            "choice": "web_search",
+            "correct": false,
+            "truth_mass": 0.1893,
+            "conf": 0.6396
+          },
+          "after": {
+            "choice": "web_search",
+            "correct": false,
+            "truth_mass": 0.1953,
+            "conf": 0.3195
+          },
+          "flipped": false,
+          "recovered": false
+        },
+        {
+          "label": "decide_extract",
+          "original": "give me keyword variants for the upcoming lookup",
+          "edited": "give me variants for the upcoming attempt",
+          "before": {
+            "choice": "web_search",
+            "correct": false,
+            "truth_mass": 0.2961,
+            "conf": 0.5164
+          },
+          "after": {
+            "choice": "decide_pick",
+            "correct": false,
+            "truth_mass": 0.0547,
+            "conf": 0.3697
+          },
+          "flipped": true,
+          "recovered": false
+        },
+        {
+          "label": "decide_extract",
+          "original": "write out the file names the request refers to",
+          "edited": "write out the words the request refers to",
+          "before": {
+            "choice": "filesys_glob",
+            "correct": false,
+            "truth_mass": 0.0224,
+            "conf": 0.9266
+          },
+          "after": {
+            "choice": "web_fetch",
+            "correct": false,
+            "truth_mass": 0.192,
+            "conf": 0.1609
+          },
+          "flipped": true,
+          "recovered": false
+        }
+      ]
+    },
+    "rewrite": {
+      "experiment": "rewrite",
+      "n": 150,
+      "k": 8,
+      "summary": {
+        "overall": {
+          "correct": 106,
+          "n": 150,
+          "accuracy": 0.7067,
+          "wilson95": {
+            "low": 0.6294,
+            "high": 0.7736
+          }
+        },
+        "per_label": {
+          "decide_extract": {
+            "correct": 14,
+            "n": 24,
+            "accuracy": 0.5833,
+            "wilson95": {
+              "low": 0.3883,
+              "high": 0.7553
+            }
+          },
+          "decide_pick": {
+            "correct": 5,
+            "n": 18,
+            "accuracy": 0.2778,
+            "wilson95": {
+              "low": 0.125,
+              "high": 0.5087
+            }
+          },
+          "filesys_glob": {
+            "correct": 20,
+            "n": 21,
+            "accuracy": 0.9524,
+            "wilson95": {
+              "low": 0.7733,
+              "high": 0.9915
+            }
+          },
+          "filesys_grep": {
+            "correct": 13,
+            "n": 22,
+            "accuracy": 0.5909,
+            "wilson95": {
+              "low": 0.3873,
+              "high": 0.7674
+            }
+          },
+          "filesys_read": {
+            "correct": 12,
+            "n": 17,
+            "accuracy": 0.7059,
+            "wilson95": {
+              "low": 0.4687,
+              "high": 0.8672
+            }
+          },
+          "reddit_digest": {
+            "correct": 13,
+            "n": 15,
+            "accuracy": 0.8667,
+            "wilson95": {
+              "low": 0.6212,
+              "high": 0.9626
+            }
+          },
+          "web_fetch": {
+            "correct": 14,
+            "n": 15,
+            "accuracy": 0.9333,
+            "wilson95": {
+              "low": 0.7018,
+              "high": 0.9881
+            }
+          },
+          "web_search": {
+            "correct": 15,
+            "n": 18,
+            "accuracy": 0.8333,
+            "wilson95": {
+              "low": 0.6078,
+              "high": 0.9416
+            }
+          }
+        },
+        "confusion": {
+          "decide_extract": {
+            "filesys_grep": 1,
+            "web_search": 2,
+            "filesys_glob": 5,
+            "decide_pick": 2
+          },
+          "decide_pick": {
+            "decide_extract": 3,
+            "web_search": 2,
+            "filesys_grep": 5,
+            "filesys_glob": 3
+          },
+          "web_search": {
+            "filesys_glob": 1,
+            "decide_extract": 1,
+            "reddit_digest": 1
+          },
+          "reddit_digest": {
+            "web_search": 1,
+            "web_fetch": 1
+          },
+          "filesys_read": {
+            "filesys_glob": 2,
+            "web_fetch": 1,
+            "decide_extract": 1,
+            "filesys_grep": 1
+          },
+          "filesys_grep": {
+            "decide_extract": 3,
+            "filesys_glob": 3,
+            "web_fetch": 3
+          },
+          "web_fetch": {
+            "web_search": 1
+          },
+          "filesys_glob": {
+            "decide_extract": 1
+          }
+        }
+      },
+      "instrument": "OPERATION_FIRST (this file); frozen OP_DESCRIPTIONS untouched"
+    },
+    "rewrite2": {
+      "experiment": "rewrite2",
+      "n": 150,
+      "k": 8,
+      "changed": [
+        "filesys_grep",
+        "decide_extract"
+      ],
+      "summary": {
+        "overall": {
+          "correct": 123,
+          "n": 150,
+          "accuracy": 0.82,
+          "wilson95": {
+            "low": 0.7508,
+            "high": 0.8732
+          }
+        },
+        "per_label": {
+          "decide_extract": {
+            "correct": 19,
+            "n": 24,
+            "accuracy": 0.7917,
+            "wilson95": {
+              "low": 0.5953,
+              "high": 0.9076
+            }
+          },
+          "decide_pick": {
+            "correct": 16,
+            "n": 18,
+            "accuracy": 0.8889,
+            "wilson95": {
+              "low": 0.672,
+              "high": 0.969
+            }
+          },
+          "filesys_glob": {
+            "correct": 20,
+            "n": 21,
+            "accuracy": 0.9524,
+            "wilson95": {
+              "low": 0.7733,
+              "high": 0.9915
+            }
+          },
+          "filesys_grep": {
+            "correct": 11,
+            "n": 22,
+            "accuracy": 0.5,
+            "wilson95": {
+              "low": 0.3072,
+              "high": 0.6928
+            }
+          },
+          "filesys_read": {
+            "correct": 12,
+            "n": 17,
+            "accuracy": 0.7059,
+            "wilson95": {
+              "low": 0.4687,
+              "high": 0.8672
+            }
+          },
+          "reddit_digest": {
+            "correct": 14,
+            "n": 15,
+            "accuracy": 0.9333,
+            "wilson95": {
+              "low": 0.7018,
+              "high": 0.9881
+            }
+          },
+          "web_fetch": {
+            "correct": 13,
+            "n": 15,
+            "accuracy": 0.8667,
+            "wilson95": {
+              "low": 0.6212,
+              "high": 0.9626
+            }
+          },
+          "web_search": {
+            "correct": 18,
+            "n": 18,
+            "accuracy": 1.0,
+            "wilson95": {
+              "low": 0.8241,
+              "high": 1.0
+            }
+          }
+        },
+        "confusion": {
+          "filesys_grep": {
+            "decide_extract": 5,
+            "filesys_read": 1,
+            "web_fetch": 4,
+            "filesys_glob": 1
+          },
+          "decide_extract": {
+            "web_search": 2,
+            "filesys_grep": 2,
+            "filesys_glob": 1
+          },
+          "filesys_read": {
+            "filesys_glob": 1,
+            "decide_extract": 2,
+            "web_fetch": 1,
+            "filesys_grep": 1
+          },
+          "decide_pick": {
+            "decide_extract": 1,
+            "filesys_grep": 1
+          },
+          "web_fetch": {
+            "decide_extract": 2
+          },
+          "filesys_glob": {
+            "decide_extract": 1
+          },
+          "reddit_digest": {
+            "decide_extract": 1
+          }
+        }
+      },
+      "instrument": "TARGETED (this file) \u2014 2 of 8 descriptions changed"
+    }
+  }
+}

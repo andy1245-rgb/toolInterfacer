@@ -1,0 +1,1344 @@
+{
+  "experiment": "neutral6",
+  "n": 46,
+  "k": 6,
+  "dropped": [
+    "reddit_digest",
+    "decide_pick"
+  ],
+  "summary": {
+    "overall": {
+      "correct": 15,
+      "n": 46,
+      "accuracy": 0.3261,
+      "wilson95": {
+        "low": 0.2087,
+        "high": 0.4703
+      }
+    },
+    "per_label": {
+      "decide_extract": {
+        "correct": 7,
+        "n": 24,
+        "accuracy": 0.2917,
+        "wilson95": {
+          "low": 0.1491,
+          "high": 0.4917
+        }
+      },
+      "filesys_grep": {
+        "correct": 8,
+        "n": 22,
+        "accuracy": 0.3636,
+        "wilson95": {
+          "low": 0.1973,
+          "high": 0.5705
+        }
+      }
+    },
+    "confusion": {
+      "filesys_grep": {
+        "web_fetch": 6,
+        "filesys_read": 1,
+        "filesys_glob": 4,
+        "decide_extract": 2,
+        "web_search": 1
+      },
+      "decide_extract": {
+        "web_search": 7,
+        "filesys_glob": 8,
+        "filesys_grep": 2
+      }
+    }
+  },
+  "per_row": [
+    {
+      "idx": 0,
+      "utterance": "where is handle_stream defined?",
+      "label": "filesys_grep",
+      "band": "t1",
+      "choice": "web_fetch",
+      "correct": false,
+      "conf": 0.4708,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.11346865616557604,
+        "filesys_glob": 0.0652972304657627,
+        "filesys_grep": 0.1055862384910121,
+        "decide_extract": 0.10088271713272655,
+        "web_search": 0.055800464192874974,
+        "web_fetch": 0.5589646935520477
+      },
+      "input_tokens": 98,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 1,
+      "utterance": "give me three phrasings of this question for the engine",
+      "label": "decide_extract",
+      "band": "t1",
+      "choice": "web_search",
+      "correct": false,
+      "conf": 0.467,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.012340048187903841,
+        "filesys_glob": 0.034307574959733786,
+        "filesys_grep": 0.06074772440670097,
+        "decide_extract": 0.27318742070381946,
+        "web_search": 0.5558145447821004,
+        "web_fetch": 0.06360268695974161
+      },
+      "input_tokens": 104,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 2,
+      "utterance": "find every call site of retry_with_backoff",
+      "label": "filesys_grep",
+      "band": "t1",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.6732,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.0203095938749686,
+        "filesys_glob": 0.028318860553390543,
+        "filesys_grep": 0.7276576219083511,
+        "decide_extract": 0.1533998506787352,
+        "web_search": 0.02375786601612575,
+        "web_fetch": 0.046556206968428916
+      },
+      "input_tokens": 102,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 3,
+      "utterance": "what keywords best capture what I'm after?",
+      "label": "decide_extract",
+      "band": "t1",
+      "choice": "web_search",
+      "correct": false,
+      "conf": 0.5712,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.012274584922669333,
+        "filesys_glob": 0.07819561104397774,
+        "filesys_grep": 0.04962945840181144,
+        "decide_extract": 0.16664731694607066,
+        "web_search": 0.6426937774632355,
+        "web_fetch": 0.05055925122223534
+      },
+      "input_tokens": 101,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 4,
+      "utterance": "which modules import yaml.safe_load?",
+      "label": "filesys_grep",
+      "band": "t1",
+      "choice": "filesys_read",
+      "correct": false,
+      "conf": 0.6299,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.691607980942724,
+        "filesys_glob": 0.04824425140496858,
+        "filesys_grep": 0.05067148110944682,
+        "decide_extract": 0.07812226679531585,
+        "web_search": 0.0344532694071955,
+        "web_fetch": 0.09690075034034923
+      },
+      "input_tokens": 101,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 5,
+      "utterance": "turn 'setup guides for llama quantization' into several distinct queries",
+      "label": "decide_extract",
+      "band": "t1",
+      "choice": "decide_extract",
+      "correct": true,
+      "conf": 0.4771,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.004807417581602204,
+        "filesys_glob": 0.011762644263414366,
+        "filesys_grep": 0.009940105120596204,
+        "decide_extract": 0.5642487146013243,
+        "web_search": 0.3742346590607448,
+        "web_fetch": 0.03500645937231804
+      },
+      "input_tokens": 105,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 6,
+      "utterance": "look for hardcoded timeout values in src/net",
+      "label": "filesys_grep",
+      "band": "t1",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.8772,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.04827073382980126,
+        "filesys_glob": 0.032623104261704436,
+        "filesys_grep": 0.8976951699070311,
+        "decide_extract": 0.01425002167736481,
+        "web_search": 0.002773489945029797,
+        "web_fetch": 0.0043874803790687365
+      },
+      "input_tokens": 101,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 7,
+      "utterance": "list the exact identifiers the user mentioned",
+      "label": "decide_extract",
+      "band": "t1",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.4231,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.035608862689472685,
+        "filesys_glob": 0.5192463222565612,
+        "filesys_grep": 0.04899703512482995,
+        "decide_extract": 0.3343049487399627,
+        "web_search": 0.046640093581802974,
+        "web_fetch": 0.015202737607370526
+      },
+      "input_tokens": 99,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 8,
+      "utterance": "grep the tree for deprecated",
+      "label": "filesys_grep",
+      "band": "t1",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.9201,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.007838238213834909,
+        "filesys_glob": 0.02846354086858283,
+        "filesys_grep": 0.9333873012313506,
+        "decide_extract": 0.0230401483271048,
+        "web_search": 0.0039637795044485825,
+        "web_fetch": 0.0033069918546783507
+      },
+      "input_tokens": 98,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 9,
+      "utterance": "what should the search string be for this goal?",
+      "label": "decide_extract",
+      "band": "t1",
+      "choice": "decide_extract",
+      "correct": true,
+      "conf": 0.3015,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.009646880014404578,
+        "filesys_glob": 0.11993257281246629,
+        "filesys_grep": 0.09691423355856853,
+        "decide_extract": 0.4178754885871888,
+        "web_search": 0.33059194090218136,
+        "web_fetch": 0.02503888412519047
+      },
+      "input_tokens": 102,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 10,
+      "utterance": "does anything in bin/ reference the legacy CLI?",
+      "label": "filesys_grep",
+      "band": "t1",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.2041,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.2047494150347365,
+        "filesys_glob": 0.33678432297085154,
+        "filesys_grep": 0.3179172772517144,
+        "decide_extract": 0.0863911446546114,
+        "web_search": 0.015408488819886894,
+        "web_fetch": 0.03874935126819938
+      },
+      "input_tokens": 102,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 11,
+      "utterance": "write out the file names the request refers to",
+      "label": "decide_extract",
+      "band": "t1",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.9386,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.009732141649665259,
+        "filesys_glob": 0.9488374009249333,
+        "filesys_grep": 0.006961260113770214,
+        "decide_extract": 0.02207019885328708,
+        "web_search": 0.005382190340705035,
+        "web_fetch": 0.007016808117639247
+      },
+      "input_tokens": 101,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 12,
+      "utterance": "locate each place we catch HTTPError",
+      "label": "filesys_grep",
+      "band": "t1",
+      "choice": "web_fetch",
+      "correct": false,
+      "conf": 0.4814,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.01799902896842118,
+        "filesys_glob": 0.038329254315262434,
+        "filesys_grep": 0.1557412119969841,
+        "decide_extract": 0.08727954289705087,
+        "web_search": 0.1328180046685895,
+        "web_fetch": 0.567832957153692
+      },
+      "input_tokens": 100,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 13,
+      "utterance": "come up with alternate wordings for my lookup",
+      "label": "decide_extract",
+      "band": "t1",
+      "choice": "decide_extract",
+      "correct": true,
+      "conf": 0.193,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.015199443908923312,
+        "filesys_glob": 0.16088964887323406,
+        "filesys_grep": 0.19197624253657564,
+        "decide_extract": 0.32746856032918237,
+        "web_search": 0.25970272531176225,
+        "web_fetch": 0.04476337904032229
+      },
+      "input_tokens": 101,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 14,
+      "utterance": "search the fixtures for api_token strings",
+      "label": "filesys_grep",
+      "band": "t1",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.7915,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.013280382069044382,
+        "filesys_glob": 0.030234816858173873,
+        "filesys_grep": 0.8262311178199141,
+        "decide_extract": 0.042362071806137935,
+        "web_search": 0.05127316844483704,
+        "web_fetch": 0.03661844300189281
+      },
+      "input_tokens": 99,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 15,
+      "utterance": "pull the topic keywords from my message",
+      "label": "decide_extract",
+      "band": "t1",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.2841,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.0897193492178653,
+        "filesys_glob": 0.021401904168786602,
+        "filesys_grep": 0.4034455290311355,
+        "decide_extract": 0.2559300665406572,
+        "web_search": 0.09788759824605556,
+        "web_fetch": 0.13161555279549972
+      },
+      "input_tokens": 100,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 16,
+      "utterance": "where do we define the hop budget?",
+      "label": "filesys_grep",
+      "band": "t2",
+      "choice": "decide_extract",
+      "correct": false,
+      "conf": 0.244,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.06083736275631027,
+        "filesys_glob": 0.03217055031071012,
+        "filesys_grep": 0.14524700089978854,
+        "decide_extract": 0.3699784461727881,
+        "web_search": 0.32891566944425993,
+        "web_fetch": 0.06285097041614301
+      },
+      "input_tokens": 100,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 17,
+      "utterance": "how would you phrase this ask for the engine?",
+      "label": "decide_extract",
+      "band": "t2",
+      "choice": "decide_extract",
+      "correct": true,
+      "conf": 0.2907,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.06335108948834887,
+        "filesys_glob": 0.05821023150575994,
+        "filesys_grep": 0.16444673521961256,
+        "decide_extract": 0.40888557013173144,
+        "web_search": 0.2302538175438029,
+        "web_fetch": 0.07485255611074419
+      },
+      "input_tokens": 102,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 18,
+      "utterance": "does anything here still call the v1 endpoint?",
+      "label": "filesys_grep",
+      "band": "t2",
+      "choice": "web_fetch",
+      "correct": false,
+      "conf": 0.1478,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.031023381743580686,
+        "filesys_glob": 0.16677044837369276,
+        "filesys_grep": 0.07586408639048707,
+        "decide_extract": 0.2481232757106105,
+        "web_search": 0.18837720936576932,
+        "web_fetch": 0.28984159841585966
+      },
+      "input_tokens": 102,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 19,
+      "utterance": "what words should I throw at it to get hits?",
+      "label": "decide_extract",
+      "band": "t2",
+      "choice": "web_search",
+      "correct": false,
+      "conf": 0.366,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.021665262320247604,
+        "filesys_glob": 0.04379931288718147,
+        "filesys_grep": 0.2358980578854689,
+        "decide_extract": 0.13205060933583393,
+        "web_search": 0.4716586800705943,
+        "web_fetch": 0.09492807750067377
+      },
+      "input_tokens": 103,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 20,
+      "utterance": "track down every use of the SignedHeaders helper",
+      "label": "filesys_grep",
+      "band": "t2",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.5662,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.032553160483854864,
+        "filesys_glob": 0.0418000421708753,
+        "filesys_grep": 0.6384906226959282,
+        "decide_extract": 0.06365435361376981,
+        "web_search": 0.06706474543673671,
+        "web_fetch": 0.15643707559883507
+      },
+      "input_tokens": 102,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 21,
+      "utterance": "name the dirs the request refers to",
+      "label": "decide_extract",
+      "band": "t2",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.8489,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.025416390879831503,
+        "filesys_glob": 0.8741185837898308,
+        "filesys_grep": 0.012588411025870964,
+        "decide_extract": 0.057287045754405796,
+        "web_search": 0.01166942204799999,
+        "web_fetch": 0.018920146502060933
+      },
+      "input_tokens": 100,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 22,
+      "utterance": "any references to wallet.json left in the tree?",
+      "label": "filesys_grep",
+      "band": "t2",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.7025,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.0791208585957687,
+        "filesys_glob": 0.7521066725308582,
+        "filesys_grep": 0.14129873357404912,
+        "decide_extract": 0.019396835149704125,
+        "web_search": 0.003812196104791982,
+        "web_fetch": 0.004264704044828168
+      },
+      "input_tokens": 102,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 23,
+      "utterance": "give me some alternative ways to ask this",
+      "label": "decide_extract",
+      "band": "t2",
+      "choice": "decide_extract",
+      "correct": true,
+      "conf": 0.5625,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.017349269376661997,
+        "filesys_glob": 0.05237502072380298,
+        "filesys_grep": 0.08851431328705103,
+        "decide_extract": 0.6354399097333433,
+        "web_search": 0.16505611922519747,
+        "web_fetch": 0.041265367653943286
+      },
+      "input_tokens": 100,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 24,
+      "utterance": "which files talk about the eviction policy?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.5007,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.05551830287485144,
+        "filesys_glob": 0.3101536381957966,
+        "filesys_grep": 0.5839199686900941,
+        "decide_extract": 0.02369955750687589,
+        "web_search": 0.018242183258931545,
+        "web_fetch": 0.008466349473450437
+      },
+      "input_tokens": 101,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 25,
+      "utterance": "what search terms fit this ask?",
+      "label": "decide_extract",
+      "band": "t3",
+      "choice": "web_search",
+      "correct": false,
+      "conf": 0.6267,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.0073338826926753675,
+        "filesys_glob": 0.06077060549272569,
+        "filesys_grep": 0.04174388939014982,
+        "decide_extract": 0.18049456137297742,
+        "web_search": 0.6889447088197302,
+        "web_fetch": 0.0207123522317414
+      },
+      "input_tokens": 99,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 26,
+      "utterance": "extract the file paths mentioned in the last message",
+      "label": "decide_extract",
+      "band": "t3",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.9201,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.013212538090741537,
+        "filesys_glob": 0.9334391138100895,
+        "filesys_grep": 0.014984480081927718,
+        "decide_extract": 0.021882612515850237,
+        "web_search": 0.0062317401649112075,
+        "web_fetch": 0.010249515336479505
+      },
+      "input_tokens": 101,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 27,
+      "utterance": "do any modules pull in pydantic here?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "choice": "web_search",
+      "correct": false,
+      "conf": 0.1241,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.14514829709602056,
+        "filesys_glob": 0.14022793246476442,
+        "filesys_grep": 0.115184120780564,
+        "decide_extract": 0.22983006649470203,
+        "web_search": 0.2700418528439231,
+        "web_fetch": 0.09956773032002592
+      },
+      "input_tokens": 102,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 28,
+      "utterance": "which functions call urllib in the test suite?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "choice": "web_fetch",
+      "correct": false,
+      "conf": 0.809,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.024936996410035023,
+        "filesys_glob": 0.0195946575961026,
+        "filesys_grep": 0.023145490444700195,
+        "decide_extract": 0.01899615885049771,
+        "web_search": 0.07252489356350858,
+        "web_fetch": 0.840801803135156
+      },
+      "input_tokens": 101,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 29,
+      "utterance": "which files mention the scheduler hooks?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.659,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.10724583291184164,
+        "filesys_glob": 0.1213892327179204,
+        "filesys_grep": 0.7158110565157432,
+        "decide_extract": 0.03776228870436054,
+        "web_search": 0.008497361787570653,
+        "web_fetch": 0.009294227362563566
+      },
+      "input_tokens": 99,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 30,
+      "utterance": "generate a few phrasings of the lookup before we hit the web",
+      "label": "decide_extract",
+      "band": "t3",
+      "choice": "filesys_grep",
+      "correct": false,
+      "conf": 0.142,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.03069911512929488,
+        "filesys_glob": 0.2164849339036572,
+        "filesys_grep": 0.28496383123143926,
+        "decide_extract": 0.2667275729372319,
+        "web_search": 0.15111152846686526,
+        "web_fetch": 0.05001301833151143
+      },
+      "input_tokens": 106,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 31,
+      "utterance": "pull out the dirs the user pointed at",
+      "label": "decide_extract",
+      "band": "t3",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.8373,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.01513685493152364,
+        "filesys_glob": 0.8644376367377538,
+        "filesys_grep": 0.014967098244025477,
+        "decide_extract": 0.09496194755378075,
+        "web_search": 0.004456551027073206,
+        "web_fetch": 0.006039911505843378
+      },
+      "input_tokens": 102,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 32,
+      "utterance": "is fastapi referenced anywhere in the tree?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "choice": "decide_extract",
+      "correct": false,
+      "conf": 0.408,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.07775905448916584,
+        "filesys_glob": 0.1059086435305288,
+        "filesys_grep": 0.08720984496026339,
+        "decide_extract": 0.5066602279946597,
+        "web_search": 0.09515933300424186,
+        "web_fetch": 0.12730289602114048
+      },
+      "input_tokens": 101,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 33,
+      "utterance": "find any use of the requests module in src",
+      "label": "filesys_grep",
+      "band": "t3",
+      "choice": "web_fetch",
+      "correct": false,
+      "conf": 0.8539,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.017293557972507295,
+        "filesys_glob": 0.019929132875488115,
+        "filesys_grep": 0.016491795489458984,
+        "decide_extract": 0.022479591408391602,
+        "web_search": 0.04556110977046902,
+        "web_fetch": 0.878244812483685
+      },
+      "input_tokens": 101,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 34,
+      "utterance": "which files under src discuss the shard map?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.5554,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.09842698579511602,
+        "filesys_glob": 0.6294681868779373,
+        "filesys_grep": 0.22760071167565252,
+        "decide_extract": 0.030939925642125925,
+        "web_search": 0.005497837525732364,
+        "web_fetch": 0.008066352483436
+      },
+      "input_tokens": 102,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 35,
+      "utterance": "turn this into three distinct ways to ask around",
+      "label": "decide_extract",
+      "band": "t3",
+      "choice": "decide_extract",
+      "correct": true,
+      "conf": 0.6418,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.02541867830266135,
+        "filesys_glob": 0.050262648370087336,
+        "filesys_grep": 0.05209643584644976,
+        "decide_extract": 0.7014732377088281,
+        "web_search": 0.14451276428908633,
+        "web_fetch": 0.026236235482887112
+      },
+      "input_tokens": 101,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 36,
+      "utterance": "what literal paths show up in that instruction?",
+      "label": "decide_extract",
+      "band": "t3",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.791,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.029363141984671062,
+        "filesys_glob": 0.8258096998236834,
+        "filesys_grep": 0.04428331213709996,
+        "decide_extract": 0.05186059534362509,
+        "web_search": 0.010749152172285462,
+        "web_fetch": 0.03793409853863522
+      },
+      "input_tokens": 101,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 37,
+      "utterance": "where does the codebase touch the stage registry?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "choice": "filesys_grep",
+      "correct": true,
+      "conf": 0.3174,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.2035022032212029,
+        "filesys_glob": 0.15074531598498286,
+        "filesys_grep": 0.4311335213348091,
+        "decide_extract": 0.11671368578587635,
+        "web_search": 0.05290603660038859,
+        "web_fetch": 0.044999237072740166
+      },
+      "input_tokens": 102,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 38,
+      "utterance": "where is the http client wired up in service/net?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "choice": "web_fetch",
+      "correct": false,
+      "conf": 0.672,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.054945435013675284,
+        "filesys_glob": 0.036695183094598634,
+        "filesys_grep": 0.03832807420038778,
+        "decide_extract": 0.08104061820411415,
+        "web_search": 0.06228360505926939,
+        "web_fetch": 0.7267070844279547
+      },
+      "input_tokens": 104,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 39,
+      "utterance": "what files make use of the old env var?",
+      "label": "filesys_grep",
+      "band": "t3",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.4158,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.11662330951550848,
+        "filesys_glob": 0.5131523674353154,
+        "filesys_grep": 0.2609149686148558,
+        "decide_extract": 0.05420214526385795,
+        "web_search": 0.03384122596859912,
+        "web_fetch": 0.021265983201863237
+      },
+      "input_tokens": 102,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 40,
+      "utterance": "turn the user's wording into the exact filenames to print",
+      "label": "decide_extract",
+      "band": "t3",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.7218,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.027215749780661793,
+        "filesys_glob": 0.7681923326955885,
+        "filesys_grep": 0.02042444041168827,
+        "decide_extract": 0.16558405941809287,
+        "web_search": 0.007202259711085413,
+        "web_fetch": 0.011381157982883128
+      },
+      "input_tokens": 105,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 41,
+      "utterance": "give me keyword variants for the upcoming lookup",
+      "label": "decide_extract",
+      "band": "t3",
+      "choice": "web_search",
+      "correct": false,
+      "conf": 0.4626,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.011218771057212086,
+        "filesys_glob": 0.049201951136119394,
+        "filesys_grep": 0.03257743330120424,
+        "decide_extract": 0.33948148509564746,
+        "web_search": 0.5521906940645401,
+        "web_fetch": 0.015329665345276655
+      },
+      "input_tokens": 100,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 42,
+      "utterance": "come up with five candidate titles from the brief",
+      "label": "decide_extract",
+      "band": "t3",
+      "choice": "web_search",
+      "correct": false,
+      "conf": 0.5599,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.015153803590160358,
+        "filesys_glob": 0.1863577368118645,
+        "filesys_grep": 0.03265959470620547,
+        "decide_extract": 0.05922749914706052,
+        "web_search": 0.6332649949138353,
+        "web_fetch": 0.07333637083087387
+      },
+      "input_tokens": 101,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 43,
+      "utterance": "what good names could we use for the search strings?",
+      "label": "decide_extract",
+      "band": "t3",
+      "choice": "decide_extract",
+      "correct": true,
+      "conf": 0.4842,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.014372186075303986,
+        "filesys_glob": 0.13749007442070812,
+        "filesys_grep": 0.11913171592416297,
+        "decide_extract": 0.5701642894834303,
+        "web_search": 0.13673832389773588,
+        "web_fetch": 0.022103410198658722
+      },
+      "input_tokens": 103,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 44,
+      "utterance": "before we dump anything, write out the paths it wants",
+      "label": "decide_extract",
+      "band": "t3",
+      "choice": "filesys_glob",
+      "correct": false,
+      "conf": 0.9013,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.019321150739784534,
+        "filesys_glob": 0.9177113215274222,
+        "filesys_grep": 0.01658473673810545,
+        "decide_extract": 0.028914034663245495,
+        "web_search": 0.005531771022839889,
+        "web_fetch": 0.011936985308602582
+      },
+      "input_tokens": 103,
+      "shuffle_seed": null
+    },
+    {
+      "idx": 45,
+      "utterance": "give me a fresh batch of angles to try",
+      "label": "decide_extract",
+      "band": "t3",
+      "choice": "web_search",
+      "correct": false,
+      "conf": 0.6484,
+      "k": 6,
+      "order": [
+        "filesys_read",
+        "filesys_glob",
+        "filesys_grep",
+        "decide_extract",
+        "web_search",
+        "web_fetch"
+      ],
+      "probabilities": {
+        "filesys_read": 0.014955555408018762,
+        "filesys_glob": 0.0518776344401606,
+        "filesys_grep": 0.05518817999663091,
+        "decide_extract": 0.10863451466063381,
+        "web_search": 0.7070388660813729,
+        "web_fetch": 0.06230524941318294
+      },
+      "input_tokens": 101,
+      "shuffle_seed": null
+    }
+  ]
+}
