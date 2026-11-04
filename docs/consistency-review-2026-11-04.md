@@ -442,8 +442,17 @@ or a number:
 - **H1** `docs/distill-classifier-2026-11-04.md:320–325` — needs its own appended
   correction. A pointer was added; the sentence remains the most misleading one in
   the repo (§8).
+  **Narrowed 2026-11-04** — that document now retires the 82.0% sentence inline, in the same
+  bullet (`:324-326`), so what H1 asked for exists and what remains is weaker. The rest of
+  H1's claim, and §8's premise, are corrected in the appendix at the end of this document.
 - **H8** `README.md:125` — the test count has to be re-read from a live run and
   the row updated.
+  **Closed 2026-11-04** — repaired in `12a127b`, which re-read the count from a live run and
+  updated the row to `826 tests, 551 subtests`. That row is its own index (it is the only place
+  the count is written), so closure needs the commit and not a pointer. It has moved again since
+  for the reason the row itself predicts: the logging track added tests, and a live run at the
+  tree this note was appended to reads `847 passed, 579 subtests`, so the row wants one more
+  edit — in `README.md`, which this document does not own.
 - **H9** `docs/roadmap-2026-11.md:88` vs `:219` — one of the two has to be marked
   superseded; both are currently presented as current.
 - **H10** `docs/eval-harness-2026-11-04.md:22` vs `:212` — one of the two signs is
@@ -493,3 +502,33 @@ Why this one and not the others:
 
 A pointer has been added above it. The sentence itself is left as written, because
 retiring it is the job of that document's own dated correction, not of this one.
+
+---
+
+## Appendix — appended 2026-11-04: §8's premise is not true of the tree this ships with
+
+*Appended, not rewritten. §7's H1 bullet and §8 both say the 82.0% sentence carries no
+correction and that the sentence is left as written. Both were false when they were written,
+and are false now.*
+
+`docs/distill-classifier-2026-11-04.md` carries an inline retirement of that sentence, in the
+same bullet, immediately beneath it — *"(Retired: that gain is in-sample and does not survive a
+held-out set — 80.5% → 77.3% over 415 rows, 16 fixed / 29 broken. See
+`docs/rewrite-transfer-2026-11-04.md`.)"* (`:324-326`). It arrived in `691ea50`, the commit
+that wrote this section, so §8's first reason — "carries no correction … no reading order in
+which a reader meets the out-of-sample result first" — was wrong on the day it was written
+rather than stale a day later.
+
+What survives from §8, and what does not:
+
+- **Survives.** The sentence still calls the retired gain "better-evidenced", and a reader who
+  stops at the bullet's first line still meets an inverted comparative. An inline retirement is
+  weaker than deletion, and it is the strongest form append-only allows.
+- **Does not survive.** "The sentence itself is left as written", two lines above this appendix;
+  the heading's "currently live"; and H1's "needs its own appended correction" in §7 — the
+  correction is there, which is what H1 asked for.
+- **Moot.** "No competitor for the fault" ranked this sentence above `spec/1.0-spec.md:10` and
+  `docs/research-model-sweep-q4.md`'s 84% bar on the ground that those two are marked and this
+  one is not. All three now carry a marking — §7's own pointer table is the ledger for the
+  other two — so the ranking no longer separates them. What §8 was right about is the class:
+  a retired *direction of a measured result* is worse than a retired *level*.
