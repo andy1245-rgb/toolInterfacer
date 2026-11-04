@@ -321,7 +321,9 @@ The four reasons, in order of weight:
 * **A 3B description fix already exists and is worth more than this model.** `p1-diagnose`
   moves the same 3B from 74.0% to **82.0%** with two description strings (18 fixed, 6
   broken, p = 0.0227). That is a larger, better-evidenced gain than anything measured here,
-  and it is the natural first comparison for any future arm.
+  and it is the natural first comparison for any future arm. *(Retired: that gain is
+  in-sample and does not survive a held-out set — 80.5% → 77.3% over 415 rows, 16 fixed /
+  29 broken. See `docs/rewrite-transfer-2026-11-04.md`.)*
 * **Object-held-out selection is the protocol to add.** It exists as a diagnostic here
   (`train.object_key` over `frames.SLOTS`); what the corpus needs is a *split* that holds slot
   values out, so an in-corpus number stops rewarding memorised nouns. Until then the

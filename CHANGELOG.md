@@ -8,7 +8,9 @@ commit in `git log` or to a document under `docs/`.
 ## [0.1.0] — 2026-11-03
 
 *(Two claims in the `### Measured` section below were retired on 2026-11-04; read
-[Corrections — 2026-11-04](#corrections--2026-11-04) with them.)*
+[Corrections — 2026-11-04](#corrections--2026-11-04) with them. That section retires
+four claims in total across `0.1.0`; of the ones in `### Measured` it is the
+classical-baseline bullet — and only that one — that is affected.)*
 
 First public release: 104 commits from 2026-10-17 to 2026-11-03, a suite of 700+ tests, 62
 modules in 16 packages, no runtime dependencies.
@@ -172,8 +174,12 @@ The oracle's own bound — the union of `lr` and `d1` — is **92.8% [88.5–96.
 `d1-3B` 74.0%. **A deployable per-class figure is being measured on another track; no number is
 quoted here for it and the report will carry a further correction when it lands.**
 
+*(It landed: the deployable router is 79.3% [73.6–84.8], n=150 —
+[`docs/router-policy-2026-11-04.md`](docs/router-policy-2026-11-04.md).)*
+
 Corrected in: `docs/local-classifier-cascade-2026-11-03.md` (Corrections C1), `README.md`
-("What was measured" row and the 2026-11-04 correction block).
+("What was measured" row and the 2026-11-04 correction block),
+`docs/router-policy-2026-11-04.md` (the deployable replacement).
 
 ### Retired: a different task presented as comparable
 
@@ -211,4 +217,12 @@ the two replacement strings were written by reading the errors of the same 150 r
 scored on. **It is in-sample and is an upper bound, not an estimate.** Another track is
 validating it on a held-out set; this changelog does not pre-empt that result.
 
-Corrected in: `bench/results/p1-diagnose/FINDINGS.md` (2026-11-04 correction).
+**That validation has since landed, and it is negative.**
+[`docs/rewrite-transfer-2026-11-04.md`](docs/rewrite-transfer-2026-11-04.md) applies the two
+strings unchanged to 415 rows authored after they were written: **80.5% → 77.3%**, 16 fixed /
+29 broken, p = 0.0725. The whole edit is net negative out of sample and **82.0% is retired as an
+improvement**; only the `filesys_grep` line transfers (+17.3 points, 9 fixed / 0 broken). See
+also `README.md`'s correction block.
+
+Corrected in: `bench/results/p1-diagnose/FINDINGS.md` (two appended 2026-11-04 corrections),
+`docs/rewrite-transfer-2026-11-04.md`, `README.md`.

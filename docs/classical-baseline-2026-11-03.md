@@ -22,6 +22,11 @@ worth chasing, at 16 rows fixed against 8 broken, not yet a result.
 | d1-3B Q4_K_M, same rows | 91.36% | — (not re-run) |
 | v2 set, 150 rows, 8-way | — | **62.7%** (d1-3B **74.0%**) |
 
+**This table mixes two tasks.** The 382-row rows are a smart-home router whose
+label intersection with this repo's 8 ops is empty; only the last row measures
+`useTool`. Read [Corrections C1](#c1-the-382-row-figures-are-a-different-tasks-and-the-intersection-is-empty)
+with it.
+
 ## 1. What was built, and why it is not scikit-learn
 
 `python3 -c "import sklearn; print(sklearn.__version__)"` raises
@@ -124,7 +129,9 @@ template and so are atomic in the split). Holding out whole templates costs
 **26 points**. That is the number to quote next to 93.19% whenever the deployment
 question is "will it route something phrased differently", because the 382 rows
 are one authoring pass of one template set and the references were written
-against those same templates.
+against those same templates. *(Quote the task with it too — see
+[Corrections C1](#c1-the-382-row-figures-are-a-different-tasks-and-the-intersection-is-empty):
+the pair is one task at two split settings, and that task is not this repo's.)*
 
 A softer view of the same thing — TF-IDF cosine from each test row to its
 nearest training reference — says the score is *not* surface lookup:

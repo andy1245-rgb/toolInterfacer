@@ -35,7 +35,9 @@ Routing accuracy is worth nothing until this is fixed.
       d1 alone at **74.0% at 169 ms** — 16 rows fixed, 8 broken, McNemar p = 0.152 at n=150.
       Best configuration anyone has measured here, and it is not wired. Needs the fitted
       threshold above, chosen on held-out rows rather than on the set it is scored on.
-      **next**
+      *(Not the same 79.3% as `docs/router-policy-2026-11-04.md`'s per-class router: same
+      digits, a different device — 44% gate coverage here against that one's 30%, and its
+      own paired test against the 3B.)* **next**
 - [ ] **Re-measure at n ≥ 500 paired.** At n=150 the 95% interval is ±8 points (worst case,
       `1.96 × 0.5/√n`), so the +5.3 point cascade gain is not yet a result. Paired detection
       of 2 points needs ~1,960 rows (`docs/assets-inventory.md` §19); n=500 buys ±4.4 points
@@ -89,7 +91,10 @@ Routing accuracy is worth nothing until this is fixed.
       p = 0.0725 — against the in-sample 74.0% → 82.0%. The two classes it targets do
       gain (+13.6 pts, p = 0.0013), but 20 of the 29 broken rows are one side effect:
       `decide_extract`'s new text claims questions, so it absorbs rows owned by six other
-      labels. `filesys_grep`'s line alone transfers (+17.3 pts, 9/0, p = 0.0039); the
+      labels. `filesys_grep`'s line alone transfers (+17.3 pts, 9/0, p = 0.0039) — read
+      that as the per-class measurement it is: on non-package-noun phrasing only (0/4 on
+      v2's package-noun rows), and the grep-line-with-original-extract configuration is an
+      arm the report says it did not run (`docs/rewrite-transfer-2026-11-04.md` §8–§9); the
       extract line was fitted to the 150. **82.0% is retired as an improvement**, and any
       further description edit is measured on v3-test with the paired protocol before it
       is believed. Report at `docs/rewrite-transfer-2026-11-04.md`, probe at

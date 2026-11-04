@@ -465,7 +465,9 @@ can read as current.
   row's ground-truth label (`bench/local_clf.py:1085`), so no router can reach it; 92.8%
   [88.5–96.6] family-held-out is the ceiling above it. The deployable numbers on that set are
   61.3% (`lr`), 50.0% (`1-NN`) and 74.0% (`d1-3B`). A deployable per-class figure is being
-  measured on another track and is not quoted here.
+  measured on another track and is not quoted here — *(it has since landed: 79.3%
+  [73.6–84.8], n=150, in [`docs/router-policy-2026-11-04.md`](docs/router-policy-2026-11-04.md),
+  whose row is at the end of the "What was measured" table above)*.
 - **`routing_382` is a different task.** 18 smart-home classes (`timer_create`,
   `thermostat_set`, …), its own registry, **empty intersection** with this repo's 8 ops. Its
   93.19% / 66.23% are not comparable to `useTool`; only the 62.7% measured on this repo's 150
@@ -479,7 +481,9 @@ One correction has now been resolved rather than restated: the **74.0% → 82.0%
 rewriting two op descriptions was in-sample, and it was run out of sample on
 `heldout_v3.json` — 415 rows the rewrite never saw — where the same two strings score
 **80.5% → 77.3%** (16 fixed, 29 broken, p = 0.0725). The diagnosis holds and the
-`filesys_grep` line transfers (+17.3 points, 9 fixed / 0 broken); the `decide_extract`
+`filesys_grep` line transfers (+17.3 points, 9 fixed / 0 broken) — on non-package-noun
+phrasing, and as a per-class measurement of the two-line edit rather than of the grep
+line alone, which is an arm the report did not run (its §8–§9); the `decide_extract`
 line was fitted to the 150 and the whole edit is net negative. **82.0% is retired as an
 improvement** — [`docs/rewrite-transfer-2026-11-04.md`](docs/rewrite-transfer-2026-11-04.md),
 and the dated correction at the end of
@@ -505,7 +509,8 @@ Resolution section.
 | [`docs/pre-publish-audit.md`](docs/pre-publish-audit.md) | the gate before a public push, taken at `ca7ffec`: what a stranger can see, download and infer from the clone — history, secrets, licence, the tracked tree — with a Resolution appendix saying which findings were closed and which are still the owner's call |
 | [`docs/roadmap-2026-11.md`](docs/roadmap-2026-11.md) | the plan for the overnight run and its closing Outcome: which publish blockers were closed and re-probed rather than asserted, and the three measurements that changed the plan — the classical baseline, the iGPU, the hop log |
 | [`docs/assets-inventory.md`](docs/assets-inventory.md) | what the sibling projects already hold, surveyed against this repo's three needs: five ranked import candidates with concrete paths and a recommendation for each, the cactus/needle fine-tune that came back negative, and two things worth not importing |
-| [`docs/router-policy-2026-11-04.md`](docs/router-policy-2026-11-04.md) | the per-class routing figure measured without the answer: 84.7% was an oracle applied on the true label, its deployable replacement is **79.3% [73.6–84.8], n=150**, family-grouped 5-fold × 5 seeds — separately better than the cheap expert (+12.3 pts) and *not* separable from the 3B (+5.3 pts, CI −1.4 to +12.3), with the cascade's accuracy/cost curve (81.6% at 38% escalation), the finding that a top-2 margin gate is no better than top-1 probability, and the 14 of 22 confident 3B misses a class-level policy recovers where no confidence gate can |
+| [`docs/router-policy-2026-11-04.md`](docs/router-policy-2026-11-04.md) | the per-class routing figure measured without the answer: 84.7% was an oracle applied on the true label, its deployable replacement is **79.3% [73.6–84.8], n=150**, family-grouped 5-fold × 5 seeds — separately better than the cheap expert (+12.3 pts) and *not* separable from the 3B (+5.3 pts, CI −1.4 to +12.3), with the cascade's accuracy/cost curve (81.6% at 38% escalation), the finding that a top-2 margin gate is no better than top-1 probability, and the 14 of 22 confident 3B misses a class-level policy recovers where no confidence gate can — *not* the same 79.3% as the classical front gate in the baseline row above: same digits, different device, 30% coverage against 44% |
+| [`docs/consistency-review-2026-11-04.md`](docs/consistency-review-2026-11-04.md) | the consistency pass over the whole night's corrections: a contradiction matrix for every retired number (84.7 / 93.19 / 66.23 / 62.7 / 82.0 / 74.0 / the 8.0-point "leak" / the "17-point gap"), which of the conflicts are a dated body doing its job and which are a reader being misled, the reachability ledger (a correction 342 lines below the number it retires is not a correction), the figures the first sweep's grep could not see, and the pointers this pass added |
 
 ## Layout
 

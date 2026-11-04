@@ -351,7 +351,11 @@ is the one the repo did not have.**
    exactly the two classes this map sends to `lr` — so the router's mix barely
    moves while its baseline rises, and **the 79.3% router stops beating the 3B
    at all**. Any per-class routing claim has to be re-measured against the fixed
-   3B, not against the broken one.
+   3B, not against the broken one. *(The fresh set exists: applied unchanged to
+   `heldout_v3` the whole edit is net negative, and the `filesys_grep` line alone
+   is the part that transfers — `docs/rewrite-transfer-2026-11-04.md`. The
+   conditional above is still unmeasured, because no arm restored `decide_extract`'s
+   original text.)*
 
 ## 9. Reproduce
 
