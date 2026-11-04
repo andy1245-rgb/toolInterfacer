@@ -107,6 +107,19 @@
   `docs/eval-harness-2026-11-04.md` is the report, and its headline is that the
   150-row set has no families to hold out (63% of rows are atomic) while the
   382-row set does (−23.5 points when its templates are held out).
+- `gen_heldout_v3.py` + `data/heldout_v3.json` — **the evaluation set that can be
+  split by construction**: 415 rows over the 8 ops, generated from the authored
+  frames in `tools/distill/frames.py`, with a `family` on every row and a train/test
+  side that the *generator* assigned from the frame inventory before any utterance
+  existed. A family is one authored frame (all slot-filled variants of one sentence
+  skeleton) and never appears on both sides; 86% of rows sit in a multi-row family,
+  against 37% on `utterances_v2.json`. `data/heldout_v3_families.json` records the
+  seed and the whole assignment. `python3 bench/gen_heldout_v3.py --check` reports
+  drift against the committed file; `report_v3.py` recomputes the proxy table
+  (this set vs v2 on d1-3B) from two recorded runs, offline. Read
+  `data/heldout_v3_NOTES.md` before quoting a number from it: it is synthetic, it
+  cannot speak for real user phrasing beyond the frames, and its two decision-op
+  classes are largely single-form families.
 - `or_bench.py` — the hosted sweep: one chat completion per utterance per model
   against OpenRouter, an accuracy pass at bounded concurrency plus a strictly
   sequential latency pass (the concurrent pass's timings are never reported as

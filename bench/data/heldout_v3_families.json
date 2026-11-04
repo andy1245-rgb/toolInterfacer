@@ -1,0 +1,1586 @@
+{
+ "assignment": {
+  "t1:decide_extract:01": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "extract the search terms from this"
+  },
+  "t1:decide_extract:02": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "pull out the keywords"
+  },
+  "t1:decide_extract:03": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "what queries should we run?"
+  },
+  "t1:decide_extract:04": {
+   "band": "t1",
+   "capacity": 4,
+   "label": "decide_extract",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "test",
+   "template": "turn this into {n} queries"
+  },
+  "t1:decide_extract:05": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "generate query variants for this"
+  },
+  "t1:decide_extract:06": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "extract the values we need to fill"
+  },
+  "t1:decide_extract:07": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "list out the keywords in that request"
+  },
+  "t1:decide_extract:09": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "pull out the literal values from the instruction"
+  },
+  "t1:decide_extract:10": {
+   "band": "t1",
+   "capacity": 4,
+   "label": "decide_extract",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "train",
+   "template": "turn that into {n} distinct search queries"
+  },
+  "t1:decide_extract:11": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "enumerate the queries implied by this"
+  },
+  "t1:decide_extract:12": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "extract the candidate keys from the text"
+  },
+  "t1:decide_extract:13": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "what terms should go in the box?"
+  },
+  "t1:decide_extract:14": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "pull the needed values out of the request"
+  },
+  "t1:decide_pick:01": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "pick the best of these"
+  },
+  "t1:decide_pick:03": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "rank these by relevance"
+  },
+  "t1:decide_pick:04": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "choose the top 3 from the results"
+  },
+  "t1:decide_pick:05": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "which of these actually answers the ask?"
+  },
+  "t1:decide_pick:06": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "select the ones worth following up"
+  },
+  "t1:decide_pick:07": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "pick the one that matches the intent"
+  },
+  "t1:decide_pick:08": {
+   "band": "t1",
+   "capacity": 4,
+   "label": "decide_pick",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "test",
+   "template": "which of the {n} should we keep?"
+  },
+  "t1:decide_pick:09": {
+   "band": "t1",
+   "capacity": 4,
+   "label": "decide_pick",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "train",
+   "template": "choose between these {n} and tell me why"
+  },
+  "t1:decide_pick:10": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "rank the candidates and give me the head"
+  },
+  "t1:decide_pick:11": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "pick the strongest candidate from the list"
+  },
+  "t1:decide_pick:12": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "which one of these is the right one to open?"
+  },
+  "t1:decide_pick:13": {
+   "band": "t1",
+   "capacity": 4,
+   "label": "decide_pick",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "train",
+   "template": "select the best {n} out of what we have"
+  },
+  "t1:decide_pick:14": {
+   "band": "t1",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "which should we act on first?"
+  },
+  "t1:filesys_glob:03": {
+   "band": "t1",
+   "capacity": 6,
+   "label": "filesys_glob",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "train",
+   "template": "which files exist under {dir}?"
+  },
+  "t1:filesys_glob:04": {
+   "band": "t1",
+   "capacity": 5,
+   "label": "filesys_glob",
+   "planned_rows": 5,
+   "rival": null,
+   "rows": 5,
+   "split": "train",
+   "template": "find all the {ext} files"
+  },
+  "t1:filesys_glob:06": {
+   "band": "t1",
+   "capacity": 5,
+   "label": "filesys_glob",
+   "planned_rows": 5,
+   "rival": null,
+   "rows": 5,
+   "split": "train",
+   "template": "list the files named {name}"
+  },
+  "t1:filesys_glob:09": {
+   "band": "t1",
+   "capacity": 6,
+   "label": "filesys_glob",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "test",
+   "template": "give me the directory listing for {dir}"
+  },
+  "t1:filesys_grep:01": {
+   "band": "t1",
+   "capacity": 7,
+   "label": "filesys_grep",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "test",
+   "template": "grep the tree for {sym}"
+  },
+  "t1:filesys_grep:12": {
+   "band": "t1",
+   "capacity": 5,
+   "label": "filesys_grep",
+   "planned_rows": 5,
+   "rival": null,
+   "rows": 5,
+   "split": "train",
+   "template": "grep for every line that matches {pat}"
+  },
+  "t1:filesys_grep:13": {
+   "band": "t1",
+   "capacity": 7,
+   "label": "filesys_grep",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "train",
+   "template": "search the codebase for usages of {sym}"
+  },
+  "t1:filesys_grep:14": {
+   "band": "t1",
+   "capacity": 7,
+   "label": "filesys_grep",
+   "planned_rows": 5,
+   "rival": null,
+   "rows": 5,
+   "split": "train",
+   "template": "is {sym} referenced anywhere else?"
+  },
+  "t1:filesys_read:06": {
+   "band": "t1",
+   "capacity": 8,
+   "label": "filesys_read",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "train",
+   "template": "open {path} and paste it back"
+  },
+  "t1:filesys_read:09": {
+   "band": "t1",
+   "capacity": 8,
+   "label": "filesys_read",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "train",
+   "template": "pull up the file {path}"
+  },
+  "t1:filesys_read:13": {
+   "band": "t1",
+   "capacity": 8,
+   "label": "filesys_read",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "test",
+   "template": "what is written in {path}?"
+  },
+  "t1:filesys_read:14": {
+   "band": "t1",
+   "capacity": 8,
+   "label": "filesys_read",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "train",
+   "template": "show me what's on screen for {path}"
+  },
+  "t1:reddit_digest:03": {
+   "band": "t1",
+   "capacity": 8,
+   "label": "reddit_digest",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "test",
+   "template": "search reddit for {topic}"
+  },
+  "t1:reddit_digest:04": {
+   "band": "t1",
+   "capacity": 8,
+   "label": "reddit_digest",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "test",
+   "template": "check the {sub} subreddit for {topic}"
+  },
+  "t1:reddit_digest:07": {
+   "band": "t1",
+   "capacity": 8,
+   "label": "reddit_digest",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "test",
+   "template": "digest the reddit threads on {topic}"
+  },
+  "t1:reddit_digest:11": {
+   "band": "t1",
+   "capacity": 8,
+   "label": "reddit_digest",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "train",
+   "template": "give me the reddit digest for {topic}"
+  },
+  "t1:web_fetch:05": {
+   "band": "t1",
+   "capacity": 4,
+   "label": "web_fetch",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "train",
+   "template": "scrape {url} and give me the text"
+  },
+  "t1:web_fetch:06": {
+   "band": "t1",
+   "capacity": 4,
+   "label": "web_fetch",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "test",
+   "template": "load the page at {url} and give me the body text"
+  },
+  "t1:web_fetch:07": {
+   "band": "t1",
+   "capacity": 4,
+   "label": "web_fetch",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "train",
+   "template": "get me the text from {url}"
+  },
+  "t1:web_fetch:08": {
+   "band": "t1",
+   "capacity": 4,
+   "label": "web_fetch",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "test",
+   "template": "fetch that {host} link and bring back what it says"
+  },
+  "t1:web_fetch:09": {
+   "band": "t1",
+   "capacity": 4,
+   "label": "web_fetch",
+   "planned_rows": 2,
+   "rival": null,
+   "rows": 2,
+   "split": "train",
+   "template": "download {url} without the navigation chrome"
+  },
+  "t1:web_fetch:11": {
+   "band": "t1",
+   "capacity": 4,
+   "label": "web_fetch",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "test",
+   "template": "pull the content at {url}"
+  },
+  "t1:web_search:03": {
+   "band": "t1",
+   "capacity": 8,
+   "label": "web_search",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "train",
+   "template": "google {topic} for me"
+  },
+  "t1:web_search:06": {
+   "band": "t1",
+   "capacity": 8,
+   "label": "web_search",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "train",
+   "template": "what's the latest on {topic}?"
+  },
+  "t1:web_search:11": {
+   "band": "t1",
+   "capacity": 8,
+   "label": "web_search",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "train",
+   "template": "what are the current numbers for {topic}?"
+  },
+  "t1:web_search:14": {
+   "band": "t1",
+   "capacity": 8,
+   "label": "web_search",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "test",
+   "template": "find documentation for {topic}"
+  },
+  "t2:decide_extract:01": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "break this into the pieces a lookup would need"
+  },
+  "t2:decide_extract:02": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "what should we actually type into the box?"
+  },
+  "t2:decide_extract:03": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "give me a few ways to phrase it"
+  },
+  "t2:decide_extract:04": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "how would you go looking for this?"
+  },
+  "t2:decide_extract:06": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "i need the raw bits that go in the slots"
+  },
+  "t2:decide_extract:07": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "boil that down to the values we need"
+  },
+  "t2:decide_extract:08": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "give me the concrete pieces of that sentence"
+  },
+  "t2:decide_extract:09": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "what is the actual payload of that request?"
+  },
+  "t2:decide_extract:11": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "i need the raw material for the next step"
+  },
+  "t2:decide_extract:13": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "unpack that request into concrete values"
+  },
+  "t2:decide_pick:01": {
+   "band": "t2",
+   "capacity": 4,
+   "label": "decide_pick",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "train",
+   "template": "of the {n} that came up, what actually matters?"
+  },
+  "t2:decide_pick:05": {
+   "band": "t2",
+   "capacity": 4,
+   "label": "decide_pick",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "test",
+   "template": "there are {n} of them \u2014 i only want the one that helps"
+  },
+  "t2:decide_pick:07": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "what sits at the top of that list, in your view?"
+  },
+  "t2:decide_pick:11": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "give me the best couple from what is there"
+  },
+  "t2:filesys_glob:09": {
+   "band": "t2",
+   "capacity": 5,
+   "label": "filesys_glob",
+   "planned_rows": 5,
+   "rival": null,
+   "rows": 5,
+   "split": "test",
+   "template": "is there a {kind} anywhere in here?"
+  },
+  "t2:filesys_glob:16": {
+   "band": "t2",
+   "capacity": 6,
+   "label": "filesys_glob",
+   "planned_rows": 5,
+   "rival": null,
+   "rows": 5,
+   "split": "train",
+   "template": "give me the shape of the tree under {dir}"
+  },
+  "t2:filesys_grep:01": {
+   "band": "t2",
+   "capacity": 7,
+   "label": "filesys_grep",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "train",
+   "template": "anything in here still pointing at {sym}?"
+  },
+  "t2:filesys_grep:05": {
+   "band": "t2",
+   "capacity": 7,
+   "label": "filesys_grep",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "test",
+   "template": "is {sym} still alive anywhere?"
+  },
+  "t2:filesys_read:05": {
+   "band": "t2",
+   "capacity": 5,
+   "label": "filesys_read",
+   "planned_rows": 5,
+   "rival": null,
+   "rows": 5,
+   "split": "test",
+   "template": "walk me through that {kind} line by line"
+  },
+  "t2:filesys_read:12": {
+   "band": "t2",
+   "capacity": 5,
+   "label": "filesys_read",
+   "planned_rows": 5,
+   "rival": null,
+   "rows": 5,
+   "split": "train",
+   "template": "what does the {kind} hold right now?"
+  },
+  "t2:reddit_digest:07": {
+   "band": "t2",
+   "capacity": 8,
+   "label": "reddit_digest",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "train",
+   "template": "is the general vibe on {topic} positive or not?"
+  },
+  "t2:reddit_digest:08": {
+   "band": "t2",
+   "capacity": 8,
+   "label": "reddit_digest",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "test",
+   "template": "what does the crowd make of {topic}?"
+  },
+  "t2:web_fetch:01": {
+   "band": "t2",
+   "capacity": 4,
+   "label": "web_fetch",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "test",
+   "template": "pull the text off that {host} piece"
+  },
+  "t2:web_fetch:04": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "web_fetch",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "get me whatever lives at that location"
+  },
+  "t2:web_fetch:07": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "web_fetch",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "go to it and bring back everything on it"
+  },
+  "t2:web_fetch:08": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "web_fetch",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "bring back what is behind that one reference"
+  },
+  "t2:web_fetch:09": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "web_fetch",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "the underlying text of that reference, please"
+  },
+  "t2:web_fetch:10": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "web_fetch",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "train",
+   "template": "go and get it, all of it"
+  },
+  "t2:web_fetch:11": {
+   "band": "t2",
+   "capacity": 1,
+   "label": "web_fetch",
+   "planned_rows": 1,
+   "rival": null,
+   "rows": 1,
+   "split": "test",
+   "template": "i need the body of that one, unsummarised"
+  },
+  "t2:web_search:03": {
+   "band": "t2",
+   "capacity": 8,
+   "label": "web_search",
+   "planned_rows": 6,
+   "rival": null,
+   "rows": 6,
+   "split": "test",
+   "template": "is {topic} still a problem in the wild?"
+  },
+  "t2:web_search:09": {
+   "band": "t2",
+   "capacity": 8,
+   "label": "web_search",
+   "planned_rows": 4,
+   "rival": null,
+   "rows": 4,
+   "split": "train",
+   "template": "has anyone benchmarked {topic} recently?"
+  },
+  "t3:decide_extract->decide_pick:03": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": "decide_pick",
+   "rows": 1,
+   "split": "train",
+   "template": "list the candidates without choosing"
+  },
+  "t3:decide_extract->decide_pick:06": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": "decide_pick",
+   "rows": 1,
+   "split": "test",
+   "template": "enumerate the values; don't decide which wins"
+  },
+  "t3:decide_extract->decide_pick:08": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": "decide_pick",
+   "rows": 1,
+   "split": "train",
+   "template": "extract the full list, no selection"
+  },
+  "t3:decide_extract->filesys_glob:04": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": "filesys_glob",
+   "rows": 1,
+   "split": "train",
+   "template": "what paths does the message name? don't list files"
+  },
+  "t3:decide_extract->filesys_glob:07": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": "filesys_glob",
+   "rows": 1,
+   "split": "test",
+   "template": "give me the paths as written, not as found"
+  },
+  "t3:decide_extract->filesys_glob:08": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": "filesys_glob",
+   "rows": 1,
+   "split": "train",
+   "template": "extract the referenced paths; no disk scan"
+  },
+  "t3:decide_extract->filesys_read:01": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "decide_extract",
+   "planned_rows": 6,
+   "rival": "filesys_read",
+   "rows": 6,
+   "split": "train",
+   "template": "pull the values out of {path}, don't paste the file"
+  },
+  "t3:decide_extract->filesys_read:04": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "decide_extract",
+   "planned_rows": 2,
+   "rival": "filesys_read",
+   "rows": 2,
+   "split": "train",
+   "template": "list the keywords that appear in {path}"
+  },
+  "t3:decide_extract->filesys_read:07": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "decide_extract",
+   "planned_rows": 6,
+   "rival": "filesys_read",
+   "rows": 6,
+   "split": "test",
+   "template": "what terms are inside {path}?"
+  },
+  "t3:decide_extract->web_search:05": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": "web_search",
+   "rows": 1,
+   "split": "train",
+   "template": "generate the queries; don't search yet"
+  },
+  "t3:decide_extract->web_search:08": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_extract",
+   "planned_rows": 1,
+   "rival": "web_search",
+   "rows": 1,
+   "split": "test",
+   "template": "the search terms only \u2014 no results"
+  },
+  "t3:decide_pick->decide_extract:01": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": "decide_extract",
+   "rows": 1,
+   "split": "test",
+   "template": "pick the right one out of the values we extracted"
+  },
+  "t3:decide_pick->decide_extract:02": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": "decide_extract",
+   "rows": 1,
+   "split": "test",
+   "template": "of the values we pulled, which do we use first?"
+  },
+  "t3:decide_pick->decide_extract:04": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": "decide_extract",
+   "rows": 1,
+   "split": "test",
+   "template": "the values are extracted \u2014 now pick the one that fits"
+  },
+  "t3:decide_pick->decide_extract:05": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": "decide_extract",
+   "rows": 1,
+   "split": "test",
+   "template": "rank the extracted candidates"
+  },
+  "t3:decide_pick->decide_extract:06": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": "decide_extract",
+   "rows": 1,
+   "split": "train",
+   "template": "from the values we listed, select one"
+  },
+  "t3:decide_pick->decide_extract:07": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": "decide_extract",
+   "rows": 1,
+   "split": "train",
+   "template": "which of the extracted items should we act on?"
+  },
+  "t3:decide_pick->decide_extract:08": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": "decide_extract",
+   "rows": 1,
+   "split": "test",
+   "template": "we have the values; choose between them"
+  },
+  "t3:decide_pick->filesys_glob:01": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": "filesys_glob",
+   "rows": 1,
+   "split": "train",
+   "template": "among the files found, which one should we open?"
+  },
+  "t3:decide_pick->filesys_glob:02": {
+   "band": "t3",
+   "capacity": 4,
+   "label": "decide_pick",
+   "planned_rows": 4,
+   "rival": "filesys_glob",
+   "rows": 4,
+   "split": "train",
+   "template": "of the {n} files that came back, pick the right one"
+  },
+  "t3:decide_pick->filesys_glob:04": {
+   "band": "t3",
+   "capacity": 4,
+   "label": "decide_pick",
+   "planned_rows": 4,
+   "rival": "filesys_glob",
+   "rows": 4,
+   "split": "test",
+   "template": "we have {n} files \u2014 choose the one that answers the ask"
+  },
+  "t3:decide_pick->filesys_glob:05": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": "filesys_glob",
+   "rows": 1,
+   "split": "train",
+   "template": "from the files that came up, select the best"
+  },
+  "t3:decide_pick->filesys_glob:06": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": "filesys_glob",
+   "rows": 1,
+   "split": "train",
+   "template": "which file out of the ones found should we act on?"
+  },
+  "t3:decide_pick->filesys_glob:07": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": "filesys_glob",
+   "rows": 1,
+   "split": "train",
+   "template": "list of files in hand: which one matters?"
+  },
+  "t3:decide_pick->filesys_glob:08": {
+   "band": "t3",
+   "capacity": 1,
+   "label": "decide_pick",
+   "planned_rows": 1,
+   "rival": "filesys_glob",
+   "rows": 1,
+   "split": "test",
+   "template": "pick one out of the file list that came back"
+  },
+  "t3:filesys_glob->decide_extract:03": {
+   "band": "t3",
+   "capacity": 5,
+   "label": "filesys_glob",
+   "planned_rows": 5,
+   "rival": "decide_extract",
+   "rows": 5,
+   "split": "train",
+   "template": "glob for *{name}* on disk and report what's really there"
+  },
+  "t3:filesys_glob->decide_extract:07": {
+   "band": "t3",
+   "capacity": 5,
+   "label": "filesys_glob",
+   "planned_rows": 4,
+   "rival": "decide_extract",
+   "rows": 4,
+   "split": "test",
+   "template": "find actual files matching {name}, the real ones"
+  },
+  "t3:filesys_glob->decide_pick:03": {
+   "band": "t3",
+   "capacity": 5,
+   "label": "filesys_glob",
+   "planned_rows": 5,
+   "rival": "decide_pick",
+   "rows": 5,
+   "split": "test",
+   "template": "find every file named like {name}, all of them"
+  },
+  "t3:filesys_glob->filesys_grep:03": {
+   "band": "t3",
+   "capacity": 6,
+   "label": "filesys_glob",
+   "planned_rows": 6,
+   "rival": "filesys_grep",
+   "rows": 6,
+   "split": "test",
+   "template": "list files named *{name}* under {dir}"
+  },
+  "t3:filesys_grep->filesys_glob:02": {
+   "band": "t3",
+   "capacity": 7,
+   "label": "filesys_grep",
+   "planned_rows": 6,
+   "rival": "filesys_glob",
+   "rows": 6,
+   "split": "train",
+   "template": "list the files that reference {sym}"
+  },
+  "t3:filesys_grep->filesys_read:02": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "filesys_grep",
+   "planned_rows": 6,
+   "rival": "filesys_read",
+   "rows": 6,
+   "split": "test",
+   "template": "which files reference {sym}, not just {path}"
+  },
+  "t3:filesys_grep->web_fetch:03": {
+   "band": "t3",
+   "capacity": 5,
+   "label": "filesys_grep",
+   "planned_rows": 5,
+   "rival": "web_fetch",
+   "rows": 5,
+   "split": "test",
+   "template": "search the tree for {pat} offline"
+  },
+  "t3:filesys_grep->web_search:01": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "filesys_grep",
+   "planned_rows": 3,
+   "rival": "web_search",
+   "rows": 3,
+   "split": "test",
+   "template": "which files in the repo mention {topic}?"
+  },
+  "t3:filesys_read->decide_extract:02": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "filesys_read",
+   "planned_rows": 6,
+   "rival": "decide_extract",
+   "rows": 6,
+   "split": "test",
+   "template": "open {path} and give me the text, not the values out of it"
+  },
+  "t3:filesys_read->decide_extract:06": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "filesys_read",
+   "planned_rows": 6,
+   "rival": "decide_extract",
+   "rows": 6,
+   "split": "test",
+   "template": "print {path} as-is, no interpretation"
+  },
+  "t3:filesys_read->filesys_grep:01": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "filesys_read",
+   "planned_rows": 6,
+   "rival": "filesys_grep",
+   "rows": 6,
+   "split": "train",
+   "template": "read {path} and nothing else \u2014 don't search the tree"
+  },
+  "t3:filesys_read->filesys_grep:02": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "filesys_read",
+   "planned_rows": 2,
+   "rival": "filesys_grep",
+   "rows": 2,
+   "split": "test",
+   "template": "open {path}; i only want that file"
+  },
+  "t3:reddit_digest->web_fetch:01": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "reddit_digest",
+   "planned_rows": 6,
+   "rival": "web_fetch",
+   "rows": 6,
+   "split": "test",
+   "template": "digest what r/{sub} says about {topic}, not one thread"
+  },
+  "t3:reddit_digest->web_fetch:06": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "reddit_digest",
+   "planned_rows": 6,
+   "rival": "web_fetch",
+   "rows": 6,
+   "split": "train",
+   "template": "the reddit picture on {topic}, not a single post"
+  },
+  "t3:reddit_digest->web_search:02": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "reddit_digest",
+   "planned_rows": 2,
+   "rival": "web_search",
+   "rows": 2,
+   "split": "train",
+   "template": "digest the reddit threads on {topic}, not a general search"
+  },
+  "t3:reddit_digest->web_search:08": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "reddit_digest",
+   "planned_rows": 6,
+   "rival": "web_search",
+   "rows": 6,
+   "split": "train",
+   "template": "what are commenters on r/{sub} saying about {topic}?"
+  },
+  "t3:web_fetch->filesys_grep:01": {
+   "band": "t3",
+   "capacity": 4,
+   "label": "web_fetch",
+   "planned_rows": 4,
+   "rival": "filesys_grep",
+   "rows": 4,
+   "split": "test",
+   "template": "fetch {url} and give me the text of that page"
+  },
+  "t3:web_fetch->filesys_grep:07": {
+   "band": "t3",
+   "capacity": 4,
+   "label": "web_fetch",
+   "planned_rows": 4,
+   "rival": "filesys_grep",
+   "rows": 4,
+   "split": "train",
+   "template": "get the text at {url}, whole page"
+  },
+  "t3:web_fetch->filesys_grep:08": {
+   "band": "t3",
+   "capacity": 4,
+   "label": "web_fetch",
+   "planned_rows": 4,
+   "rival": "filesys_grep",
+   "rows": 4,
+   "split": "train",
+   "template": "pull down {url} and give me what it says"
+  },
+  "t3:web_fetch->reddit_digest:07": {
+   "band": "t3",
+   "capacity": 4,
+   "label": "web_fetch",
+   "planned_rows": 4,
+   "rival": "reddit_digest",
+   "rows": 4,
+   "split": "train",
+   "template": "read me what's at {url}"
+  },
+  "t3:web_fetch->reddit_digest:08": {
+   "band": "t3",
+   "capacity": 4,
+   "label": "web_fetch",
+   "planned_rows": 4,
+   "rival": "reddit_digest",
+   "rows": 4,
+   "split": "test",
+   "template": "get the text of the one page at {url}"
+  },
+  "t3:web_search->decide_extract:04": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "web_search",
+   "planned_rows": 2,
+   "rival": "decide_extract",
+   "rows": 2,
+   "split": "test",
+   "template": "search for {topic} \u2014 actual results please"
+  },
+  "t3:web_search->decide_extract:06": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "web_search",
+   "planned_rows": 6,
+   "rival": "decide_extract",
+   "rows": 6,
+   "split": "test",
+   "template": "search online for {topic} and bring back urls"
+  },
+  "t3:web_search->filesys_grep:08": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "web_search",
+   "planned_rows": 6,
+   "rival": "filesys_grep",
+   "rows": 6,
+   "split": "test",
+   "template": "search the internet for {topic}, skip local files"
+  },
+  "t3:web_search->reddit_digest:07": {
+   "band": "t3",
+   "capacity": 8,
+   "label": "web_search",
+   "planned_rows": 6,
+   "rival": "reddit_digest",
+   "rows": 6,
+   "split": "train",
+   "template": "find writing about {topic} outside the community threads"
+  }
+ },
+ "counts": {
+  "per_band": {
+   "t1": 173,
+   "t2": 80,
+   "t3": 162
+  },
+  "per_class": {
+   "decide_extract": {
+    "n": 51,
+    "test": 26,
+    "train": 25
+   },
+   "decide_pick": {
+    "n": 52,
+    "test": 26,
+    "train": 26
+   },
+   "filesys_glob": {
+    "n": 52,
+    "test": 26,
+    "train": 26
+   },
+   "filesys_grep": {
+    "n": 52,
+    "test": 26,
+    "train": 26
+   },
+   "filesys_read": {
+    "n": 52,
+    "test": 25,
+    "train": 27
+   },
+   "reddit_digest": {
+    "n": 52,
+    "test": 26,
+    "train": 26
+   },
+   "web_fetch": {
+    "n": 52,
+    "test": 26,
+    "train": 26
+   },
+   "web_search": {
+    "n": 52,
+    "test": 26,
+    "train": 26
+   }
+  },
+  "rows": 415
+ },
+ "distill_overlap": {
+  "families_in_distill": 293,
+  "note": "a model trained on data/distill has seen these families; drop them by family join to score it on unseen phrasings",
+  "resolved_rows": 295,
+  "resolved_test_rows": 160,
+  "unresolved_rows": 120
+ },
+ "dropped_families": [
+  {
+   "family": "t1:decide_extract:08",
+   "planned_rows": 1,
+   "split": "train",
+   "why": "every rendered variant was refused"
+  }
+ ],
+ "families": {
+  "by_band": {
+   "t1": {
+    "families": 52,
+    "rows": 173,
+    "rows_in_multi_row_families": 152,
+    "singleton_families": 21
+   },
+   "t2": {
+    "families": 31,
+    "rows": 80,
+    "rows_in_multi_row_families": 62,
+    "singleton_families": 18
+   },
+   "t3": {
+    "families": 50,
+    "rows": 162,
+    "rows_in_multi_row_families": 142,
+    "singleton_families": 20
+   }
+  },
+  "by_class": {
+   "decide_extract": {
+    "families": 34,
+    "rows": 51,
+    "rows_in_multi_row_families": 22,
+    "singleton_families": 29
+   },
+   "decide_pick": {
+    "families": 31,
+    "rows": 52,
+    "rows_in_multi_row_families": 28,
+    "singleton_families": 24
+   },
+   "filesys_glob": {
+    "families": 10,
+    "rows": 52,
+    "rows_in_multi_row_families": 52,
+    "singleton_families": 0
+   },
+   "filesys_grep": {
+    "families": 10,
+    "rows": 52,
+    "rows_in_multi_row_families": 52,
+    "singleton_families": 0
+   },
+   "filesys_read": {
+    "families": 10,
+    "rows": 52,
+    "rows_in_multi_row_families": 52,
+    "singleton_families": 0
+   },
+   "reddit_digest": {
+    "families": 10,
+    "rows": 52,
+    "rows_in_multi_row_families": 52,
+    "singleton_families": 0
+   },
+   "web_fetch": {
+    "families": 18,
+    "rows": 52,
+    "rows_in_multi_row_families": 46,
+    "singleton_families": 6
+   },
+   "web_search": {
+    "families": 10,
+    "rows": 52,
+    "rows_in_multi_row_families": 52,
+    "singleton_families": 0
+   }
+  },
+  "families": 133,
+  "families_per_side": {
+   "test": 68,
+   "train": 65
+  },
+  "largest_family": 6,
+  "multi_row_families": 74,
+  "rows_in_multi_row_families": 356,
+  "rows_in_multi_row_families_pct": 85.8,
+  "singleton_families": 59,
+  "singleton_rows": 59,
+  "size_histogram": {
+   "1": 59,
+   "2": 5,
+   "3": 1,
+   "4": 27,
+   "5": 11,
+   "6": 30
+  }
+ },
+ "frames": {
+  "duplicate_templates_dropped": 4,
+  "duplicates": [
+   {
+    "family": "t1:filesys_glob:08",
+    "template": "find files named {name}.{ext}",
+    "why": "literal punctuation contradicts the slot table"
+   },
+   {
+    "family": "t3:filesys_grep->filesys_glob:01",
+    "template": "which files mention {topic}?",
+    "why": "same template as t1:filesys_grep:03"
+   },
+   {
+    "family": "t3:filesys_glob->decide_pick:05",
+    "template": "list all files under {dir} matching {name}*",
+    "why": "same template as t1:filesys_glob:12"
+   },
+   {
+    "family": "t3:reddit_digest->web_search:03",
+    "template": "check the {sub} subreddit for {topic}",
+    "why": "same template as t1:reddit_digest:04"
+   }
+  ],
+  "frames": 380,
+  "module": "tools/distill/frames.py",
+  "sha256": "555814dd13e1921f"
+ },
+ "generator": "bench/gen_heldout_v3.py",
+ "leakage": {
+  "exact_restatements_of_v2": 0,
+  "max_ratio_nearest_v2": "get me whatever lives at that address",
+  "max_ratio_row": "get me whatever lives at that location",
+  "max_ratio_to_v2": 0.827
+ },
+ "max_variants_per_family": 6,
+ "refused": {
+  "examples": [
+   {
+    "family": "t1:decide_extract:08",
+    "utterance": "what search terms fit this ask?",
+    "why": "restates a frozen v2 row"
+   },
+   {
+    "family": "t1:decide_extract:08",
+    "utterance": "",
+    "why": "only 0 distinct of 1 wanted"
+   }
+  ],
+  "n": 2
+ },
+ "rows_per_class_band": {
+  "decide_extract": {
+   "t1": 20,
+   "t2": 10,
+   "t3": 22
+  },
+  "decide_pick": {
+   "t1": 22,
+   "t2": 10,
+   "t3": 20
+  },
+  "filesys_glob": {
+   "t1": 22,
+   "t2": 10,
+   "t3": 20
+  },
+  "filesys_grep": {
+   "t1": 22,
+   "t2": 10,
+   "t3": 20
+  },
+  "filesys_read": {
+   "t1": 22,
+   "t2": 10,
+   "t3": 20
+  },
+  "reddit_digest": {
+   "t1": 22,
+   "t2": 10,
+   "t3": 20
+  },
+  "web_fetch": {
+   "t1": 22,
+   "t2": 10,
+   "t3": 20
+  },
+  "web_search": {
+   "t1": 22,
+   "t2": 10,
+   "t3": 20
+  }
+ },
+ "rule": "family = one authored frame (all slot-filled variants of one sentence skeleton); a family is assigned to train or test before any utterance is rendered. Selection: slot-bearing frames first, seeded-hash order within groups, t3 round-robin across rival pairs. Balance: greedy largest-first per class-band, ties by seeded hash.",
+ "schema": "heldout_v3_families/1",
+ "seed": 20261104
+}

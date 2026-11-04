@@ -1,0 +1,3737 @@
+[
+ {
+  "id": "v3-0001",
+  "utterance": "show me what's on screen for service/ti/conf/defaults.json",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:14",
+  "split": "train"
+ },
+ {
+  "id": "v3-0002",
+  "utterance": "get me the text from https://docs.python.org/3/library/json.html",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0003",
+  "utterance": "find documentation for local llama.cpp serving",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:14",
+  "split": "test"
+ },
+ {
+  "id": "v3-0004",
+  "utterance": "what terms are inside docs/architecture.md?",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:decide_extract->filesys_read:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0005",
+  "utterance": "what is written in tests/test_context_bound.py?",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:13",
+  "split": "test"
+ },
+ {
+  "id": "v3-0006",
+  "utterance": "the underlying text of that reference, please",
+  "label": "web_fetch",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_fetch:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0007",
+  "utterance": "digest what r/selfhosted says about kalman filters, not one thread",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:reddit_digest->web_fetch:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0008",
+  "utterance": "find every file named like Makefile, all of them",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "decide_pick",
+  "family": "t3:filesys_glob->decide_pick:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0009",
+  "utterance": "the reddit picture on kalman filters, not a single post",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:reddit_digest->web_fetch:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0010",
+  "utterance": "is the general vibe on the x86 lane numbers positive or not?",
+  "label": "reddit_digest",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:reddit_digest:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0011",
+  "utterance": "which of these actually answers the ask?",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:05",
+  "split": "train"
+ },
+ {
+  "id": "v3-0012",
+  "utterance": "what does the timeout block hold right now?",
+  "label": "filesys_read",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_read:12",
+  "split": "train"
+ },
+ {
+  "id": "v3-0013",
+  "utterance": "open service/ti/conf/defaults.json; i only want that file",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:filesys_read->filesys_grep:02",
+  "split": "test"
+ },
+ {
+  "id": "v3-0014",
+  "utterance": "read service/ti/decide/resolve.py and nothing else \u2014 don't search the tree",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:filesys_read->filesys_grep:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0015",
+  "utterance": "print README.md as-is, no interpretation",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_read->decide_extract:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0016",
+  "utterance": "check the rust subreddit for the retry budget",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0017",
+  "utterance": "extract the referenced paths; no disk scan",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_extract->filesys_glob:08",
+  "split": "train"
+ },
+ {
+  "id": "v3-0018",
+  "utterance": "turn this into three queries",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0019",
+  "utterance": "open spec/1.0-spec.md and give me the text, not the values out of it",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_read->decide_extract:02",
+  "split": "test"
+ },
+ {
+  "id": "v3-0020",
+  "utterance": "what is written in service/ti/conf/defaults.json?",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:13",
+  "split": "test"
+ },
+ {
+  "id": "v3-0021",
+  "utterance": "pull the content at https://openrouter.ai/docs",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:11",
+  "split": "test"
+ },
+ {
+  "id": "v3-0022",
+  "utterance": "which files exist under tests?",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0023",
+  "utterance": "digest the reddit threads on kalman filters, not a general search",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_search",
+  "family": "t3:reddit_digest->web_search:02",
+  "split": "train"
+ },
+ {
+  "id": "v3-0024",
+  "utterance": "search the internet for the x86 lane numbers, skip local files",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_search->filesys_grep:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0025",
+  "utterance": "of the values we pulled, which do we use first?",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:decide_pick->decide_extract:02",
+  "split": "test"
+ },
+ {
+  "id": "v3-0026",
+  "utterance": "which of the twelve should we keep?",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0027",
+  "utterance": "open docs/architecture.md and give me the text, not the values out of it",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_read->decide_extract:02",
+  "split": "test"
+ },
+ {
+  "id": "v3-0028",
+  "utterance": "anything in here still pointing at ChoiceAnswer?",
+  "label": "filesys_grep",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_grep:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0029",
+  "utterance": "anything in here still pointing at tau_lo?",
+  "label": "filesys_grep",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_grep:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0030",
+  "utterance": "is handle_stream still alive anywhere?",
+  "label": "filesys_grep",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_grep:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0031",
+  "utterance": "grep for every line that matches retry_after",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:12",
+  "split": "train"
+ },
+ {
+  "id": "v3-0032",
+  "utterance": "select the best twelve out of what we have",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:13",
+  "split": "train"
+ },
+ {
+  "id": "v3-0033",
+  "utterance": "give me the reddit digest for the eviction policy",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:11",
+  "split": "train"
+ },
+ {
+  "id": "v3-0034",
+  "utterance": "select the best four out of what we have",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:13",
+  "split": "train"
+ },
+ {
+  "id": "v3-0035",
+  "utterance": "google the retry budget for me",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0036",
+  "utterance": "google local llama.cpp serving for me",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0037",
+  "utterance": "list the files named runner",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0038",
+  "utterance": "select the best three out of what we have",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:13",
+  "split": "train"
+ },
+ {
+  "id": "v3-0039",
+  "utterance": "is tau_lo referenced anywhere else?",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:14",
+  "split": "train"
+ },
+ {
+  "id": "v3-0040",
+  "utterance": "search the internet for kalman filters, skip local files",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_search->filesys_grep:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0041",
+  "utterance": "digest what r/rust says about the retry budget, not one thread",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:reddit_digest->web_fetch:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0042",
+  "utterance": "what are the current numbers for the qwen3.5 release?",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:11",
+  "split": "train"
+ },
+ {
+  "id": "v3-0043",
+  "utterance": "list out the keywords in that request",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0044",
+  "utterance": "scrape https://arxiv.org/abs/1706.04599 and give me the text",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:05",
+  "split": "train"
+ },
+ {
+  "id": "v3-0045",
+  "utterance": "what is written in bench/lanes.json?",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:13",
+  "split": "test"
+ },
+ {
+  "id": "v3-0046",
+  "utterance": "fetch that openrouter link and bring back what it says",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0047",
+  "utterance": "what are commenters on r/LocalLLaMA saying about local llama.cpp serving?",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_search",
+  "family": "t3:reddit_digest->web_search:08",
+  "split": "train"
+ },
+ {
+  "id": "v3-0048",
+  "utterance": "select the best five out of what we have",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:13",
+  "split": "train"
+ },
+ {
+  "id": "v3-0049",
+  "utterance": "extract the search terms from this",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0050",
+  "utterance": "give me the shape of the tree under docs",
+  "label": "filesys_glob",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_glob:16",
+  "split": "train"
+ },
+ {
+  "id": "v3-0051",
+  "utterance": "extract the values we need to fill",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0052",
+  "utterance": "give me the paths as written, not as found",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_extract->filesys_glob:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0053",
+  "utterance": "pick the right one out of the values we extracted",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:decide_pick->decide_extract:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0054",
+  "utterance": "we have the values; choose between them",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:decide_pick->decide_extract:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0055",
+  "utterance": "select the ones worth following up",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0056",
+  "utterance": "give me a few ways to phrase it",
+  "label": "decide_extract",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_extract:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0057",
+  "utterance": "google the two-pass reranker for me",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0058",
+  "utterance": "find actual files matching README, the real ones",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_glob->decide_extract:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0059",
+  "utterance": "extract the full list, no selection",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "decide_pick",
+  "family": "t3:decide_extract->decide_pick:08",
+  "split": "train"
+ },
+ {
+  "id": "v3-0060",
+  "utterance": "give me the shape of the tree under tests",
+  "label": "filesys_glob",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_glob:16",
+  "split": "train"
+ },
+ {
+  "id": "v3-0061",
+  "utterance": "turn this into twelve queries",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0062",
+  "utterance": "list files named *runner* under service/ti",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:filesys_glob->filesys_grep:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0063",
+  "utterance": "grep the tree for guard_state",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0064",
+  "utterance": "list the files that reference resolve_backend",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:filesys_grep->filesys_glob:02",
+  "split": "train"
+ },
+ {
+  "id": "v3-0065",
+  "utterance": "find writing about local llama.cpp serving outside the community threads",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "reddit_digest",
+  "family": "t3:web_search->reddit_digest:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0066",
+  "utterance": "list the files named Makefile",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0067",
+  "utterance": "of the twelve files that came back, pick the right one",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_pick->filesys_glob:02",
+  "split": "train"
+ },
+ {
+  "id": "v3-0068",
+  "utterance": "give me the best couple from what is there",
+  "label": "decide_pick",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_pick:11",
+  "split": "test"
+ },
+ {
+  "id": "v3-0069",
+  "utterance": "get the text of the one page at https://example.org/posts/lane-tuning",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "reddit_digest",
+  "family": "t3:web_fetch->reddit_digest:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0070",
+  "utterance": "pull down https://example.org/posts/lane-tuning and give me what it says",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_fetch->filesys_grep:08",
+  "split": "train"
+ },
+ {
+  "id": "v3-0071",
+  "utterance": "list files named *runner* under tests",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:filesys_glob->filesys_grep:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0072",
+  "utterance": "what terms are inside tests/test_context_bound.py?",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:decide_extract->filesys_read:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0073",
+  "utterance": "what are the current numbers for the cascade thresholds?",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:11",
+  "split": "train"
+ },
+ {
+  "id": "v3-0074",
+  "utterance": "pull the needed values out of the request",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:14",
+  "split": "test"
+ },
+ {
+  "id": "v3-0075",
+  "utterance": "rank these by relevance",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0076",
+  "utterance": "we have five files \u2014 choose the one that answers the ask",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_pick->filesys_glob:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0077",
+  "utterance": "what does the crowd make of the cascade thresholds?",
+  "label": "reddit_digest",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:reddit_digest:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0078",
+  "utterance": "which should we act on first?",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:14",
+  "split": "train"
+ },
+ {
+  "id": "v3-0079",
+  "utterance": "the reddit picture on the cascade thresholds, not a single post",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:reddit_digest->web_fetch:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0080",
+  "utterance": "get me whatever lives at that location",
+  "label": "web_fetch",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_fetch:04",
+  "split": "train"
+ },
+ {
+  "id": "v3-0081",
+  "utterance": "pull the values out of docs/architecture.md, don't paste the file",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:decide_extract->filesys_read:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0082",
+  "utterance": "what terms should go in the box?",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:13",
+  "split": "train"
+ },
+ {
+  "id": "v3-0083",
+  "utterance": "load the page at https://arxiv.org/abs/1706.04599 and give me the body text",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0084",
+  "utterance": "print pyproject.toml as-is, no interpretation",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_read->decide_extract:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0085",
+  "utterance": "there are three of them \u2014 i only want the one that helps",
+  "label": "decide_pick",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_pick:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0086",
+  "utterance": "open tests/test_context_bound.py and give me the text, not the values out of it",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_read->decide_extract:02",
+  "split": "test"
+ },
+ {
+  "id": "v3-0087",
+  "utterance": "digest the reddit threads on the eviction policy",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0088",
+  "utterance": "what does the crowd make of the x86 lane numbers?",
+  "label": "reddit_digest",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:reddit_digest:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0089",
+  "utterance": "pull up the file service/ti/conf/defaults.json",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0090",
+  "utterance": "fetch that python link and bring back what it says",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0091",
+  "utterance": "what's the latest on the two-pass reranker?",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0092",
+  "utterance": "what is the actual payload of that request?",
+  "label": "decide_extract",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_extract:09",
+  "split": "test"
+ },
+ {
+  "id": "v3-0093",
+  "utterance": "is guard_state still alive anywhere?",
+  "label": "filesys_grep",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_grep:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0094",
+  "utterance": "read me what's at https://openrouter.ai/docs",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "reddit_digest",
+  "family": "t3:web_fetch->reddit_digest:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0095",
+  "utterance": "what are the current numbers for kalman filters?",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:11",
+  "split": "train"
+ },
+ {
+  "id": "v3-0096",
+  "utterance": "what terms are inside pyproject.toml?",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:decide_extract->filesys_read:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0097",
+  "utterance": "i need the body of that one, unsummarised",
+  "label": "web_fetch",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_fetch:11",
+  "split": "test"
+ },
+ {
+  "id": "v3-0098",
+  "utterance": "search the tree for state_max_tokens offline",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:filesys_grep->web_fetch:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0099",
+  "utterance": "read me what's at https://arxiv.org/abs/1706.04599",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "reddit_digest",
+  "family": "t3:web_fetch->reddit_digest:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0100",
+  "utterance": "open docs/architecture.md and paste it back",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0101",
+  "utterance": "google kalman filters for me",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0102",
+  "utterance": "turn that into twelve distinct search queries",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:10",
+  "split": "train"
+ },
+ {
+  "id": "v3-0103",
+  "utterance": "the search terms only \u2014 no results",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "web_search",
+  "family": "t3:decide_extract->web_search:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0104",
+  "utterance": "search online for the qwen3.5 release and bring back urls",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:web_search->decide_extract:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0105",
+  "utterance": "is the general vibe on local llama.cpp serving positive or not?",
+  "label": "reddit_digest",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:reddit_digest:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0106",
+  "utterance": "fetch https://arxiv.org/abs/1706.04599 and give me the text of that page",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_fetch->filesys_grep:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0107",
+  "utterance": "get the text of the one page at https://openrouter.ai/docs",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "reddit_digest",
+  "family": "t3:web_fetch->reddit_digest:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0108",
+  "utterance": "which files in the repo mention the cascade thresholds?",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "web_search",
+  "family": "t3:filesys_grep->web_search:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0109",
+  "utterance": "search the internet for the qwen3.5 release, skip local files",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_search->filesys_grep:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0110",
+  "utterance": "pull the text off that python piece",
+  "label": "web_fetch",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_fetch:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0111",
+  "utterance": "find writing about the eviction policy outside the community threads",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "reddit_digest",
+  "family": "t3:web_search->reddit_digest:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0112",
+  "utterance": "of the four that came up, what actually matters?",
+  "label": "decide_pick",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_pick:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0113",
+  "utterance": "which files reference _first_json_object, not just README.md",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:filesys_grep->filesys_read:02",
+  "split": "test"
+ },
+ {
+  "id": "v3-0114",
+  "utterance": "get the text at https://example.org/posts/lane-tuning, whole page",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_fetch->filesys_grep:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0115",
+  "utterance": "boil that down to the values we need",
+  "label": "decide_extract",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_extract:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0116",
+  "utterance": "has anyone benchmarked the x86 lane numbers recently?",
+  "label": "web_search",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_search:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0117",
+  "utterance": "digest the reddit threads on the two-pass reranker, not a general search",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_search",
+  "family": "t3:reddit_digest->web_search:02",
+  "split": "train"
+ },
+ {
+  "id": "v3-0118",
+  "utterance": "search the codebase for usages of _first_json_object",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:13",
+  "split": "train"
+ },
+ {
+  "id": "v3-0119",
+  "utterance": "get me the text from https://example.org/posts/lane-tuning",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0120",
+  "utterance": "load the page at https://openrouter.ai/docs and give me the body text",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0121",
+  "utterance": "is handle_stream referenced anywhere else?",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:14",
+  "split": "train"
+ },
+ {
+  "id": "v3-0122",
+  "utterance": "pull out the keywords",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:02",
+  "split": "train"
+ },
+ {
+  "id": "v3-0123",
+  "utterance": "which files reference handle_stream, not just spec/1.0-spec.md",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:filesys_grep->filesys_read:02",
+  "split": "test"
+ },
+ {
+  "id": "v3-0124",
+  "utterance": "list files named *README* under docs",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:filesys_glob->filesys_grep:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0125",
+  "utterance": "read bench/lanes.json and nothing else \u2014 don't search the tree",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:filesys_read->filesys_grep:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0126",
+  "utterance": "print bench/lanes.json as-is, no interpretation",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_read->decide_extract:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0127",
+  "utterance": "print service/ti/decide/resolve.py as-is, no interpretation",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_read->decide_extract:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0128",
+  "utterance": "search online for local llama.cpp serving and bring back urls",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:web_search->decide_extract:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0129",
+  "utterance": "is there a config anywhere in here?",
+  "label": "filesys_glob",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_glob:09",
+  "split": "test"
+ },
+ {
+  "id": "v3-0130",
+  "utterance": "get me the text from https://openrouter.ai/docs",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0131",
+  "utterance": "check the selfhosted subreddit for the eviction policy",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0132",
+  "utterance": "load the page at https://example.org/posts/lane-tuning and give me the body text",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0133",
+  "utterance": "check the MachineLearning subreddit for the qwen3.5 release",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0134",
+  "utterance": "walk me through that timeout block line by line",
+  "label": "filesys_read",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_read:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0135",
+  "utterance": "has anyone benchmarked the cascade thresholds recently?",
+  "label": "web_search",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_search:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0136",
+  "utterance": "list the files that reference _first_json_object",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:filesys_grep->filesys_glob:02",
+  "split": "train"
+ },
+ {
+  "id": "v3-0137",
+  "utterance": "is there a retry settings anywhere in here?",
+  "label": "filesys_glob",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_glob:09",
+  "split": "test"
+ },
+ {
+  "id": "v3-0138",
+  "utterance": "there are five of them \u2014 i only want the one that helps",
+  "label": "decide_pick",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_pick:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0139",
+  "utterance": "anything in here still pointing at _first_json_object?",
+  "label": "filesys_grep",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_grep:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0140",
+  "utterance": "the reddit picture on the x86 lane numbers, not a single post",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:reddit_digest->web_fetch:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0141",
+  "utterance": "print tests/test_context_bound.py as-is, no interpretation",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_read->decide_extract:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0142",
+  "utterance": "find every file named like probe, all of them",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "decide_pick",
+  "family": "t3:filesys_glob->decide_pick:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0143",
+  "utterance": "which file out of the ones found should we act on?",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_pick->filesys_glob:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0144",
+  "utterance": "pull down https://docs.python.org/3/library/json.html and give me what it says",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_fetch->filesys_grep:08",
+  "split": "train"
+ },
+ {
+  "id": "v3-0145",
+  "utterance": "give me the directory listing for service/ti",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:09",
+  "split": "test"
+ },
+ {
+  "id": "v3-0146",
+  "utterance": "how would you go looking for this?",
+  "label": "decide_extract",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_extract:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0147",
+  "utterance": "of the four files that came back, pick the right one",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_pick->filesys_glob:02",
+  "split": "train"
+ },
+ {
+  "id": "v3-0148",
+  "utterance": "check the LocalLLaMA subreddit for local llama.cpp serving",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0149",
+  "utterance": "what terms are inside bench/lanes.json?",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:decide_extract->filesys_read:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0150",
+  "utterance": "pick one out of the file list that came back",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_pick->filesys_glob:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0151",
+  "utterance": "give me the reddit digest for the retry budget",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:11",
+  "split": "train"
+ },
+ {
+  "id": "v3-0152",
+  "utterance": "what are the current numbers for the retry budget?",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:11",
+  "split": "train"
+ },
+ {
+  "id": "v3-0153",
+  "utterance": "what sits at the top of that list, in your view?",
+  "label": "decide_pick",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_pick:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0154",
+  "utterance": "is ChoiceAnswer still alive anywhere?",
+  "label": "filesys_grep",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_grep:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0155",
+  "utterance": "what are the current numbers for the two-pass reranker?",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:11",
+  "split": "train"
+ },
+ {
+  "id": "v3-0156",
+  "utterance": "is there a timeout block anywhere in here?",
+  "label": "filesys_glob",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_glob:09",
+  "split": "test"
+ },
+ {
+  "id": "v3-0157",
+  "utterance": "find every file named like defaults, all of them",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "decide_pick",
+  "family": "t3:filesys_glob->decide_pick:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0158",
+  "utterance": "search reddit for the retry budget",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0159",
+  "utterance": "what are the current numbers for local llama.cpp serving?",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:11",
+  "split": "train"
+ },
+ {
+  "id": "v3-0160",
+  "utterance": "find actual files matching probe, the real ones",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_glob->decide_extract:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0161",
+  "utterance": "give me the shape of the tree under bench",
+  "label": "filesys_glob",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_glob:16",
+  "split": "train"
+ },
+ {
+  "id": "v3-0162",
+  "utterance": "open pyproject.toml and give me the text, not the values out of it",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_read->decide_extract:02",
+  "split": "test"
+ },
+ {
+  "id": "v3-0163",
+  "utterance": "pull up the file README.md",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0164",
+  "utterance": "give me the reddit digest for local llama.cpp serving",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:11",
+  "split": "train"
+ },
+ {
+  "id": "v3-0165",
+  "utterance": "give me the directory listing for tests",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:09",
+  "split": "test"
+ },
+ {
+  "id": "v3-0166",
+  "utterance": "of the three files that came back, pick the right one",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_pick->filesys_glob:02",
+  "split": "train"
+ },
+ {
+  "id": "v3-0167",
+  "utterance": "which files in the repo mention the x86 lane numbers?",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "web_search",
+  "family": "t3:filesys_grep->web_search:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0168",
+  "utterance": "pull out the literal values from the instruction",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:09",
+  "split": "test"
+ },
+ {
+  "id": "v3-0169",
+  "utterance": "what should we actually type into the box?",
+  "label": "decide_extract",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_extract:02",
+  "split": "train"
+ },
+ {
+  "id": "v3-0170",
+  "utterance": "give me the reddit digest for kalman filters",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:11",
+  "split": "train"
+ },
+ {
+  "id": "v3-0171",
+  "utterance": "generate the queries; don't search yet",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "web_search",
+  "family": "t3:decide_extract->web_search:05",
+  "split": "train"
+ },
+ {
+  "id": "v3-0172",
+  "utterance": "what does the config hold right now?",
+  "label": "filesys_read",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_read:12",
+  "split": "train"
+ },
+ {
+  "id": "v3-0173",
+  "utterance": "what does the crowd make of the eviction policy?",
+  "label": "reddit_digest",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:reddit_digest:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0174",
+  "utterance": "is the two-pass reranker still a problem in the wild?",
+  "label": "web_search",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_search:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0175",
+  "utterance": "is resolve_backend still alive anywhere?",
+  "label": "filesys_grep",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_grep:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0176",
+  "utterance": "list the candidates without choosing",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "decide_pick",
+  "family": "t3:decide_extract->decide_pick:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0177",
+  "utterance": "fetch that arxiv link and bring back what it says",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0178",
+  "utterance": "check the rust subreddit for the two-pass reranker",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0179",
+  "utterance": "what does the spec hold right now?",
+  "label": "filesys_read",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_read:12",
+  "split": "train"
+ },
+ {
+  "id": "v3-0180",
+  "utterance": "find all the .toml files",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:04",
+  "split": "train"
+ },
+ {
+  "id": "v3-0181",
+  "utterance": "is the general vibe on the qwen3.5 release positive or not?",
+  "label": "reddit_digest",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:reddit_digest:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0182",
+  "utterance": "is pack referenced anywhere else?",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:14",
+  "split": "train"
+ },
+ {
+  "id": "v3-0183",
+  "utterance": "pull the values out of spec/1.0-spec.md, don't paste the file",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:decide_extract->filesys_read:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0184",
+  "utterance": "give me the directory listing for docs",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:09",
+  "split": "test"
+ },
+ {
+  "id": "v3-0185",
+  "utterance": "find writing about kalman filters outside the community threads",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "reddit_digest",
+  "family": "t3:web_search->reddit_digest:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0186",
+  "utterance": "load the page at https://docs.python.org/3/library/json.html and give me the body text",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0187",
+  "utterance": "search the tree for retry_after offline",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:filesys_grep->web_fetch:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0188",
+  "utterance": "find documentation for the cascade thresholds",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:14",
+  "split": "test"
+ },
+ {
+  "id": "v3-0189",
+  "utterance": "is the x86 lane numbers still a problem in the wild?",
+  "label": "web_search",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_search:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0190",
+  "utterance": "of the five files that came back, pick the right one",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_pick->filesys_glob:02",
+  "split": "train"
+ },
+ {
+  "id": "v3-0191",
+  "utterance": "digest the reddit threads on the cascade thresholds",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0192",
+  "utterance": "grep for every line that matches deprecat",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:12",
+  "split": "train"
+ },
+ {
+  "id": "v3-0193",
+  "utterance": "grep the tree for handle_stream",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0194",
+  "utterance": "fetch https://openrouter.ai/docs and give me the text of that page",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_fetch->filesys_grep:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0195",
+  "utterance": "pull the text off that arxiv piece",
+  "label": "web_fetch",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_fetch:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0196",
+  "utterance": "pull up the file service/ti/decide/resolve.py",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0197",
+  "utterance": "search online for kalman filters and bring back urls",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:web_search->decide_extract:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0198",
+  "utterance": "list the files named README",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0199",
+  "utterance": "show me what's on screen for README.md",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:14",
+  "split": "train"
+ },
+ {
+  "id": "v3-0200",
+  "utterance": "is kalman filters still a problem in the wild?",
+  "label": "web_search",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_search:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0201",
+  "utterance": "list the files that reference pack",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:filesys_grep->filesys_glob:02",
+  "split": "train"
+ },
+ {
+  "id": "v3-0202",
+  "utterance": "show me what's on screen for service/ti/decide/resolve.py",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:14",
+  "split": "train"
+ },
+ {
+  "id": "v3-0203",
+  "utterance": "go and get it, all of it",
+  "label": "web_fetch",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_fetch:10",
+  "split": "train"
+ },
+ {
+  "id": "v3-0204",
+  "utterance": "grep for every line that matches TODO",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:12",
+  "split": "train"
+ },
+ {
+  "id": "v3-0205",
+  "utterance": "what paths does the message name? don't list files",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_extract->filesys_glob:04",
+  "split": "train"
+ },
+ {
+  "id": "v3-0206",
+  "utterance": "what does the crowd make of the retry budget?",
+  "label": "reddit_digest",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:reddit_digest:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0207",
+  "utterance": "which files exist under service/ti/ops?",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0208",
+  "utterance": "search reddit for kalman filters",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0209",
+  "utterance": "break this into the pieces a lookup would need",
+  "label": "decide_extract",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_extract:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0210",
+  "utterance": "turn that into three distinct search queries",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:10",
+  "split": "train"
+ },
+ {
+  "id": "v3-0211",
+  "utterance": "what does the retry settings hold right now?",
+  "label": "filesys_read",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_read:12",
+  "split": "train"
+ },
+ {
+  "id": "v3-0212",
+  "utterance": "we have twelve files \u2014 choose the one that answers the ask",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_pick->filesys_glob:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0213",
+  "utterance": "get the text at https://arxiv.org/abs/1706.04599, whole page",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_fetch->filesys_grep:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0214",
+  "utterance": "which of the extracted items should we act on?",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:decide_pick->decide_extract:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0215",
+  "utterance": "give me the concrete pieces of that sentence",
+  "label": "decide_extract",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_extract:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0216",
+  "utterance": "which files reference tau_lo, not just bench/lanes.json",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:filesys_grep->filesys_read:02",
+  "split": "test"
+ },
+ {
+  "id": "v3-0217",
+  "utterance": "open spec/1.0-spec.md and paste it back",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0218",
+  "utterance": "of the twelve that came up, what actually matters?",
+  "label": "decide_pick",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_pick:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0219",
+  "utterance": "pull the values out of tests/test_context_bound.py, don't paste the file",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:decide_extract->filesys_read:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0220",
+  "utterance": "scrape https://docs.python.org/3/library/json.html and give me the text",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:05",
+  "split": "train"
+ },
+ {
+  "id": "v3-0221",
+  "utterance": "read spec/1.0-spec.md and nothing else \u2014 don't search the tree",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:filesys_read->filesys_grep:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0222",
+  "utterance": "fetch https://docs.python.org/3/library/json.html and give me the text of that page",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_fetch->filesys_grep:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0223",
+  "utterance": "search online for the retry budget and bring back urls",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:web_search->decide_extract:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0224",
+  "utterance": "is there a spec anywhere in here?",
+  "label": "filesys_glob",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_glob:09",
+  "split": "test"
+ },
+ {
+  "id": "v3-0225",
+  "utterance": "download https://arxiv.org/abs/1706.04599 without the navigation chrome",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0226",
+  "utterance": "find writing about the retry budget outside the community threads",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "reddit_digest",
+  "family": "t3:web_search->reddit_digest:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0227",
+  "utterance": "digest the reddit threads on kalman filters",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0228",
+  "utterance": "pull the values out of service/ti/decide/resolve.py, don't paste the file",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:decide_extract->filesys_read:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0229",
+  "utterance": "walk me through that retry settings line by line",
+  "label": "filesys_read",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_read:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0230",
+  "utterance": "which files in the repo mention the two-pass reranker?",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "web_search",
+  "family": "t3:filesys_grep->web_search:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0231",
+  "utterance": "grep for every line that matches max_candidates",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:12",
+  "split": "train"
+ },
+ {
+  "id": "v3-0232",
+  "utterance": "fetch that github link and bring back what it says",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0233",
+  "utterance": "is ChoiceAnswer referenced anywhere else?",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:14",
+  "split": "train"
+ },
+ {
+  "id": "v3-0234",
+  "utterance": "anything in here still pointing at pack?",
+  "label": "filesys_grep",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_grep:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0235",
+  "utterance": "pick the strongest candidate from the list",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:11",
+  "split": "test"
+ },
+ {
+  "id": "v3-0236",
+  "utterance": "what's the latest on the qwen3.5 release?",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0237",
+  "utterance": "pull the content at https://docs.python.org/3/library/json.html",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:11",
+  "split": "test"
+ },
+ {
+  "id": "v3-0238",
+  "utterance": "search the codebase for usages of handle_stream",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:13",
+  "split": "train"
+ },
+ {
+  "id": "v3-0239",
+  "utterance": "search the tree for TODO offline",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:filesys_grep->web_fetch:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0240",
+  "utterance": "read tests/test_context_bound.py and nothing else \u2014 don't search the tree",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:filesys_read->filesys_grep:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0241",
+  "utterance": "choose the top 3 from the results",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0242",
+  "utterance": "what does the test harness hold right now?",
+  "label": "filesys_read",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_read:12",
+  "split": "train"
+ },
+ {
+  "id": "v3-0243",
+  "utterance": "there are four of them \u2014 i only want the one that helps",
+  "label": "decide_pick",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_pick:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0244",
+  "utterance": "give me the shape of the tree under spec",
+  "label": "filesys_glob",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_glob:16",
+  "split": "train"
+ },
+ {
+  "id": "v3-0245",
+  "utterance": "get me the text from https://arxiv.org/abs/1706.04599",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0246",
+  "utterance": "bring back what is behind that one reference",
+  "label": "web_fetch",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_fetch:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0247",
+  "utterance": "pull down https://openrouter.ai/docs and give me what it says",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_fetch->filesys_grep:08",
+  "split": "train"
+ },
+ {
+  "id": "v3-0248",
+  "utterance": "pull down https://arxiv.org/abs/1706.04599 and give me what it says",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_fetch->filesys_grep:08",
+  "split": "train"
+ },
+ {
+  "id": "v3-0249",
+  "utterance": "find every file named like README, all of them",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "decide_pick",
+  "family": "t3:filesys_glob->decide_pick:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0250",
+  "utterance": "list the keywords that appear in docs/architecture.md",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:decide_extract->filesys_read:04",
+  "split": "train"
+ },
+ {
+  "id": "v3-0251",
+  "utterance": "give me the directory listing for service/ti/ops",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:09",
+  "split": "test"
+ },
+ {
+  "id": "v3-0252",
+  "utterance": "list of files in hand: which one matters?",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_pick->filesys_glob:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0253",
+  "utterance": "list the keywords that appear in pyproject.toml",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:decide_extract->filesys_read:04",
+  "split": "train"
+ },
+ {
+  "id": "v3-0254",
+  "utterance": "list the files named defaults",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0255",
+  "utterance": "fetch https://example.org/posts/lane-tuning and give me the text of that page",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_fetch->filesys_grep:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0256",
+  "utterance": "digest the reddit threads on the x86 lane numbers",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0257",
+  "utterance": "the reddit picture on local llama.cpp serving, not a single post",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:reddit_digest->web_fetch:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0258",
+  "utterance": "unpack that request into concrete values",
+  "label": "decide_extract",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_extract:13",
+  "split": "test"
+ },
+ {
+  "id": "v3-0259",
+  "utterance": "digest what r/selfhosted says about the eviction policy, not one thread",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:reddit_digest->web_fetch:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0260",
+  "utterance": "google the cascade thresholds for me",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0261",
+  "utterance": "has anyone benchmarked the eviction policy recently?",
+  "label": "web_search",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_search:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0262",
+  "utterance": "get the text at https://openrouter.ai/docs, whole page",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_fetch->filesys_grep:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0263",
+  "utterance": "scrape https://openrouter.ai/docs and give me the text",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:05",
+  "split": "train"
+ },
+ {
+  "id": "v3-0264",
+  "utterance": "digest what r/MachineLearning says about the x86 lane numbers, not one thread",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:reddit_digest->web_fetch:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0265",
+  "utterance": "pull the values out of service/ti/conf/defaults.json, don't paste the file",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:decide_extract->filesys_read:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0266",
+  "utterance": "find actual files matching Makefile, the real ones",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_glob->decide_extract:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0267",
+  "utterance": "read README.md and nothing else \u2014 don't search the tree",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:filesys_read->filesys_grep:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0268",
+  "utterance": "choose between these five and tell me why",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0269",
+  "utterance": "find all the .json files",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:04",
+  "split": "train"
+ },
+ {
+  "id": "v3-0270",
+  "utterance": "list the files that reference handle_stream",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:filesys_grep->filesys_glob:02",
+  "split": "train"
+ },
+ {
+  "id": "v3-0271",
+  "utterance": "the reddit picture on the qwen3.5 release, not a single post",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:reddit_digest->web_fetch:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0272",
+  "utterance": "find writing about the x86 lane numbers outside the community threads",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "reddit_digest",
+  "family": "t3:web_search->reddit_digest:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0273",
+  "utterance": "read me what's at https://example.org/posts/lane-tuning",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "reddit_digest",
+  "family": "t3:web_fetch->reddit_digest:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0274",
+  "utterance": "scrape https://example.org/posts/lane-tuning and give me the text",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:05",
+  "split": "train"
+ },
+ {
+  "id": "v3-0275",
+  "utterance": "search the tree for max_candidates offline",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:filesys_grep->web_fetch:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0276",
+  "utterance": "we have four files \u2014 choose the one that answers the ask",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_pick->filesys_glob:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0277",
+  "utterance": "find documentation for the x86 lane numbers",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:14",
+  "split": "test"
+ },
+ {
+  "id": "v3-0278",
+  "utterance": "pick the one that matches the intent",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0279",
+  "utterance": "glob for *defaults* on disk and report what's really there",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_glob->decide_extract:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0280",
+  "utterance": "what terms are inside service/ti/decide/resolve.py?",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:decide_extract->filesys_read:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0281",
+  "utterance": "search the codebase for usages of ChoiceAnswer",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:13",
+  "split": "train"
+ },
+ {
+  "id": "v3-0282",
+  "utterance": "what queries should we run?",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0283",
+  "utterance": "grep the tree for pack",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0284",
+  "utterance": "digest the reddit threads on the two-pass reranker",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0285",
+  "utterance": "what terms are inside spec/1.0-spec.md?",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:decide_extract->filesys_read:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0286",
+  "utterance": "print service/ti/conf/defaults.json as-is, no interpretation",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_read->decide_extract:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0287",
+  "utterance": "find all the .py files",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:04",
+  "split": "train"
+ },
+ {
+  "id": "v3-0288",
+  "utterance": "is the eviction policy still a problem in the wild?",
+  "label": "web_search",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_search:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0289",
+  "utterance": "search the internet for local llama.cpp serving, skip local files",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_search->filesys_grep:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0290",
+  "utterance": "glob for *probe* on disk and report what's really there",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_glob->decide_extract:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0291",
+  "utterance": "choose between these three and tell me why",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0292",
+  "utterance": "search the codebase for usages of tau_lo",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:13",
+  "split": "train"
+ },
+ {
+  "id": "v3-0293",
+  "utterance": "find all the .md files",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:04",
+  "split": "train"
+ },
+ {
+  "id": "v3-0294",
+  "utterance": "from the files that came up, select the best",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_pick->filesys_glob:05",
+  "split": "train"
+ },
+ {
+  "id": "v3-0295",
+  "utterance": "give me the reddit digest for the x86 lane numbers",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:11",
+  "split": "train"
+ },
+ {
+  "id": "v3-0296",
+  "utterance": "grep the tree for resolve_backend",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0297",
+  "utterance": "is tau_lo still alive anywhere?",
+  "label": "filesys_grep",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_grep:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0298",
+  "utterance": "search the codebase for usages of pack",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:13",
+  "split": "train"
+ },
+ {
+  "id": "v3-0299",
+  "utterance": "i need the raw bits that go in the slots",
+  "label": "decide_extract",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_extract:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0300",
+  "utterance": "open README.md and paste it back",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0301",
+  "utterance": "search reddit for the qwen3.5 release",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0302",
+  "utterance": "search online for the cascade thresholds and bring back urls",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:web_search->decide_extract:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0303",
+  "utterance": "list files named *probe* under bench",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:filesys_glob->filesys_grep:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0304",
+  "utterance": "which files exist under docs?",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0305",
+  "utterance": "turn that into four distinct search queries",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:10",
+  "split": "train"
+ },
+ {
+  "id": "v3-0306",
+  "utterance": "there are twelve of them \u2014 i only want the one that helps",
+  "label": "decide_pick",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_pick:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0307",
+  "utterance": "of the three that came up, what actually matters?",
+  "label": "decide_pick",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_pick:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0308",
+  "utterance": "which files reference resolve_backend, not just tests/test_context_bound.py",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:filesys_grep->filesys_read:02",
+  "split": "test"
+ },
+ {
+  "id": "v3-0309",
+  "utterance": "find documentation for the retry budget",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:14",
+  "split": "test"
+ },
+ {
+  "id": "v3-0310",
+  "utterance": "is _first_json_object still alive anywhere?",
+  "label": "filesys_grep",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_grep:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0311",
+  "utterance": "get the text of the one page at https://arxiv.org/abs/1706.04599",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "reddit_digest",
+  "family": "t3:web_fetch->reddit_digest:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0312",
+  "utterance": "list the files named probe",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0313",
+  "utterance": "list files named *defaults* under service/ti/ops",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:filesys_glob->filesys_grep:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0314",
+  "utterance": "which files exist under service/ti?",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0315",
+  "utterance": "which files reference guard_state, not just service/ti/decide/resolve.py",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:filesys_grep->filesys_read:02",
+  "split": "test"
+ },
+ {
+  "id": "v3-0316",
+  "utterance": "which files exist under bench?",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0317",
+  "utterance": "which of the four should we keep?",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0318",
+  "utterance": "what are commenters on r/LocalLLaMA saying about the cascade thresholds?",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_search",
+  "family": "t3:reddit_digest->web_search:08",
+  "split": "train"
+ },
+ {
+  "id": "v3-0319",
+  "utterance": "walk me through that config line by line",
+  "label": "filesys_read",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_read:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0320",
+  "utterance": "which one of these is the right one to open?",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:12",
+  "split": "test"
+ },
+ {
+  "id": "v3-0321",
+  "utterance": "list the files that reference ChoiceAnswer",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:filesys_grep->filesys_glob:02",
+  "split": "train"
+ },
+ {
+  "id": "v3-0322",
+  "utterance": "open pyproject.toml and paste it back",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0323",
+  "utterance": "search the internet for the two-pass reranker, skip local files",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_search->filesys_grep:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0324",
+  "utterance": "search for kalman filters \u2014 actual results please",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:web_search->decide_extract:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0325",
+  "utterance": "the reddit picture on the two-pass reranker, not a single post",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:reddit_digest->web_fetch:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0326",
+  "utterance": "turn that into five distinct search queries",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:10",
+  "split": "train"
+ },
+ {
+  "id": "v3-0327",
+  "utterance": "we have three files \u2014 choose the one that answers the ask",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_pick->filesys_glob:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0328",
+  "utterance": "what are commenters on r/rust saying about the retry budget?",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_search",
+  "family": "t3:reddit_digest->web_search:08",
+  "split": "train"
+ },
+ {
+  "id": "v3-0329",
+  "utterance": "open bench/lanes.json; i only want that file",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:filesys_read->filesys_grep:02",
+  "split": "test"
+ },
+ {
+  "id": "v3-0330",
+  "utterance": "what are commenters on r/selfhosted saying about kalman filters?",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_search",
+  "family": "t3:reddit_digest->web_search:08",
+  "split": "train"
+ },
+ {
+  "id": "v3-0331",
+  "utterance": "find documentation for the eviction policy",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:14",
+  "split": "test"
+ },
+ {
+  "id": "v3-0332",
+  "utterance": "is the cascade thresholds still a problem in the wild?",
+  "label": "web_search",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_search:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0333",
+  "utterance": "is the general vibe on the retry budget positive or not?",
+  "label": "reddit_digest",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:reddit_digest:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0334",
+  "utterance": "pull up the file docs/architecture.md",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0335",
+  "utterance": "digest the reddit threads on the qwen3.5 release",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0336",
+  "utterance": "google the qwen3.5 release for me",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0337",
+  "utterance": "find documentation for the qwen3.5 release",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:14",
+  "split": "test"
+ },
+ {
+  "id": "v3-0338",
+  "utterance": "search the codebase for usages of resolve_backend",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:13",
+  "split": "train"
+ },
+ {
+  "id": "v3-0339",
+  "utterance": "what's the latest on the cascade thresholds?",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0340",
+  "utterance": "pull the content at https://arxiv.org/abs/1706.04599",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:11",
+  "split": "test"
+ },
+ {
+  "id": "v3-0341",
+  "utterance": "find all the .sh files",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:04",
+  "split": "train"
+ },
+ {
+  "id": "v3-0342",
+  "utterance": "pull up the file spec/1.0-spec.md",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0343",
+  "utterance": "grep for every line that matches state_max_tokens",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:12",
+  "split": "train"
+ },
+ {
+  "id": "v3-0344",
+  "utterance": "rank the extracted candidates",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:decide_pick->decide_extract:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0345",
+  "utterance": "choose between these four and tell me why",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0346",
+  "utterance": "pull the content at https://example.org/posts/lane-tuning",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:11",
+  "split": "test"
+ },
+ {
+  "id": "v3-0347",
+  "utterance": "choose between these twelve and tell me why",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0348",
+  "utterance": "among the files found, which one should we open?",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:decide_pick->filesys_glob:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0349",
+  "utterance": "open service/ti/decide/resolve.py and paste it back",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0350",
+  "utterance": "give me the directory listing for spec",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:09",
+  "split": "test"
+ },
+ {
+  "id": "v3-0351",
+  "utterance": "what is written in pyproject.toml?",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:13",
+  "split": "test"
+ },
+ {
+  "id": "v3-0352",
+  "utterance": "open bench/lanes.json and give me the text, not the values out of it",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_read->decide_extract:02",
+  "split": "test"
+ },
+ {
+  "id": "v3-0353",
+  "utterance": "which files exist under spec?",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0354",
+  "utterance": "enumerate the queries implied by this",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:11",
+  "split": "train"
+ },
+ {
+  "id": "v3-0355",
+  "utterance": "pick the best of these",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0356",
+  "utterance": "pull up the file tests/test_context_bound.py",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0357",
+  "utterance": "find every file named like runner, all of them",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "decide_pick",
+  "family": "t3:filesys_glob->decide_pick:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0358",
+  "utterance": "what's the latest on kalman filters?",
+  "label": "web_search",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_search:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0359",
+  "utterance": "read service/ti/conf/defaults.json and nothing else \u2014 don't search the tree",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:filesys_read->filesys_grep:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0360",
+  "utterance": "from the values we listed, select one",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:decide_pick->decide_extract:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0361",
+  "utterance": "glob for *README* on disk and report what's really there",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_glob->decide_extract:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0362",
+  "utterance": "glob for *Makefile* on disk and report what's really there",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_glob->decide_extract:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0363",
+  "utterance": "search the internet for the cascade thresholds, skip local files",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_search->filesys_grep:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0364",
+  "utterance": "is the general vibe on the eviction policy positive or not?",
+  "label": "reddit_digest",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:reddit_digest:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0365",
+  "utterance": "what is written in service/ti/decide/resolve.py?",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:13",
+  "split": "test"
+ },
+ {
+  "id": "v3-0366",
+  "utterance": "search the tree for deprecat offline",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:filesys_grep->web_fetch:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0367",
+  "utterance": "enumerate the values; don't decide which wins",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "decide_pick",
+  "family": "t3:decide_extract->decide_pick:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0368",
+  "utterance": "generate query variants for this",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:05",
+  "split": "train"
+ },
+ {
+  "id": "v3-0369",
+  "utterance": "is the general vibe on kalman filters positive or not?",
+  "label": "reddit_digest",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:reddit_digest:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0370",
+  "utterance": "give me the reddit digest for the qwen3.5 release",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:11",
+  "split": "train"
+ },
+ {
+  "id": "v3-0371",
+  "utterance": "what are commenters on r/MachineLearning saying about the qwen3.5 release?",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_search",
+  "family": "t3:reddit_digest->web_search:08",
+  "split": "train"
+ },
+ {
+  "id": "v3-0372",
+  "utterance": "pull the values out of README.md, don't paste the file",
+  "label": "decide_extract",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:decide_extract->filesys_read:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0373",
+  "utterance": "what is written in README.md?",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:13",
+  "split": "test"
+ },
+ {
+  "id": "v3-0374",
+  "utterance": "give me the directory listing for bench",
+  "label": "filesys_glob",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_glob:09",
+  "split": "test"
+ },
+ {
+  "id": "v3-0375",
+  "utterance": "digest what r/rust says about the two-pass reranker, not one thread",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:reddit_digest->web_fetch:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0376",
+  "utterance": "i need the raw material for the next step",
+  "label": "decide_extract",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_extract:11",
+  "split": "test"
+ },
+ {
+  "id": "v3-0377",
+  "utterance": "which of the five should we keep?",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0378",
+  "utterance": "search for the qwen3.5 release \u2014 actual results please",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:web_search->decide_extract:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0379",
+  "utterance": "check the selfhosted subreddit for kalman filters",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0380",
+  "utterance": "is the retry budget still a problem in the wild?",
+  "label": "web_search",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_search:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0381",
+  "utterance": "search online for the two-pass reranker and bring back urls",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:web_search->decide_extract:06",
+  "split": "test"
+ },
+ {
+  "id": "v3-0382",
+  "utterance": "give me the shape of the tree under service/ti",
+  "label": "filesys_glob",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_glob:16",
+  "split": "train"
+ },
+ {
+  "id": "v3-0383",
+  "utterance": "open service/ti/decide/resolve.py and give me the text, not the values out of it",
+  "label": "filesys_read",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_read->decide_extract:02",
+  "split": "test"
+ },
+ {
+  "id": "v3-0384",
+  "utterance": "show me what's on screen for tests/test_context_bound.py",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:14",
+  "split": "train"
+ },
+ {
+  "id": "v3-0385",
+  "utterance": "get the text of the one page at https://docs.python.org/3/library/json.html",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "reddit_digest",
+  "family": "t3:web_fetch->reddit_digest:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0386",
+  "utterance": "digest what r/LocalLLaMA says about the cascade thresholds, not one thread",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_fetch",
+  "family": "t3:reddit_digest->web_fetch:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0387",
+  "utterance": "find actual files matching defaults, the real ones",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_glob->decide_extract:07",
+  "split": "test"
+ },
+ {
+  "id": "v3-0388",
+  "utterance": "the values are extracted \u2014 now pick the one that fits",
+  "label": "decide_pick",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:decide_pick->decide_extract:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0389",
+  "utterance": "list files named *Makefile* under spec",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:filesys_glob->filesys_grep:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0390",
+  "utterance": "rank the candidates and give me the head",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:10",
+  "split": "test"
+ },
+ {
+  "id": "v3-0391",
+  "utterance": "glob for *runner* on disk and report what's really there",
+  "label": "filesys_glob",
+  "band": "t3",
+  "tier_target": "decide_extract",
+  "family": "t3:filesys_glob->decide_extract:03",
+  "split": "train"
+ },
+ {
+  "id": "v3-0392",
+  "utterance": "which of the three should we keep?",
+  "label": "decide_pick",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_pick:08",
+  "split": "test"
+ },
+ {
+  "id": "v3-0393",
+  "utterance": "is resolve_backend referenced anywhere else?",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:14",
+  "split": "train"
+ },
+ {
+  "id": "v3-0394",
+  "utterance": "search reddit for local llama.cpp serving",
+  "label": "reddit_digest",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:reddit_digest:03",
+  "split": "test"
+ },
+ {
+  "id": "v3-0395",
+  "utterance": "what are commenters on r/rust saying about the two-pass reranker?",
+  "label": "reddit_digest",
+  "band": "t3",
+  "tier_target": "web_search",
+  "family": "t3:reddit_digest->web_search:08",
+  "split": "train"
+ },
+ {
+  "id": "v3-0396",
+  "utterance": "get the text at https://docs.python.org/3/library/json.html, whole page",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "filesys_grep",
+  "family": "t3:web_fetch->filesys_grep:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0397",
+  "utterance": "walk me through that test harness line by line",
+  "label": "filesys_read",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_read:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0398",
+  "utterance": "grep the tree for _first_json_object",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0399",
+  "utterance": "download https://docs.python.org/3/library/json.html without the navigation chrome",
+  "label": "web_fetch",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:web_fetch:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0400",
+  "utterance": "list the files that reference tau_lo",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "filesys_glob",
+  "family": "t3:filesys_grep->filesys_glob:02",
+  "split": "train"
+ },
+ {
+  "id": "v3-0401",
+  "utterance": "walk me through that spec line by line",
+  "label": "filesys_read",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_read:05",
+  "split": "test"
+ },
+ {
+  "id": "v3-0402",
+  "utterance": "of the five that came up, what actually matters?",
+  "label": "decide_pick",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:decide_pick:01",
+  "split": "train"
+ },
+ {
+  "id": "v3-0403",
+  "utterance": "pull the text off that github piece",
+  "label": "web_fetch",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_fetch:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0404",
+  "utterance": "open tests/test_context_bound.py and paste it back",
+  "label": "filesys_read",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_read:06",
+  "split": "train"
+ },
+ {
+  "id": "v3-0405",
+  "utterance": "pull the text off that openrouter piece",
+  "label": "web_fetch",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_fetch:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0406",
+  "utterance": "go to it and bring back everything on it",
+  "label": "web_fetch",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_fetch:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0407",
+  "utterance": "find writing about the qwen3.5 release outside the community threads",
+  "label": "web_search",
+  "band": "t3",
+  "tier_target": "reddit_digest",
+  "family": "t3:web_search->reddit_digest:07",
+  "split": "train"
+ },
+ {
+  "id": "v3-0408",
+  "utterance": "turn this into four queries",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0409",
+  "utterance": "turn this into five queries",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:04",
+  "split": "test"
+ },
+ {
+  "id": "v3-0410",
+  "utterance": "is there a test harness anywhere in here?",
+  "label": "filesys_glob",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:filesys_glob:09",
+  "split": "test"
+ },
+ {
+  "id": "v3-0411",
+  "utterance": "grep the tree for tau_lo",
+  "label": "filesys_grep",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:filesys_grep:01",
+  "split": "test"
+ },
+ {
+  "id": "v3-0412",
+  "utterance": "which files reference ChoiceAnswer, not just service/ti/conf/defaults.json",
+  "label": "filesys_grep",
+  "band": "t3",
+  "tier_target": "filesys_read",
+  "family": "t3:filesys_grep->filesys_read:02",
+  "split": "test"
+ },
+ {
+  "id": "v3-0413",
+  "utterance": "extract the candidate keys from the text",
+  "label": "decide_extract",
+  "band": "t1",
+  "tier_target": null,
+  "family": "t1:decide_extract:12",
+  "split": "test"
+ },
+ {
+  "id": "v3-0414",
+  "utterance": "has anyone benchmarked the retry budget recently?",
+  "label": "web_search",
+  "band": "t2",
+  "tier_target": null,
+  "family": "t2:web_search:09",
+  "split": "train"
+ },
+ {
+  "id": "v3-0415",
+  "utterance": "read me what's at https://docs.python.org/3/library/json.html",
+  "label": "web_fetch",
+  "band": "t3",
+  "tier_target": "reddit_digest",
+  "family": "t3:web_fetch->reddit_digest:07",
+  "split": "train"
+ }
+]

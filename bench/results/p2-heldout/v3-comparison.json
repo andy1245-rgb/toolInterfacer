@@ -1,0 +1,206 @@
+{
+  "v3_run": "bench/results/p2-heldout/v3-d1-3B-Q4.json",
+  "v2_run": "bench/results/p1-diagnose/baseline_live.json",
+  "v3": {
+    "n": 415,
+    "all": [
+      334,
+      415
+    ],
+    "train": [
+      165,
+      208
+    ],
+    "test": [
+      169,
+      207
+    ],
+    "per_class": {
+      "decide_extract": {
+        "n": 51,
+        "all": [
+          20,
+          51
+        ],
+        "test": [
+          13,
+          26
+        ],
+        "train": [
+          7,
+          25
+        ]
+      },
+      "decide_pick": {
+        "n": 52,
+        "all": [
+          51,
+          52
+        ],
+        "test": [
+          26,
+          26
+        ],
+        "train": [
+          25,
+          26
+        ]
+      },
+      "filesys_glob": {
+        "n": 52,
+        "all": [
+          44,
+          52
+        ],
+        "test": [
+          22,
+          26
+        ],
+        "train": [
+          22,
+          26
+        ]
+      },
+      "filesys_grep": {
+        "n": 52,
+        "all": [
+          36,
+          52
+        ],
+        "test": [
+          17,
+          26
+        ],
+        "train": [
+          19,
+          26
+        ]
+      },
+      "filesys_read": {
+        "n": 52,
+        "all": [
+          43,
+          52
+        ],
+        "test": [
+          20,
+          25
+        ],
+        "train": [
+          23,
+          27
+        ]
+      },
+      "reddit_digest": {
+        "n": 52,
+        "all": [
+          42,
+          52
+        ],
+        "test": [
+          22,
+          26
+        ],
+        "train": [
+          20,
+          26
+        ]
+      },
+      "web_fetch": {
+        "n": 52,
+        "all": [
+          49,
+          52
+        ],
+        "test": [
+          24,
+          26
+        ],
+        "train": [
+          25,
+          26
+        ]
+      },
+      "web_search": {
+        "n": 52,
+        "all": [
+          49,
+          52
+        ],
+        "test": [
+          25,
+          26
+        ],
+        "train": [
+          24,
+          26
+        ]
+      }
+    }
+  },
+  "v2": {
+    "n": 150,
+    "all": [
+      111,
+      150
+    ],
+    "per_class": {
+      "decide_extract": {
+        "n": 24,
+        "all": [
+          6,
+          24
+        ]
+      },
+      "decide_pick": {
+        "n": 18,
+        "all": [
+          18,
+          18
+        ]
+      },
+      "filesys_glob": {
+        "n": 21,
+        "all": [
+          20,
+          21
+        ]
+      },
+      "filesys_grep": {
+        "n": 22,
+        "all": [
+          8,
+          22
+        ]
+      },
+      "filesys_read": {
+        "n": 17,
+        "all": [
+          12,
+          17
+        ]
+      },
+      "reddit_digest": {
+        "n": 15,
+        "all": [
+          15,
+          15
+        ]
+      },
+      "web_fetch": {
+        "n": 15,
+        "all": [
+          14,
+          15
+        ]
+      },
+      "web_search": {
+        "n": 18,
+        "all": [
+          18,
+          18
+        ]
+      }
+    }
+  }
+}
