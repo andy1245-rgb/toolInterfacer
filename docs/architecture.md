@@ -28,7 +28,7 @@ module that owns it, and if it does not, the boundary is wrong.
 | `context.packer` | what the decision model sees, within `conf.context.state_max_tokens` | execution |
 | `context.session_digest` | the ingress bound on the caller's digest (≤ 8 turns × 240 chars) | resolving anything from it |
 | `policy.askback`, `policy.confidence` | ask-back triggers and budget; the gate and confidence arithmetic | the model, the ops |
-| `hops.log` | the JSONL evidence log | gates, decisions |
+| `hops.log` | the JSONL trace log (opt-in, owner-only; `docs/logging-2026-11-04.md`) | gates, decisions |
 | `http.api`, `http.auth`, `http.pool` | the route surface *and* the ingress guards the route cannot delegate: token, body bound, route, L0 allowlist, run-root scope | plan execution, or any op's behaviour |
 | `conf` | every knob, one file | defaults that only one module could know |
 | `pi-extension/src/index.ts` | the single registered tool, the `/ti` command, service lifecycle | every decision — the extension decides nothing |

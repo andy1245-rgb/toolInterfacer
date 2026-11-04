@@ -209,11 +209,20 @@ def _run_op_with_log(log: HopLog | None):
         t0 = time.monotonic()
         kind, data, conf = opdef.run(args, store)
         if log:
-            log.append({"op": op_name, "params": {k: str(v)[:200] for k, v in args.items()},
-                        "soft": {k: str(v)[:100] for k, v in soft.items()},
-                        "conf": conf, "kind": kind,
-                        "ms": round((time.monotonic() - t0) * 1000, 1),
-                        "artifact_summary": str(data)[:200]})
+            # The dataset pipeline reads `op` and `soft.intent_context` and nothing
+            # else, so the record keeps the execution shape and the utterance:
+            # argument *names* rather than values (a path, a pattern, a query is
+            # verbatim user data), and the intent untruncated, because 100 chars
+            # of it was a silent clip on the one field a consumer reads. No
+            # artifact text: `artifact_summary` was the first 200 chars of a read
+            # file, for a field nothing consumed (docs/logging-2026-11-04.md).
+            rec: dict[str, Any] = {
+                "op": op_name, "kind": kind, "params_keys": sorted(args),
+                "conf": conf, "ms": round((time.monotonic() - t0) * 1000, 1)}
+            intent_context = soft.get("intent_context")
+            if isinstance(intent_context, str) and intent_context.strip():
+                rec["soft"] = {"intent_context": intent_context}
+            log.append(rec)
         return kind, data, conf
 
     return run

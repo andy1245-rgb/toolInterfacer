@@ -126,10 +126,12 @@ function renderResponse(resp: UseToolResponse, intent: string, meta: { elapsedMs
 	return lines.join("\n");
 }
 
-/** Error label for the capture record — the rendered message stays untouched. */
-function errorLabel(err: unknown): string {
-	if (err instanceof ServiceError) return `${err.kind}: ${err.message}`;
-	return err instanceof Error ? err.message : String(err);
+/** Error class for the capture record — the rendered message stays untouched.
+ *  The message is not recorded: it carries a path inline (`ENOENT … '/home/…'`), and the
+ *  class is what a histogram can use. */
+function errorKind(err: unknown): string {
+	if (err instanceof ServiceError) return err.kind;
+	return "other";
 }
 
 function formatServiceError(err: unknown, elapsedMs: number): string {
@@ -185,7 +187,6 @@ export default function (pi: ExtensionAPI): void {
 				const started = Date.now();
 				let digest: SessionDigest | undefined;
 				const captureCommon = () => ({
-					cwd: ctx.cwd,
 					intent: params.intent,
 					paramsKeys: Object.keys(params.params ?? {}),
 					mode: params.mode ?? null,
@@ -211,7 +212,7 @@ export default function (pi: ExtensionAPI): void {
 						confidence: resp.confidence,
 						hops: (resp.hops ?? []).map((h) => ({ op: h.op, ms: h.ms, conf: h.conf })),
 						wallMs: elapsedMs,
-						error: resp.error,
+						errorKind: resp.status === "error" ? "service" : undefined,
 						questionKind: resp.question?.kind,
 					});
 					lastCall = {
@@ -242,7 +243,7 @@ export default function (pi: ExtensionAPI): void {
 						degraded: false,
 						hops: [],
 						wallMs: elapsedMs,
-						error: errorLabel(err),
+						errorKind: errorKind(err),
 					});
 					return {
 						content: [{ type: "text", text: formatServiceError(err, elapsedMs) }],

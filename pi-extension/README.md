@@ -131,7 +131,7 @@ npm ci --no-audit --no-fund                            # reproducible install fr
 npx tsc --noEmit                                       # strict, zero errors
 node scripts/contract-check.ts                         # 11/11 contract cases, no service needed
 node scripts/contract-check.ts --live                  # + 10/10 against a stubbed service over HTTP
-node scripts/capture-check.ts                          # 22/22 capture cases
+node scripts/capture-check.ts                          # 38/38 capture cases
 ```
 
 Each script prints its own `n/n` line, so re-running is the check. These three figures are
