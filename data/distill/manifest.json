@@ -1,0 +1,559 @@
+{
+  "contamination": {
+    "eval_sets": {
+      "routing_382": {
+        "closest": [
+          {
+            "eval_row": "search the docs for tool calling",
+            "id": "rt-0053",
+            "ratio": 0.714,
+            "utterance": "search the repo for TODO"
+          },
+          {
+            "eval_row": "what do the docs say about the knowledge layer",
+            "id": "rt-0202",
+            "ratio": 0.674,
+            "utterance": "what are the locals saying about the retry budget?"
+          },
+          {
+            "eval_row": "search the docs for model serving",
+            "id": "rt-0118",
+            "ratio": 0.667,
+            "utterance": "search the web for local llama.cpp serving"
+          },
+          {
+            "eval_row": "what do the docs say about the knowledge layer",
+            "id": "rt-0201",
+            "ratio": 0.653,
+            "utterance": "what are the locals saying about the eviction policy?"
+          },
+          {
+            "eval_row": "search the docs for tool calling",
+            "id": "rt-0352",
+            "ratio": 0.595,
+            "utterance": "search the tree for max_candidates offline"
+          }
+        ],
+        "exact": 0,
+        "leak_rule_hits": [],
+        "max_jaccard": 0.5,
+        "max_ratio": 0.7216,
+        "path": "tests/data/routing_382.json",
+        "rows": 382,
+        "sha": "7c91fa0644f9",
+        "subsumption_hits": []
+      },
+      "utterances_v2": {
+        "closest": [
+          {
+            "eval_row": "where is handle_stream defined?",
+            "id": "rt-0047",
+            "ratio": 0.793,
+            "utterance": "where is guard_state defined?"
+          },
+          {
+            "eval_row": "which files mention the scheduler hooks?",
+            "id": "rt-0049",
+            "ratio": 0.79,
+            "utterance": "which files mention the cascade thresholds?"
+          },
+          {
+            "eval_row": "load https://docs.python.org/3/library/ssl.html",
+            "id": "rt-0103",
+            "ratio": 0.755,
+            "utterance": "grab the article at https://docs.python.org/3/library/json.html"
+          },
+          {
+            "eval_row": "any config files lying around that look relevant?",
+            "id": "rt-0036",
+            "ratio": 0.753,
+            "utterance": "any config files lying around?"
+          },
+          {
+            "eval_row": "find every call site of retry_with_backoff",
+            "id": "rt-0051",
+            "ratio": 0.75,
+            "utterance": "find every call site of tau_lo"
+          }
+        ],
+        "exact": 0,
+        "leak_rule_hits": [],
+        "max_jaccard": 0.6667,
+        "max_ratio": 0.7931,
+        "path": "tests/data/utterances_v2.json",
+        "rows": 150,
+        "sha": "dd01ebb818c0",
+        "subsumption_hits": [
+          {
+            "eval_row": "list every file ending in .toml anywhere in the repo",
+            "id": "rt-0027",
+            "jaccard": 0.667,
+            "ratio": 0.741,
+            "utterance": "list every file ending in .toml"
+          },
+          {
+            "eval_row": "any config files lying around that look relevant?",
+            "id": "rt-0036",
+            "jaccard": 0.625,
+            "ratio": 0.753,
+            "utterance": "any config files lying around?"
+          }
+        ]
+      }
+    },
+    "method": "leak: normalised-exact OR token-jaccard>=0.7 OR SequenceMatcher.ratio>=0.8; dedup: exact OR jaccard>=0.75 OR ratio>=0.85 (ratio over the top-3 Jaccard candidates; normalise: NFKC, casefold, non-alphanumerics to space, whitespace collapse)",
+    "ok": true,
+    "subsume_ratio": 0.7,
+    "sweep": "all (row, eval-row) pairs, exhaustive; ratio skipped only where 2*min/(sum length) proves it cannot reach the threshold"
+  },
+  "counts": {
+    "candidates": 414,
+    "candidates_never_labelled": [
+      "rt-0326",
+      "rt-0400"
+    ],
+    "excluded": 2,
+    "generator_drops_logged": {
+      "band": 18,
+      "dedup": 19,
+      "frozen": 3
+    },
+    "labels": 412,
+    "reject_attempts": 25,
+    "reject_ids": 25,
+    "reject_ids_never_labelled": [
+      "rt-0326",
+      "rt-0400"
+    ],
+    "retained": 410,
+    "train": 329,
+    "val": 81
+  },
+  "exclusions": {
+    "rows": [
+      {
+        "detail": {
+          "eval_row": "list every file ending in .toml anywhere in the repo",
+          "id": "rt-0027",
+          "jaccard": 0.667,
+          "ratio": 0.741,
+          "utterance": "list every file ending in .toml"
+        },
+        "eval_set": "utterances_v2",
+        "id": "rt-0027",
+        "rule": "eval_subsumption",
+        "utterance": "list every file ending in .toml",
+        "why": "strict token-subset of a frozen eval row at SequenceMatcher ratio>=0.7"
+      },
+      {
+        "detail": {
+          "eval_row": "any config files lying around that look relevant?",
+          "id": "rt-0036",
+          "jaccard": 0.625,
+          "ratio": 0.753,
+          "utterance": "any config files lying around?"
+        },
+        "eval_set": "utterances_v2",
+        "id": "rt-0036",
+        "rule": "eval_subsumption",
+        "utterance": "any config files lying around?",
+        "why": "strict token-subset of a frozen eval row at SequenceMatcher ratio>=0.7"
+      }
+    ],
+    "rules": {
+      "eval_subsumption": "strict token-subset of a frozen eval row at SequenceMatcher ratio>=0.7",
+      "label_off_ballot": "`intended` is not among the row's own candidate keys \u2014 a labelling impossibility",
+      "leak_rule": "trips the repo's own leakage guard against a frozen eval row (normalised-exact OR jaccard>=0.70 OR ratio>=0.80)",
+      "no_label": "no `intended` label at all"
+    }
+  },
+  "files": {
+    "ballot.json": {
+      "rows": null,
+      "sha": "48a640f1ac66"
+    },
+    "diagnostics.jsonl": {
+      "rows": 44,
+      "sha": "d753f26c79ee"
+    },
+    "excluded.jsonl": {
+      "rows": 2,
+      "sha": "c64c735fef5f"
+    },
+    "train.jsonl": {
+      "rows": 329,
+      "sha": "3bafbcd64c05"
+    },
+    "val.jsonl": {
+      "rows": 81,
+      "sha": "b2b726c017b0"
+    }
+  },
+  "generated_by": "tools/distill/certify.py",
+  "labels": {
+    "cells": {
+      "t1": {
+        "decide_extract": 13,
+        "decide_pick": 13,
+        "filesys_glob": 18,
+        "filesys_grep": 18,
+        "filesys_read": 18,
+        "reddit_digest": 18,
+        "web_fetch": 18,
+        "web_search": 18
+      },
+      "t2": {
+        "decide_extract": 13,
+        "decide_pick": 11,
+        "filesys_glob": 14,
+        "filesys_grep": 14,
+        "filesys_read": 14,
+        "reddit_digest": 14,
+        "web_fetch": 12,
+        "web_search": 14
+      },
+      "t3": {
+        "decide_extract": 31,
+        "decide_pick": 15,
+        "filesys_glob": 24,
+        "filesys_grep": 31,
+        "filesys_read": 16,
+        "reddit_digest": 15,
+        "web_fetch": 16,
+        "web_search": 24
+      }
+    },
+    "frame_instability": {
+      "detail": {
+        "t2:filesys_glob:02": [
+          {
+            "choice": "filesys_grep",
+            "conf": 0.85,
+            "id": "rt-0160",
+            "utterance": "is there anything in here that looks like a timeout block?"
+          },
+          {
+            "choice": "decide_extract",
+            "conf": 0.9,
+            "id": "rt-0161",
+            "utterance": "is there anything in here that looks like a retry settings?"
+          }
+        ],
+        "t2:filesys_glob:09": [
+          {
+            "choice": "filesys_grep",
+            "conf": 0.8,
+            "id": "rt-0169",
+            "utterance": "is there a test harness anywhere in here?"
+          },
+          {
+            "choice": "filesys_glob",
+            "conf": 0.7,
+            "id": "rt-0170",
+            "utterance": "is there a config anywhere in here?"
+          }
+        ],
+        "t2:filesys_grep:06": [
+          {
+            "choice": "reddit_digest",
+            "conf": 0.6,
+            "id": "rt-0181",
+            "utterance": "pack keeps turning up \u2014 how widespread is it?"
+          },
+          {
+            "choice": "filesys_grep",
+            "conf": 0.85,
+            "id": "rt-0182",
+            "utterance": "handle_stream keeps turning up \u2014 how widespread is it?"
+          }
+        ],
+        "t2:filesys_read:05": [
+          {
+            "choice": "filesys_grep",
+            "conf": 0.6,
+            "id": "rt-0192",
+            "utterance": "walk me through that test harness line by line"
+          },
+          {
+            "choice": "filesys_read",
+            "conf": 0.6,
+            "id": "rt-0193",
+            "utterance": "walk me through that config line by line"
+          }
+        ],
+        "t2:web_search:03": [
+          {
+            "choice": "reddit_digest",
+            "conf": 0.75,
+            "id": "rt-0231",
+            "utterance": "is local llama.cpp serving still a problem in the wild?"
+          },
+          {
+            "choice": "web_search",
+            "conf": 0.8,
+            "id": "rt-0232",
+            "utterance": "is the qwen3.5 release still a problem in the wild?"
+          }
+        ],
+        "t2:web_search:05": [
+          {
+            "choice": "web_search",
+            "conf": 0.9,
+            "id": "rt-0235",
+            "utterance": "someone must have written the qwen3.5 release up by now"
+          },
+          {
+            "choice": "reddit_digest",
+            "conf": 0.6,
+            "id": "rt-0236",
+            "utterance": "someone must have written kalman filters up by now"
+          }
+        ],
+        "t3:decide_extract->filesys_read:01": [
+          {
+            "choice": "decide_extract",
+            "conf": 0.8,
+            "id": "rt-0265",
+            "utterance": "pull the values out of bench/lanes.json, don't paste the file"
+          },
+          {
+            "choice": "filesys_read",
+            "conf": 0.9,
+            "id": "rt-0266",
+            "utterance": "pull the values out of pyproject.toml, don't paste the file"
+          }
+        ],
+        "t3:decide_extract->filesys_read:05": [
+          {
+            "choice": "filesys_read",
+            "conf": 0.9,
+            "id": "rt-0271",
+            "utterance": "read through bench/lanes.json and pull out the literal values"
+          },
+          {
+            "choice": "decide_extract",
+            "conf": 0.9,
+            "id": "rt-0272",
+            "utterance": "read through pyproject.toml and pull out the literal values"
+          }
+        ],
+        "t3:web_search->decide_extract:04": [
+          {
+            "choice": "reddit_digest",
+            "conf": 0.6,
+            "id": "rt-0301",
+            "utterance": "search for the two-pass reranker \u2014 actual results please"
+          },
+          {
+            "choice": "web_search",
+            "conf": 0.9,
+            "id": "rt-0300",
+            "utterance": "search for kalman filters \u2014 actual results please"
+          }
+        ]
+      },
+      "multi_row_families": 117,
+      "unstable_families": 9,
+      "unstable_ids": [
+        "rt-0160",
+        "rt-0161",
+        "rt-0169",
+        "rt-0170",
+        "rt-0181",
+        "rt-0182",
+        "rt-0192",
+        "rt-0193",
+        "rt-0231",
+        "rt-0232",
+        "rt-0235",
+        "rt-0236",
+        "rt-0265",
+        "rt-0266",
+        "rt-0271",
+        "rt-0272",
+        "rt-0300",
+        "rt-0301"
+      ]
+    },
+    "intended_distribution": {
+      "decide_extract": 57,
+      "decide_pick": 39,
+      "filesys_glob": 56,
+      "filesys_grep": 63,
+      "filesys_read": 48,
+      "reddit_digest": 47,
+      "web_fetch": 46,
+      "web_search": 56
+    },
+    "label_method": {
+      "measured": 412
+    },
+    "label_off_ballot": [],
+    "per_band": {
+      "t1": {
+        "conf_saturated_0.95_plus": 95,
+        "label_method": {
+          "measured": 134
+        },
+        "mean_confidence": 0.934,
+        "rows": 134,
+        "teacher_agreement": 1.0,
+        "teacher_agrees": 134
+      },
+      "t2": {
+        "conf_saturated_0.95_plus": 12,
+        "label_method": {
+          "measured": 106
+        },
+        "mean_confidence": 0.777,
+        "rows": 106,
+        "teacher_agreement": 0.764,
+        "teacher_agrees": 81
+      },
+      "t3": {
+        "conf_saturated_0.95_plus": 114,
+        "label_method": {
+          "measured": 172
+        },
+        "mean_confidence": 0.919,
+        "rows": 172,
+        "teacher_agreement": 0.936,
+        "teacher_agrees": 161
+      }
+    },
+    "rows": 412,
+    "t3_decoy": {
+      "rows": 172,
+      "teacher_picked_decoy": 9,
+      "teacher_picked_label": 161,
+      "teacher_picked_other": 2
+    },
+    "teacher_disagreements": {
+      "by_band": {
+        "t2": 25,
+        "t3": 11
+      },
+      "ids": [
+        "rt-0138",
+        "rt-0141",
+        "rt-0145",
+        "rt-0160",
+        "rt-0266",
+        "rt-0161",
+        "rt-0165",
+        "rt-0271",
+        "rt-0169",
+        "rt-0181",
+        "rt-0188",
+        "rt-0189",
+        "rt-0191",
+        "rt-0168",
+        "rt-0192",
+        "rt-0194",
+        "rt-0195",
+        "rt-0218",
+        "rt-0231",
+        "rt-0301",
+        "rt-0221",
+        "rt-0223",
+        "rt-0197",
+        "rt-0198",
+        "rt-0225",
+        "rt-0236",
+        "rt-0376",
+        "rt-0237",
+        "rt-0377",
+        "rt-0238",
+        "rt-0378",
+        "rt-0379",
+        "rt-0380",
+        "rt-0381",
+        "rt-0382",
+        "rt-0339"
+      ],
+      "pairs": {
+        "decide_extract->decide_pick": 9,
+        "decide_extract->filesys_read": 2,
+        "decide_extract->web_search": 1,
+        "filesys_glob->decide_extract": 3,
+        "filesys_glob->filesys_grep": 2,
+        "filesys_grep->filesys_glob": 1,
+        "filesys_grep->reddit_digest": 1,
+        "filesys_read->decide_extract": 2,
+        "filesys_read->decide_pick": 1,
+        "filesys_read->filesys_grep": 5,
+        "web_fetch->decide_extract": 2,
+        "web_fetch->filesys_read": 1,
+        "web_fetch->web_search": 1,
+        "web_search->reddit_digest": 5
+      },
+      "rows": 36
+    },
+    "teacher_off_ballot": [],
+    "thin_cells": [
+      "t1/decide_extract",
+      "t1/decide_pick",
+      "t2/decide_extract",
+      "t2/decide_pick",
+      "t2/filesys_glob",
+      "t2/filesys_grep",
+      "t2/filesys_read",
+      "t2/reddit_digest",
+      "t2/web_fetch",
+      "t2/web_search"
+    ]
+  },
+  "schema": {
+    "fields": [
+      "id",
+      "utterance",
+      "label",
+      "band",
+      "split",
+      "family",
+      "tier_target",
+      "candidates"
+    ],
+    "label": "`intended` \u2014 the frame's authored answer; see tests/data/utterances_v2_NOTES.md",
+    "not_label": "the hosted teacher's answer is absent from the frozen rows by design (36 rows disagree); see diagnostics.jsonl",
+    "tier_target": "decoy op for t3 rows (null elsewhere); never the label"
+  },
+  "source": {
+    "candidates_sha": "b0647579f17c",
+    "dir": "distill",
+    "labels_sha": "b91146a8f883"
+  },
+  "split": {
+    "families": 295,
+    "families_crossing_split": [],
+    "families_multi_row": 117,
+    "leaks": false,
+    "per_band": {
+      "t1": {
+        "train": 101,
+        "val": 33
+      },
+      "t2": {
+        "train": 85,
+        "val": 21
+      },
+      "t3": {
+        "train": 144,
+        "val": 28
+      }
+    },
+    "split_unit": "family (the frame); see corpus.assign_split",
+    "splits_before_exclusion": {
+      "train": 330,
+      "val": 82
+    }
+  },
+  "verdict": {
+    "borderline_removed": 2,
+    "contaminated_after_exclusion": false,
+    "eval_set_for_this_corpus": "tests/data/utterances_v2.json",
+    "leak_rule_clean": true,
+    "routing_382_relation": "disjoint taxonomy (18 imported classes vs this 8); cannot be trained on from this corpus and is not contaminated by it",
+    "trainable": true
+  }
+}

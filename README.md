@@ -344,8 +344,10 @@ and 24, and builds the wheel. The wheel check asserts a *set*, not a list of nam
 
 ### Corpora (`tools/`)
 
-Two stdlib-only pipelines that produce the training and evaluation data. Both are
-derived-data producers: their output goes to `var/`, which is git-ignored.
+Two stdlib-only pipelines that produce the training and evaluation data. The
+*generation* steps are derived-data producers and write to `var/`, which is
+git-ignored; `certify.py` is the exception, freezing the audited artefact to the
+committed `data/distill/` so a trainer has something checkable to fit on.
 
 | tool | what it does |
 |---|---|
@@ -353,6 +355,7 @@ derived-data producers: their output goes to `var/`, which is git-ignored.
 | `python3 tools/distill/utterances.py` | generates band-labelled routing rows beyond the frozen 150, with a similarity check that refuses anything restating the eval set |
 | `python3 tools/distill/label.py` | labels those rows with the hosted teacher, resumably, under a cost gate; refuses a row whose reply is not schema-valid |
 | `python3 tools/distill/audit.py` / `stats.py` | the human-check sample, and per-band counts with the teacher's own calibration |
+| `python3 tools/distill/certify.py` | audits the label store against both frozen eval sets and freezes the committed training set at `data/distill/`; see `docs/distill-corpus-certification-2026-11-03.md` |
 
 The hop log is *not* a decision log — see `docs/dataset-status.md` for the measured
 count (14 trainable records out of 1398 hops, all one label), which is why the fine-tune
@@ -435,6 +438,7 @@ can read as current.
 | [`docs/local-classifier-cascade-2026-11-03.md`](docs/local-classifier-cascade-2026-11-03.md) | the same 150 rows and 8 labels asked a different question — how much can a free local model take off a **hosted** 95.3% fallback: 61.3% grouped CV (vs 69.3% random, an 8.0-point leak), and every coverage above 2.7% lowers blended accuracy; what survives is per-class routing at 84.7% against the 3B's 74.0%, and the finding that local confidence barely discriminates while the 3B's does (97.6% at 28% coverage) |
 | [`docs/vulkan-igpu-2026-11-03.md`](docs/vulkan-igpu-2026-11-03.md) | the Iris Xe iGPU against the CPU build on the routing workload: 2.72× slower per decision (8943.6 vs 3283.7 ms p50, n=50), 6.9× slower at prefill, 0 of 50 paired rows won — the idle GPU is not compute, because routing is prefill-dominated |
 | [`docs/dataset-status.md`](docs/dataset-status.md) | the hop log measured as training data: 14 of 1398 records trainable and all 14 carrying the same label (15 of 5243 on the re-checked snapshot) — it is an execution trace, so the fine-tune corpus is distilled rather than harvested |
+| [`docs/distill-corpus-certification-2026-11-03.md`](docs/distill-corpus-certification-2026-11-03.md) | the distilled corpus certified as training data: **412** rows labelled (not 267 — that was a snapshot of a run still going), **0** collisions with either frozen eval set across all pairs, 410 frozen at `data/distill/` after two near-duplicate exclusions, the teacher's answer rejected as a label because it gives opposite answers to rows one filename apart at 0.9 confidence, and what a fair evaluation may claim from a corpus whose t1 band is saturated |
 
 ### Dated audits, probes and plans — 2026-11-03
 

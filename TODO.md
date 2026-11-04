@@ -54,13 +54,13 @@ Routing accuracy is worth nothing until this is fixed.
 
 ## 2. Grow the eval before believing anything
 
-- [ ] **Finish the distilled corpus.** The labelled count is still under the 300-row floor
-      for a small router (`docs/assets-inventory.md` §9, from the same private synthesis's
-      `01` §5). The stall was provider congestion (0.7 s/row → 20–60 s/call), not budget. The exact
-      labelled total lives in git-ignored `var/distill/`, so this file cannot quote it
-      checkably: the last two snapshots were **199 of 414 rows at $0.002**
-      (`docs/roadmap-2026-11.md`) and 267 of 414 at $0.0028 (an earlier draft of this item).
-      Re-run `python3 tools/distill/stats.py` for the current one. **next**
+- [x] **Finish the distilled corpus.** Done: **412 of 414 rows labelled**, $0.0043, and
+      frozen at `data/distill/` — 410 usable (329 train / 81 val) after two near-duplicate
+      exclusions. Both earlier counts were snapshots of a run still in progress: 199 was the
+      first hour, and 267 is the ~$0.0028 mark (at $1.16e-5/row that buys 265). The label
+      store stays git-ignored; the certified artefact does not. Verdict, per-band label
+      audit and the fair-evaluation protocol are in
+      `docs/distill-corpus-certification-2026-11-03.md`. **next** is training on it.
 - [ ] **Annotate `var/distill/audit.csv`.** `tools/distill/audit.py` samples 6 rows per
       band (`--per-band`, default 6), so a full run is 18 rows with a blank `verdict`
       column. Until it is filled in, `tools/distill/stats.py` reports calibration as
