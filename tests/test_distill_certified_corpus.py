@@ -68,6 +68,24 @@ class FrozenCorpusTest(unittest.TestCase):
             digest = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
             self.assertEqual(digest, record["sha"], f"{name} changed since it was frozen")
 
+    def test_contamination_digests_match_the_eval_sets_they_name(self):
+        """`contamination.*.sha` records an eval set the repo does not track.
+
+        The label store those sets live in is git-ignored, so this field was kept
+        by hand and nothing verified it: the leakage result is a measurement
+        *against a specific file*, and a digest that has drifted from that file
+        means the certification is describing an eval set nobody can identify.
+        `files` is covered above; this is the other half of the manifest's
+        digests, and it was only being caught by a reader noticing.
+        """
+        for name, record in self.manifest["contamination"]["eval_sets"].items():
+            path = ROOT / record["path"]
+            self.assertTrue(path.exists(), f"{name}: {record['path']} is missing")
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
+            self.assertEqual(digest, record["sha"],
+                             f"{name}: {record['path']} is not the file the "
+                             f"contamination sweep measured")
+
     def test_no_row_restates_the_frozen_eval_set(self):
         frozen = corpus.frozen()
         for row in self.train + self.val:

@@ -28,6 +28,13 @@ rewritten — the exemption had already been deleted and the prose had not, whic
 left a reader believing the largest source of recorded paths in the repo was
 exempt when it was being scanned.
 
+That claim has a second direction, and it was unenforced: a file in the tree is
+only guarded if the walk opens it, and re-adding ``bench/results`` to
+``SKIP_PREFIXES`` dropped all 84 files there (82 ``.json``, one ``.md``, one
+``.jsonl``) with every test still green. "It is scanned" is a statement about a
+walk that reads files, so it needs a floor that names them — three do, below —
+and not just an absence of offenders.
+
 The walk must be able to prove it walked
 ----------------------------------------
 ``scan()`` returns the files it opened alongside the offenders it found. The
@@ -39,6 +46,41 @@ a widened ``SKIP_PREFIXES`` would have stayed green forever. So the walk is
 asserted to have read files and to have reached the files this guard exists to
 protect, and ``WalkerTest`` runs the same walk over a temporary tree with a
 planted violation in it, which a broken walk fails to report.
+
+The floor has to be able to fail too
+------------------------------------
+A floor that only counts is a floor over whatever the filter let through. This
+one used to be ``REQUIRED`` alone — four paths — and a walk that reached exactly
+those four passed. Measured on this tree, each of these five sabotages left all
+fourteen tests green:
+
+- drop ``.ts``, ``.sh`` and ``.yml`` from ``SUFFIXES``;
+- drop ``.cast``, ``.svg`` and ``.png``;
+- add ``tests`` to ``SKIP_DIR_NAMES``;
+- add ``bench/results`` to ``SKIP_PREFIXES`` — the mutation that falsified the
+  paragraph above about the evidence tree;
+- replace ``SUFFIXES`` with ``{".md", ".json", ".toml", ".csv"}``, which drops
+  all 175 ``.py`` files and still reaches the four paths ``REQUIRED`` then named.
+
+None of that is exotic: four of the five are a widened skip or a dropped
+suffix, which is the edit a maintainer makes to quiet a noisy failure, and the
+fifth is the whole filter cut back to the formats that happened to hold the four
+named paths. So the floor is three assertions and every sabotage has to
+break at least one: ``REQUIRED`` names seventeen files across thirteen shapes —
+including the four this header's history section records as having held the
+operator's path (``pi-extension/src/lifecycle.ts``, ``bench/pyhost_qwen35.py``,
+``bench/sv2lane.sh``, ``tests/test_cascade.py``) and three under
+``bench/results/``; ``SUFFIX_FLOOR`` puts a minimum on every suffix that has a
+file in the tree, so dropping a suffix fails even when no named path carries it;
+and ``TOTAL_FLOOR`` puts a minimum on the walk as a whole, so a widened skip
+costs what it actually costs — 58 files for ``tests/``, 84 for
+``bench/results/`` — instead of reading as a walk that still opened something.
+
+The floors are minima with headroom, not counts. A tree that grows passes. A
+tree that shrinks past a floor is a deliberate edit: change the number here, with
+the measurement. Re-measured on the tree the numbers were set from: 361 files,
+8.7 MB of text, and — checked against ``git ls-files`` — every tracked file but
+this one is read.
 
 What the guard covers
 ---------------------
@@ -132,11 +174,14 @@ What it does not cover
   ``SUFFIXES``, which now includes ``""`` so an extensionless or dot-only name
   (``LICENSE``, ``.gitignore``, ``.gitattributes``) is read too. ``.svg`` and
   ``.png`` are read as text with ``errors="replace"`` because a recorded
-  screenshot carries the path it was taken at in its metadata. Anything else —
-  a ``.lock``, a ``.ipynb``, a ``.gguf`` — is not read.
+  screenshot carries the path it was taken at in its metadata. Each suffix that
+  has a file in the tree also carries a minimum in ``SUFFIX_FLOOR``, which is
+  what makes removing it from ``SUFFIXES`` a failure rather than a smaller walk.
+  Anything else — a ``.lock``, a ``.ipynb``, a ``.gguf`` — is not read.
 - **A drive-rooted path with no ``Documents``/``models`` component** (a synthetic
   fixture such as ``C:\\fixture\\x.gguf``) is not flagged: it names no structure.
 """
+import collections
 import pathlib
 import re
 import tempfile
@@ -168,14 +213,31 @@ SKIP_FILES = {pathlib.Path(__file__).resolve()}
 # `C:/path/to/...` and the `.jsonl`/`.txt`/`.csv`/`.cast` fixtures hold no path
 # at all -- and is read so that tomorrow's file is caught instead of skipped.
 # They are cheap, and measured rather than assumed: 344 files and 7.8 MB of text
-# before, 358 files and 8.6 MB after (the 15 tracked files that were unscanned
-# plus one pytest-cache README that is now skipped), and this file's own runtime
-# goes from 0.6-0.9 s to 0.9-1.0 s (best of four, alternating, on a loaded box).
+# before, 361 files and 8.7 MB after, and this file's own runtime goes from
+# 0.6-0.9 s to 0.9-1.0 s (best of four, alternating, on a loaded box). Every
+# tracked file but this one is now read -- checked against `git ls-files`, not
+# assumed -- and `SUFFIX_FLOOR` below is what keeps that true when a suffix is
+# dropped from this set.
 # `.svg` and `.png` are read as text with `errors="replace"` because a recorded
 # screenshot carries the path it was taken at in its metadata; binary bytes
 # cannot raise.
 SUFFIXES = {".py", ".ts", ".json", ".sh", ".md", ".toml", ".yml", ".yaml",
             ".example", ".jsonl", ".txt", ".csv", ".cast", ".svg", ".png", ""}
+# A minimum file count per suffix: what makes narrowing `SUFFIXES` fail even when
+# no path in `REQUIRED` carries the suffix being dropped. Every suffix listed
+# here has at least one file in the tree. `.yaml` is in `SUFFIXES` with no entry
+# because the tree holds none, so there is nothing for a floor to protect -- if a
+# `.yaml` arrives, add both. The numbers are minima with headroom over 361
+# scanned files (175 `.py`, 106 `.json`, 50 `.md`, 9 `.ts`, 5 `.jsonl`, 4 `.sh`),
+# and the headroom is why `tests` (43 `.py`) and `bench/results` (82 `.json`) can
+# be shown to be un-skippable by count as well as by name.
+SUFFIX_FLOOR = {".py": 160, ".json": 95, ".md": 40, ".ts": 5, ".jsonl": 4,
+                ".sh": 3, ".txt": 2, "": 2, ".csv": 1, ".toml": 1, ".yml": 1,
+                ".example": 1, ".cast": 1, ".svg": 1, ".png": 1}
+# The walk as a whole, for the skips no suffix minimum can price on its own:
+# `tests/` costs 58 files and `bench/results/` 84, both far past the 31 files of
+# headroom below the measured 361.
+TOTAL_FLOOR = 330
 
 # Built from parts so this file does not trip its own check. The single
 # terminator expression is shared: whatever follows the account name, end of
@@ -316,8 +378,13 @@ class GuardPatternTest(unittest.TestCase):
                 self.assertMatches(_HOME_TREE, text)
 
     def test_home_tree_ignores_generic_home_locations_and_placeholders(self):
+        # `~/kilnScrapingSearching` is a synthetic name in the shape of a real
+        # one: a camel-case project directory directly under `~`, which names no
+        # documents tree and stays legal. It was a real sibling project's name
+        # here until this test was itself found publishing the name the replays
+        # had been redacted to hide.
         for text in ("~/Documents/<project>/x", "~/mnt/somehost",
-                     "~/.local/state/ti/http.token", "~/redditScrapingSearching",
+                     "~/.local/state/ti/http.token", "~/kilnScrapingSearching",
                      "~/Documents", "~/.pi/profiles/registry/x",
                      "Documents/x"):
             with self.subTest(text=text):
@@ -401,25 +468,92 @@ class WalkerTest(unittest.TestCase):
 
 
 class NoPersonalPathsTest(unittest.TestCase):
-    # Files this guard exists to protect. A count above zero is a weak floor on
-    # its own -- a widened skip prefix or a typo in the suffix filter can leave
-    # a handful of files and still pass -- so the walk has to reach these.
-    REQUIRED = ("README.md", "pyproject.toml", "CONTRIBUTING.md",
-                "service/ti/conf/defaults.json")
+    """The real tree, against a floor that can fail three ways.
+
+    A count above zero is a weak floor on its own -- a widened skip prefix or a
+    typo in the suffix filter can leave a handful of files and still pass -- so
+    the walk has to reach named files, a minimum number of files per suffix, and
+    a minimum number overall. The module docstring records the five sabotages
+    this floor is built to fail; each of them was re-run against it.
+    """
+
+    # Files this guard exists to protect, named. The first four are the shapes a
+    # portable repo is mostly made of; the next four are the files the history
+    # section above records as having actually carried the operator's path
+    # (`pi-extension/src/lifecycle.ts` in 27 commits, `bench/pyhost_qwen35.py` in
+    # 25, `bench/sv2lane.sh` in 24, `tests/test_cascade.py` in 16) and are the
+    # ones the four-path floor of old let the walk drop; `bench/results/` is in
+    # here three times so re-exempting the evidence tree fails as a missing file
+    # and not only as a smaller count; `demo/` carries the recorded terminal and
+    # screenshot artefacts that are read as text; and `LICENSE` is the
+    # extensionless shape.
+    REQUIRED = (
+        "README.md",
+        "pyproject.toml",
+        "CONTRIBUTING.md",
+        "service/ti/conf/defaults.json",
+        "pi-extension/src/lifecycle.ts",
+        "tests/test_cascade.py",
+        "bench/pyhost_qwen35.py",
+        "bench/sv2lane.sh",
+        "bench/results/live_e2e_summary.json",
+        "bench/results/p1-diagnose/FINDINGS.md",
+        "bench/results/p3-transfer/rows.jsonl",
+        "demo/toolinterfacer.cast",
+        "demo/toolinterfacer.svg",
+        "demo/toolinterfacer.png",
+        "bench/lane.env.example",
+        ".github/workflows/ci.yml",
+        "LICENSE",
+    )
+
+    @classmethod
+    def setUpClass(cls):
+        cls.offenders, cls.read = scan(ROOT)
 
     def test_no_personal_absolute_paths(self):
-        offenders, read = scan(ROOT)
         self.assertGreater(
-            len(read), 0,
+            len(self.read), 0,
             "the walk read no files, so an empty offender list would prove "
             "nothing; check SUFFIXES, SKIP_PREFIXES and SKIP_DIR_NAMES",
         )
-        for required in self.REQUIRED:
-            self.assertIn(required, read, "the walk never reached a file this guard exists to protect")
+        missing = [p for p in self.REQUIRED if p not in self.read]
         self.assertEqual(
-            offenders, [],
+            missing, [],
+            "the walk never reached these files this guard exists to protect; a "
+            "name is missing because its directory was skipped or its suffix is no "
+            "longer read: " + ", ".join(missing),
+        )
+        self.assertEqual(
+            self.offenders, [],
             "machine-personal absolute paths in portable files "
-            "(use an env var / ~-relative / <placeholder>):\n" + "\n".join(offenders[:20]),
+            "(use an env var / ~-relative / <placeholder>):\n"
+            + "\n".join(self.offenders[:20]),
+        )
+
+    def test_the_walk_reaches_every_file_shape(self):
+        """Per-suffix floor: drop a suffix from `SUFFIXES` and it reads as zero.
+
+        `REQUIRED` alone cannot price this, because a named file covers one path
+        and a suffix covers a format. This is the assertion that fails when
+        `.ts`, `.sh`, `.yml`, `.cast`, `.svg` or `.png` leaves the filter.
+        """
+        counts = collections.Counter(pathlib.PurePosixPath(p).suffix for p in self.read)
+        short = {suffix: (counts[suffix], floor)
+                 for suffix, floor in SUFFIX_FLOOR.items() if counts[suffix] < floor}
+        self.assertEqual(
+            short, {},
+            "the walk read fewer files than the floor allows (read, floor); a "
+            "suffix missing from SUFFIXES reads as 0, which is the whole point "
+            "of the floor: " + ", ".join(f"{s!r} {n}<{f}" for s, (n, f) in short.items()),
+        )
+
+    def test_the_walk_reaches_the_whole_tree(self):
+        self.assertGreaterEqual(
+            len(self.read), TOTAL_FLOOR,
+            f"the walk opened {len(self.read)} files against a floor of "
+            f"{TOTAL_FLOOR}; a widened SKIP_PREFIXES or a skipped directory "
+            f"costs files here rather than passing as a clean, quiet walk",
         )
 
 
