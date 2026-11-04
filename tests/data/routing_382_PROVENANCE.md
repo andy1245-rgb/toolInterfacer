@@ -9,9 +9,13 @@ error strings of two round-trip replays — with neutral forms of the same shape
 because this repo is public and those strings named one person's own projects
 and home layout. Nothing else changed — not a row, not a label, not a byte of
 formatting. Digests for the source, for what was first imported and for what
-ships now are all recorded below, and the reverse table further down turns every
-shipped file back into the bytes it had before the pass, so the exception is
-checkable rather than asserted.
+ships now are all recorded below, along with the six substitution rules a
+reviewer can replay to turn every shipped file back into the bytes it had before
+the pass. Rules 1–4 are replayed **against the archive**, not from this document
+alone: the four original strings are not printed here, so a reader needs
+`git show 6131383^` to hold them (§"The reverse table"). What that buys is a
+checkable exception — a reviewer ran all six rules and reproduced all seven
+files byte-for-byte — rather than an assertion.
 
 ## Origin
 
@@ -70,11 +74,20 @@ person's project list sitting in a published dataset.
 **What the fingerprints are for, and what they are not.** They are a checksum,
 not redaction. They exist so that a holder of the source can verify the mapping
 — hash the string you believe was removed, take the first twelve hex digits, and
-compare. They are **not** a barrier to recovery and must not be read as one: the
-four names fall out of a two-word camelCase search space of roughly 36,000
-candidates in under a second, and the full space sweeps in about four minutes on
-one core. What this table buys is checkability — that the substitution is the one
-it claims to be — not secrecy.
+compare. They are **not** a barrier to recovery, and the cost of recovery is not
+a search: this pass removed the strings from the tree and left them in the
+archive. `6131383` is an ancestor of `HEAD`, so
+
+    git show 6131383^:bench/registry_382.json
+
+returns the registry with all four names in it — one command, no candidate
+space, no wordlist, nothing to sweep. A search would also work, and how long it
+takes is beside the point, because nobody who wants the strings has to run one.
+What this table buys is checkability — that the substitution is the one it claims
+to be, in both directions — not secrecy, and the redaction should be read as
+keeping four private project names out of the text a stranger reads in the
+current tree, which it does, rather than out of the repository, which it does
+not.
 
 Where the four names occurred: `registry.tools[13].slots.project` (4 of its 5
 entries) and two of the same tool's `references` (each rewritten in place with
@@ -150,6 +163,19 @@ of the fingerprint table above read in the other direction: replace the shipped
 neutral name with the token whose `sha256(bytes)[:12]` is in its row. Those four
 reverse five of the seven files — the five that carried a project name. The two
 round-trip replays carried no name, so they need the two path rules:
+
+**Rules 1–4 need the preimage, and the preimage is not here.** A `sha256[:12]` has
+no inverse in this document, there is no checksum-to-string map anywhere in it,
+and no wordlist is named — so the rule as written is not applicable from the
+published files alone, and a reader holding only a fingerprint holds nothing they
+can apply. What rules 1–4 require is the original tokens, and the place to read
+them is history: `git show 6131383^:bench/registry_382.json` still carries all
+four in its `slots.project` list, and the fingerprint column's job is then to
+confirm that the string taken from there is the string that was removed — hash
+it, compare twelve hex digits. That makes the reversal *verification against the
+archive*, not an independent derivation from what ships: it proves the shipped
+bytes are exactly the pre-change bytes with those substitutions and nothing else.
+Rules 5–6 are the same shape — two unknowns, both read out of the same commit.
 
 | # | shipped placeholder | len | reverses to the original | `sha256(bytes)[:12]` | len |
 |---|---|---:|---|---|---:|
