@@ -85,8 +85,9 @@ number is not achievable inside that, the honest deliverable is the measured
 throughput plus a costed plan, not a half-run.
 
 **Half closed.** The distillation pipeline exists and ran — `tools/distill/`, 414
-rows, 199 teacher-labelled, $0.002 — and the LoRA run did not. That is the *Still
-open* item at the end of this document.
+rows, **412** teacher-labelled, $0.0043, frozen and audited at `data/distill/`
+(`docs/distill-corpus-certification-2026-11-03.md`) — and the LoRA run did not.
+That is the *Still open* item at the end of this document.
 
 ### Phase 3 — Applications
 

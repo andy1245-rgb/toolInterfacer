@@ -8,6 +8,8 @@ Entry points, each runnable as `python3 tools/distill/<name>.py --help`:
   label.py       teacher labels over those candidates (resumable, budgeted)
   audit.py       the human-check sample, printed and as a CSV to annotate
   stats.py       per-band counts, label/confidence distributions, calibration
+  certify.py     audits the label store against the frozen eval sets and freezes
+                 the committed training artefact at data/distill/
 
 Shared modules: catalog (the op set, derived), bands (t1/t2/t3), similarity
 (normalisation + near-dup), corpus (row schema, leakage guard), mine (pi-sessions),

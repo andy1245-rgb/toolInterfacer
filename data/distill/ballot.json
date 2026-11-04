@@ -1,0 +1,10 @@
+{
+  "decide_extract": "Fill a list of literal values (queries, keywords, keys) out of an intent",
+  "decide_pick": "Choose the top-k items out of a source artifact already produced",
+  "filesys_glob": "List file paths matching a name pattern under a directory",
+  "filesys_grep": "Search file contents for a pattern and return the matching lines",
+  "filesys_read": "Read one file's contents by path",
+  "reddit_digest": "Search reddit for a query and project the threads into a digest",
+  "web_fetch": "Download the pages at a list of URLs and extract their text",
+  "web_search": "Run search queries against the web and return a deduplicated URL list"
+}
