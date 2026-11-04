@@ -129,7 +129,10 @@ These will not be fixed, and should be quoted whenever the numbers are:
 | limit | number |
 |---|---|
 | Frozen eval set is small | n=150 → ±8 points at 95% |
-| The classical baseline's headline is template transfer | 93.19% holds out rows, **66.23%** holds out phrasing families (n=382) |
+| **The frozen eval set cannot measure its own optimism** *(added 2026-11-04)* | 63.3% atomic rows (95/150); family-held-out moves accuracy **−0.4 to +3.7 pts, both directions**; the 23.5-point penalty this model class shows on a set that *can* be family-split is the order of what v2 cannot see (`docs/eval-harness-2026-11-04.md` §4) |
+| **`routing_382` is not this repo's task** *(added 2026-11-04)* | 18 smart-home classes (`timer_create`, `thermostat_set`, …), own registry, **empty** intersection with the 8 ops — only the 62.7% on `utterances_v2` is comparable |
+| **`nested_selection_acc` is an oracle** *(added 2026-11-04)* | 84.7% applies the per-class map on the row's true label (`bench/local_clf.py:1085`); the union ceiling above it is 92.8% [88.5–96.6] (`docs/eval-harness-2026-11-04.md` §5(b)) |
+| The classical baseline's headline is template transfer | 93.19% holds out rows, **66.23%** holds out phrasing families (n=382 — a different task, see above) |
 | The round-trip saving is conditional | 14.3% of round trips, **7.5 s slower**, crossover at ~5.8 s per model pass (n=9 tasks) |
 | Decision latency on the CPU-only box | ~1,055 ms per decide hop (n=10 hops) |
 | Teacher confidence is saturated on the easy band | t1 mean 0.940 (72 rows) |

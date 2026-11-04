@@ -385,3 +385,93 @@ python3 bench/classical_baseline.py --out-dir /tmp/cls-verify
 Without `--out-dir` the run is not read-only, and a reader who "just reproduces
 the numbers" deletes the numbers being reproduced. The same hazard applies to any
 documented command whose script writes into `bench/results/` by default.
+
+---
+
+## Corrections — 2026-11-04
+
+Appended, not edited; the body is the record of 2026-11-03. Two of its framings do
+not survive Phase 1. Neither changes a number: the reproduction in §2 and §10
+still re-derives every figure in this document, to the row.
+
+### C1. The 382-row figures are a different task's, and the intersection is empty
+
+The body says this in three places — the verdict ("it was measured on a task this
+repo does not have"), §8 ("that table measures a different task") and caveat §9.1
+("different class counts, different label spaces, different authoring intent").
+That is the right conclusion stated too weakly, and two places still read as if
+the two sets were on one board:
+
+- the **summary table** at the top puts `TF-IDF + LinearSVC, 382 rows, 18-way`
+  (93.19%) directly above `v2 set, 150 rows, 8-way` (62.7% against d1-3B's
+  74.0%) as adjacent rows of one table; and
+- **§4** ends by nominating 66.23% as "the number to quote next to 93.19%", which
+  invites exactly the wrong inference: that the pair describes this repo's task
+  at two split settings.
+
+The verified fact, which should have been stated instead of "different tasks":
+`routing_382` is a **smart-home assistant router** — `timer_create`,
+`thermostat_set`, `shoppinglist_add`, `calendar_today` — **18 classes, its own
+17-tool registry, its own 200-reference training corpus** (`bench/registry_382.json`).
+**The intersection with this repo's 8 ops is empty.** Re-verified 2026-11-04
+against `tests/data/routing_382.json` and `tests/data/utterances_v2.json`: 18
+labels, 8 labels, intersection empty.
+
+The consequence for a reader, stated as a rule:
+
+| figure | set | comparable to `useTool`'s 8 ops? |
+|---|---|---|
+| 93.19% (references → 382) | 382 rows, 18 smart-home classes | **no** |
+| 66.23% (template-grouped) | 382 rows, 18 smart-home classes | **no** |
+| 91.36% (d1-3B on 382) | 382 rows, 18 smart-home classes | **no** |
+| 92.41% (random-row CV on 382) | 382 rows, 18 smart-home classes | **no** |
+| 62.7% (v1 → v2 transfer) | 150 rows, this repo's 8 ops | **yes** |
+| 60.0 / 62.0% (v2 CV) | 150 rows, this repo's 8 ops | **yes** |
+| 74.0% (d1-3B on v2) | 150 rows, this repo's 8 ops | **yes** |
+| 79.3% (cascade at gate ≥ 0.20) | 150 rows, this repo's 8 ops | **yes** |
+
+So **the v2 figures — 62.7%, the 60.0 / 62.0 CV pair, d1's 74.0% and the 79.3%
+cascade — are the only ones in this document that measure the task `useTool`
+performs**, and the verdict's "the linear model loses by 11.3 points" is the only
+cross-model result here that is about this repo. The 382-row result
+establishes what §8 says it does — that a linear model handles a closed,
+in-vocabulary label set well — but it establishes it **on a smart-home command
+router, not on this repo's file/search/extract ops**, and it is not evidence that
+this project's premise is overstated. §8's sentence already carries the
+qualifier ("for a well-specified closed label set with in-vocabulary phrasing");
+read that qualifier as load-bearing, not as a hedge.
+
+**Evidence.** `docs/distill-corpus-certification-2026-11-03.md` §1 ("`routing_382`
+is not the eval set for this corpus": 18 classes, own registry, **empty**
+intersection with the 8 ops, "no classifier trained on this corpus can be scored
+on it") and `tests/data/routing_382_PROVENANCE.md` (the set is generated from the
+sibling project's smart-home templates).
+
+### C2. The v2 grouped/random pair does not measure a leak
+
+§5 reports `62.0%` (random rows) against `60.0%` (boundary-pair grouped) and reads
+the 2-point difference as the leak this set carries: "hold out the t3 twin
+families whole". Phase 1 measured what a v2 split can actually resolve, and it is
+not this.
+
+`utterances_v2` has **63.3% atomic rows** (95 of 150) and one declared grouping
+(55 t3 rows in 11 boundary-pair families); holding families out therefore holds
+out rows. Through the harness — 5 seeds, cluster-bootstrap intervals — the
+row-versus-group gap for `lr` is **−0.4 points**, for `1-NN` **+3.7**, for
+`classical_svm` **−3.2**: two of three negative, and all of them inside the
+seed-to-seed spread (8.7 points for `lr` alone). The direction §5 asserts is not
+wrong — grouping does cost something, and `1-NN` shows it consistently — but a
+2-point difference from one fold assignment is not a magnitude, and this
+paragraph should not be quoted as one.
+
+Nothing in §5's **conclusion** depends on it: the 62.7% / 60.0% / 62.0% band is a
+statement about the model's level on these rows, and that stands. What does not
+stand is using the pair as a split-controlled measurement, or reading the band as
+a generalisation claim. **`utterances_v2` cannot measure its own optimism**: the
+same model class loses **23.5 points** (92.1% → 68.6%) on the one set in this
+repo that can be family-split, and that set is a different task (C1). Treat the
+62–63% band as carrying an unquantified optimism of that order, not a known one.
+
+**Evidence.** `docs/eval-harness-2026-11-04.md` §1–§2 (atomic fraction, the three
+failed family-reconstruction routes), §4 (the gap table for every signal), §5(c)
+(the 8.0-point v2 difference recomputed across seeds), §6 ("Not settled").

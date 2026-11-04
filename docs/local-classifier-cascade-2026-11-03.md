@@ -339,3 +339,173 @@ Artifact: `bench/results/local_clf_v2.json` — CV with intervals and per-band
 cells, the leakage audit for both splits, the local and 3B coverage/precision
 curves, the frontier and budget ladder, per-band cells at the operating point,
 the per-class hybrid, `rows_to_certify`, latency, and the held-out disposition.
+
+---
+
+## Corrections — 2026-11-04
+
+Appended, not edited. The body above is the record of what was measured and
+believed on 2026-11-03; two of its claims do not survive Phase 1, and one cites
+a precedent it cannot. All three are defects in the **reading**, not in the
+arithmetic — every figure below reproduces exactly from `bench/local_clf.py`, and
+a re-run on 2026-11-04 still lands on 61.3 / 69.3 / 50.0 / 78.7 / 84.7.
+
+### C1. 84.7% was an oracle, not a router
+
+**`84.7%` is not a deployable accuracy.** The per-class map is applied on the
+row's own ground-truth label, so computing the number requires already knowing
+the answer being predicted. It is not reachable at inference by any rule that
+has to infer the class.
+
+The implementation, unchanged:
+
+```python
+# bench/local_clf.py:1085
+pred_nested[i] = (pred_lr[i] if choice_map[labels[i]] == "lr" else m3b_pred[i])
+```
+
+`choice_map` is learned honestly — fitted per outer fold on the *training*
+portion only — but `labels[i]` in the application line is the **test** row's true
+class. The map is real; the index is the answer key.
+
+This affects every correction the body draws from it:
+
+- **line 11** (the verdict): "per-class routing, decided on training rows, gets
+  **84.7%** against the 3B's 74.0%" — the 84.7% half is an oracle. The 74.0%
+  half is a measured, deployable figure and is unchanged.
+- **line 224** (`per-class choice from training portion (nested)`, 84.7%): an
+  oracle, same defect. Fitted on training rows, applied on true labels.
+- **line 225** (`per-class choice from pooled OOF`, 84.7%): an oracle **twice
+  over** — fitted on the pooled out-of-fold results *and* applied on the true
+  label (`bench/local_clf.py:1097`). That its figure is *identical* to line 224's
+  was read in the body as evidence of stability. It is not evidence of anything
+  about deployability: both rows are the same oracle computed two ways, and two
+  spellings of one oracle agreeing is arithmetic, not replication.
+- **line 223** (`per-class choice, static prior table`, 84.0%, 126/150): the same
+  defect, on the same line shape (`bench/local_clf.py:1063` indexes
+  `static_map[labels[i]]`). The body's trust argument — "the static table ... and
+  the fitted selection agreeing on **8 of 8** classes is the only reason to trust
+  the shape" (lines 230–231) — compares two oracle applications. Agreement
+  between them is not a validation.
+- **line 229** ("The nested choice keeps **57%** of the `lr|3b` oracle gap"):
+  what was computed is the share of the oracle gap an oracle retains — a property
+  of the map, not of a router. A deployable per-class device has to *predict* the
+  class in order to look the choice up, and this document's own §3 table is the
+  measurement of how well it does that (61.3% pooled), not the class map.
+- **line 250** (§6, "Per-class routing is the right device for this pair"):
+  unsupported as written. What the measurement supports is that *an oracle*
+  choosing between `lr` and `d1` per class reaches 84.7% against 74.0%; whether a
+  router can approach it is open, and is the subject of C1's replacement number.
+
+**What 84.7% is, then.** It is the accuracy of a rule that cannot be written —
+per-class choice applied with the class already known. It is neither a floor nor
+a ceiling on a router: a router that predicts the class imperfectly but applies
+the same map lands somewhere below it, and the headroom above it is the union.
+The ceiling for any rule that picks **row by row** is the union, measured at
+**92.8% [88.5–96.6] family-held-out** and 93.5% row-wise — the body's own line
+226 reports 92.7% for the nested-hyperparameter `lr`, the same quantity at this
+document's config. Neither figure is reachable without the answer, and both say
+the same thing: the two inputs are close enough in accuracy on 150 rows that most
+row-level decisions between them are decidable only with the answer.
+
+Two further facts from the same measurement, because they bear on whether the
+shape is worth pursuing at all: on these 150 rows `lr` and `d1` disagree on 88 of
+them (33 rows only `lr` is right, 55 only `d1`), exact two-sided p = 0.0246
+family-held-out and p = 0.0042 row-wise — noise-level apart — and `d1` is the
+better of the two under **both** splits. A per-class router over two inputs that
+are not measurably different in aggregate inherits that.
+
+**Evidence.** `bench/local_clf.py:1063,1085,1097` (the three application sites)
+and `docs/eval-harness-2026-11-04.md` §5(b), which states the defect and measures
+the 92.8% ceiling, the split-invariance of `d1_3B`'s point estimate, and the
+paired discordance counts.
+
+**What replaces it.** A deployable per-class number is being measured by another
+track: a router that predicts the class first, then applies the choice map. **No
+number is quoted here, and none should be inferred from the rows above.** This
+document will be updated again, in a further dated correction, when that
+measurement lands. Until then the only deployable accuracies it supports are the
+ones measured as routers: `lr` at 61.3%, `1-NN` at 50.0%, `d1-3B` at 74.0%.
+
+### C2. Nothing measured on `utterances_v2` can carry a generalisation claim
+
+Section 2 and §6 rest a finding on a **split** — 61.3% grouped against 69.3%
+random, read as an **8.0-point leak** that grouping removes. That finding does not
+survive repeated splits.
+
+The set cannot support it. `utterances_v2` has **63.3% atomic rows** (95 of 150);
+its only declared grouping is 55 t3 rows in 11 boundary-pair families, and the
+t1/t2 near-duplicate clustering this document's `build_groups()` adds merges 4
+pairs out of 95 rows. Holding families out therefore holds out rows, and the
+harness — 5 seeds, cluster-bootstrap intervals — measures the consequence
+directly: `lr` moves **−0.4 points** between row and family splits, `1-NN`
+**+3.7**, `classical_svm` **−3.2**, and two of the three gaps are negative. The
+same comparison across seeds lands at **0.0 points** (66.7% vs 66.7%), because
+this document's own fold table spans a **33-point spread on 30-row folds**
+(40.0 to 73.3, line 102). An 8-point difference drawn from one fold assignment,
+out of folds spanning 33 points, is a draw from that spread.
+
+So: **the 8.0 points is not a measurement of a leak.** Lines 89–93 ("The
+8.0-point difference is the leak") and 241–243 (§6, "The leak on this set is 8.0
+points") should be read as a single-split difference of unknown magnitude, not as
+a quantity. The *direction* — that holding out more costs something — is right
+and is visible on `1-NN` (+3.7 to +4.9 points, consistently); the magnitude is
+roughly 3× what repeated splits support.
+
+The general statement, which applies to **every** accuracy in this document:
+`utterances_v2` cannot measure its own optimism. It has no family field, three
+reconstruction routes for one were tried and all failed, and the row-versus-group
+difference on it is smaller than the seed-to-seed noise. On the one set in this
+repo that *can* be family-split (`routing_382`, 110 real templates), the same
+model class loses **23.5 points** (92.1% → 68.6%). That is the order of the
+unquantified optimism these 150-row figures carry — not a bound on them, since
+that set is a different task (C3) and its penalty is its own.
+
+**Evidence.** `docs/eval-harness-2026-11-04.md` §1–§2 (the atomic fraction and the
+three failed reconstruction routes), §4 (every signal under both splits, and the
+gap table), §5(c) (the 8.0-point difference recomputed across seeds, and the fold
+spread it is drawn from), §6 (what is settled and what is not).
+
+### C3. The `routing_382` precedent this document cites is a different task's
+
+Lines 59–60 and the top of §2 open by citing
+`docs/classical-baseline-2026-11-03.md` §4's 93.19% → 66.23%, and §4 (lines
+158–164) reconciles this document's 61.3% against `main`'s 62.7% transfer figure.
+The 62.7% half is comparable — same 150 rows, same 8 labels. **The 93.19% and
+66.23% halves are not**, and this document should not have used them as a
+precedent for *this* task's split discipline.
+
+`routing_382` is a **smart-home assistant router**: `timer_create`,
+`thermostat_set`, `shoppinglist_add`, `calendar_today` — 18 classes, its own
+17-tool registry and its own 200-reference training corpus at
+`bench/registry_382.json`. **Its intersection with this repo's 8 ops is empty**
+(re-verified 2026-11-04 against `tests/data/routing_382.json` and
+`tests/data/utterances_v2.json`: 18 labels, 8 labels, intersection empty). No
+classifier fitted on this repo's task can be scored on it, and a split lesson
+learned there transfers as a warning, not as a measurement of this document's
+numbers.
+
+What that costs the citation: 93.19% → 66.23% is still the best evidence in the
+repo that a high row-wise number can be template reuse, but it is evidence about
+a *different task's* failure mode. This repo's own task has no equivalent
+measurement, and per C2 it cannot produce one from 150 rows.
+
+**Evidence.** `docs/distill-corpus-certification-2026-11-03.md` §1
+("`routing_382` is not the eval set for this corpus": 18 classes, own registry,
+**empty** intersection with the 8 ops) and `docs/eval-harness-2026-11-04.md` §4's
+382-row table.
+
+### What still stands
+
+Everything measured as a router on 150 rows, and the algebra:
+
+- `lr` 61.3% grouped / 69.3% random, `1-NN` 50.0%, `d1-3B` 74.0% — all measured,
+  and nothing in them consults the answer at inference.
+- The **break-even algebra** (§5): `Δacc = coverage × (precision − hosted)`, and
+  with local inference free the cost side never binds. Arithmetic; unaffected.
+- The **gate finding** (§5): local confidence barely lifts (61.3% → 86.7% at 10%
+  coverage, non-monotone) while the 3B's does (74.0% → 97.6% at 28%). Computed
+  from the model's own `p_max`; unaffected.
+- The **latency** figures (§3): unaffected.
+- `rules` 78.7% remains contaminated (§7.3), and stays contaminated under every
+  split — it is frozen, so both of its rows are the same number by construction.
