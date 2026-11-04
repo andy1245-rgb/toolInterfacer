@@ -7,6 +7,9 @@ commit in `git log` or to a document under `docs/`.
 
 ## [0.1.0] — 2026-11-03
 
+*(Two claims in the `### Measured` section below were retired on 2026-11-04; read
+[Corrections — 2026-11-04](#corrections--2026-11-04) with them.)*
+
 First public release: 104 commits from 2026-10-17 to 2026-11-03, a suite of 700+ tests, 62
 modules in 16 packages, no runtime dependencies.
 
@@ -144,3 +147,68 @@ dataset snapshot. In one place:
 | hop log → 14 records | **moved with the log**: 5,243 lines now yield 15, all still `filesys_glob` | the snapshot is live, machine-local and gitignored; the conclusion holds |
 | live 5/5 | **not reproducible**: `0/4`, HTTP 401 | `bench/live_e2e.py` sends no service token, and auth landed in `5dc537f` nine minutes after the recorded run |
 | 679 tests / 349 subtests | **neither is current** | 679 was right at the release commit `1b4563b` and the README went on quoting it after the suite had moved; the count at HEAD is the README's Test suite row |
+
+## Corrections — 2026-11-04
+
+Four claims published in `0.1.0` were retired by the Phase 1 measurement pass. Nothing here is
+silently edited: each affected document carries its own dated, appended correction, and the
+released text above is left as it was published so a reader can see what was believed and when
+it changed. Evidence for the first three is `docs/eval-harness-2026-11-04.md`; the fourth cites
+`bench/results/p1-diagnose/FINDINGS.md` §3 and the same report for the split limit.
+
+### Retired: an oracle quoted as a deployable accuracy
+
+`docs/local-classifier-cascade-2026-11-03.md` reported **84.7%** for "per-class routing, decided
+on training rows" against the 3B's 74.0%. It is an oracle: the per-class map is applied on each
+row's ground-truth label (`bench/local_clf.py:1085`), so computing it requires already knowing
+the answer being predicted. **84.7% was an oracle**, and no router can reach it. The map itself
+is fitted honestly on training rows — the application is what consults the answer. The same
+defect applies to the report's 84.0% static-table row (`bench/local_clf.py:1063`) and its 84.7%
+pooled-OOF row (`:1097`), so that the two 84.7% figures were *identical* was arithmetic, not
+replication.
+
+The oracle's own bound — the union of `lr` and `d1` — is **92.8% [88.5–96.6] family-held-out**,
+93.5% row-wise. The deployable numbers on that set are unchanged: `lr` 61.3%, `1-NN` 50.0%,
+`d1-3B` 74.0%. **A deployable per-class figure is being measured on another track; no number is
+quoted here for it and the report will carry a further correction when it lands.**
+
+Corrected in: `docs/local-classifier-cascade-2026-11-03.md` (Corrections C1), `README.md`
+("What was measured" row and the 2026-11-04 correction block).
+
+### Retired: a different task presented as comparable
+
+`routing_382` results — **93.19%** (references → 382 rows) and **66.23%** (template-grouped) —
+were presented alongside this repo's numbers as if the same task at two split settings. They are
+not. `routing_382` is a **smart-home assistant router**: 18 classes (`timer_create`,
+`thermostat_set`, `shoppinglist_add`, `calendar_today`), its own 17-tool registry, its own
+200-reference training corpus. **Its intersection with this repo's 8 ops is empty** (re-verified
+2026-11-04). Only the classical baseline's **62.7%** on `utterances_v2` measures what `useTool`
+does.
+
+Corrected in: `docs/classical-baseline-2026-11-03.md` (Corrections C1),
+`docs/assets-inventory.md` (Corrections C1–C2, including the "74.7% against 93.19%" comparison,
+which pairs a 150-row figure with a 382-row one), `README.md`.
+
+### Retired: a split that measured nothing
+
+`utterances_v2` cannot support a generalisation claim. **63.3% of its rows (95 of 150) are
+atomic** — they belong to no phrasing family — and the only grouping it declares is 55 t3 rows
+in 11 boundary-pair families. Holding families out moves accuracy by **−0.4 to +3.7 points, in
+both directions, inside the seed-to-seed spread**. The 8.0-point "leak" reported for this set
+recomputes to **0.0 points** across 5 seeds. On `routing_382`, which *can* be family-split, the
+same model class loses **23.5 points** (92.1% → 68.6%).
+
+Corrected in: `docs/local-classifier-cascade-2026-11-03.md` (C2),
+`docs/classical-baseline-2026-11-03.md` (C2), `docs/model-sweep-consolidated.md` (2026-11-04
+correction), `README.md`.
+
+### Retired: an in-sample improvement described as a finding about the model
+
+`bench/results/p1-diagnose/FINDINGS.md` reports the 3B going **74.0% → 82.0%** by rewriting two
+of eight op descriptions (18 fixed / 6 broken, exact McNemar p = 0.0227). The effect is real and
+the mechanism is understood — the model routes on the object noun and not the operation — but
+the two replacement strings were written by reading the errors of the same 150 rows they are
+scored on. **It is in-sample and is an upper bound, not an estimate.** Another track is
+validating it on a held-out set; this changelog does not pre-empt that result.
+
+Corrected in: `bench/results/p1-diagnose/FINDINGS.md` (2026-11-04 correction).

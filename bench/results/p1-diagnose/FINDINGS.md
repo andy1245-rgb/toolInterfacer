@@ -244,3 +244,55 @@ python3 bench/routing_diagnose.py --report      # every number above, from the J
 
 The frozen instrument (`bench/ti_bench/prompts.py`) is unmodified;
 `tests/test_dataset_pipeline.py` pins it and it still matches the dataset's copy.
+
+---
+
+## Correction — 2026-11-04: the 82.0% is in-sample
+
+Appended, not edited. Every number above is unaffected — they are recorded per-row
+artifacts, re-derived by `python3 bench/routing_diagnose.py --report`. What follows
+is a constraint on how the headline may be read, stated at the top level because
+**the Verdict is the part that gets quoted** and §3's caveat is the part that does
+not.
+
+**74.0% → 82.0% is an in-sample improvement.** The two replacement description
+strings were written by reading the errors of the same 150 rows they are then
+scored on. §3 already says so ("These numbers are in-sample ... Treat 82.0% as an
+upper bound on a fresh set"); the correction is that the sentence belongs beside
+the number wherever the number appears, including the Verdict at the top of this
+file and any downstream summary of it.
+
+What that does and does not leave standing:
+
+- **The mechanism is not in doubt.** The model routes on the object noun and not
+  the operation — that was established by the raw miss lists in §1, by the K=3
+  two-way contests in which the wrong answer wins at conf 0.90, and by the remap
+  analysis (no `answer → truth` function can repair it). None of that depends on
+  the rewrite.
+- **The size of the gain is in doubt.** 18 fixed / 6 broken at exact McNemar
+  p = 0.0227 is a real paired difference *on these rows*; it is not an estimate of
+  the effect on phrasing nobody has written. The rewrite is a fit to this set.
+- **The band breakdown in §3 is not a robustness check.** t1 81.2 → 84.4, t2 71.0 →
+  77.4, t3 67.3 → 81.8 was read as evidence the gain is "not confined to the
+  boundary rows the set was built around". It is not a substitute for a held-out
+  set: `utterances_v2` has **63.3% atomic rows** (95 of 150), 55 rows in 11 declared
+  boundary families, and holding families out moves accuracy by **−0.4 to +3.7
+  points, in both directions, inside the seed-to-seed spread** — so no split of
+  this set can test unseen phrasing. See `docs/eval-harness-2026-11-04.md` §1–§2
+  and §4.
+- **"82.0% clears the keyword rules (78.7%)" (§3) compares an in-sample figure
+  against a contaminated one.** The rules table was written after reading these
+  same 150 utterances, which the local-classifier report states in its §7 item 3.
+  Both numbers are fits to this set; the comparison between them carries no
+  information about a fresh one.
+
+**Status.** A held-out validation of the description rewrite is being run on
+another track. This file does not pre-empt it, holds no held-out number, and
+should not be updated with one except as a further dated correction. Until then,
+quote 82.0% only as "in-sample, upper bound", and 74.0% as the model's measured
+accuracy.
+
+**Evidence.** §3 above ("Caveats, stated rather than buried"), and
+`docs/eval-harness-2026-11-04.md` §1–§2 (the atomic-row fraction and the three
+failed family-reconstruction routes), §4 (the row-versus-family gap for every
+signal on this set), §6 ("Not settled").

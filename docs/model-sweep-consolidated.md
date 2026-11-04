@@ -207,3 +207,57 @@ Qwen's.
 - Cross-workstream numbers (d1/heuristic/jev/qwen0.8b swept in dell-sweep-v2;
   the three q4 lanes in the scout) ran in separate sessions on the same box,
   build, and dataset.
+
+---
+
+## Correction — 2026-11-04
+
+Appended, not edited. The lane numbers are unaffected: they are recorded per-row
+artifacts and are reproduced by `bench/band_summary.py`. What changes is what
+they may be read as evidence **of**.
+
+### No defect-2 instance here
+
+Checked, and recorded because the absence is worth having on the record: this
+document never mentions `routing_382` and draws no comparison against it, so the
+cross-task defect that affects `docs/assets-inventory.md`, `README.md` and
+`CHANGELOG.md` does not apply. Every accuracy in the tables above is measured on
+`tests/data/utterances_v2.json` — this repo's own 8 ops.
+
+### The table is row-wise, and the set cannot measure its own optimism
+
+**63.3% of `utterances_v2`'s rows (95 of 150) are atomic** — they belong to no
+phrasing family — and the only grouping the set declares is 55 t3 rows in 11
+boundary-pair families. Holding families out therefore holds out rows, and on
+this set the row-versus-family difference is smaller than the seed-to-seed
+spread (`lr` −0.4 points, `1-NN` +3.7, `classical_svm` −3.2, in both directions).
+
+For **these** lanes that is a weaker problem than for a fitted model, because
+every lane here is frozen — a served model or a fixed heuristic, scored once and
+never refitted — and a frozen predictor's point estimate is split-invariant, so
+the leakage argument does not touch the numbers. What the set still cannot do is
+support a statement about **unseen phrasing**. On the one set in this repo that
+can be family-split (`routing_382`, 110 templates) the same model class loses
+**23.5 points** (92.1% → 68.6%). So read this table as a ranking **on these 150
+rows**: it is a fair comparison — every lane saw the same rows, the same prompt
+and the same instrument — and it is not a measurement of how any lane will do on
+phrasing nobody has written yet.
+
+Three consequences, stated narrowly:
+
+- **Finding 1 stands.** "Accuracy is monotone t1 ≥ t2 ≥ t3" is a statement about
+  the set's own difficulty grades, and the set declares those. It is not a
+  generalisation claim.
+- **The pick in "Next-session recommendations" inherits the limit.** Choosing
+  d1-3B over the 4B candidates on 74% against 58% is a decision about this set;
+  its margin (16.7pp) is well outside the ±8-point interval at n=150, so the
+  direction is safe, but the number it is stated at is not a deployment estimate.
+- **74.0% (and 74.7%) are the figures the rest of the repo quotes**, so this note
+  is the caveat that travels with them: `74.0% [66, 80]` at n=150, on a set whose
+  atomic-row fraction is 63%, carrying an unquantified optimism measured at 23.5
+  points on a different task. It is still the best deployable number this repo
+  has.
+
+**Evidence.** `docs/eval-harness-2026-11-04.md` §1–§2 (no family field; the three
+failed reconstruction routes; 63.3% atomic), §4 (both splits for every signal,
+and `d1_3B` frozen and split-invariant at 74.0% [66.5–81.3]), §6 ("Not settled").

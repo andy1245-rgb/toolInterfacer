@@ -231,3 +231,52 @@ against the 300-row floor in `docs/assets-inventory.md` §9, and the labelling s
 was provider congestion, not policy. Before training: finish to 414 rows, fit the
 per-band temperature, and annotate `audit.csv` so calibration stops reading
 UNKNOWN.
+
+---
+
+## Correction — 2026-11-04
+
+Appended, not edited. This is dated plan material and is left as it was written.
+Two of its inferences do not survive the Phase 1 measurement pass.
+
+### C1. Finding 1's conclusion is about the 382-row task, not this one
+
+**Finding 1** is stated correctly up to its last clause. 93.19% / 0.61 ms against
+d1-3B's 91.36% / 242.7 ms is a real head-to-head — but it is on a **smart-home
+assistant router**: 18 classes (`timer_create`, `thermostat_set`,
+`shoppinglist_add`, `calendar_today`), its own 17-tool registry, its own
+200-reference corpus. **Its intersection with this repo's 8 ops is empty**
+(re-verified 2026-11-04). The finding's own next sentence still holds — the script
+was re-run and the number is not in-sample, it is template transfer — but the
+disjunction it closes with does not:
+
+> Either the linear number is in-sample ... or the project's premise -- a neural
+> decision model behind the `choice` primitive -- is the wrong instrument.
+
+There is a third possibility, and it is the one the measurements landed on: the
+linear model is the right instrument **for that label set** and the wrong one for
+this repo's, where it scores **62.7% against the 3B's 74.0%** on the same 150 rows
+(`docs/classical-baseline-2026-11-03.md` §5). The Outcome section repeats the
+unhedged form — "So the premise 'a neural decision model is required' is
+overstated" — which is a claim about a smart-home command vocabulary, not about
+`filesys_grep` and `decide_extract`.
+
+Finding 4 of the same section already has this right ("the v2 set's bands ... are
+harder than the 382 set's task. Any comparison across the two is invalid"); the
+correction is that it applies to finding 1 too.
+
+### C2. The t3 band result is a 55-row figure on a set that cannot be family-split
+
+The Outcome's "It *wins* the hardest band (t3 boundary pairs, 69.1% vs 67.3% at
+0.04 ms)" is a real measurement and is quoted with its band, which is more than
+most. What it cannot be is a generalisation: the t3 band is **55 rows**, and
+`utterances_v2` has **63.3% atomic rows** (95 of 150) with 11 declared boundary
+families — holding families out moves accuracy by **−0.4 to +3.7 points, in both
+directions, inside the seed-to-seed spread**. The same model class loses **23.5
+points** when real families are held out on a set that has them. So "the
+boundary-pair band is where a lexical model belongs" is a hypothesis this set is
+consistent with, not a finding it establishes.
+
+**Evidence for both.** `docs/eval-harness-2026-11-04.md` §1–§2, §4, §6;
+`docs/distill-corpus-certification-2026-11-03.md` §1 (the empty intersection);
+`docs/classical-baseline-2026-11-03.md` (Corrections C1–C2).

@@ -473,3 +473,67 @@ Everything else here is a reading of a private tree's files and is unaffected by
 The one number a later document qualifies is in `docs/classical-baseline-2026-11-03.md` §5–6,
 which measures the same classical model on a different, harder task and reaches the opposite
 verdict for it; that is a scope difference, not a contradiction, and that document says so.
+
+---
+
+## Corrections — 2026-11-04
+
+Appended, not edited. The survey above is the record of what the private trees held when it was
+read; the numbers in it are quoted correctly from those files. What does not survive Phase 1 is
+the **framing** that lets a reader carry them into this repo.
+
+### C1. The 382-row set is a smart-home router; the intersection is empty
+
+`routing_382` is a smart-home assistant router: `timer_create`, `thermostat_set`,
+`shoppinglist_add`, `calendar_today` — **18 classes, its own 17-tool registry, its own
+200-reference training corpus**. **Its intersection with this repo's 8 ops is empty.** Re-verified
+2026-11-04 against `tests/data/routing_382.json` and `tests/data/utterances_v2.json`: 18 labels,
+8 labels, intersection empty.
+
+So every figure in "The 382-row router benchmark" (93.19%, 91.36%, 86.65%, 75.64%, 59.42%) is a
+measurement **of a task this repo does not perform**, and none of them is comparable to an
+accuracy on `useTool`'s 8 ops. Only the `62.7%` figure — `docs/classical-baseline-2026-11-03.md`
+§5, the same linear model scored on this repo's own frozen 150 rows — is. The `Status of this
+survey` row that runs 93.19 / 66.23 / 62.7 / 74.0 together in one sentence should be read as two
+sentences: two figures from the smart-home router, two from this repo's 8 ops.
+
+### C2. "74.7% against 93.19%" — the two numbers are from different sets
+
+Two places make the rhetorical comparison this survey is built around, and both mix a
+150-row figure into a 382-row board:
+
+- **line 77**: "A 3B model at **74.7%** reads as a decent small router until a classical model at
+  **93.19%** is on the same board, answering in **0.61 ms** where the 3B takes 242.7 ms — a 400×
+  latency gap at better accuracy."
+- **line 390**: "Until those are on the board, '74.7% for a 3B' reads as good; against a 0.61 ms
+  classical model at 93.19% it reads as the wrong instrument."
+
+74.7% is **not** a 382-row number and is not on that board. In this repo's recorded sweep it is
+d1-3B-Q4's **`logit_read`** lane on the **150-row, 8-op** set
+(`docs/model-sweep-consolidated.md`; 81.2 / 67.7 / 70.9). On the 382-row board the same model's
+recorded figure is **91.36% `systemone`** — and it is the row directly above 93.19% in this
+document's own table.
+
+What that does to the claim:
+
+- the **400× latency gap** is real and is measured on the same rows (0.61 ms against 242.7 ms on
+the 382) — unaffected;
+- "**better accuracy**" is true **on the 382 board**: 93.19% against 91.36%, a difference of
+  **1.83 points** — not the 18-point impression the 74.7%/93.19% pairing creates;
+- and the inference "**it reframes the whole live-probe table**" (line 424, "**17 points** above
+  the 74.7% this repo currently treats as the incumbent") does **not** follow. The 17 points span
+  two datasets, two adapters and two label spaces. There is no 17-point gap on any single board in
+  this repo, and the incumbent's own 382-row score is 91.36%.
+
+The correct reading: on a closed, in-vocabulary smart-home label set, a linear model matches a 3B
+at ~400× lower latency. That is a real and useful result about *that* task. It says nothing about
+how a linear model performs on this repo's ops — `docs/classical-baseline-2026-11-03.md` §5
+measures that, and finds it 11.3 points *behind* the 3B.
+
+**Evidence.** `tests/data/routing_382_PROVENANCE.md` and
+`docs/distill-corpus-certification-2026-11-03.md` §1 (the 18 classes, the own registry, the empty
+intersection); `docs/model-sweep-consolidated.md` (74.7% = d1 `logit_read` on the 150-row set);
+`docs/classical-baseline-2026-11-03.md` §2 (91.36% on the 382, recorded there and not re-run). Of
+the 382-row figures listed in C1, `bench/classical_baseline.py` reproduces 93.19%, 92.41% and
+66.23%. The other four — d1-3B 91.36%, MiniLM 86.65%, Qwen3.5-0.8B 75.64%, needle3 59.42% — are
+recorded from the sibling project and are not re-run here.

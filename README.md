@@ -434,11 +434,37 @@ can read as current.
 | [`docs/model-sweep-consolidated.md`](docs/model-sweep-consolidated.md) | the October sweep on one frozen 150-row set, per band: d1-3B-Q4_K_M at 74% overall (t1 81 / t2 71 / t3 67, p50 153 ms) against the 4B challengers, plus the 2026-10-18 correction where the "Qwen3.5-4B" lanes turned out never to have served Qwen3.5-4B |
 | [`docs/research-model-sweep-q4.md`](docs/research-model-sweep-q4.md) | the 4B-class scout that fed those lanes: three sourced candidates, downloaded and benched through `logit_read`, scored against the 84% d1-3B bar |
 | [`docs/serving-fix-qwen35.md`](docs/serving-fix-qwen35.md) | why the qwen35 lanes served CPU-class in-process — **unresolved**: the flags, the builds, RPC, the driver and the GGUFs are each ruled out by measurement, and the surviving lead is a 6–7× compute-buffer split between `llama-bench` and `llama-server` |
-| [`docs/classical-baseline-2026-11-03.md`](docs/classical-baseline-2026-11-03.md) | the TF-IDF + linear-SVM baseline rebuilt in stdlib: the recorded 93.19% reproduces exactly, but on this repo's own 150 rows the same model scores 62.7% against d1-3B's 74.0% — verdict: not the default; as a front gate, 79.3% at 95 ms against d1 alone at 74.0% and 169 ms |
-| [`docs/local-classifier-cascade-2026-11-03.md`](docs/local-classifier-cascade-2026-11-03.md) | the same 150 rows and 8 labels asked a different question — how much can a free local model take off a **hosted** 95.3% fallback: 61.3% grouped CV (vs 69.3% random, an 8.0-point leak), and every coverage above 2.7% lowers blended accuracy; what survives is per-class routing at 84.7% against the 3B's 74.0%, and the finding that local confidence barely discriminates while the 3B's does (97.6% at 28% coverage) |
+| [`docs/classical-baseline-2026-11-03.md`](docs/classical-baseline-2026-11-03.md) | the TF-IDF + linear-SVM baseline rebuilt in stdlib: the recorded 93.19% reproduces exactly — but it is a **different task** (382 rows, 18 smart-home classes, empty intersection with this repo's 8 ops), so only the 62.7% against d1-3B's 74.0% on this repo's own 150 rows says anything about `useTool` — verdict: not the default; as a front gate, 79.3% at 95 ms against d1 alone at 74.0% and 169 ms |
+| [`docs/local-classifier-cascade-2026-11-03.md`](docs/local-classifier-cascade-2026-11-03.md) | the same 150 rows and 8 labels asked a different question — how much can a free local model take off a **hosted** 95.3% fallback: 61.3% grouped CV, every coverage above 2.7% lowers blended accuracy, and the per-row gate fails because local confidence barely lifts (61.3% → 86.7% at 10%) and is non-monotone while the 3B's goes 74.0% → 97.6% at 28% coverage; the per-class alternative is **not** established — the report's 84.7% was an oracle applied on the row's true label (`bench/local_clf.py:1085`), 92.8% [88.5–96.6] is the union ceiling above it, and a deployable per-class figure is being measured on another track |
 | [`docs/vulkan-igpu-2026-11-03.md`](docs/vulkan-igpu-2026-11-03.md) | the Iris Xe iGPU against the CPU build on the routing workload: 2.72× slower per decision (8943.6 vs 3283.7 ms p50, n=50), 6.9× slower at prefill, 0 of 50 paired rows won — the idle GPU is not compute, because routing is prefill-dominated |
+| [`docs/eval-harness-2026-11-04.md`](docs/eval-harness-2026-11-04.md) | **the measurement instrument**: group-aware splits, repeated seeds, cluster-bootstrap intervals, and one `Predictor` interface — then every local signal re-measured through it. Headline: the 150-row set has **no families** to hold out (63.3% of rows are atomic, so a family split moves accuracy by −0.4 to +3.7 points, in both directions), the set that does have families loses **23.5 points** when they are held out (92.1% → 68.6%), and the repo's 84.7% per-class figure is an **oracle** applied on the true label |
+| [`docs/number-sweep-2026-11-04.md`](docs/number-sweep-2026-11-04.md) | the sweep after those corrections: every place in the tree where 84.7 / 93.19 / 66.23 / 62.7 / 74.0 appears, each one marked **fixed**, **clean** or **coincidence**, with the reason — plus the eleven places the same four patterns appear without those digits |
 | [`docs/dataset-status.md`](docs/dataset-status.md) | the hop log measured as training data: 14 of 1398 records trainable and all 14 carrying the same label (15 of 5243 on the re-checked snapshot) — it is an execution trace, so the fine-tune corpus is distilled rather than harvested |
 | [`docs/distill-corpus-certification-2026-11-03.md`](docs/distill-corpus-certification-2026-11-03.md) | the distilled corpus certified as training data: **412** rows labelled (not 267 — that was a snapshot of a run still going), **0** collisions with either frozen eval set across all pairs, 410 frozen at `data/distill/` after two near-duplicate exclusions, the teacher's answer rejected as a label because it gives opposite answers to rows one filename apart at 0.9 confidence, and what a fair evaluation may claim from a corpus whose t1 band is saturated |
+| [`docs/cost-reduction-glm-flash.md`](docs/cost-reduction-glm-flash.md) | the hosted routing bill cut, measured rather than projected: 38 endpoints of one model id on the same 150 rows, `$0.0202 → $0.0053` per 1k decisions (−73.8%) at 141/150 → 145/150, by pinning the cheapest endpoint and making three prompt/answer changes — and why `sort: "price"` does not get there |
+
+**Correction — 2026-11-04.** The claims this table made that Phase 1 retired, in one place:
+
+- **84.7% was an oracle, not a result.** It is the per-class `lr`-or-`3B` map applied on each
+  row's ground-truth label (`bench/local_clf.py:1085`), so no router can reach it; 92.8%
+  [88.5–96.6] family-held-out is the ceiling above it. The deployable numbers on that set are
+  61.3% (`lr`), 50.0% (`1-NN`) and 74.0% (`d1-3B`). A deployable per-class figure is being
+  measured on another track and is not quoted here.
+- **`routing_382` is a different task.** 18 smart-home classes (`timer_create`,
+  `thermostat_set`, …), its own registry, **empty intersection** with this repo's 8 ops. Its
+  93.19% / 66.23% are not comparable to `useTool`; only the 62.7% measured on this repo's 150
+  rows is.
+- **`utterances_v2` cannot measure its own optimism.** 63.3% of its rows are atomic, holding
+  families out moves accuracy −0.4 to +3.7 points in both directions, and the reported 8-point
+  "leak" recomputes to 0.0 across seeds. The generalisation penalty this model class shows on a
+  set that *can* be family-split is **23.5 points** (92.1% → 68.6%).
+
+One further correction is recorded in the file it belongs to: the **74.0% → 82.0%** gain from
+rewriting two op descriptions is **in-sample** and is an upper bound, not an estimate
+([`bench/results/p1-diagnose/FINDINGS.md`](bench/results/p1-diagnose/FINDINGS.md)).
+
+Full derivations and the per-signal tables: [`docs/eval-harness-2026-11-04.md`](docs/eval-harness-2026-11-04.md).
+Each affected document carries its own dated, appended correction.
 
 ### Dated audits, probes and plans — 2026-11-03
 
