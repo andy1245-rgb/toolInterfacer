@@ -1059,15 +1059,23 @@ def main() -> None:
         "web_fetch": "3b",
         "reddit_digest": "3b",
     }
-    pred_static = [
-        pred_lr[i] if static_map[labels[i]] == "lr" else m3b_pred[i]
-        for i in range(n)
-    ] if m3b_pred else pred_lr
-    acc_static = accuracy(pred_static, labels)
+    # A per-class map answers "which expert should serve this row". At inference
+    # the class is the unknown being predicted, so the map must be indexed by the
+    # class the cheap model PREDICTS (`pred_lr`, an out-of-fold prediction) — never
+    # by `labels[i]`. Indexing it by the row's own label is an oracle: it requires
+    # the answer to look up the answer, and no deployed system can run it. Both are
+    # kept and both are reported, because the difference between them is the
+    # quantity that matters. Measured at n=150 (5-fold × 5 seeds, cluster
+    # bootstrap) in `bench/router_policy.py`: 84.5% oracle against 79.3% deployed.
+    def _dispatch(choice_map: dict[str, str], key) -> list[str | None]:
+        return [pred_lr[i] if choice_map[key[i]] == "lr" else m3b_pred[i]
+                for i in range(n)]
 
-    # honest per-class selection: decided on the training portion only
-    pred_nested: list[str | None] = [None] * n
+    acc_static = acc_static_routed = 0.0
+    acc_nested = acc_oracle = 0.0
     if m3b_pred is not None:
+        pred_oracle: list[str | None] = [None] * n
+        pred_routed: list[str | None] = [None] * n
         for f in range(k):
             train_idx = [i for i in range(n) if fold_of[i] != f]
             test_idx = [i for i in range(n) if fold_of[i] == f]
@@ -1082,11 +1090,14 @@ def main() -> None:
                 b3_correct = sum(1 for i in sel if m3b_pred[i] == labels[i])
                 choice_map[lab] = "lr" if lr_correct > b3_correct else "3b"
             for i in test_idx:
-                pred_nested[i] = (pred_lr[i] if choice_map[labels[i]] == "lr"
-                                  else m3b_pred[i])
-        acc_nested = accuracy(pred_nested, labels)
-    else:
-        acc_nested = 0.0
+                routed = _dispatch(choice_map, pred_lr)
+                oracle = _dispatch(choice_map, labels)
+                pred_routed[i] = routed[i]
+                pred_oracle[i] = oracle[i]
+        acc_nested = accuracy(pred_routed, labels)
+        acc_oracle = accuracy(pred_oracle, labels)
+        acc_static_routed = accuracy(_dispatch(static_map, pred_lr), labels)
+        acc_static = accuracy(_dispatch(static_map, labels), labels)
 
     # optimistic variant: select on the pooled OOF numbers themselves
     acc_opt = 0.0
@@ -1094,14 +1105,16 @@ def main() -> None:
         per_lab = report["per_label"]
         opt_map = {lab: ("lr" if per_lab[lab]["lr"] >= (per_lab[lab]["3b"] or 0)
                          else "3b") for lab in LABELS}
-        pred_opt = [pred_lr[i] if opt_map[labels[i]] == "lr" else m3b_pred[i]
-                    for i in range(n)]
-        acc_opt = accuracy(pred_opt, labels)
-        print(f"   static class-shaped table (prior knowledge, no fitting): "
+        acc_opt = accuracy(_dispatch(opt_map, labels), labels)
+        print(f"   static table, dispatched on PREDICTED class (deployable): "
+              f"{acc_static_routed * 100:.1f}%")
+        print(f"   static table, dispatched on TRUE label (oracle):          "
               f"{acc_static * 100:.1f}%")
-        print(f"   per-class choice from training portion (nested):          "
-              f"{acc_nested * 100:.1f}%")
-        print(f"   per-class choice from pooled OOF (optimistic upper bd):   "
+        print(f"   per-class map from training folds, PREDICTED class "
+              f"(deployable): {acc_nested * 100:.1f}%")
+        print(f"   per-class map from training folds, TRUE label (oracle, "
+              f"not deployable): {acc_oracle * 100:.1f}%")
+        print(f"   per-class map from pooled OOF, TRUE label (optimistic ub):  "
               f"{acc_opt * 100:.1f}%")
         print(f"   lr alone {accuracy(pred_lr, labels) * 100:.1f}%   "
               f"3b alone {accuracy(m3b_pred, labels) * 100:.1f}%   "
@@ -1113,9 +1126,9 @@ def main() -> None:
                         or pred_rules[i] == labels[i]) / n
         print(f"   oracle union lr|3b {union_lr_3b * 100:.1f}%  "
               f"lr|3b|rules {union_all * 100:.1f}%  "
-              f"<- ceiling for any per-class choice; the training-portion choice "
-              f"keeps {(acc_nested - 0.740) / (union_lr_3b - 0.740) * 100:.0f}% "
-              f"of the lr|3b gap")
+              f"<- ceiling for any per-class choice; the deployable map keeps "
+              f"{(acc_nested - 0.740) / (union_lr_3b - 0.740) * 100:.0f}% "
+              f"of the lr|3b gap, the oracle {(acc_oracle - 0.740) / (union_lr_3b - 0.740) * 100:.0f}%")
         local_classes = [lab for lab in LABELS if opt_map[lab] == "lr"]
         local_rows = [i for i in range(n) if labels[i] in local_classes]
         cov = len(local_rows) / n
@@ -1127,9 +1140,14 @@ def main() -> None:
               f"blended {casc['blended_acc'] * 100:.1f}%, "
               f"${casc['cost_1k']:.4f}/1k decisions")
         report["hybrid"] = {
-            "static_map": static_map, "static_acc": acc_static,
-            "nested_selection_acc": acc_nested,
+            "static_map": static_map,
+            "routed_selection_acc": acc_nested,
+            "oracle_selection_acc": acc_oracle,
+            "static_routed_acc": acc_static_routed,
+            "static_oracle_acc": acc_static,
             "optimistic_selection_acc": acc_opt,
+            "routed_note": "dispatch key is the predicted class (pred_lr); deployable",
+            "oracle_note": "dispatch key is the row's true label; NOT deployable",
             "lr_alone": accuracy(pred_lr, labels),
             "3b_alone": accuracy(m3b_pred, labels),
             "optimistic_map": opt_map,

@@ -874,9 +874,13 @@
    "web_fetch": "3b",
    "reddit_digest": "3b"
   },
-  "static_acc": 0.84,
-  "nested_selection_acc": 0.8466666666666667,
+  "routed_selection_acc": 0.7533333333333333,
+  "oracle_selection_acc": 0.8466666666666667,
+  "static_routed_acc": 0.7533333333333333,
+  "static_oracle_acc": 0.84,
   "optimistic_selection_acc": 0.8466666666666667,
+  "routed_note": "dispatch key is the predicted class (pred_lr); deployable",
+  "oracle_note": "dispatch key is the row's true label; NOT deployable",
   "lr_alone": 0.6133333333333333,
   "3b_alone": 0.74,
   "optimistic_map": {
@@ -905,9 +909,9 @@
   }
  },
  "latency_ms": {
-  "single_p50": 0.2201040042564273,
-  "single_p95": 0.6059279985493049,
-  "batch_per_row": 0.34275854867559646,
+  "single_p50": 0.27346599381417036,
+  "single_p95": 0.3180960047757253,
+  "batch_per_row": 0.29500043400912546,
   "n_rows": 150,
   "n_features": 5763,
   "note": "indicative: shared 12-thread laptop, other load present"
