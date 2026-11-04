@@ -137,7 +137,9 @@ These are not wired, and the README would be lying if it did not say so:
   model-planned version **L3** and marks it *not built*, which is what this is; the code's
   **P2** label for that work is not the spec's phase of the same name
   ([`spec/1.0-spec.md`](spec/1.0-spec.md#divergences-from-this-spec), §8 row).
-  `tests/test_route_real_traffic.py` is the table that holds the rules to the hop log.
+  `tests/test_route_traffic_shapes.py` is the table that holds the rules to the
+  phrasings the hop log recorded — the shapes are the log's, the subjects on the
+  seven off-disk rows are synthetic.
 - **Ask-back works over HTTP, but only as a second call.** The transport has no channel
   mid-request, so `use_tool(..., ask_via_response=True)` returns `status: "need_input"`
   with the candidate list as answerable options, and the caller resolves it by calling

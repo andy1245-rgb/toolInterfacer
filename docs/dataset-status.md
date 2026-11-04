@@ -52,7 +52,7 @@ The 14 records, with how many hop lines each one summarises:
 
 | # | observations | label | intent |
 |---|---|---|---|
-| 1 | 1 | filesys_glob | web_search: Sam Cooke "Bring It On Home to Me" … |
+| 1 | 1 | filesys_glob | web_search: The Sundown Collective "Lantern Song" 1974 mono stereo mix alternate take master take |
 | 2 | 75 | filesys_glob | list the files |
 | 3 | 18 | filesys_glob | what files are in the ghost directory |
 | 4 | 18 | filesys_glob | list the files in the bench directory |
@@ -60,12 +60,21 @@ The 14 records, with how many hop lines each one summarises:
 | 6 | 18 | filesys_glob | ls |
 | 7 | 15 | filesys_glob | list the .txt files |
 | 8 | 15 | filesys_glob | list the .sh files in the bench directory |
-| 9 | 1 | filesys_glob | web search for Clickteam Fusion 2.5 asset extraction tools |
-| 10 | 1 | filesys_glob | Find published measurements of ultra-wideband ranging accuracy |
-| 11 | 1 | filesys_glob | search the web for the Vasarhelyi 2018 Science Robotics paper |
-| 12 | 1 | filesys_glob | Find the arXiv ID and title for the paper "MCPTox" |
-| 13 | 1 | filesys_glob | Search the web for measured ESP-NOW latency and throughput |
-| 14 | 1 | filesys_glob | Find Canadian court judgments describing controlled delivery |
+| 9 | 1 | filesys_glob | web search for Northwind Forge 4.2 asset extraction tools GlintHandle Hatchcrate |
+| 10 | 1 | filesys_glob | Find published measurements of sub-gigahertz (NX4100/NX4200) ranging accuracy and maximum range |
+| 11 | 1 | filesys_glob | search the web for the Okonkwo 2019 Systems Robotics Letters paper on optimised flocking of ground robots |
+| 12 | 1 | filesys_glob | Find the arXiv ID and title for the paper "TOOLHAZE: A Benchmark for Tool Output Poisoning in Agent Runtimes" |
+| 13 | 1 | filesys_glob | Search the web for measured LoRa mesh latency and throughput benchmarks between NX4100 radio modules, and head-to-head comparisons |
+| 14 | 1 | filesys_glob | Find Meridian court judgments (caselaw.example.org, High Court, district courts) that describe escrow disputes |
+
+The observation counts and the labels in that table are measured; the intent text
+on the seven mislabelled rows is not. Rows 1 and 9–14 show a same-shape synthetic
+substitute: the marker, the grammar and the class of artefact are the log's, the
+subject is invented, because the log's own subjects are the operator's query
+history and a public repository is not where it belongs. The shape each one
+carries is pinned in `tests/test_route_traffic_shapes.py`, which uses the same
+seven rows. Rows 2–8 are as logged — a listing of a repo-relative tree names no
+subject of the caller's, which is why only the seven were substituted.
 
 Rows 1 and 9–14 are **observational mislabels**, not training data: seven
 web-research intents that the router executed as `filesys_glob`. The consistency
@@ -87,7 +96,7 @@ routable ops have no runtime evidence at all.
 All 4 records are `filesys_glob`, and two of them are visibly not glob decisions:
 "read the service logs live.jsonl and summarize the last few records" ran
 `filesys_glob → decide_pick → filesys_read` (the glob is candidate discovery, the
-answer is read), and "Find Canadian court judgments…" is web research. Treat the
+answer is read), and the "Find … court judgments …" row is web research. Treat the
 live contribution as 4 candidate rows of which 2 are sound.
 
 ## The frozen files are the corpus
