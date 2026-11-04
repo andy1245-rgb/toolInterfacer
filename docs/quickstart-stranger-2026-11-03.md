@@ -49,7 +49,7 @@ roots caveat above.
 | 14 | Re-clone into `$HOME` (`/tmp/stranger-home/toolInterfacer`), same example | `200 {"status": "done", "result": ["pyproject.toml"], "degraded": false, "assumptions": [], "hops": [{"step": "L0", "op": "filesys_glob", "ms": 3.9, "conf": 1.0, "artifact_summary": "['pyproject.toml']"}]}` | The result shape now matches the README, except the documented top-level `"confidence": 1.0` is **absent**. Fixed. |
 | 15 | `POST /v1/plan` with `{"intent":"research local inference latency"}` | `200` with `meta.level=L2`, `meta.template=research`, `meta.rule=RESEARCH_VERB`, and the four-step graph `queries → hits → picked → pages → digest` carrying `gate_pre` `conf_gte 0.7` and `gate_post` `is_relevant 0.75`. | Yes — matches the documented sample exactly. |
 | 16 | `POST /v1/useTool` `{"intent":"research local inference latency"}` | `200` body with `"status": "error"`, `"error": "CLI not found: /tmp/stranger-home/.pi/profiles/registry/web-search/scripts/free-search"` | Yes — Honest gaps says the web ops shell out to CLIs you must point at. |
-| 17 | `POST /v1/useTool` reddit intent | `200` with `"error": "reddit-research CLI unavailable: no project directory found; tried:\n  .../Documents/<private-project>/Research/<project>\n  .../<project>\nSet ops.reddit.cwd (or ops.reddit.cwd_candidates) to the reddit-research project directory."` (the two tried paths were the shipped defaults of the day and are redacted here; both are empty since 2026-11-04, so a fresh install gets `reddit-research is not configured: set ops.reddit.cwd …` instead) | Yes — gap 3, and the error is better than the README's own description. |
+| 17 | `POST /v1/useTool` reddit intent | `200` with `{"status": "error", "error": "reddit-research is not configured: set ops.reddit.cwd to the reddit-research project directory (the clone holding .venv/ and reddit_research/)", …}`, `hops: []`. **Corrected 2026-11-04** — this row first recorded the message the service returned while `ops.reddit.cwd` still shipped a machine's own tree: `"reddit-research CLI unavailable: no project directory found; tried:\n  …/Documents/<private-project>/Research/<project>\n  …/<project>\nSet ops.reddit.cwd (or ops.reddit.cwd_candidates) …"`. See the appended note. | Yes — gap 3, and the error is better than the README's own description. |
 | 18 | `cd pi-extension && npm ci` | Exit 0, from a clone, `package-lock.json` tracked and consistent. `3 vulnerabilities (2 moderate, 1 high)`. | Mostly — `pi-extension/README.md` documents `npm ci`; neither README says it needs the network. |
 | 19 | `npx tsc --noEmit` | Exit 0, silent. | Yes. |
 | 20 | `node scripts/contract-check.ts` | `11/11 contract cases passed`. | Yes (bench of extension docs). |
@@ -274,3 +274,82 @@ Everything above ran from `/tmp/stranger-ti` and `/tmp/stranger-pristine` (clone
 fresh `HOME` at `/tmp/stranger-home` so first-boot behaviour was genuine. Service ran on
 11133–11137 via `TI_CONF_OVERLAY` because port 1113 was held by another instance; all of
 my listeners were stopped and the temp trees removed afterwards.
+
+---
+
+## Note, appended 2026-11-04: row 17's response no longer exists
+
+*Appended. Everything above is the 2026-11-03 record and has not been rewritten, with the
+one exception marked inline: the captured body in row 17. This note says what moved and
+why.*
+
+**What changed.** `service/ti/conf/defaults.json` no longer ships a machine-specific
+`ops.reddit.cwd` / `ops.reddit.cwd_candidates` (commit `812a0c7`, "conf: ship the CLI ops
+unconfigured, and unpublish private project names" — the same pass that removed the last
+`/home/<account>` paths). Both keys are empty now, so `resolve_project()` has nothing to
+probe and takes its *other* branch:
+
+```python
+if not tried:
+    raise cli.CliMissingBinary(
+        "reddit-research is not configured: set ops.reddit.cwd to the "
+        "reddit-research project directory (the clone holding .venv/ and "
+        "reddit_research/)")
+```
+
+The message row 17 recorded — `reddit-research CLI unavailable: no project directory
+found; tried: …` — is emitted only when there *are* candidates and none of them is a
+directory. With the shipped conf there are no candidates, so that string is unreachable
+from a fresh install. It is kept in row 17 as superseded history rather than deleted,
+because the row's *finding* is unchanged and only its evidence went stale.
+
+**Why it changed.** The old default named one operator's own `~/Documents/<project>`
+tree, in package data, inside the wheel — so every install was told to look in one
+person's documents folder. `tests/test_no_personal_paths.py`'s `_HOME_TREE` rule now fails
+the suite if a `~`-relative path into the documents tree comes back. This is a disclosure
+fix, not a behaviour fix: nothing about whether the op runs is different.
+
+**What the service returns now.** Run, not derived: `PYTHONPATH=service python3 -m
+ti.http.api` on a scratch port with `TI_CONF_OVERLAY` pointing only `http.port` and
+`http.token_file` at temp locations (every `ops.*` value as shipped), then two `POST
+/v1/useTool` calls — `{"intent": "what does r/MechanicalKeyboards say about switch lube"}`
+and `{"intent": "what does reddit say about mechanical keyboards"}`. Both returned:
+
+```
+HTTP 200
+{
+    "status": "error",
+    "result": null,
+    "degraded": false,
+    "assumptions": [],
+    "hops": [],
+    "wall_ms": 0.1,
+    "meta": {
+        "level": "L2",
+        "route_gate": 0.7
+    },
+    "error": "reddit-research is not configured: set ops.reddit.cwd to the reddit-research project directory (the clone holding .venv/ and reddit_research/)"
+}
+```
+
+Identical between the two intents apart from `wall_ms`. Four things about that body are
+worth keeping straight, because they are what row 17 was really about:
+
+- still **`200`** with `status: "error"` — gap 2 above is unchanged and is still the most
+  consequential thing in this document for anyone building on the HTTP surface;
+- **`hops: []`**: the failure lands before the single step records a hop, so a caller
+  counting hops sees an empty plan rather than a failed step. The `error` string is the
+  only evidence the plan ran at all;
+- `meta.level` is `L2`, `meta.route_gate` `0.7`, and there is no `template` key on this
+  route;
+- the private tree path is **gone** from the body, which is the point of the change and
+  also its cost: the old message told a stranger which two paths to fix, and the new one
+  describes the shape of the directory to point at (`the clone holding .venv/ and
+  reddit_research/`) without naming anywhere on their own disk.
+
+**One more line in this document is superseded by the same change.** Under "Honest-gaps
+entries that are still accurate", the `reddit_digest` bullet says the error arrives "with
+a better error than the README promises (it names both candidate paths and
+`ops.reddit.cwd`)". It still names `ops.reddit.cwd`; it no longer names candidate paths,
+because there are none to name. The bullet's verdict — unrunnable out of the box, and
+honest about it — stands.

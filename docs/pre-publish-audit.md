@@ -544,3 +544,82 @@ extension's own dependency tree.
 §1's headline — "history cannot be published as-is" — stands. What changed is the
 *HEAD* half of it: 2 occurrences became 0, and the guard can see the shape that hid
 them.
+
+---
+
+## Correction — appended 2026-11-04: two rows went stale with the dataset
+
+*Appended. Nothing above has been rewritten: §4's table and §5's attribution paragraph
+were accurate when measured and are not accurate now. This section says which two rows
+moved, what moved them, and what a reader should substitute.*
+
+**What changed.** The four private project names in the `projects_query` slot vocabulary
+were replaced with neutral names of the same shape, across `tests/data/routing_382.json`,
+`bench/registry_382.json` and the three recorded replays under `bench/results/`
+(`48429d3`, merged at `812a0c7`). `tests/data/routing_382_PROVENANCE.md` was rewritten to
+record the substitution as a documented exception, with the digests for the source, for
+what was imported, and for what ships. That rewriting is what invalidated the two rows —
+not a change in the findings, and not a change in the data's shape.
+
+### §4's attribution row ("`localAlexa` / `jevResearch` provenance for imported data")
+
+Two things about that row are now wrong, and one thing is still right.
+
+- **The names are gone.** `localAlexa` and `jevResearch` now occur exactly once in the
+  repository: in that row, which records them. `git grep -n 'localAlexa\|jevResearch'`
+  returned ten files before the substitution and returns this document alone after it.
+  The row is now the last place either name survives, which is the opposite of the
+  attribution it was praising.
+- **The citation no longer lands.** `tests/data/routing_382_PROVENANCE.md:9` used to be
+  the blank line just above the `## Origin` table. The file now opens with a paragraph
+  documenting the exception, so line 9 sits mid-sentence in it. The provenance *record*
+  is still there and is now larger.
+- **The judgement stands.** Attribution for imported data is still deliberate, and still
+  should stay. What the substitution changed is that the attribution now describes four
+  tokens by fingerprint instead of by name: `PROVENANCE.md` would have had to quote the
+  originals to record their removal, which would have defeated the removal, so it records
+  `sha256(bytes)[:12]`, a length, and the neutral name that replaced each one. Anyone
+  holding the source tree can still check all four.
+
+Substitute this for the row's "where" and "my read": the provenance record for the
+imported set is `tests/data/routing_382_PROVENANCE.md`, its 2026-11-04 exception section
+is the part that matters, and it is deliberate and correct *and now abstracted* — the
+four names were removed from it in the same pass.
+
+### §5's "Imported data has attribution" paragraph
+
+It said `tests/data/routing_382.json` and `bench/registry_382.json` are **"byte-identical
+copies from a sibling project, with sha256 digests and the origin recorded in
+`tests/data/routing_382_PROVENANCE.md:1-29`"**.
+
+They are not byte-identical copies any more, and the digests the audit was relying on
+describe bytes that no longer ship. Measured in this tree:
+
+| file | ships as | matches `PROVENANCE.md`'s "after" column |
+|---|---|---|
+| `tests/data/routing_382.json` | `dc63af16426ef573d795279987a858c8dbc55c649956177109a5cd35466ecf9d` | yes |
+| `bench/registry_382.json` | `ec27371aa4b42e9b6089e6b6077ad1f2bc53489046e26474bb2eddd2ea0eb2c2` | yes |
+| both, before the substitution | `7c91fa06…`, `7408ef5a…` | recorded as "imported / source" |
+
+The substitution is token-for-token and reverses to the source bytes exactly, so the
+*substance* of §5 is intact — the rows, the labels and the registry entries are the
+source's. Three properties the provenance now pins, which the audit's sentence cannot:
+
+- the delta is arithmetic, not editorial: `bench/registry_382.json` ±0 B (21872 → 21872)
+  and the other four files −3 B each; no line reflowed, no key reordered;
+- the re-run of the recorded protocol against the substituted files reproduced every
+  field of `bench/results/classical_382.json` other than latency, fingerprint and
+  timestamp — so §5's "comparability" concern is answered by measurement, not by the
+  byte claim;
+- the contamination audit's numbers are identical with only its recorded `sha` moved
+  (`7c91fa0644f9` → `dc63af16426e`).
+
+So the sentence to read instead is: *the two files are copies of a sibling project's
+benchmark, with one documented vocabulary substitution that leaves the structure and
+every recorded number intact; the pre- and post-substitution digests are both in
+`PROVENANCE.md`, so a holder of the source can verify the claim either way.*
+
+**Neither correction changes a verdict.** §5's conclusion — imported data carries
+attribution, and the provenance record is what makes the claim auditable — is unaffected;
+the record got stronger, and the only thing that weakened is a byte claim that was true
+on 2026-11-03 and is not true of the bytes that ship.
