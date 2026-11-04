@@ -115,17 +115,52 @@ def _conf_thread_cap() -> int | None:
 
 def _argv(project: Path, reddit_cfg: dict[str, Any], query: str,
           subreddit: str | None, cap: int, ops: dict[str, Any]) -> list[str]:
+    """The CLI's argv, with the query positioned so the CLI cannot read it as a flag.
+
+    The query is caller-chosen text and the CLI parses its own argv, so where the
+    query sits is a correctness question, not a style one. It used to sit between
+    the subcommand and the flags — `["search", query, "--json", "--limit", …]` —
+    and the CLI's own parser then consumed it as an option:
+
+    - `--json` as a query became the *flag*, so the subcommand's optional `query`
+      positional stayed unset and the CLI ran its `config.toml [[queries]]`
+      instead: exit 0 and a digest about queries the caller never asked for, or
+      exit 2 when the config lists none. Either way the requested query was
+      never run.
+    - `--limit` as a query took the following flag as its value: exit 2.
+    - `-rf` exited 2 as an unrecognized option.
+
+    A query that begins with `-` can only reach the CLI intact **behind a `--`
+    terminator**, which is the form `web/search.py` and `web/fetch.py` already end
+    their argv with. Everything else stays in the position the CLI documents
+    (`search "<query>" [--subreddit N] [--limit N] --json`, this module's
+    docstring) — the two are equivalent for the real CLI, and the documented
+    order is the one the stand-in CLI in `tests/data/` can parse: its query
+    positional is `nargs="*"`, and argparse accepts `--` only before the first
+    option, so every flag-first form is refused there for *any* query.
+
+    `--subreddit` is caller-chosen too, so it is `--subreddit=value`: argparse
+    cannot read a `=`-joined value as an option, and a subreddit of `--json` stays
+    a subreddit. `--limit` needs no such treatment — its value comes from
+    `int()`, so it cannot look like a flag.
+
+    `mode_args` follows `cli_parts[1:]` so `--dev-mode` reaches the CLI under both
+    entry-point shapes conf allows: a wrapper script (`cli_parts[1:]` is empty)
+    and `python -m module`, where a flag inserted before `-m` would be python's.
+    """
     cli_parts = list(reddit_cfg.get("cli") or DEFAULT_CLI)
     entry = project / cli_parts[0]
     if not entry.is_file():
         raise cli.CliMissingBinary(
             f"reddit-research entry point missing: {entry} (run `uv sync` in {project})")
-    args = ["search", query, "--json", "--limit", str(cap)]
+    flags = ["--json", "--limit", str(int(cap))]
     if subreddit:
-        args += ["--subreddit", subreddit]
+        flags.append(f"--subreddit={subreddit}")
+    args = ["search", *flags, "--", query] if query.startswith("-") \
+        else ["search", query, *flags]
     mode = ops.get("dev_mode")
     mode_args = ["--dev-mode", str(mode)] if mode else []
-    return cli.launcher(str(entry)) + mode_args + cli_parts[1:] + args
+    return cli.launcher(str(entry)) + cli_parts[1:] + mode_args + args
 
 
 def _read_posts(path: Path, run: cli.CliRun | None) -> list[dict[str, Any]]:

@@ -176,6 +176,7 @@ The service is a local HTTP endpoint that reads files on behalf of whoever asks,
   quantified group holding a quantified atom, two adjacent unbounded atoms that can match the
   same character, and an unbounded group whose alternation branches can start alike
   (`ops/filesys/regexguard.py`).
+- **What the roots admit.** With the shipped defaults a token authorises reading everything under `$HOME`, `~/.ssh` and `~/.aws` included — see [`docs/security-surface-2026-11-04.md`](docs/security-surface-2026-11-04.md).
 
 ## What is deliberately not here
 
