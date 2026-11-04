@@ -69,7 +69,7 @@ class SchemaTest(unittest.TestCase):
         self.assertEqual(schema.check_record({
             "id": "x1", "kind": "extract", "source": "s", "group": "g",
             "label_source": "gold", "state": {"intent": "i"},
-            "schema": {"query": "string"}, "value": {"query": "esp-now"}}), [])
+            "schema": {"query": "string"}, "value": {"query": "example query"}}), [])
 
     def test_bad_rows_are_rejected_with_a_reason(self):
         cases = {
