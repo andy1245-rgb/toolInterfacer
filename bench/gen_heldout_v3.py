@@ -45,9 +45,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT / "tools") not in sys.path:
-    sys.path.insert(0, str(ROOT / "tools"))
+for sub in ("tools", "bench"):
+    if str(ROOT / sub) not in sys.path:
+        sys.path.insert(0, str(ROOT / sub))
 
+import eval_harness as H  # noqa: E402
 from distill import frames, similarity, templates  # noqa: E402
 
 OUT = ROOT / "bench" / "data" / "heldout_v3.json"
@@ -466,28 +468,66 @@ def leakage_report(rows: list[dict]) -> dict:
 
 
 def distill_overlap(rows: list[dict]) -> dict:
-    """Rows whose family the committed distill corpus already trains on.
+    """The family join a consumer needs before scoring a distill-trained model here.
 
-    Both artefacts are generated from the same frames, so this number is not zero
-    and cannot be: it is the join a consumer needs in order to score a model trained
-    on `data/distill` on the part of this set that corpus never saw.
+    Both artefacts come from the same frames, so this cannot be zero. The join is
+    `eval_harness.corpus_families` — the function the harness's own guard uses — so
+    the record and the enforcement cannot drift apart.
+
+    The 0.1.0 version of this block reported `families_in_distill: 293` next to
+    `resolved_test_rows: 160`, and 293 is the *corpus's* family count, not a join
+    count: v3 has 133 families in total, so no reading of "293 families in distill"
+    as an intersection can be right. The intersection was never stated. It is stated
+    here, for both declarations a predictor can make, and the old field is kept under
+    `superseded` with its scale error written down rather than deleted.
     """
-    seen: dict[str, str] = {}
-    for name in ("train.jsonl", "val.jsonl"):
-        path = DISTILL_DIR / name
-        if not path.exists():
-            continue
-        for line in path.read_text(encoding="utf-8").splitlines():
-            if line.strip():
-                rec = json.loads(line)
-                seen[rec["family"]] = name
-    rows_seen = sum(1 for r in rows if r["family"] in seen)
-    return {"families_in_distill": len(seen),
-            "resolved_rows": rows_seen,
-            "resolved_test_rows": sum(1 for r in rows if r["family"] in seen and r["split"] == "test"),
-            "unresolved_rows": len(rows) - rows_seen,
-            "note": "a model trained on data/distill has seen these families; drop them "
-                    "by family join to score it on unseen phrasings"}
+    v3_families = {r["family"] for r in rows}
+    n_test = sum(1 for r in rows if r["split"] == "test")
+
+    def join(keys: tuple[str, ...]) -> dict:
+        files = H.corpus_files(*keys)
+        families = H.corpus_families(files)
+        hit = [r for r in rows if r["family"] in families]
+        return {"declared": list(keys), "files": list(files),
+                "corpus_families": len(families),
+                "overlapping_families": len(v3_families & families),
+                "set_families": len(v3_families),
+                "rows": len(hit),
+                "train_rows": sum(1 for r in hit if r["split"] == "train"),
+                "test_rows": sum(1 for r in hit if r["split"] == "test")}
+
+    whole = join(("distill",))
+    train_only = join(("distill:train",))
+    return {
+        "join": whole,
+        "train_only_join": train_only,
+        "kept_after_join": {"rows": len(rows) - whole["rows"],
+                            "test_rows": n_test - whole["test_rows"]},
+        "note": ("`join` is what a model fitted on the committed corpus "
+                 "(train.jsonl + val.jsonl) has already seen, and is the default the "
+                 "harness drops; `train_only_join` is the smaller set a model fitted on "
+                 "train.jsonl alone has seen. `eval_harness.scoreable()` performs this "
+                 "join for any predictor that declares `trained_on`."),
+        "superseded": {
+            "families_in_distill": whole["corpus_families"],
+            "resolved_rows": whole["rows"],
+            "resolved_test_rows": whole["test_rows"],
+            "unresolved_rows": len(rows) - whole["rows"],
+            "why": ("`families_in_distill` counted the corpus's own families "
+                    f"({whole['corpus_families']}), not the {whole['overlapping_families']} "
+                    "of this set's families that corpus contains, so the pair read as a "
+                    "join when only its row count was one. The 239/145 pair in the brief "
+                    "is the same two quantities with val.jsonl left out: a correct "
+                    "count of the corpus, and the row count for a predictor fitted on "
+                    "train.jsonl alone. Both row counts are right for their own "
+                    "declaration; neither pair states the intersection. Separately, "
+                    "`data/distill/manifest.json` records 295 families because it counts "
+                    "before its two excluded rows: the committed files hold "
+                    f"{whole['corpus_families']}."),
+            "train_only_pair": {"families_in_distill": train_only["corpus_families"],
+                                "resolved_test_rows": train_only["test_rows"]},
+        },
+    }
 
 
 def build() -> tuple[list[dict], dict, list[dict]]:
@@ -564,8 +604,11 @@ def _render_table(manifest: dict) -> str:
                      f"{s['singleton_families']} | {s['rows_in_multi_row_families']} |")
     lines += ["", f"vs v2: exact restatements {leak['exact_restatements_of_v2']}, "
               f"max ratio {leak['max_ratio_to_v2']}",
-              f"in data/distill: {over['resolved_rows']} rows "
-              f"({over['resolved_test_rows']} of them on the test side)"]
+              f"distill overlap (train+val): {over['join']['overlapping_families']} "
+              f"of {over['join']['set_families']} families, {over['join']['rows']} rows "
+              f"({over['join']['test_rows']} on the test side); "
+              f"train.jsonl only: {over['train_only_join']['overlapping_families']} "
+              f"families, {over['train_only_join']['test_rows']} test rows"]
     return "\n".join(lines)
 
 
