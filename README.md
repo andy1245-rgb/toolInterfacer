@@ -394,6 +394,22 @@ hosted-only hard-fails when `TI_OPENROUTER_API_KEY` is absent while the pair deg
 local. Reasoning and failure-path timings:
 [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md).
 
+An 8-way classifier trained on the distilled corpus, frozen, scored on the same frozen 150
+(`n=150`, per band t1 76.6% / t2 54.8% / t3 67.3%):
+
+| signal | accuracy | 95% CI | vs `d1_3B` (McNemar exact) |
+|---|---:|---|---|
+| `rules` — `bench/local_clf.py`'s cue table, fitted on nothing | **78.7%** | 72.3–85.3 | — |
+| `d1_3B` — archived per-row run | **74.0%** | 66.5–81.3 | — |
+| distilled classifier (`tools/distill/`) | 68.7% | 59.6–77.0 | 28 fixed, 36 broken, p = 0.38 |
+
+No evidence it beats the 3B, and it loses to the cue table at p = 0.040, so it is **not
+shipped**. What it does show is the complement: 79.2% on `decide_extract` where the 3B gets
+25.0%, and 63.6% on `filesys_grep` where the 3B gets 36.4% — the two classes
+`bench/results/p1-diagnose/FINDINGS.md` diagnoses as noun-routed. Its report, including why the corpus's own
+validation split ranks candidates backwards, is
+[`docs/distill-classifier-2026-11-04.md`](docs/distill-classifier-2026-11-04.md).
+
 On a CPU-only box, d1-3B-Q4 costs ~1.7 s per routing decision and ~50 ms on a
 decision-cache hit; prefill dominates, which is why `decide.max_candidates` defaults to 6.
 [`docs/testing.md`](docs/testing.md).

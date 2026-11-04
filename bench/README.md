@@ -120,6 +120,13 @@
   `data/heldout_v3_NOTES.md` before quoting a number from it: it is synthetic, it
   cannot speak for real user phrasing beyond the frames, and its two decision-op
   classes are largely single-form families.
+- `distill_transfer.py` — the corpus-trained classifier, frozen, scored on the
+  frozen 150 through `eval_harness` (nothing fits on v2, same `frozen` path the
+  recorded 3B uses), beside the archived `d1_3B` run and `local_clf`'s cue table,
+  with per-band, per-class, exact-McNemar tables and the seven declared
+  candidates. `--sweep` re-derives every table in
+  `docs/distill-classifier-2026-11-04.md` from committed material with no server
+  and no network.
 - `or_bench.py` — the hosted sweep: one chat completion per utterance per model
   against OpenRouter, an accuracy pass at bounded concurrency plus a strictly
   sequential latency pass (the concurrent pass's timings are never reported as

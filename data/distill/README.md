@@ -90,6 +90,7 @@ sense, and **no classifier trained here can be scored on it.**
 | `diagnostics.jsonl` | 44 | the 36 teacher contradictions and the 9 unstable frames — diagnostics, not labels |
 | `ballot.json` | 8 | the op-key → description map; every row's `candidates` draws from these keys |
 | `manifest.json` | — | all counts, hashes, thresholds, and the verdicts above |
+| `clf_recipe.json` | — | the trained classifier's configuration, corpus hashes and artefact sha256 — the recipe, not the ~140 kB artefact (`tools/distill/train.py`) |
 
 Row shape:
 
@@ -145,3 +146,15 @@ train/val. The split unit is `family` (the frame), hashed by
    each extra look costs it standing.
 5. This corpus is for the `useTool` 8-op decision layer only. `routing_382` is a
    different task with a different label space and is out of scope here.
+
+**Step 1 does not work for comparing models, and that has now been measured.**
+`docs/distill-classifier-2026-11-04.md` §6 fits seven candidates on this corpus and finds
+that family-held-out CV ranks them **backwards** against transfer to the frozen 150
+(Spearman ρ = −0.71): the model val and CV both prefer transfers at 60.0%, and the one
+they rank fourth of seven transfers at 68.7%. The mechanism is the "object vocabulary"
+bullet above — *family*-held-out CV leaves every slot noun in the training fold, because
+a frame's slot values recur across frames, so it rewards the model that memorised them.
+Holding *objects* out does not fix it either (the shipped model scores 83.3% on that
+split, 7 points **above** its family-split number). Until the split holds slot values
+out, treat any in-corpus comparison of two models here as unreliable, and prefer a fit
+that is bounded by construction.

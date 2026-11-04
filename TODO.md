@@ -75,6 +75,23 @@ Routing accuracy is worth nothing until this is fixed.
       the teacher errs on them; the audit CSV is how you tell which. (An earlier draft of
       this item paired that with a second sample, 78.0% at n=82, which is not in the repo —
       re-print it from `tools/distill/stats.py` before quoting it.) **next**
+- [x] **Train on it, and measure whether it beats the 3B.** Done, negative:
+      **68.7% [59.6–77.0]** against d1-3B's 74.0% [66.5–81.3] on the frozen 150 — not
+      distinguishable from the 3B (exact McNemar p = 0.38) and **significantly worse than
+      `local_clf`'s 35-rule cue table at 78.7%** (p = 0.040), which is fitted on nothing. It
+      does beat the 3B on the two classes `p1-diagnose` broke it on (`decide_extract` 79.2%
+      vs 25.0%, `filesys_grep` 63.6% vs 36.4%) and loses `web_search` 38.9% vs 100%. Not
+      shipped. Recipe at `data/distill/clf_recipe.json`, report at
+      `docs/distill-classifier-2026-11-04.md`.
+- [ ] **Give the corpus a split that holds slot values out.** The reason the arm above is
+      negative is not only the label bands: family-held-out CV ranks seven candidates
+      **backwards** against transfer (Spearman ρ = −0.71, `docs/distill-classifier-2026-11-04.md`
+      §6), because a frame's slot values recur across frames, so holding a *family* out leaves
+      every noun in the training fold and rewards the model that memorised them. Object-held-out
+      CV exists as a diagnostic (`tools/distill/train.py --object-cv`) and scores *higher* than
+      the family split, so it is not the answer either. This blocks using `val.jsonl` to choose
+      between two models on this corpus, which is what the certification's protocol §5 step 1
+      currently recommends. **next**
 
 ## 3. Close the P2 gap — let the model choose the plan
 
