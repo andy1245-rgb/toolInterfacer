@@ -23,6 +23,13 @@ byte-identical — moves the same 150 rows from **74.0% to 82.0%**
 recovers **17 of the 32** misses in the two classes. No retraining, no new
 model, no service change.
 
+**The 82.0% is retired as an improvement — read the two corrections at the end of
+this file before quoting it.** It is an in-sample fit (first correction), and the
+rewrite was subsequently run out of sample, where it scores 80.5% → 77.3% over
+415 rows with 29 broken against 16 fixed (second correction, and
+`docs/rewrite-transfer-2026-11-04.md`). The mechanism above stands. The size of
+the gain does not, and no part of it should be quoted as a gain.
+
 ## 1. Reproduction, and what it answered instead
 
 `bench/live_probe.py` over `tests/data/utterances_v2.json`, the frozen

@@ -12,6 +12,13 @@ the *shape*: per-class routing, decided on training rows, gets **84.7%** against
 the 3B's **74.0%**, and the local model's confidence is the reason the per-row
 gate fails while the 3B's is the reason its gate works.
 
+**The 84.7% in that sentence is retired.** It is an oracle, applied on each row's
+ground-truth label; no router can reach it, and the deployable number that
+replaces it is 79.3% (`docs/router-policy-2026-11-04.md`). Read
+[Corrections C1](#c1-847-was-an-oracle-not-a-router) before quoting anything
+above it — this document is left as written on 2026-11-03 and its correction is
+appended at the end.
+
 This document is deliberately **not** a correction to
 [`docs/classical-baseline-2026-11-03.md`](classical-baseline-2026-11-03.md). It
 measures the same 150 rows and the same 8 labels and asks a different question —
@@ -214,7 +221,9 @@ point (10%: 100.0 vs 86.7; 50%: 90.7 vs 81.3), and its curve is monotone.
 
 The per-class device is the one that works where the per-row gate does not.
 Selection decided **on the training portion of each fold** (never the scored
-rows):
+rows) — but *applied* on the scored rows' true labels, which is the defect
+[Corrections C1](#c1-847-was-an-oracle-not-a-router) retires. Every `per-class`
+row in the table below is an oracle, not a router:
 
 | routing | accuracy | n |
 |---|---:|---:|
@@ -426,6 +435,12 @@ number is quoted here, and none should be inferred from the rows above.** This
 document will be updated again, in a further dated correction, when that
 measurement lands. Until then the only deployable accuracies it supports are the
 ones measured as routers: `lr` at 61.3%, `1-NN` at 50.0%, `d1-3B` at 74.0%.
+
+**That measurement has landed, and this document is not updated with it** —
+`docs/router-policy-2026-11-04.md` reports the deployable router at 79.3%
+[73.6–84.8], n=150, and states what it does and does not buy against the 3B.
+Read C1's "no number is quoted here" as of 2026-11-04, and that document for
+the number.
 
 ### C2. Nothing measured on `utterances_v2` can carry a generalisation claim
 

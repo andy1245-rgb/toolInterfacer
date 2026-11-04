@@ -10,6 +10,10 @@ in the Phase 0 table. The **Outcome — what was executed, and what it measured*
 at the end is the account of what the run actually produced, including the parts it did
 not reach.
 
+**Two inferences below are retired by the appended `Correction — 2026-11-04` section at
+the end of this file** — Finding 1's conclusion and the Outcome's t3 band reading. Both
+are still written as they were inferred; read the correction before acting on either.
+
 ## Where the project actually stands
 
 *(As of 2026-11-03, the start of this run. Every figure below is that night's and is
@@ -145,6 +149,10 @@ script fitted and scored on the same rows, which is the first thing to check) or
 the project's premise -- a neural decision model behind the `choice` primitive --
 is the wrong instrument. `ov-classical` exists to settle it.
 
+*(Retired in part — see [Correction C1](#c1-finding-1s-conclusion-is-about-the-382-row-task-not-this-one):
+the head-to-head is on a smart-home router whose label intersection with this repo's 8
+ops is empty, and the disjunction above is missing its third branch.)*
+
 **2. Every accuracy claim in `docs/` is underpowered.** Per
 `docs/assets-inventory.md` §19, detecting two
 points unpaired needs ~5,000 rows per arm; paired with McNemar at 10%
@@ -218,6 +226,9 @@ choice records and all 14 carry the same label. Fine-tuning on runtime evidence
 is not available; the corpus has to be generated and teacher-labelled, which is
 what `tools/distill/` now does (414 rows, 199 teacher-labelled, $0.002).
 
+*(The labelling run finished after this was written: 412 of 414 labelled,
+$0.0043. See the Phase 2 verdict above and `TODO.md`.)*
+
 **The teacher's confidence is saturated exactly where the literature predicts.**
 t1 literal: mean 0.940, 50 of 72 rows in the 0.95–1.00 bin. t2 veiled: mean
 0.776 and genuinely spread. t3: 0.923. A confidence target from this needs
@@ -228,7 +239,9 @@ frame is the band whose frames need a human audit first (`var/distill/audit.csv`
 
 The fine-tune itself. The corpus is feedstock, not yet a trainable set — 199 rows
 against the 300-row floor in `docs/assets-inventory.md` §9, and the labelling stall
-was provider congestion, not policy. Before training: finish to 414 rows, fit the
+was provider congestion, not policy. *(Superseded: the corpus finished at 412 of
+414 labelled, 410 frozen — see the Phase 2 verdict above and `TODO.md`.)* Before
+training: finish to 414 rows, fit the
 per-band temperature, and annotate `audit.csv` so calibration stops reading
 UNKNOWN.
 

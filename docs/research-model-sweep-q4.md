@@ -6,6 +6,13 @@ through the Jev-style `logit_read` adapter (`/v1/chat/completions`,
 `max_tokens=1`, top_logprobs=20, softmax over A–K letters, conf = 1−H/lnK).
 Bar to beat: d1-3B Q4_K_M on dell = 84% @ p50 ~155ms (Q8: 86%).
 
+*(Both the bar and the pick below are superseded. The consolidated report records
+the same model at **74.0%** on the 150-row v2 set through `systemone` and 74.7%
+through `logit_read`, and it retires this document's Qwen3.5-4B lanes entirely —
+they were answered by a stale d1-3B server, and the genuine figure is 58.0%. See
+`docs/model-sweep-consolidated.md`, "CORRECTION (2026-10-18)", before quoting a
+number from this file.)*
+
 ## Selection requirements
 
 - llama.cpp-servable GGUF, `Q4_K_M`/`Q4_0`, file ≤ 3.5 GB, params ≤ ~6.5B
@@ -140,7 +147,10 @@ Q8 86%; jev-style-2b logit_read 46%; qwen3.5-0.8b base logit_read 16%.
 1. **Qwen3.5-4B (instruct) is the pick for the toolInterfacer router.** 80/75%
    through the frozen letter protocol — within 4-10pp of the d1-3B fine-tuned
    bar — at logit_read-fast latency (91-406ms p50 vs ~1.05s+ for the other two
-   4B qwen35-family lanes; GPU offload engaged for this lane). Calibration is
+   4B qwen35-family lanes; GPU offload engaged for this lane). *(Retired: no
+   Qwen3.5-4B was ever loaded for these lanes — the numbers are d1-3B's, and the
+   genuine Qwen3.5-4B is 58.0%. See the note at the top of this file and
+   `docs/model-sweep-consolidated.md`.)* Calibration is
    usable: every row above conf .7 was correct in both datasets (ideal 0.7
    route gate); low global conf mean (.48-.60) means wide ask-back coverage,
    but tolerable at ~200ms/hop.

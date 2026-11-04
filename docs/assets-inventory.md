@@ -76,7 +76,9 @@ write-up quotes 59.4% and 91.4% for the same run, so the documents and the raw J
 
 A 3B model at **74.7%** reads as a decent small router until a classical model at **93.19%** is on
 the same board, answering in **0.61 ms** where the 3B takes 242.7 ms — a 400× latency gap at
-better accuracy. It makes the neural arm look like the wrong instrument rather than an
+better accuracy. *(This comparison is retired: 74.7% is a 150-row figure and 93.19% a 382-row
+one. See [Corrections C2](#c2-747-against-9319--the-two-numbers-are-from-different-sets).)* It
+makes the neural arm look like the wrong instrument rather than an
 under-tuned one. The two baselines this project had never run were **TF-IDF + LinearSVC at
 93.19% / 0.61 ms** and **MiniLM + logistic at 86.65% / 57.8 ms/row**.
 
@@ -388,7 +390,9 @@ asset, and it was already absorbed before this survey ran.
 This is the single highest-value import: it is the only head-to-head where six backends saw the
 same 382 utterances on one box, and it carries the two baselines this project had never run. Until
 those are on the board, "74.7% for a 3B" reads as good; against a 0.61 ms classical model at
-93.19% it reads as the wrong instrument. *As landed, there is no `bench/routers/` and no
+93.19% it reads as the wrong instrument. *(Retired — see
+[Corrections C2](#c2-747-against-9319--the-two-numbers-are-from-different-sets).)* *As landed,
+there is no `bench/routers/` and no
 `bench/results/routing_382/` — the six runners collapsed to one script,
 `bench/classical_baseline.py`, whose artifacts are the two `classical_*.json` files.*
 
@@ -422,7 +426,10 @@ landed in `bench/`.
 
 This is the bar every candidate must beat: **91.4% @ 243 ms with none-detection 1.00**, which is
 **17 points** above the 74.7% this repo currently treats as the incumbent. It reframes the whole
-live-probe table. The companion notes supply four traps, each a lost day:
+live-probe table. *(The "17 points" spans two datasets and two label spaces and is retired —
+see [Corrections C2](#c2-747-against-9319--the-two-numbers-are-from-different-sets); the same
+model's recorded figure on the 382-row board is 91.36%.)* The companion notes supply four traps,
+each a lost day:
 
 - the `systemone` endpoint needs llama.cpp build **≥ b11500** (the vendored **b10964** has no
   `systemone` symbols);
