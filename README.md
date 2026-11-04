@@ -257,8 +257,7 @@ The default backend is `pair`, which wants a local llama.cpp server. To watch th
 L1 chain run with no model at all, point the choice decision at the fixture backend:
 
 ```sh
-echo '{"decide": {"backends_in_use": {"choice": "fixture"}},
-       "hops_log": {"enabled": false}}' > /tmp/ti-fixture.json
+echo '{"decide": {"backends_in_use": {"choice": "fixture"}}}' > /tmp/ti-fixture.json
 TI_CONF_OVERLAY=/tmp/ti-fixture.json python3 bench/replay.py \
   --intent "read the file we discussed"
 ```
@@ -304,6 +303,19 @@ ln -s "$(pwd)/pi-extension/src" ~/.pi/agent/extensions/toolinterfacer
 
 Its own tooling (`tsc --noEmit`, `node scripts/contract-check.ts`) and the full contract
 notes are in [`pi-extension/README.md`](pi-extension/README.md).
+
+#### Logging is off until you ask
+
+Neither runtime log writes by default. `hops.jsonl` (one record per executed hop, for
+the dataset pipeline) is gated by `conf.hops_log.enabled` and lives under
+`~/.local/state/ti/logs/`; opt in with
+`TI_CONF_OVERLAY='{"hops_log": {"enabled": true}}'`. The extension's `live.jsonl` (one
+record per `useTool` call) is off until `/ti capture on`, which persists to
+`~/.local/state/ti/capture.json` — the toggle survives a restart, and `/ti capture off`
+stays off. What a record holds once enabled: the utterance, the argument *names*, sizes
+and confidences — no working directory, no argument values, no artifact text, no error
+messages. Both files are created `0600` in a `0700` directory, and a wider one is narrowed
+rather than refused. Why: [`docs/logging-2026-11-04.md`](docs/logging-2026-11-04.md).
 
 ## Tests
 
@@ -363,7 +375,10 @@ committed `data/distill/` so a trainer has something checkable to fit on.
 
 The hop log is *not* a decision log — see `docs/dataset-status.md` for the measured
 count (14 trainable records out of 1398 hops, all one label), which is why the fine-tune
-corpus is distilled rather than harvested.
+corpus is distilled rather than harvested. It is also **opt-in**: off unless
+`hops_log.enabled` is set, written to `~/.local/state/ti/logs/hops.jsonl` (the directory
+`tools/dataset` reads by default), `0600` in a `0700` directory. Both logs and the
+reasoning behind them are in [`docs/logging-2026-11-04.md`](docs/logging-2026-11-04.md).
 
 ### Measured, with their n
 
@@ -524,6 +539,7 @@ Resolution section.
 | [`docs/assets-inventory.md`](docs/assets-inventory.md) | what the sibling projects already hold, surveyed against this repo's three needs: five ranked import candidates with concrete paths and a recommendation for each, the cactus/needle fine-tune that came back negative, and two things worth not importing |
 | [`docs/router-policy-2026-11-04.md`](docs/router-policy-2026-11-04.md) | the per-class routing figure measured without the answer: 84.7% was an oracle applied on the true label, its deployable replacement is **79.3% [73.6–84.8], n=150**, family-grouped 5-fold × 5 seeds — separately better than the cheap expert (+12.3 pts) and *not* separable from the 3B (+5.3 pts, CI −1.4 to +12.3), with the cascade's accuracy/cost curve (81.6% at 38% escalation), the finding that a top-2 margin gate is no better than top-1 probability, and the 14 of 22 confident 3B misses a class-level policy recovers where no confidence gate can — *not* the same 79.3% as the classical front gate in the baseline row above: same digits, different device, 30% coverage against 44% |
 | [`docs/consistency-review-2026-11-04.md`](docs/consistency-review-2026-11-04.md) | the consistency pass over the whole night's corrections: a contradiction matrix for every retired number (84.7 / 93.19 / 66.23 / 62.7 / 82.0 / 74.0 / the 8.0-point "leak" / the "17-point gap"), which of the conflicts are a dated body doing its job and which are a reader being misled, the reachability ledger (a correction 342 lines below the number it retires is not a correction), the figures the first sweep's grep could not see, and the pointers this pass added |
+| [`docs/logging-2026-11-04.md`](docs/logging-2026-11-04.md) | what the tool records by default, asked of the consumer first: one reader takes two fields out of `hops.jsonl`, so `artifact_summary` (200 chars of a file that was read) and `params` (verbatim argument values) had no reader at all — the conclusion is opt-in capture, a reduced record, a `~`-rooted path and `0600`/`0700` modes that narrow rather than refuse, plus what that costs |
 
 ## Layout
 

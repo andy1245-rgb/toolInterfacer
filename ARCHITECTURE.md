@@ -156,6 +156,12 @@ The service is a local HTTP endpoint that reads files on behalf of whoever asks,
 - **Authentication.** Every POST carries a shared token (`http/auth.py`): `TI_HTTP_TOKEN`, or
   a `0600` runtime file the service creates. There is no unauthenticated mode. `/health`
   stays open because the extension polls it to decide whether to spawn.
+- **Recording.** Nothing writes a log until asked: `hops_log.enabled` is false and the
+  extension's capture is off until `/ti capture on` (a durable state file, not an in-memory
+  flag). Enabled, both write the utterance, argument *names*, sizes and confidences to
+  `~/.local/state/ti/logs/`, created `0600` in a `0700` directory — no working directory, no
+  argument value, no artifact text, no error message — and a file that is wider than that is
+  narrowed rather than refused. [`docs/logging-2026-11-04.md`](docs/logging-2026-11-04.md).
 - **Confinement.** A run root must resolve inside `ops.filesys.roots` (default `~`, the
   service's start directory, and `/tmp`). Paths resolve component by component, refusing a
   `..` escape and a symlink whose target leaves the root.

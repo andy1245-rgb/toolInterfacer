@@ -162,8 +162,8 @@
     }
   },
   "hops_log": {
-    "path": "service/logs/hops.jsonl",
-    "enabled": true
+    "path": "~/.local/state/ti/logs/hops.jsonl",
+    "enabled": false
   },
   "http": {
     "host": "127.0.0.1",

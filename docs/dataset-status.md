@@ -1,5 +1,11 @@
 # Dataset status — what the runtime evidence actually contains
 
+> *Snapshot of 2026-11-03, before the logging change of 2026-11-04: the log paths below are
+> `service/logs/`, and the hop log was then written on by default. It is now opt-in and both
+> logs live under `~/.local/state/ti/logs/` ([`docs/logging-2026-11-04.md`](logging-2026-11-04.md)).
+> The measurements are left as taken; `TI_DATASET_LOGS=service/logs` still reads the old
+> files.*
+
 Measured, not estimated. Snapshot: `service/logs/hops.jsonl` at 1398 lines
 (mtime 02:39:16) and `service/logs/live.jsonl` at 13 lines. **The hop log is live
 output** — it was 1202 lines when this work started and 49 lines in this
@@ -120,8 +126,9 @@ arithmetic, with one more row from a longer trace.
 ## What the pipeline emits
 
 `TI_DATASET_LOGS` and `TI_DATASET_OUT` select the inputs and the derived-data
-directory (`service/logs` and `var/dataset` by default, both repo-relative;
-`var/dataset/` is git-ignored).
+directory (`~/.local/state/ti/logs` and `var/dataset` by default — the log dir is
+the one the service and the extension write to, and `var/dataset/` is git-ignored).
+Both logs are opt-in; with neither enabled `ingest` reports the frozen files only.
 
 ```
 python3 -m tools.dataset ingest     # 514 records -> corpus.jsonl + ingest_report.json
