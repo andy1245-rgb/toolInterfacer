@@ -1,0 +1,160 @@
+{
+  "accuracy": {
+    "grouped_cv": {
+      "bands": {
+        "t1": {
+          "acc": 0.8567,
+          "correct": 85,
+          "n": 100
+        },
+        "t2": {
+          "acc": 0.6314,
+          "correct": 53,
+          "n": 85
+        },
+        "t3": {
+          "acc": 0.7755,
+          "correct": 111,
+          "n": 144
+        }
+      },
+      "k": 5,
+      "mean": 0.7629,
+      "per_seed": [
+        0.766,
+        0.7629,
+        0.7599
+      ],
+      "sd": 0.0025,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "unit": "family"
+    },
+    "object_held_out_cv": {
+      "bands": {
+        "t1": {
+          "acc": 0.9333,
+          "correct": 93,
+          "n": 100
+        },
+        "t2": {
+          "acc": 0.6902,
+          "correct": 58,
+          "n": 85
+        },
+        "t3": {
+          "acc": 0.8472,
+          "correct": 122,
+          "n": 144
+        }
+      },
+      "k": 5,
+      "mean": 0.8328,
+      "per_seed": [
+        0.848,
+        0.8298,
+        0.8207
+      ],
+      "sd": 0.0113,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "unit": "object"
+    },
+    "val_by_band": {
+      "t1": {
+        "acc": 0.8438,
+        "correct": 27,
+        "n": 32
+      },
+      "t2": {
+        "acc": 0.5238,
+        "correct": 11,
+        "n": 21
+      },
+      "t3": {
+        "acc": 0.75,
+        "correct": 21,
+        "n": 28
+      }
+    },
+    "val_per_class": {
+      "decide_extract": {
+        "acc": 0.7273,
+        "correct": 8,
+        "n": 11
+      },
+      "decide_pick": {
+        "acc": 0.8333,
+        "correct": 5,
+        "n": 6
+      },
+      "filesys_glob": {
+        "acc": 0.7,
+        "correct": 7,
+        "n": 10
+      },
+      "filesys_grep": {
+        "acc": 1.0,
+        "correct": 10,
+        "n": 10
+      },
+      "filesys_read": {
+        "acc": 0.8462,
+        "correct": 11,
+        "n": 13
+      },
+      "reddit_digest": {
+        "acc": 1.0,
+        "correct": 2,
+        "n": 2
+      },
+      "web_fetch": {
+        "acc": 0.8462,
+        "correct": 11,
+        "n": 13
+      },
+      "web_search": {
+        "acc": 0.3125,
+        "correct": 5,
+        "n": 16
+      }
+    },
+    "val_pooled": {
+      "acc": 0.7284,
+      "correct": 59,
+      "n": 81
+    }
+  },
+  "artefact_note": "the artefact itself is not committed \u2014 it is ~3 MB of float text. This sha is over its canonical JSON (`DistillClassifier.to_artefact`, sort_keys, no spaces); `train.py --check` fails if a re-fit does not reproduce it",
+  "artefact_sha256": "1df6392dc72687fd13d418ab4b119b7161fc40885b2d5dce038417ebed4e496f",
+  "config": {
+    "char_grams": false,
+    "decay": 1.0,
+    "epochs": 10,
+    "lam": 1.0,
+    "learner": "ridge",
+    "lr": 0.5,
+    "min_df": 1,
+    "mode": "both",
+    "n_seeds": 8
+  },
+  "corpus": {
+    "train": {
+      "rows": 329,
+      "sha": "3bafbcd64c05"
+    },
+    "val": {
+      "rows": 81,
+      "sha": "b2b726c017b0"
+    }
+  },
+  "format": "ti-distill-clf/1",
+  "label": "label \u2014 the row's authored `intended` op; never target.tool",
+  "produced_by": "tools/distill/train.py"
+}

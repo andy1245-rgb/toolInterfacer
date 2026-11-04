@@ -107,6 +107,13 @@
   `docs/eval-harness-2026-11-04.md` is the report, and its headline is that the
   150-row set has no families to hold out (63% of rows are atomic) while the
   382-row set does (−23.5 points when its templates are held out).
+- `distill_transfer.py` — the corpus-trained classifier, frozen, scored on the
+  frozen 150 through `eval_harness` (nothing fits on v2, same `frozen` path the
+  recorded 3B uses), beside the archived `d1_3B` run and `local_clf`'s cue table,
+  with per-band, per-class, exact-McNemar tables and the seven declared
+  candidates. `--sweep` re-derives every table in
+  `docs/distill-classifier-2026-11-04.md` from committed material with no server
+  and no network.
 - `or_bench.py` — the hosted sweep: one chat completion per utterance per model
   against OpenRouter, an accuracy pass at bounded concurrency plus a strictly
   sequential latency pass (the concurrent pass's timings are never reported as
