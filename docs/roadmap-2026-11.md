@@ -99,9 +99,9 @@ A tool layer that is not applied is a library with no users. Pick avenues the
 operator already runs, wire `useTool` to each, and measure the round trips saved
 against the LLM doing the tool calls natively:
 
-1. OSCAR Plus postings through the local mcm-portal checkout — read-only, structured.
+1. A third-party portal's postings, read through a local checkout — read-only, structured.
 2. The web/reddit research stack the ops already wrap.
-3. One market-scrape corpus read path.
+3. One scraped-corpus read path.
 
 Acceptance: per avenue, a before/after count of model round trips and wall time
 on a fixed task list.
@@ -109,8 +109,8 @@ on a fixed task list.
 **Partly closed.** Avenue 2 is measured in
 [`docs/roundtrips-2026-11-03.md`](roundtrips-2026-11-03.md): nine fixed tasks, two
 arms, 2 of 14 round trips removed and 7.5 s slower at the headline pass cost.
-Avenues 1 and 3 were not wired — no op, template or bench in the tree reads an
-mcm-portal checkout or a market corpus.
+Avenues 1 and 3 were not wired — no op, template or bench in the tree reads a
+portal checkout or a scraped corpus.
 
 ### Phase 4 — Review and publish
 
@@ -128,7 +128,7 @@ the runbook for the day it is taken.
 
 ## Rules for every track
 
-- Isolated worktree under `~/ti-worktrees/`, branch named for the track.
+- An isolated worktree, branch named for the track.
 - Full suite green before commit: `python3 -m pytest tests/ -q`.
 - No hardcoded personal absolute paths (`tests/test_no_personal_paths.py`).
 - No pushes, no tags without an explicit go-ahead.
