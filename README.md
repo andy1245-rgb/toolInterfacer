@@ -457,6 +457,7 @@ Resolution section.
 | [`docs/pre-publish-audit.md`](docs/pre-publish-audit.md) | the gate before a public push, taken at `ca7ffec`: what a stranger can see, download and infer from the clone — history, secrets, licence, the tracked tree — with a Resolution appendix saying which findings were closed and which are still the owner's call |
 | [`docs/roadmap-2026-11.md`](docs/roadmap-2026-11.md) | the plan for the overnight run and its closing Outcome: which publish blockers were closed and re-probed rather than asserted, and the three measurements that changed the plan — the classical baseline, the iGPU, the hop log |
 | [`docs/assets-inventory.md`](docs/assets-inventory.md) | what the sibling projects already hold, surveyed against this repo's three needs: five ranked import candidates with concrete paths and a recommendation for each, the cactus/needle fine-tune that came back negative, and two things worth not importing |
+| [`docs/router-policy-2026-11-04.md`](docs/router-policy-2026-11-04.md) | the per-class routing figure measured without the answer: 84.7% was an oracle applied on the true label, its deployable replacement is **79.3% [73.6–84.8], n=150**, family-grouped 5-fold × 5 seeds — separately better than the cheap expert (+12.3 pts) and *not* separable from the 3B (+5.3 pts, CI −1.4 to +12.3), with the cascade's accuracy/cost curve (81.6% at 38% escalation), the finding that a top-2 margin gate is no better than top-1 probability, and the 14 of 22 confident 3B misses a class-level policy recovers where no confidence gate can |
 
 ## Layout
 
