@@ -122,7 +122,7 @@ Verified by running it, not by reading the spec:
 | `pair` (local, escalating to hosted) and `openrouter` | implemented and measured by the author; running them needs a local llama.cpp server, and the hosted stage needs `TI_OPENROUTER_API_KEY` — [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md) |
 | Bounded decision state (structural, not conventional) | works — `session_digest.sanitize` projects each digest turn onto `{role, summary, mentions}` and each antecedent onto `{phrase, resolved}`, keeps the last 8 of each and clips every string that survives (240 chars per turn, 6 mentions, 1024 per path, `cwd` included), so a key the shape does not list is dropped rather than forwarded; `context.packer` is the backstop, stubbing the digest if the decide state still exceeds `conf.context.state_max_tokens` |
 | pi extension: `useTool`, `/ti` command, service spawn on session start | complete — `npm ci && npx tsc --noEmit` exits 0, and `contract-check` passes every schema case plus the live leg against a stub service on a loopback port; the case counts and the case-by-case enumeration live in [`pi-extension/README.md`](pi-extension/README.md) |
-| Test suite | **786 tests, 388 subtests**, no network, no model. This row is the only place the current count is written — every other document links here, tells you to run `pytest`, or states a floor (`700+`), so a track that adds tests edits one line |
+| Test suite | **826 tests, 551 subtests**, no network, no model. This row is the only place the current count is written — every other document links here, tells you to run `pytest`, or states a floor (`700+`), so a track that adds tests edits one line |
 
 ### Honest gaps
 
@@ -480,14 +480,23 @@ can read as current.
 One correction has now been resolved rather than restated: the **74.0% → 82.0%** gain from
 rewriting two op descriptions was in-sample, and it was run out of sample on
 `heldout_v3.json` — 415 rows the rewrite never saw — where the same two strings score
-**80.5% → 77.3%** (16 fixed, 29 broken, p = 0.0725). The diagnosis holds and the
-`filesys_grep` line transfers (+17.3 points, 9 fixed / 0 broken) — on non-package-noun
-phrasing, and as a per-class measurement of the two-line edit rather than of the grep
-line alone, which is an arm the report did not run (its §8–§9); the `decide_extract`
-line was fitted to the 150 and the whole edit is net negative. **82.0% is retired as an
-improvement** — [`docs/rewrite-transfer-2026-11-04.md`](docs/rewrite-transfer-2026-11-04.md),
+**80.5% → 77.3%** (16 fixed, 29 broken, p = 0.0725). **82.0% is retired as an
+improvement** — [`docs/rewrite-transfer-2026-11-04.md`](docs/rewrite-transfer-2026-11-04.md)
 and the dated correction at the end of
 [`bench/results/p1-diagnose/FINDINGS.md`](bench/results/p1-diagnose/FINDINGS.md).
+
+The tempting salvage — that the `filesys_grep` line alone transfers, at +17.3 points and
+9 fixed / 0 broken — **does not survive review and is not claimed here.** Three
+independent passes killed it: its nine "fixes" are **three authored frames**, and at the
+family unit the sign test is p = **0.25** with the project's own cluster bootstrap
+**[+0.0, +36.5]**; the ledger was kept by *label* when the change is to an *option*, so
+three of the twenty-nine breaks were captured by the new grep text and booked under
+`web_search` (a real ledger of 9 fixed / 3 broken); and on the **test side alone**, the
+only slice held out by construction, it is 3 fixed / 0 broken at p = **0.25**. There is
+also **no "grep alone" arm** — both arms carried all eight options with both edits live.
+[`docs/adversarial-review-2026-11-04.md`](docs/adversarial-review-2026-11-04.md),
+[`docs/review-apparatus-2026-11-04.md`](docs/review-apparatus-2026-11-04.md),
+`bench/verify_claims.py`.
 
 Full derivations and the per-signal tables: [`docs/eval-harness-2026-11-04.md`](docs/eval-harness-2026-11-04.md).
 Each affected document carries its own dated, appended correction.
