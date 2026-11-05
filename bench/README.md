@@ -142,7 +142,13 @@
   `docs/rewrite-transfer-2026-11-04.md` from the committed artifacts, with per-class
   exact McNemar and family-cluster bootstrap intervals, and prints coverage as the set
   difference rather than as a count. It settled a claim the 150 could not: the
-  description rewrite is **80.5% → 77.3%** out of sample and its headline gain is retired.
+  description rewrite has **no net effect** out of sample — against a live baseline
+  measured in the same session it is **78.3% → 77.4%** (16 fixed / 20 broken, p = 0.618,
+  165 → 165 on the held-out side), buying 9 `filesys_grep` rows (p = 0.004) and paying 8
+  `web_search` rows (p = 0.008). Its headline gain is retired. `--report` still reads the
+  **archived** baseline (`p2-heldout`); the live arm is `arm: "baseline"` in
+  `rows.jsonl` and the two disagree by 9 rows, so read `--report` as the archive
+  comparison until it is repointed.
 - `distill_transfer.py` — the corpus-trained classifier, frozen, scored on the
   frozen 150 through `eval_harness` (nothing fits on v2, same `frozen` path the
   recorded 3B uses), beside the archived `d1_3B` run and `local_clf`'s cue table,

@@ -214,18 +214,28 @@ correction), `README.md`.
 of eight op descriptions (18 fixed / 6 broken, exact McNemar p = 0.0227). The effect is real and
 the mechanism is understood — the model routes on the object noun and not the operation — but
 the two replacement strings were written by reading the errors of the same 150 rows they are
-scored on. **It is in-sample and is an upper bound, not an estimate.** Another track is
-validating it on a held-out set; this changelog does not pre-empt that result.
+scored on. **It is in-sample and is an upper bound, not an estimate.** A held-out validation
+was running on another track when this was written; it has since landed — see below.
 
-**That validation has since landed, and it is negative.**
+**That validation has since landed, and it landed twice.**
 [`docs/rewrite-transfer-2026-11-04.md`](docs/rewrite-transfer-2026-11-04.md) applies the two
-strings unchanged to 415 rows authored after they were written: **80.5% → 77.3%**, 16 fixed /
-29 broken, p = 0.0725. The whole edit is net negative out of sample and **82.0% is retired as an
-improvement**; only the `filesys_grep` line transfers (+17.3 points, 9 fixed / 0 broken). See
-also `README.md`'s correction block.
+strings unchanged to 415 rows authored after they were written. Its first reading paired the
+live arm against an **archived** baseline and reported **80.5% → 77.3%**, 16 fixed / 29 broken,
+p = 0.0725, "the whole edit is net negative". That pair was not measured under the same
+conditions: the archive had drifted 9 rows — 10 in `reddit_digest`, 1 the other way in
+`decide_pick` — which manufactured both the size and the direction of the loss. With a **live
+baseline recorded in the same session** (415 baseline rows and 415 targeted rows, fully paired)
+the same strings score **78.3% → 77.4%**: 16 fixed / 20 broken, net −4 rows, p = 0.618, and
+**165 → 165 on the held-out test side**. The edit is **a wash, not a failure**, and it is a wash
+because two significant effects cancel: it buys **9 `filesys_grep` rows** (p = 0.004) and pays
+**8 `web_search` rows** (p = 0.008) — 9 bought, 8 paid. **82.0% is retired as an improvement**;
+that part has never moved. See the appended 2026-11-05 section of
+[`docs/rewrite-transfer-2026-11-04.md`](docs/rewrite-transfer-2026-11-04.md) and `README.md`'s
+correction block.
 
-Corrected in: `bench/results/p1-diagnose/FINDINGS.md` (two appended 2026-11-04 corrections),
-`docs/rewrite-transfer-2026-11-04.md`, `README.md`.
+Corrected in: `bench/results/p1-diagnose/FINDINGS.md` (two appended 2026-11-04 corrections and
+one appended 2026-11-05 correction), `docs/rewrite-transfer-2026-11-04.md` (dated body plus an
+appended 2026-11-05 correction), `README.md`, `TODO.md`.
 
 ## Unreleased — 2026-11-04
 

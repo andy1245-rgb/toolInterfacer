@@ -544,3 +544,67 @@ for k in (2, 8, 10, 16):
 
 Power figures use the reported intervals: SE = (hi − lo) / (2 × 1.959964), and
 MDE₈₀ = (1.959964 + 0.8416) × SE.
+
+---
+
+## Correction appended — 2026-11-05: the live baseline arm is complete, and it settles claim 2 against my own ranking
+
+*Appended, not rewritten. Everything above stands as written on 2026-11-04, against the
+artefacts that existed then. The 233-row control this review found unread in §2.3 has since
+been completed to all 415 rows in the same file (`arm: "baseline"`, 02:36:09 → 03:14:16,
+p50 3 959 ms — adjacent to the targeted arm's 02:06:14 → 02:36:06 at p50 4 079 ms).*
+
+### The two findings in §2.2 and §2.3 were right, and they were the whole cause
+
+I said the archive was not reproducible against the endpoint it is paired with, and that the
+control existed, was run and was never reported. Both hold, and completing the control reverses
+the arithmetic the document published:
+
+| v3 | archived baseline | **live baseline** |
+|---|---|---|
+| all 415 | 80.5% (334) → 77.3% (321), 16 / 29, p = 0.0725 | **78.3% (325) → 77.4% (321), 16 / 20, p = 0.618** |
+| test side | 81.6% (169) → 79.7% (165), 7 / 11 | **79.7% (165) → 79.7% (165), 7 / 7, p = 1.000** |
+| train side | 79.3% (165) → 75.0% (156), 9 / 18 | 76.9% (160) → 75.0% (156), 9 / 13 |
+
+My §2.4 sensitivity table bracketed the answer: "archive − drift imputed to all 415" predicted
+**327 → 321, −1.4 pts**. Measured: **325 → 321, −1.0 pt, p = 0.618**. The imputation was 2 rows
+off on the baseline and 0.4 points off on the effect.
+
+**Claim 2 in my ranking — "the rewrite fails out of sample", 70% likely wrong — is confirmed.**
+The document's own verdict word is retired. What replaces it is not "it works": the edit buys 9
+`filesys_grep` rows (p = 0.004) and pays 8 `web_search` rows (p = 0.008), held-out side exactly
+zero, net −4 rows at p = 0.618. A wash with two significant opposite components.
+
+### Claim 1 — the grep exception — is not settled by this, and my wager is a push
+
+I ranked the grep claim first (75% likely wrong) and said I would bet against it. The completed
+arm does not settle that bet, and the honest outcome is a push rather than a win:
+
+* `filesys_grep` had **zero archive drift** — 36 correct under both baselines — so its cell is
+  bit-identical: 36 → 45, 9 fixed / 0 broken, p = 0.0039. Nothing in this correction moves it.
+* Its nine fixes are **still nine rows in three families** (`t1:filesys_grep:14` 4,
+  `t3:filesys_grep->web_fetch:03` 3, `t3:filesys_grep->filesys_glob:02` 2) under the live
+  baseline. §1.2's family-unit objection therefore stands exactly as written: 3–0, p = 0.25.
+* §1's ledger argument is now **confirmed on 415 rows**, not just on my 233: the live
+  capture table gives grep 9 fixed / **3 broken**, net +6, with those 3 booked under
+  `web_search`. The "9 fixed / 0 broken" in the report is a label ledger, not an option ledger.
+
+So: my §1 attack was correct on the unit and on the ledger and remains so. What the correction
+changes is what those facts *mean* for the headline — the grep effect is real, it is significant
+at the row unit, and it is **paid for** by an equally significant loss in another class. That is
+a stronger reading than "the grep exception is probably wrong", and it is the reading the data
+support.
+
+### What is now stale elsewhere in this file
+
+* §2.3's "on the only rows where both arms were measured under the same server, the rewrite
+  gains" — the completed arm puts the same measurement at −4 rows over 415. Both figures are
+  noise; the sign was a property of the 233-row slice. The reproduction block's second check
+  still prints `archive 184 live 180 targeted 183` and is left as the record of that slice.
+* §2.4's third row is superseded by the measured arm, as noted above.
+* Nothing in §3, §4, §5 or §6 is touched by this correction — they concern other claims and
+  other artefacts.
+
+Full re-derivation of the numbers above, the drift ledger (eleven rows, three families, ten of
+them `reddit_digest`) and the protocol this project should use instead are in the appended
+2026-11-05 section of `docs/rewrite-transfer-2026-11-04.md`.

@@ -544,3 +544,62 @@ Reads only committed artifacts: `bench/data/heldout_v3.json`,
 `bench/results/distill_transfer_sweep.json`, `data/distill/{train,val}.jsonl`,
 `tools/distill/frames.py`, `tests/data/utterances_v2.json`, `bench/eval_harness.py`.
 No network, no model call, no refit, stdlib only.
+
+---
+
+## Correction appended — 2026-11-05: the live baseline arm, and which of these positions survive it
+
+*Appended, not rewritten. The review above is a record of 2026-11-04 against the artefacts of
+that day. The baseline arm that §2 treats as archived has since been completed to all 415 rows
+in `bench/results/p3-transfer/rows.jsonl` from the same session as the targeted arm (02:36:09 →
+03:14:16, p50 3 959 ms, against the targeted arm's 4 079 ms and the archive's 8 225 ms).*
+
+### §2's position was half right, and the half that was wrong matters
+
+§2 stated: *"The overall verdict is correct and understated."* The first clause is now false.
+The verdict was **wrong** — "the whole rewrite fails out of sample" was produced by pairing a
+live arm against an archive that had drifted 9 rows, and the corrected live-vs-live result is
+**78.3% → 77.4%**, 16 fixed / 20 broken, p = **0.618**, with the held-out test side at
+**165 → 165**. A wash, not a failure.
+
+§2's reasoning was not the problem; its premise was. It computed the unit and ledger defects
+correctly and then concluded the direction was sound because the arithmetic was sound. This
+review's own §7 opens with exactly that pattern as the repo's recurring failure, and this is a
+third instance of it: **arithmetic that reproduces against the wrong comparison.**
+
+What survives, precisely:
+
+| §2 claim | status after the live arm |
+|---|---|
+| (a) The p-value counts rows where the document counts families | **stands.** grep's 9 fixes are still 3 families, 3–0, p = 0.25 on the live pairing. `web_search`'s damage is 8 rows in 4 families, 0–4, p = 0.125. Neither class is significant at the family unit. |
+| (b) The ledger is by label; the change is to an option | **confirmed exactly.** Live capture shows grep 9 fixed / **3 broken**, net +6, the 3 booked under `web_search` — the number §2 derived from the 233-row control, reproduced over 415. |
+| (c) `README.md` and `TODO.md` published as settled what the source lists as not settled | **was true, now fixed in place.** Both documents now carry the measured effect *and* its price. |
+| "What should have been published instead" — the pre-specified pair and the six untouched classes | **stands, and is adopted.** The pair: 56/103 → 70/103, 16 / 2, p = 0.0013, 10 net-positive families against 1. The six untouched: 269/312 → 251/312, 0 / 18, **−5.8 pts**, 13 discordant families, none net-positive. (The review's −8.7 / 27 rows was archive-inflated.) |
+
+### §1's conclusion is strengthened, by a fact that did not exist on 2026-11-04
+
+§1 argued that `heldout_v3` is invalid as a *level* instrument and valid as a *paired* one, and
+that the refusal to revise its 80.5% was right about the bytes and wrong about the principle.
+The live arm supplies a harder version of that point: **80.5% is not the instrument's level.**
+The same instrument on the same 415 rows, re-run 45 minutes later, gives **78.3% (325)** — a
+session-to-session spread of 9 rows on a set whose note claims to resolve about 8 points per
+side. The number that was argued over is not a property of the set at all; it is a property of
+the run. `bench/data/heldout_v3_NOTES.md` carries a pointer to this.
+
+That does not revive the missing ~74%: the paired design is what §1 said it was, and the paired
+result is now measured both ways. It does mean a v3 *level* should never be quoted without the
+date and the server it was measured on.
+
+### §7's ledger, updated
+
+* Items **1 and 2** (grep's unit and ledger) still stand as written.
+* Item **3** (the escalation into `README.md` / `TODO.md`) is fixed in place in both files.
+* Item **3**'s comparison — commit `1106ac8` quoting the favourable cell while the aggregate sat
+  beside it — is now a documented pattern three times over, and the last one is the published
+  verdict itself.
+* The **"one change"** in §6, a provenance gate, is untouched by this and remains the
+  recommendation. Nothing here argues against it; this correction is an argument for the
+  sibling change, that a paired delta also records the conditions of both arms.
+
+Full re-derivation, the eleven-row drift ledger and the protocol are in the appended 2026-11-05
+section of `docs/rewrite-transfer-2026-11-04.md`.
