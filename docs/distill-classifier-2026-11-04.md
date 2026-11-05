@@ -322,8 +322,11 @@ The four reasons, in order of weight:
   moves the same 3B from 74.0% to **82.0%** with two description strings (18 fixed, 6
   broken, p = 0.0227). That is a larger, better-evidenced gain than anything measured here,
   and it is the natural first comparison for any future arm. *(Retired: that gain is
-  in-sample and does not survive a held-out set — 80.5% → 77.3% over 415 rows, 16 fixed /
-  29 broken. See `docs/rewrite-transfer-2026-11-04.md`.)*
+  in-sample and does not survive a held-out set — **78.3% → 77.4%** over 415 rows against a
+  live baseline measured in the same session, 16 fixed / 20 broken, p = 0.618, and 165 → 165
+  on the held-out side: a wash, not a failure. An earlier archive-paired reading of
+  80.5% → 77.3%, 16 fixed / 29 broken, was corrected on 2026-11-05. See
+  `docs/rewrite-transfer-2026-11-04.md`.)*
 * **Object-held-out selection is the protocol to add.** It exists as a diagnostic here
   (`train.object_key` over `frames.SLOTS`); what the corpus needs is a *split* that holds slot
   values out, so an in-corpus number stops rewarding memorised nouns. Until then the

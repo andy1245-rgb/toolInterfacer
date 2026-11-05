@@ -85,22 +85,31 @@ Routing accuracy is worth nothing until this is fixed.
       vs 25.0%, `filesys_grep` 63.6% vs 36.4%) and loses `web_search` 38.9% vs 100%. Not
       shipped. Recipe at `data/distill/clf_recipe.json`, report at
       `docs/distill-classifier-2026-11-04.md`.
-- [x] **Score the op-description rewrite out of sample, before shipping it.** Done, and it
-      fails: `TARGETED` unchanged on `heldout_v3.json` (415 rows, authored after the two
-      strings were written) is **80.5% → 77.3%**, 16 fixed / 29 broken, exact McNemar
-      p = 0.0725 — against the in-sample 74.0% → 82.0%. The two classes it targets do
-      gain (+13.6 pts, p = 0.0013), but 20 of the 29 broken rows are one side effect:
-      `decide_extract`'s new text claims questions, so it absorbs rows owned by six other
-      labels. `filesys_grep`'s line alone transfers (+17.3 pts, 9/0, p = 0.0039) — read
-      that as the per-class measurement it is: on non-package-noun phrasing only (0/4 on
-      v2's package-noun rows), and the grep-line-with-original-extract configuration is an
-      arm the report says it did not run (`docs/rewrite-transfer-2026-11-04.md` §8–§9); the
-      extract line was fitted to the 150. **82.0% is retired as an improvement**, and any
-      further description edit is measured on v3-test with the paired protocol before it
-      is believed. Report at `docs/rewrite-transfer-2026-11-04.md`, probe at
+- [x] **Score the op-description rewrite out of sample, before shipping it.** Done: it is
+      **a wash, not a failure**. `TARGETED` unchanged on `heldout_v3.json` (415 rows,
+      authored after the two strings were written) scores **78.3% → 77.4%** against a live
+      baseline recorded in the same session — 16 fixed / 20 broken, net −4 rows, exact
+      McNemar p = 0.618 — and **165 → 165 on the held-out test side**, 7 fixed against 7
+      broken, p = 1.000. **82.0% is retired as an improvement** (it is in-sample); the
+      first published reading said "fails" because it paired the live arm against an
+      **archived** baseline that had drifted 9 rows — 10 of them in `reddit_digest` alone —
+      and that is corrected in the appended 2026-11-05 section of
+      `docs/rewrite-transfer-2026-11-04.md`. The two components are significant and
+      opposite: the edit **buys 9 `filesys_grep` rows** (69.2% → 86.5%, 9/0, p = 0.004) and
+      **pays 8 `web_search` rows** (94.2% → 78.8%, 0/8, p = 0.008) — 9 bought, 8 paid. The
+      mechanism is the diagnosis: the widened grep text competes for the rows grep was
+      losing (6 to `filesys_glob`, 2 to `web_fetch`, 1 to `decide_pick`), and `web_search`
+      donates 3 of its 8 to grep and 5 to the widened `decide_extract`, which claims
+      questions and absorbs rows owned by other labels. `filesys_grep`'s line is therefore a
+      real effect that is **paid for**, not a salvage withheld: its nine fixes are still
+      three authored frames (family sign test p = 0.25), its own ledger is 9 fixed / 3
+      broken, and the grep-line-with-original-extract configuration is an arm the report
+      says it did not run (`docs/rewrite-transfer-2026-11-04.md` §8–§9). Any further
+      description edit is measured on v3-test with **both arms in one session** before it is
+      believed. Report at `docs/rewrite-transfer-2026-11-04.md`, probe at
       `bench/rewrite_transfer.py`.
 - [ ] **Give the corpus a split that holds slot values out.** The reason the arm above is
-      negative is not only the label bands: family-held-out CV ranks seven candidates
+      not an improvement is not only the label bands: family-held-out CV ranks seven candidates
       **backwards** against transfer (Spearman ρ = −0.71, `docs/distill-classifier-2026-11-04.md`
       §6), because a frame's slot values recur across frames, so holding a *family* out leaves
       every noun in the training fold and rewards the model that memorised them. Object-held-out

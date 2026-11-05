@@ -532,3 +532,59 @@ What survives from §8, and what does not:
   one is not. All three now carry a marking — §7's own pointer table is the ledger for the
   other two — so the ranking no longer separates them. What §8 was right about is the class:
   a retired *direction of a measured result* is worse than a retired *level*.
+
+---
+
+## Appendix — appended 2026-11-05: one "live and correct" row was neither, and one quoted retirement has moved
+
+*Appended, not rewritten. Two of this review's verdicts are about the rewrite verdict, and that
+verdict has since been corrected: the baseline arm it was computed against was an archive, and
+it had drifted. The live arm is now recorded to all 415 rows in the same session as the targeted
+arm (`bench/results/p3-transfer/rows.jsonl`, `arm: "baseline"`).*
+
+### `:141` — "live and correct — the authoritative statement"
+
+That row certified the verdict line at `docs/rewrite-transfer-2026-11-04.md:9` as *"the
+authoritative statement"*. **It was not correct.** The sentence is still in the dated body,
+because that body is append-only, but the document now carries a 2026-11-05 correction that
+supersedes its verdict line, and the line itself is retired.
+
+Corrected: **78.3% (325) → 77.4% (321)**, 16 fixed / 20 broken, exact McNemar **p = 0.618**,
+held-out test side **165 → 165**, p = 1.000. A wash with two significant opposite components —
+9 `filesys_grep` rows bought at p = 0.004, 8 `web_search` rows paid at p = 0.008. Not "fails".
+
+The table row should read: *dated verdict, superseded by the document's own appended
+2026-11-05 correction.* This review's method was sound — it checked a claim against the
+artefacts rather than the prose — and the artefact it read was an archive that disagreed with
+the live endpoint by 9 rows. That is a limit of a consistency review, not an error of one: a
+number can be internally consistent across every document in the tree and still be wrong,
+because consistency checks relationships and this was an error in a measurement.
+
+### `:305` — the three "80.5"s
+
+The verdict (coincidence, not defect) still holds for the digits. One of the three sources has
+moved underneath it: `docs/rewrite-transfer-2026-11-04.md:111`'s v3 baseline was 334/415 =
+80.48% from the **archive**, and the live baseline on the same rows is 325/415 = **78.31%**. The
+coincidence analysis is unaffected — `:146`'s 251/312 and the gate row at 37% coverage are
+untouched — but the first 80.5 is now a run-level figure rather than a set-level one, and should
+be quoted with its date and server or not at all.
+
+### `:516` and the §8 appendix — the quoted retirement has moved
+
+The appendix quotes `docs/distill-classifier-2026-11-04.md`'s inline retirement verbatim:
+*"80.5% → 77.3% over 415 rows, 16 fixed / 29 broken."* Those numbers are superseded by
+78.3% → 77.4%, 16 fixed / 20 broken. The appendix's **argument** — that the inline retirement
+existed on the day §8 claimed it did not, and that an inline retirement is the strongest form
+append-only allows — is unaffected and still correct.
+
+### What this does not change in this review
+
+* §1's alignment work, §2's inventory and §3's collision analysis are untouched.
+* The finding that `CHANGELOG.md`'s "Another track is validating it … does not pre-empt that
+  result" was live and wrong is now resolved by correction in place: the changelog records the
+  landing, both readings, and the corrected verdict.
+* The H-series and §7's pointer table stand, with the `:141` row now carrying the correction
+  above rather than a certification.
+
+The eleven-row drift ledger, the per-class live table and the protocol this project should use
+from here are in the appended 2026-11-05 section of `docs/rewrite-transfer-2026-11-04.md`.

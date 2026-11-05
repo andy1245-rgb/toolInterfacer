@@ -513,21 +513,40 @@ can read as current.
 
 One correction has now been resolved rather than restated: the **74.0% → 82.0%** gain from
 rewriting two op descriptions was in-sample, and it was run out of sample on
-`heldout_v3.json` — 415 rows the rewrite never saw — where the same two strings score
-**80.5% → 77.3%** (16 fixed, 29 broken, p = 0.0725). **82.0% is retired as an
-improvement** — [`docs/rewrite-transfer-2026-11-04.md`](docs/rewrite-transfer-2026-11-04.md)
-and the dated correction at the end of
-[`bench/results/p1-diagnose/FINDINGS.md`](bench/results/p1-diagnose/FINDINGS.md).
+`heldout_v3.json` — 415 rows the rewrite never saw. Against a **live** baseline recorded in
+the same session (`bench/results/p3-transfer/rows.jsonl`: 415 baseline rows and 415 targeted
+rows, fully paired) the same two strings score **78.3% → 77.4%** — 16 fixed, 20 broken, exact
+McNemar **p = 0.618**, net **−4 rows**. **82.0% is retired as an improvement**, and that
+conclusion has not moved; it is in-sample by construction. What has moved is the word for the
+result. **Not "the rewrite fails out of sample"** — the first published reading paired a live
+arm against an archived baseline that had drifted 9 rows, and it is corrected in the appended
+section of [`docs/rewrite-transfer-2026-11-04.md`](docs/rewrite-transfer-2026-11-04.md) and in
+the dated corrections at the end of
+[`bench/results/p1-diagnose/FINDINGS.md`](bench/results/p1-diagnose/FINDINGS.md). The verdict
+is **no net effect, with two significant opposite components** — which is a wash, not a
+failure.
 
-The tempting salvage — that the `filesys_grep` line alone transfers, at +17.3 points and
-9 fixed / 0 broken — **does not survive review and is not claimed here.** Three
-independent passes killed it: its nine "fixes" are **three authored frames**, and at the
-family unit the sign test is p = **0.25** with the project's own cluster bootstrap
-**[+0.0, +36.5]**; the ledger was kept by *label* when the change is to an *option*, so
-three of the twenty-nine breaks were captured by the new grep text and booked under
-`web_search` (a real ledger of 9 fixed / 3 broken); and on the **test side alone**, the
-only slice held out by construction, it is 3 fixed / 0 broken at p = **0.25**. There is
-also **no "grep alone" arm** — both arms carried all eight options with both edits live.
+The two components are the finding, and they are the same size: the edit **buys 9
+`filesys_grep` rows** (69.2% → 86.5%, 9 fixed / 0 broken, p = **0.004**) and **pays 8
+`web_search` rows** (94.2% → 78.8%, 0 fixed / 8 broken, p = **0.008**). On the held-out (test)
+side it changes **nothing** — 165 → 165, 7 fixed against 7 broken, p = 1.000. The mechanism is
+the one `p1-diagnose` described: the widened grep text competes for the rows grep was losing
+— six to `filesys_glob`, two to `web_fetch`, one to `decide_pick` — and the price is met by
+`web_search`, which donates 3 of its 8 to the new grep text and 5 to the widened
+`decide_extract`. **9 bought, 8 paid, net nothing.**
+
+The `filesys_grep` line is no longer a salvage withheld — it is a **measured effect that is
+paid for**, and both halves travel together. It is the strongest single-class result in the
+study (+17.3 points, 9 fixed / 0 broken, p = 0.0039 on 52 rows). Three constraints from the
+dated reviews survive the re-measurement unchanged, because `filesys_grep` did not drift by a
+single row: its nine "fixes" are **three authored frames**, and at the family unit the sign
+test is p = **0.25** with the project's own cluster bootstrap **[+0.0, +36.5]**; the ledger
+kept by *label* when the change is to an *option* hides that three of the breaks were
+captured by the new grep text and booked under `web_search` (grep's own ledger is **9 fixed /
+3 broken**, net +6); and on the **test side alone**, the only slice held out by construction,
+it is 3 fixed / 0 broken at p = **0.25**. There is also **no "grep alone" arm** — both arms
+carried all eight options with both edits live. So the line is real and it is not free:
+shipping it without the extract edit is a different experiment, and it has not been run.
 [`docs/adversarial-review-2026-11-04.md`](docs/adversarial-review-2026-11-04.md),
 [`docs/review-apparatus-2026-11-04.md`](docs/review-apparatus-2026-11-04.md),
 `bench/verify_claims.py`.

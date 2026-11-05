@@ -323,3 +323,280 @@ python3 bench/rewrite_transfer.py --report
 Artifacts: `bench/results/p3-transfer/rows.jsonl` (415 rows, targeted arm, per-row
 probabilities), `bench/results/p3-transfer/summary.json` (the numbers above),
 `bench/results/p3-transfer/v2_spot_check_targeted.json` (24 rows).
+
+---
+
+## Correction — 2026-11-05: the baseline arm was an archive, and the archive had drifted
+
+*Appended, not rewritten. The dated body above stands as measured on 2026-11-04. This
+section supersedes its **verdict line**, §4's all-415 row and §5–§6's `reddit_digest`
+cell, and nothing else. `82.0%` stays retired — that conclusion does not move.*
+
+### What was wrong, mechanically
+
+Every number in the body pairs a **live** targeted arm against an **archived** baseline
+(`bench/results/p2-heldout/v3-d1-3B-Q4.json`). The two arms were not recorded under the
+same conditions:
+
+| arm | window (2026-11-04) | n | latency p50 |
+|---|---|---:|---:|
+| baseline (archived) | ends 01:50:47 | 415 | **8 225 ms** |
+| targeted (live) | 02:06:14 → 02:36:06 | 415 | 4 079 ms |
+| **baseline (live)** | **02:36:09 → 03:14:16** | **415** | **3 959 ms** |
+
+The archive was written at **twice the latency** of the run it is compared against, which
+on a llama-server means a different thread count, build or server state. §2 of this
+document noticed the speed change in prose ("the server was at 3–5 s/call rather than the
+expected 14–18 s") and did not treat it as a confound. §3 promised a live baseline table
+"below" that was never written: the re-run *was* recorded and the report skipped it —
+`report()` loads the rows and immediately drops every non-`targeted` record.
+
+**The control has now been completed to all 415 rows.** The 233 rows the adversarial
+review found unread in `rows.jsonl` are 233 rows of a 415-row live baseline arm, and the
+182 missing rows are now recorded in the same file under `arm: "baseline"`. Both arms are
+therefore in one file, from one session, with `id`, `label`, `family`, `split` and
+`utterance` identical row for row — verified before any number below was computed.
+
+### Re-derived, both arms live
+
+Every figure below re-derived from `bench/results/p3-transfer/rows.jsonl` with
+`ti_bench.stats.mcnemar_exact` and `wilson_ci`; nothing re-typed from a report.
+
+| v3, live vs live | baseline | targeted | fixed / broken | exact McNemar | paired delta |
+|---|---:|---:|---|---:|---|
+| **all 415 rows** | **78.3% (325)** [74.1, 82.0] | **77.4% (321)** [73.1, 81.1] | **16 / 20** | **0.618** | **−1.0 pts** [−8.9, +6.6] |
+| **test side, 207** | **79.7% (165)** | **79.7% (165)** | **7 / 7** | **1.000** | **0** |
+| train side, 208 | 76.9% (160) | 75.0% (156) | 9 / 13 | 0.523 | −1.9 pts |
+
+Per class, live vs live, 52 rows each (51 for `decide_extract`):
+
+| class | n | baseline | targeted | fix | broken | Δ rows | exact McNemar |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `filesys_grep` | 52 | 69.2% | **86.5%** | **9** | **0** | **+9** | **0.004** |
+| `web_search` | 52 | 94.2% | **78.8%** | 0 | **8** | **−8** | **0.008** |
+| `decide_extract` | 51 | 39.2% | 49.0% | 7 | 2 | +5 | 0.180 |
+| `decide_pick` | 52 | 100.0% | 94.2% | 0 | 3 | −3 | 0.250 |
+| `filesys_read` | 52 | 82.7% | 76.9% | 0 | 3 | −3 | 0.250 |
+| `filesys_glob` | 52 | 84.6% | 80.8% | 0 | 2 | −2 | 0.500 |
+| `web_fetch` | 52 | 94.2% | 90.4% | 0 | 2 | −2 | 0.500 |
+| `reddit_digest` | 52 | 61.5% | 61.5% | 0 | 0 | **0** | **1.000** |
+
+### Where the 9 rows of "harm" went
+
+The archive is **9 rows higher than a live baseline** (334 against 325). That difference is
+not spread across the set; it is two families in one class:
+
+| class | archive | live | drift |
+|---|---:|---:|---:|
+| `decide_extract` | 20 | 20 | 0 |
+| `filesys_grep` | 36 | 36 | 0 |
+| `filesys_glob` | 44 | 44 | 0 |
+| `filesys_read` | 43 | 43 | 0 |
+| `web_fetch` | 49 | 49 | 0 |
+| `web_search` | 49 | 49 | 0 |
+| `decide_pick` | 51 | **52** | **+1** |
+| **`reddit_digest`** | **42** | **32** | **−10** |
+
+Eleven of 415 rows change correctness between the archive and the live arm — and they land
+in **three families**:
+
+| rows | family | class | side | archive → live |
+|---:|---|---|---|---|
+| 6 | `t3:reddit_digest->web_fetch:06` | `reddit_digest` | train | correct → **wrong** |
+| 4 | `t1:reddit_digest:03` | `reddit_digest` | test | correct → **wrong** |
+| 1 | `t3:decide_pick->filesys_glob:07` | `decide_pick` | train | wrong → **correct** |
+
+Ten of the eleven move one way, and all ten are `reddit_digest`. This is the same
+cluster-over-rows point §6 makes about the rewrite, applied to the *instrument*: the
+archive did not drift by 9 independent rows, it drifted by two authored sentences.
+
+### The corrected verdict
+
+**The rewrite is not a failure and it is not a win: it is a wash, and it is a wash
+because two significant effects in opposite directions cancel.**
+
+* **It buys 9 `filesys_grep` rows** (69.2% → 86.5%, 9 fixed / 0 broken, p = 0.004) — the
+  largest and cleanest single-class effect anywhere in this document.
+* **It pays 8 `web_search` rows** (94.2% → 78.8%, 0 fixed / 8 broken, p = 0.008) — and the
+  payment is split: **3** of the 8 go to the new `filesys_grep` text, **5** to the widened
+  `decide_extract` text.
+* **On the held-out side it changes exactly nothing**: 165 → 165, 7 fixed against 7 broken,
+  p = 1.000. The test side is the only slice whose phrasings were held out by construction,
+  and there the edit is invisible.
+* **Net −4 rows over 415, p = 0.618, CI [−8.9, +6.6].** That is a null result, not a
+  direction.
+
+The mechanism is coherent with `p1-diagnose`, with one correction to the story that is
+easy to get wrong from the class table alone. The 9 grep rows the rewrite recovers were
+being answered **`filesys_glob` (6), `web_fetch` (2) and `decide_pick` (1)** at baseline —
+**not** `web_search` (0 of the 9). Grep was losing to its own siblings, which is what
+`p1-diagnose` §1 found on v2 (6 of 14 to `web_fetch`, 4 of 14 to `filesys_glob`). What
+`web_search` pays for is the *equilibrium*: the widened grep text claims 3 web-shaped
+search rows, and the widened extract text claims 5 more. `web_search` is the donor; it is
+not the sump.
+
+By option ledger — the unit that was actually edited, not the label it is booked under:
+
+| option | fixed | broken | net |
+|---|---:|---:|---:|
+| `filesys_grep` | **9** | **3** | **+6** |
+| `decide_extract` | 7 | **14** | **−7** |
+| untouched (`web_search` 2, `filesys_glob` 1) | 0 | 3 | −3 |
+| **total** | **16** | **20** | **−4** |
+
+### What does not change
+
+* **`82.0%` stays retired.** It is in-sample — two strings written by reading the errors of
+  the 150 rows they were then scored on. Nothing here rehabilitates it, and no live
+  measurement could.
+* **The pre-specified pair is untouched by the correction**, because neither rewritten
+  class drifted: the two classes go 56/103 → **70/103** (54.4% → 68.0%), 16 fixed / 2
+  broken, p = **0.0013**, +13.6 pts, at 10 net-positive families against 1 — identical
+  under the archive and under the live arm.
+* **The six untouched classes still lose**, but by 18 rows, not 27: 86.2% (269) → 80.4%
+  (251), 0 fixed / 18 broken, **−5.8 pts**, p < 0.0001. Thirteen discordant families, **none
+  net-positive**. The direction is intact; only the size was inflated by the archive.
+* **The `filesys_grep` and `web_search` cells are bit-identical** under both baselines
+  (36→45 and 49→41). Neither class drifted by a single row. Every per-class number in §5
+  for those two is unchanged.
+
+### What does not survive
+
+* **"The whole rewrite fails out of sample."** The word is wrong. The effect is −1.0
+  points at p = 0.618 with an interval spanning zero, and on the held-out side it is
+  exactly zero.
+* **"27 > 16, which is the whole verdict."** The argument was that the edit broke more
+  rows outside its targets than it fixed inside them. That is still true (18 against 16),
+  but it is no longer a *verdict*: the 27 was 18, and 9 of those 18 are the `web_search`
+  rows the grep text captured — the same effect counted twice, once as a gain and once as
+  a loss.
+* **`reddit_digest` at −19.2 points, 0 fixed / 10 broken, p = 0.0020.** This is the single
+  largest error in the body and it is **entirely archive drift**. Live vs live,
+  `reddit_digest` is 32 → 32, 0 fixed, 0 broken, p = 1.000. The class the document accused
+  the rewrite of destroying is the class the rewrite does not touch at all — and the
+  accusation was manufactured by two families in a stale recording.
+* **§6's "the untouched descriptions re-normalised"**, insofar as it rests on those 10
+  rows. The remaining breaks on untouched options are 3, not 13.
+
+### The method lesson: a live-vs-archive comparison measures session drift
+
+This is the second time this project has measured a drift of this size, and the first time
+it has let one set a verdict. `docs/cost-reduction-glm-flash.md` re-ran the same endpoint on
+the same 150 rows **30 minutes apart** and found the two runs disagreeing on **12 of 150
+individual rows** while the aggregate moved 2. That document treats it correctly, as a
+noise floor, and states every claim against it. Here, **45 minutes apart on the same
+build**, 11 of 415 rows disagree — and because the disagreement was one-directional and
+settled in one class, it turned a 16/20 null into a 16/29 "failure" and a p of 0.618 into
+0.0725.
+
+The repo also carried an explicit belief that this could not happen: `heldout_v3_NOTES.md`
+justifies pairing against the v2 archive with "the endpoint is deterministic (0/150 argmax
+disagreement across two llama.cpp builds)". A 150-row cross-build check is not a bound on
+45-minute drift within one build, and the archive's p50 latency was double the live arm's,
+which is the observable signature that conditions differed.
+
+**The protocol this project should use from here:**
+
+1. **Both arms in one session, adjacent or interleaved, with the latency p50 recorded for
+   both.** A paired design is only paired if the two arms saw the same server. Record each
+   arm's `ts` and `ms` and refuse to report a delta when the two p50s differ by more than
+   ~20%.
+2. **If an archive must be used, measure its drift bound first** — re-run a hash-chosen
+   sample of *every class*, sized to the smallest per-class cell the report will quote, and
+   publish the archive-paired delta beside the drift. A drift bound measured on one class
+   does not bound another: this archive drifted 0 rows on seven classes and 10 on the
+   eighth, so §3's 24-row v2 spot check could not have caught it even at 24/24.
+3. **Never let a control arm be recorded and unread.** The 233-row baseline arm sat in the
+   tree for a day. A `report()` that silently drops rows it did not ask for is how a
+   correction this size stays hidden.
+
+### The two reviews, against the live data
+
+Both dated reviews attacked this document, and the live arm separates what they got right
+from what the data could not then settle.
+
+**The headline objection was right.** `docs/adversarial-review-2026-11-04.md` put "the
+rewrite fails out of sample" at **70% likely wrong** and wrote: *"a 3.1-point point estimate
+whose interval is [−8.5, +1.9] and whose p is 0.0725 is not a verdict, it is a null result
+with a direction."* The correction confirms it, and supplies the missing cause: −3.1 became
+−1.0 once both arms were live, p 0.0725 → 0.618. Its §2.2 latency confound and §2.3 unread
+control are the two findings that produced this section. Its 233-row slice reproduces to
+the row on the now-complete arm: archive 184, live 180, targeted 183 — +3 live-to-targeted
+on that slice. The completed arm moves that to −4 over all 415. Both are noise; the
+reviewer's reading of the *sign* was a property of the slice, but its reading of the
+*mechanism* was correct.
+
+**The grep objection is neither refuted nor strengthened — it is untouched.** The task is
+to be precise about this, because the tempting move is to claim the correction vindicates
+grep and it does not:
+
+* The grep cell **did not change**. 36 → 45, 9 fixed / 0 broken, p = 0.0039 under the
+  archive and under the live baseline, digit for digit, because `filesys_grep` had **zero**
+  drift. Nothing the live arm measured touches that p-value.
+* The class **already had 52 rows and 10 families** when the review wrote it; the review's
+  own table says "grep, all 52 rows … 10 families". It was not under-sampled.
+* The **9 fixes are still 9 rows in 3 families** — `t1:filesys_grep:14` (4),
+  `t3:filesys_grep->web_fetch:03` (3), `t3:filesys_grep->filesys_glob:02` (2) — verified on
+  the live pairing. The row-level p was never in dispute: the review accepted the
+  arithmetic and attacked the unit, and the unit is still 3.
+
+So the earlier objection was **not wrong, and not underpowered on this data — it was
+unaffected**, and one half of it is now positively confirmed: its §2(b) ledger argument
+(*"the grep edit's ledger on v3 is 9 fixed / 3 broken, and its damage is booked in someone
+else's account"*) is exactly what the live capture table above shows — 9 fixed, 3 captured
+`web_search` rows, net +6. The review derived that from the 233-row control it found; the
+completed arm reproduces it over 415.
+
+What the correction *does* change is the status of the two effects standing next to each
+other. At the row unit there are now two significant opposite effects (0.004 and 0.008)
+that cancel; at the family unit neither survives — grep is 3–0, p = 0.25, and `web_search`
+is 0–4, p = 0.125 — which is why the honest word is *wash* and not *net positive*. The grep
+effect is real and it is **paid for**, and the price is paid at the unit that decides the
+whole-set number.
+
+`docs/review-apparatus-2026-11-04.md` reaches the same place from the other side. Its §2
+position — "the overall verdict is correct and understated" — is now half right: the
+verdict was **wrong**, and the per-class partition it distrusted was understated in one
+direction and invented in another. Its recommendation stands unchanged and is the right
+thing to carry forward: publish the **pre-specified pair** (+13.6, 10–1 families,
+p = 0.012) and the **six untouched classes** (−5.8, 0–13 families) rather than a post-hoc
+cell. Those two survive the live arm intact; the headline did not.
+
+### Reproduce
+
+Every number in this correction comes from one file, both arms:
+
+```bash
+python3 - <<'PY'
+import json, sys
+from collections import defaultdict
+from pathlib import Path
+sys.path.insert(0, "bench")
+from ti_bench.stats import mcnemar_exact
+rows = [json.loads(l) for l in Path("bench/results/p3-transfer/rows.jsonl").read_text().splitlines() if l.strip()]
+arms = defaultdict(dict)
+for r in rows:
+    arms[r["arm"]][r["id"]] = r
+base, targ = arms["baseline"], arms["targeted"]
+ids = sorted(base)
+a = sum(base[i]["correct"] for i in ids)
+b = sum(targ[i]["correct"] for i in ids)
+f = sum(1 for i in ids if not base[i]["correct"] and targ[i]["correct"])
+br = sum(1 for i in ids if base[i]["correct"] and not targ[i]["correct"])
+print(len(rows), "rows |", len(base), "baseline |", len(targ), "targeted")
+print(f"baseline {a}/{len(ids)}  targeted {b}/{len(ids)}  fixed {f} broken {br} "
+      f"delta {b-a:+d}  p={mcnemar_exact(f, br):.4f}")
+for c in sorted({base[i]["label"] for i in ids}):
+    sel = [i for i in ids if base[i]["label"] == c]
+    ca = sum(base[i]["correct"] for i in sel)
+    cb = sum(targ[i]["correct"] for i in sel)
+    cf = sum(1 for i in sel if not base[i]["correct"] and targ[i]["correct"])
+    cbr = sum(1 for i in sel if base[i]["correct"] and not targ[i]["correct"])
+    print(f"  {c:15s} n={len(sel):3d} {ca} -> {cb}  fix={cf} brk={cbr} p={mcnemar_exact(cf, cbr):.4f}")
+PY
+```
+
+`bench/rewrite_transfer.py --report` still recomputes the body's tables from the **archive**
+(`bench/results/p2-heldout/v3-d1-3B-Q4.json`), because that is the file it reads. Until it
+is pointed at the `baseline` arm in `rows.jsonl`, read its output as the archive comparison
+and not as the result.

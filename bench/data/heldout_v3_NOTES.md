@@ -263,3 +263,31 @@ python3 bench/report_v3.py                    # the validation tables, offline
 
 The generator is deterministic: the seed is a hash key (`sha256("20261104|…")`), not an
 RNG state, so a different Python or a different hash seed cannot reorder the set.
+
+---
+
+## Note appended 2026-11-05: 80.5% is a run, not a level
+
+The validation table above reports **80.5% [76.4, 84.0]** for v3's all-rows baseline. That
+figure was a single run of `bench/live_probe.py` on 2026-11-04 ending 01:50:47, at a p50
+latency of 8 225 ms. The same instrument on the same 415 rows, re-run the same night at
+02:36:09 → 03:14:16 at p50 **3 959 ms**, gives **325/415 = 78.31%** — **9 rows lower**, and the
+difference is not spread evenly: ten of the eleven changed rows are `reddit_digest` and one is
+`decide_pick`, in three authored families. Every other class is identical.
+
+Two consequences for anyone quoting this set:
+
+* **Quote the level with its run.** "80.5%" and "78.3%" are the same set, the same build and
+  the same prompt 45 minutes apart. Neither is wrong; both are run-level. The interval
+  [76.4, 84.0] covers both, which is the honest reading — the level is resolved to about ±4
+  points, not to a digit.
+* **Paired comparisons remain the right use of this set**, and they need both arms in one
+  session. A live-vs-archive pairing on this instrument measures drift as much as effect, and
+  it has now done so once: the description-rewrite verdict was built on this 80.5% and had to
+  be corrected when the live baseline arm was completed
+  (`bench/results/p3-transfer/rows.jsonl`, `arm: "baseline"`). See the appended 2026-11-05
+  section of `docs/rewrite-transfer-2026-11-04.md` for the drift ledger and the protocol.
+
+The note above — *"the overall figure resolves about 8 points per side"* — should be read as
+**an** 8-point resolution with a session-to-session floor on top of it; the 9-row spread between
+these two runs is what that floor looks like on *this* set.

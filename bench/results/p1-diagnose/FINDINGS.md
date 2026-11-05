@@ -23,12 +23,19 @@ byte-identical — moves the same 150 rows from **74.0% to 82.0%**
 recovers **17 of the 32** misses in the two classes. No retraining, no new
 model, no service change.
 
-**The 82.0% is retired as an improvement — read the two corrections at the end of
+**The 82.0% is retired as an improvement — read the three corrections at the end of
 this file before quoting it.** It is an in-sample fit (first correction), and the
 rewrite was subsequently run out of sample, where it scores 80.5% → 77.3% over
 415 rows with 29 broken against 16 fixed (second correction, and
 `docs/rewrite-transfer-2026-11-04.md`). The mechanism above stands. The size of
 the gain does not, and no part of it should be quoted as a gain.
+
+*Pointer added 2026-11-05, body left as written.* The second correction's baseline was an
+archived recording, and it had drifted 9 rows. Against a **live** baseline measured in the
+same session the same two strings score **78.3% → 77.4%** (16 fixed / 20 broken, p = 0.618;
+**165 → 165 on the held-out test side**) — a wash, not a failure, with 9 `filesys_grep` rows
+bought at p = 0.004 and 8 `web_search` rows paid at p = 0.008. The 82.0% retirement is
+unaffected. See the third correction at the end of this file.
 
 ## 1. Reproduction, and what it answered instead
 
@@ -344,3 +351,55 @@ Two specific claims above are retired with it:
 §3's tables and per-row artifacts are unchanged and still re-derive exactly
 (`python3 bench/routing_diagnose.py --report`). What changed is their status: they
 are the in-sample fit, and the out-of-sample measurement is now on record.
+
+---
+
+## Correction — 2026-11-05 (third): the second correction's baseline was an archive, and it had drifted
+
+The second correction above reports the out-of-sample result as **80.5% → 77.3%**, 16 fixed /
+29 broken, p = 0.0725, and calls the rewrite a failure. Its baseline arm was the **archived**
+recording `bench/results/p2-heldout/v3-d1-3B-Q4.json`, captured 45 minutes before the live
+targeted arm at a p50 latency of 8 225 ms against the live arm's 4 079 ms. That comparison
+measured session drift as well as effect. The live baseline arm has now been recorded to all
+415 rows in the same file as the targeted arm, from the same session
+(`bench/results/p3-transfer/rows.jsonl`, `arm: "baseline"`, 02:36:09 → 03:14:16, p50
+3 959 ms).
+
+| v3 | archived baseline (as published above) | **live baseline (this correction)** |
+|---|---|---|
+| all 415 rows | 80.5% (334) → 77.3% (321), 16 / 29, p = 0.0725 | **78.3% (325) → 77.4% (321), 16 / 20, p = 0.618** |
+| test side, 207 | 81.6% (169) → 79.7% (165), 7 / 11, p = 0.4807 | **79.7% (165) → 79.7% (165), 7 / 7, p = 1.000** |
+| train side, 208 | 79.3% (165) → 75.0% (156), 9 / 18, p = 0.1221 | 76.9% (160) → 75.0% (156), 9 / 13, p = 0.523 |
+| the two rewritten classes | 54.4% (56) → 68.0% (70), 16 / 2, p = 0.0013 | **identical — neither rewritten class drifted** |
+| the six untouched classes | 89.1% (278) → 80.5% (251), 0 / 27, p < 0.0001 | **86.2% (269) → 80.4% (251), 0 / 18, p < 0.0001** |
+
+The archive is **9 rows optimistic** against a live baseline, and the optimism is not spread:
+eleven of 415 rows change correctness, ten of them are `reddit_digest` (archive 42 → live 32),
+one is `decide_pick` (51 → 52), and they sit in **three authored families**. Every other class
+is bit-identical, including `filesys_grep` and `decide_extract`.
+
+**What this changes.** The word "fails" in the second correction is not supported. The correct
+statement is **no net effect, with two significant opposite components**: the edit buys **9
+`filesys_grep` rows** (69.2% → 86.5%, 9 fixed / 0 broken, p = 0.0039) and pays **8 `web_search`
+rows** (94.2% → 78.8%, 0 fixed / 8 broken, p = 0.0078), and on the held-out test side it changes
+nothing at all. Net −4 rows, p = 0.618, CI [−8.9, +6.6].
+
+**What this does not change.**
+
+* **The 82.0% stays retired.** It is in-sample and it does not reproduce anywhere on v3. §3's
+  tables and the second correction's retirement of the headline gain stand.
+* **The mechanism in §1–§2 stands, and grep's per-class result is untouched** — 36 → 45, 9 fixed
+  / 0 broken, p = 0.0039, before and after, because `filesys_grep` did not drift by one row.
+* **§6's residual lever** (`filesys_grep → web_fetch`, 0 of 6 on v2) is now partly exercised:
+  2 of the 9 live grep fixes come from baseline `web_fetch` choices, 6 from `filesys_glob` and 1
+  from `decide_pick`.
+* **The second correction's claim that the edit breaks 27 rows in the six classes it does not
+  touch is overstated by 9.** Those nine rows were archive drift. The corrected figure is 18,
+  and 9 of those 18 are `web_search` rows the new grep text captured — the same effect booked
+  once as a gain and once as a loss.
+
+The reason this file keeps needing corrections is worth naming here: the first correction said
+the in-sample fit was an upper bound, the second applied it to a stale baseline, and neither
+error was in the arithmetic — both were in what was being compared to what. Full re-derivation,
+the drift ledger and the protocol this project should use from here are in the appended
+2026-11-05 section of `docs/rewrite-transfer-2026-11-04.md`.
