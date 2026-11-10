@@ -1,0 +1,10 @@
+{
+  "arm": "r_fusion",
+  "note": "Fusion must beat the BEST SINGLE member, not the 3B. The member spec is fixed here and not varied: vectorizer=tfidf_word, clf=logreg, features=rules, feature_scale=maxabs, C=1.0, ngram_max=2. Selection cost, declared: feature_scale=maxabs was chosen after seeing it move this corpus by 35 rows, so the member's level is optimistic by whatever that choice is worth. The pass rule requires BOTH fold rules to clear.",
+  "conditions": [
+    {"name": "C1 fusion beats the member by >= 10 rows", "expr": "delta >= 10"},
+    {"name": "C2 mcnemar_p < 0.01", "expr": "mcnemar_p < 0.01"},
+    {"name": "C3 no label worse than -3", "expr": "min_label_net >= -3"},
+    {"name": "C4 positive in >= 4 of 5 fold seeds", "expr": "seeds_positive >= 4"}
+  ]
+}
