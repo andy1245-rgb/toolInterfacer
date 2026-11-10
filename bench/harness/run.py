@@ -127,6 +127,7 @@ def main(argv: list[str] | None = None) -> int:
     prereg = controls.load_preregister(args.preregister) if args.preregister else None
 
     rows = list(dataset.rows)
+    all_rows = rows
     if args.split:
         rows = [r for r in rows if str(r.meta.get("split", "")) == args.split]
         if not rows:
@@ -140,8 +141,7 @@ def main(argv: list[str] | None = None) -> int:
                 "score those', which is the clean protocol; --cv answers 'fit on every fold but "
                 "one'. Doing both would fit on the scoring rows inside each fold, which is the "
                 "leak this flag exists to close.")
-        fit_rows = [r for r in load_dataset(args.dataset).rows
-                    if str(r.meta.get("split", "")) == args.fit_on]
+        fit_rows = [r for r in all_rows if str(r.meta.get("split", "")) == args.fit_on]
         if not fit_rows:
             raise SystemExit(f"--fit-on {args.fit_on!r} matched no row")
 
