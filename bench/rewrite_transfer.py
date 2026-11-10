@@ -61,7 +61,25 @@ V3_BASELINE = ROOT / "bench/results/p2-heldout/v3-d1-3B-Q4.json"
 OUT_DIR = ROOT / "bench/results/p3-transfer"
 ROWS = OUT_DIR / "rows.jsonl"
 
-ARMS = {"baseline": OP_DESCRIPTIONS, "targeted": TARGETED}
+TARGETED_GREP = dict(OP_DESCRIPTIONS)
+TARGETED_GREP["filesys_grep"] = TARGETED["filesys_grep"]
+
+# E2: the same meaning in different words, at the same length. If this arm moves the
+# needle as far as grep_only does, the effect was the rewording, not the clarification.
+GREP_CONTROL = dict(OP_DESCRIPTIONS)
+GREP_CONTROL["filesys_grep"] = (
+    "Look through the contents of local files for a pattern or text; the result is "
+    "which code or document holds it."
+)
+
+# E3: the same eight descriptions, presented in the opposite order. Pure instrument --
+# no string changes, so any movement is position, not text.
+ORDER_REV = dict(reversed(list(OP_DESCRIPTIONS.items())))
+
+ARMS = {"baseline": OP_DESCRIPTIONS, "targeted": TARGETED,
+        "floor_a": OP_DESCRIPTIONS, "floor_b": OP_DESCRIPTIONS,
+        "grep_only": TARGETED_GREP, "grep_control": GREP_CONTROL,
+        "order_rev": ORDER_REV}
 # The two labels the p1 rewrite changed, and the six it left byte-identical.
 CHANGED = [k for k in TARGETED if TARGETED[k] != OP_DESCRIPTIONS[k]]
 TARGET_LABELS = ("decide_extract", "filesys_grep")
