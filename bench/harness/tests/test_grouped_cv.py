@@ -81,7 +81,9 @@ def test_the_fold_map_never_splits_a_group():
 def test_grouped_cv_records_the_assignment_and_scores_out_of_fold():
     rows = _rows()
     out = metrics.grouped_cv(rows, NearestPrototype, folds=2, seed=5)
-    assert out["fold_of"] == metrics.assign_folds((r.group for r in rows), folds=2, seed=5)
+    assert out["fold_of"] == metrics.assign_folds(
+        (r.group for r in rows), folds=2, seed=5,
+        labels=((r.group, r.label) for r in rows))
     assert len(out["oof"]) == len(rows)
     assert out["oof_accuracy"]["correct"] == len(rows)   # separable by construction
     assert sum(f["n_test"] for f in out["per_fold"]) == len(rows)

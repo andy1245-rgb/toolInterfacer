@@ -16,13 +16,15 @@ plus a sha256 of it, in every artifact.
 from __future__ import annotations
 
 import hashlib
+import inspect
 import time
 from dataclasses import dataclass, field
 from typing import Protocol, runtime_checkable
 
 from .rows import Row, split_spec
 
-__all__ = ["Prediction", "Predictor", "register", "build", "available", "option_order_sha"]
+__all__ = ["Prediction", "Predictor", "register", "build", "available", "option_order_sha",
+           "honours_order"]
 
 
 class PredictorError(RuntimeError):
@@ -34,6 +36,7 @@ class Prediction:
     choice: str
     probabilities: dict[str, float] | None
     latency_ms: float
+    meta: dict = field(default_factory=dict)
 
 
 @runtime_checkable
@@ -117,6 +120,30 @@ class Record:
                 "meta": self.meta}
 
 
+def accepts_options(fn) -> bool:
+    """True when ``fn`` takes a second positional argument, i.e. can honour an option order."""
+    try:
+        params = inspect.signature(fn).parameters
+    except (TypeError, ValueError):
+        return False
+    positional = [p for p in params.values()
+                  if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)]
+    return len(positional) >= 2
+
+
+def honours_order(predictor) -> bool:
+    """Whether this predictor can see a permuted option order at all.
+
+    A replay (`predict_for(row)`) reads a file written under one order and cannot answer a
+    different one, so scoring it with ``--order`` would record a permutation it never saw
+    next to an `order_sha` that claims it did. Callers refuse instead.
+    """
+    fn = getattr(predictor, "predict_for", None)
+    if fn is None:
+        return True
+    return accepts_options(fn)
+
+
 def score(arm: str, rows: list[Row], predictor: Predictor,
           options_for=None) -> list[Record]:
     """Ask ``predictor`` every row once and return records.
@@ -131,14 +158,19 @@ def score(arm: str, rows: list[Row], predictor: Predictor,
         options = options_for(row) if options_for else row.options
         t0 = time.perf_counter()
         try:
-            # replay needs row identity, a live predictor needs only the text
-            if hasattr(predictor, "predict_for"):
-                pred = predictor.predict_for(row)
+            # replay needs row identity, a live predictor needs only the text; a predictor
+            # that takes options in predict_for sees the permutation instead of silently
+            # answering the frozen order
+            fn = getattr(predictor, "predict_for", None)
+            if fn is not None:
+                pred = fn(row, options) if accepts_options(fn) else fn(row)
             else:
                 pred = predictor.predict(row.text, options)
             latency = pred.latency_ms if pred.latency_ms else (time.perf_counter() - t0) * 1000
             choice, probs = pred.choice, pred.probabilities
             meta = dict(row.meta)
+            if getattr(pred, "meta", None):
+                meta.update(pred.meta)
         except Exception as exc:  # noqa: BLE001 - recorded, not swallowed
             latency = (time.perf_counter() - t0) * 1000
             choice, probs = "", None

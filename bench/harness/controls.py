@@ -170,8 +170,14 @@ def check(prereg: dict, ctx: dict) -> dict:
     return {"conditions": results, "passed": all(r["passed"] for r in results)}
 
 
-def gate_verdict(delta_rows: float, floor_rows: float, factor: float = 3.0) -> dict:
-    """The floor rule: a delta under ``factor`` times the A/A floor is not a result."""
-    need = abs(floor_rows) * factor
+def gate_verdict(delta_rows: float, floor_rows: float, factor: float = 3.0,
+                 min_rows: float = 3.0) -> dict:
+    """The floor rule: a delta under ``factor`` times the A/A floor is not a result.
+
+    ``min_rows`` keeps the rule meaningful when the floor is zero, which is the normal case
+    for a replayed or deterministic arm: with a floor of 0 the requirement would be 0 and a
+    single flipped row would clear it.
+    """
+    need = max(abs(floor_rows) * factor, float(min_rows))
     ok = abs(delta_rows) > need
     return {"delta": delta_rows, "floor": floor_rows, "needed": need, "clears": bool(ok)}

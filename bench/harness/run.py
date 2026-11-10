@@ -23,7 +23,7 @@ import sys
 from pathlib import Path
 
 from . import controls, metrics
-from .protocol import PredictorError, build, option_order_sha, score
+from .protocol import PredictorError, build, honours_order, option_order_sha, score
 from .rows import Dataset, DatasetError, load as load_dataset
 from .predictors import *  # noqa: F401,F403 - importing the package registers every predictor
 
@@ -110,6 +110,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out", default="", help="directory for summary.json and rows.jsonl")
     ap.add_argument("--limit", type=int, default=0, help="score at most N rows (smoke test)")
     ap.add_argument("--cv", type=int, default=0, help="grouped CV folds for fitted predictors")
+    ap.add_argument("--cv-seeds", default="0", help="comma-separated fold seeds (default 0)")
+    ap.add_argument("--split", default="",
+                    help="score only rows whose meta.split matches this value")
+    ap.add_argument("--fit-on", default="",
+                    help="fit on rows whose meta.split matches this value (refused with --cv)")
     args = ap.parse_args(argv)
 
     dataset: Dataset = load_dataset(args.dataset)
@@ -120,6 +125,25 @@ def main(argv: list[str] | None = None) -> int:
         mapping = controls.load_paraphrase(args.paraphrase)
         dataset = controls.apply_paraphrase(dataset, mapping)
     prereg = controls.load_preregister(args.preregister) if args.preregister else None
+
+    rows = list(dataset.rows)
+    if args.split:
+        rows = [r for r in rows if str(r.meta.get("split", "")) == args.split]
+        if not rows:
+            raise SystemExit(f"--split {args.split!r} matched no row")
+        dataset = Dataset(dataset.name, rows, dataset.options, dataset.source)
+    fit_rows = None
+    if args.fit_on:
+        if args.cv:
+            raise SystemExit(
+                "--fit-on and --cv are mutually exclusive: --fit-on answers 'fit on these rows, "
+                "score those', which is the clean protocol; --cv answers 'fit on every fold but "
+                "one'. Doing both would fit on the scoring rows inside each fold, which is the "
+                "leak this flag exists to close.")
+        fit_rows = [r for r in load_dataset(args.dataset).rows
+                    if str(r.meta.get("split", "")) == args.fit_on]
+        if not fit_rows:
+            raise SystemExit(f"--fit-on {args.fit_on!r} matched no row")
 
     arms_specs = parse_arms(args)
     reference = args.reference or arms_specs[0][0]
@@ -137,16 +161,45 @@ def main(argv: list[str] | None = None) -> int:
         print(f"paraphrase {args.paraphrase} over {len(mapping)} option(s)")
 
     records: dict[str, list] = {}
+    cv_runs: dict[str, dict[int, dict]] = {}
+    cv_seeds = ([int(s) for s in str(args.cv_seeds).split(",") if s.strip()]
+                if args.cv else [0])
     for name, spec in arms_specs:
         try:
             predictor = build(spec)
         except PredictorError as exc:
             raise SystemExit(f"arm {name}: {exc}")
-        records[name] = score(name, list(dataset.rows), predictor, options_for=order_for)
+        if order_mode and not honours_order(predictor):
+            raise SystemExit(
+                f"arm {name}: --order {order_mode} cannot be honoured by {getattr(predictor, 'name', spec)}."
+                f" It replays a file recorded under one option order, so the run would record a "
+                f"permutation the model never saw next to an order_sha claiming otherwise. "
+                f"Drop --order, or score a predictor that takes the option set at call time.")
+        if args.cv and hasattr(predictor, "fit"):
+            # the out-of-fold records *are* the arm's records: that is what lets a paired
+            # test run between a fitted arm and a replayed one
+            cv_runs[name] = {}
+            for seed in cv_seeds:
+                cv = metrics.grouped_cv(rows, (lambda s=spec: build(s)), folds=args.cv,
+                                        seed=seed, options_for=order_for)
+                for rec in cv["oof"]:
+                    rec.arm = name
+                cv_runs[name][seed] = cv
+            records[name] = cv_runs[name][cv_seeds[0]]["oof"]
+            continue
+        if fit_rows is not None and hasattr(predictor, "fit"):
+            try:
+                predictor.fit(fit_rows)
+            except PredictorError as exc:
+                raise SystemExit(f"arm {name}: {exc}")
+        records[name] = score(name, rows, predictor, options_for=order_for)
 
     summary = {"dataset": {"name": dataset.name, "rows": len(dataset), "source": dataset.source,
                            "options": list(dataset.options), "order_sha": order_sha,
-                           "order_mode": order_mode or "frozen"},
+                           "order_mode": order_mode or "frozen",
+                           "split": args.split or "all",
+                           "fit_on": args.fit_on or "none",
+                           "cv": args.cv, "cv_seeds": cv_seeds},
                "reference": reference, "arms": {}}
     print_arm_table(records, reference)
 
@@ -181,26 +234,29 @@ def main(argv: list[str] | None = None) -> int:
             print("           note: a replayed arm is a file, so this is a determinism check of "
                   "the harness, not a floor for the served model")
 
-    if args.cv:
-        for name, spec in arms_specs:
-            try:
-                predictor = build(spec)
-            except PredictorError:
-                continue
-            if not hasattr(predictor, "fit"):
-                print(f"\ngrouped CV  {name}: skipped (this predictor has no fit())")
-                continue
-            cv = metrics.grouped_cv(list(dataset.rows), (lambda s=spec: build(s)),
-                                    folds=args.cv)
-            acc = cv["oof_accuracy"]
-            print(f"\ngrouped CV  {name}: {args.cv} folds over {len(cv['fold_of'])} groups, "
-                  f"out-of-fold {acc['correct']}/{acc['n']} = {100 * acc['accuracy']:.1f}%")
-            for f in cv["per_fold"]:
-                a = "—" if f["accuracy"] is None else f"{100 * f['accuracy']:.1f}%"
-                print(f"  fold {f['fold']}: train {f['n_train']:>4}  test {f['n_test']:>4}  {a}")
-            summary["arms"][name] = {"grouped_cv": {
-                "folds": args.cv, "fold_of": cv["fold_of"], "per_fold": cv["per_fold"],
-                "oof_accuracy": acc}}
+    if cv_runs:
+        for name, runs in cv_runs.items():
+            first = runs[cv_seeds[0]]
+            print(f"\ngrouped CV  {name}: {args.cv} folds over {first['n_groups']} groups / "
+                  f"{first['n_labels']} labels, stratified by label")
+            for seed, cv in runs.items():
+                acc = cv["oof_accuracy"]
+                folds = " ".join("—" if f["accuracy"] is None else f"{100 * f['accuracy']:.0f}"
+                                 for f in cv["per_fold"])
+                print(f"  seed {seed}: out-of-fold {acc['correct']}/{acc['n']} = "
+                      f"{100 * acc['accuracy']:.1f}%   folds {folds}")
+                missing = {f["fold"]: f["train_missing_labels"] for f in cv["per_fold"]
+                           if f.get("train_missing_labels")}
+                if missing:
+                    print(f"    WARNING fold(s) {sorted(missing)} hold out a label the training "
+                          f"side never sees: {missing} — those rows cannot be predicted")
+            print(f"  the arm's records are seed {cv_seeds[0]}'s out-of-fold rows")
+            summary["arms"].setdefault(name, {})["grouped_cv"] = {
+                "folds": args.cv, "seeds": cv_seeds,
+                "n_groups": first["n_groups"], "n_labels": first["n_labels"],
+                "per_seed": {str(s): {"fold_of": cv["fold_of"], "per_fold": cv["per_fold"],
+                                      "oof_accuracy": cv["oof_accuracy"]}
+                             for s, cv in runs.items()}}
 
     for name, recs in records.items():
         summary["arms"].setdefault(name, {}).update(summarise_arm(
@@ -214,18 +270,28 @@ def main(argv: list[str] | None = None) -> int:
         target = prereg.get("arm") or next(n for n, _ in arms_specs if n != reference)
         led = summary["arms"][target]["ledger_vs_reference"]
         edited = set(prereg.get("edited_labels") or [])
+        paired = summary["arms"][target]["paired_vs_reference"]
+        delta_by_seed: dict[str, int] = {}
+        if target in cv_runs:
+            for seed, cv in cv_runs[target].items():
+                p = metrics.paired(records[reference], cv["oof"])
+                delta_by_seed[str(seed)] = p["treatment_correct"] - p["reference_correct"]
+        else:
+            delta_by_seed[str(cv_seeds[0])] = (paired["treatment_correct"]
+                                               - paired["reference_correct"])
         ctx = {
-            "mcnemar_p": summary["arms"][target]["paired_vs_reference"]["p"],
-            "delta": summary["arms"][target]["paired_vs_reference"]["treatment_correct"]
-            - summary["arms"][target]["paired_vs_reference"]["reference_correct"],
-            "delta_rows": summary["arms"][target]["paired_vs_reference"]
-            ["treatment_correct"] - summary["arms"][target]["paired_vs_reference"]
-            ["reference_correct"],
+            "mcnemar_p": paired["p"],
+            "delta": paired["treatment_correct"] - paired["reference_correct"],
+            "delta_rows": paired["treatment_correct"] - paired["reference_correct"],
             "accuracy": summary["arms"][target]["accuracy"]["accuracy"],
             "coverage": summary["arms"][target]["coverage_at_precision90"]["coverage"],
             "precision": summary["arms"][target]["coverage_at_precision90"]["precision"],
             "ledger": led["by_label"],
             "ledger_net": led["net"],
+            "min_label_net": min((v["net"] for v in led["by_label"].values()), default=0),
+            "seeds_positive": sum(1 for d in delta_by_seed.values() if d > 0),
+            "seeds_total": len(delta_by_seed),
+            "min_seed_delta": min(delta_by_seed.values(), default=0),
             "ledger_untouched_net": metrics.ledger_net(
                 led, [l for l in led["by_label"] if l not in edited]) if edited else led["net"],
             "aa_flips": (floor or {}).get("choice_flips", 0),
@@ -237,7 +303,8 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  {'PASS' if c['passed'] else 'FAIL'}  {label:<42} "
                   f"[{c['value']} {c['op']} {c['target']}]")
         summary["prereg"] = {"path": args.preregister, "arm": target,
-                             "conditions": verdict["conditions"], "passed": verdict["passed"]}
+                             "conditions": verdict["conditions"], "passed": verdict["passed"],
+                             "delta_by_seed": delta_by_seed}
         if floor is not None:
             gate = controls.gate_verdict(ctx["delta"], floor["choice_flips"])
             summary["prereg"]["floor_gate"] = gate

@@ -12,7 +12,7 @@ the import error as its message. A kind that silently vanishes from the registry
 from __future__ import annotations
 
 from ..protocol import PredictorError, register
-from . import constant, fake, llama, logit_read, recorded  # noqa: F401
+from . import constant, fake, fusion, llama, logit_read, recorded  # noqa: F401
 
 OPTIONAL = ("sklearn_text", "torch_text", "ensemble")
 UNAVAILABLE: dict[str, str] = {}

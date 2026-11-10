@@ -181,22 +181,23 @@ def reject_curve(recs: Sequence[Record], step: float = 0.05) -> list[dict]:
 def coverage_at_precision(recs: Sequence[Record], target: float = 0.9) -> dict:
     """Largest accepted fraction whose accepted set stays at or above ``target`` accuracy.
 
-    Threshold-free: rows are sorted by confidence descending and the prefix is grown while
-    the running accuracy holds. Deterministic given the records; ties are broken by id.
+    The set is defined *by the reported threshold*: every row with confidence at or above it
+    is accepted, ties included, and the coverage and precision returned are that set's. A
+    threshold read off the k-th confidence while the set is the first k rows would describe
+    two different operating points, which is the defect this replaced.
     """
     scored = [(r, _conf(r)) for r in recs]
     scored = [(r, c) for r, c in scored if c is not None]
     if not scored:
         return {"coverage": None, "precision": None, "threshold": None, "n_accepted": 0}
-    scored.sort(key=lambda p: (-p[1], p[0].id))
+    total = len(scored)
     best = {"coverage": 0.0, "precision": None, "threshold": None, "n_accepted": 0}
-    correct = 0
-    for k, (r, c) in enumerate(scored, 1):
-        correct += 1 if r.correct else 0
-        prec = correct / k
-        if prec >= target:
-            best = {"coverage": k / len(scored), "precision": prec,
-                    "threshold": c, "n_accepted": k}
+    for threshold in sorted({c for _, c in scored}, reverse=True):
+        accepted = [r for r, c in scored if c >= threshold]
+        precision = sum(1 for r in accepted if r.correct) / len(accepted)
+        if precision >= target and len(accepted) > best["n_accepted"]:
+            best = {"coverage": len(accepted) / total, "precision": precision,
+                    "threshold": threshold, "n_accepted": len(accepted)}
     return best
 
 
@@ -217,13 +218,39 @@ def latency(recs: Sequence[Record]) -> dict:
 
 # ------------------------------------------------------------------ grouped CV
 
-def assign_folds(groups: Iterable[str], folds: int = 5, seed: int = 0) -> dict[str, int]:
-    """Stable group -> fold map. Hashed, not random: the same corpus always folds the same way."""
+def assign_folds(groups: Iterable[str], folds: int = 5, seed: int = 0,
+                 labels: Iterable[tuple[str, str]] | None = None) -> dict[str, int]:
+    """Stable group -> fold map. Hashed, not random: the same corpus always folds the same way.
+
+    With ``labels`` (``(group, label)`` pairs) the assignment is stratified instead: groups are
+    placed largest-first into whichever fold currently holds the fewest rows of their labels.
+    That is the difference between a measurement and a wall — an unstratified map can put every
+    row of a label in one fold, so the training side never sees that label and the classifier
+    is asked to predict something it was never shown.
+    """
     uniq = sorted(set(groups))
     if folds < 2:
         raise ValueError("grouped CV needs at least 2 folds")
-    return {g: int(hashlib.sha256(f"{seed}|{g}".encode()).hexdigest(), 16) % folds
-            for g in uniq}
+    if labels is None:
+        return {g: int(hashlib.sha256(f"{seed}|{g}".encode()).hexdigest(), 16) % folds
+                for g in uniq}
+    per_group: dict[str, Counter] = {}
+    for group, label in labels:
+        per_group.setdefault(group, Counter())[label] += 1
+    load = [Counter() for _ in range(folds)]
+    size = [0] * folds
+    out: dict[str, int] = {}
+    order = sorted(uniq, key=lambda g: (-sum(per_group.get(g, {}).values()),
+                                        hashlib.sha256(f"{seed}|{g}".encode()).hexdigest()))
+    for group in order:
+        counts = per_group.get(group, Counter())
+        chosen = min(range(folds), key=lambda k: (sum(load[k][label] for label in counts),
+                                                  size[k], k))
+        out[group] = chosen
+        size[chosen] += sum(counts.values())
+        for label, n in counts.items():
+            load[chosen][label] += n
+    return out
 
 
 def grouped_cv(rows: Sequence[Row], make: Callable[[], object], folds: int = 5,
@@ -234,14 +261,16 @@ def grouped_cv(rows: Sequence[Row], make: Callable[[], object], folds: int = 5,
     of the fold map being written into the artifact is that a 97% in-sample number and an
     88% shipped number differ by which rows shared a fold.
     """
-    fold_of = assign_folds((r.group for r in rows), folds, seed)
+    fold_of = assign_folds((r.group for r in rows), folds, seed,
+                           labels=((r.group, r.label) for r in rows))
     per_fold = []
     oof: list[Record] = []
     for k in range(folds):
         test = [r for r in rows if fold_of[r.group] == k]
         train = [r for r in rows if fold_of[r.group] != k]
         if not test:
-            per_fold.append({"fold": k, "n_test": 0, "n_train": len(train), "accuracy": None})
+            per_fold.append({"fold": k, "n_test": 0, "n_train": len(train), "accuracy": None,
+                             "train_missing_labels": []})
             continue
         pred = make()
         if not hasattr(pred, "fit"):
@@ -250,9 +279,12 @@ def grouped_cv(rows: Sequence[Row], make: Callable[[], object], folds: int = 5,
         recs = score(f"cv{k}", test, pred, options_for=options_for)
         oof.extend(recs)
         acc = accuracy(recs)
+        trained = {r.label for r in train}
         per_fold.append({"fold": k, "n_test": len(test), "n_train": len(train),
-                         "accuracy": acc["accuracy"], "correct": acc["correct"]})
+                         "accuracy": acc["accuracy"], "correct": acc["correct"],
+                         "train_missing_labels": sorted({r.label for r in test} - trained)})
     return {"folds": folds, "seed": seed, "fold_of": fold_of, "per_fold": per_fold,
+            "n_groups": len(set(fold_of)), "n_labels": len({r.label for r in rows}),
             "oof": oof, "oof_accuracy": accuracy(oof)}
 
 
