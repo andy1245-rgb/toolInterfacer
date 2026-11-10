@@ -79,7 +79,7 @@ and the description is what the model actually reads. `llama_systemone` uses the
 | `llama_systemone` | a llama-server on `:8080` | the existing `/v1/systemone` path, unchanged behaviour |
 | `logit_read` | a llama-server | the existing letter read |
 | `constant` | nothing | always one op; the baseline every model must beat |
-| `sklearn_text` | `scikit-learn` | TF-IDF word, word+char_wb union, LinearSVC / logistic / SGD, optional sigmoid or isotonic calibration, optional eight rule-score features (`features=rules`) |
+| `sklearn_text` | `scikit-learn` | TF-IDF word, word+char_wb union, LinearSVC / logistic / SGD, optional sigmoid or isotonic calibration, optional eight rule-score features (`features=rules`, plus `feature_scale=maxabs`) |
 | `torch_text` | `torch`, `transformers` | a fine-tuned classification head over a frozen encoder, CPU; `fit` delegates to a caller-supplied trainer |
 | `ensemble` | nothing (vote/mean), `scikit-learn` (stacked) | reports the members' error agreement, because an ensemble that fails on the same rows buys nothing |
 | `fusion` | nothing (the member may need anything) | two predictors, one answer: an equal-weight mean with a recorded arm, or a gate on the recorded arm's confidence |
@@ -111,6 +111,7 @@ python3 -m bench.harness.run \
     --paraphrase words.json                  # {option: alternate wording}
     --preregister conditions.json            # read BEFORE the run
     --cv 5                                   # grouped CV for predictors with fit()
+    --cv-rule stratified                     # or hashed; it moves the number by tens of rows
     --cv-seeds 0,1,2,4,7                     # report every fold seed, not just one
     --split test                             # score only rows whose meta.split matches
     --fit-on train                           # fit on these rows, score --split; refused with --cv
@@ -127,14 +128,27 @@ pass produces. The fold map is stratified by label and reports `n_groups / n_lab
 `train_missing_labels` per fold, because a fold whose training side never sees a label is
 unanswerable rather than bad.
 
+**The fold rule is an instrument.** `--cv-rule stratified|hashed` and whichever one is in force
+is stored in the artifact (`dataset.cv_rule`, `grouped_cv.stratified`). Measured on the 415
+routing rows, the rule is worth **up to 26 rows** to a fitted arm — the same size as the effect
+the fusion arm claims. Quote the rule beside the number, and do not compare two deltas computed
+under different rules.
+
+**Every arm reports its error count.** A row where the predictor raised is recorded as a miss
+with `meta.error`, and `n_errors` is now in the summary and in the arm table: a base artifact
+recorded over a different row set turns most of a fusion arm into silent misses, and without the
+count that reads as a low accuracy rather than as a broken run.
+
 ### Controls
 
-* **`--aa`** — the reference arm twice. The delta must exceed **3× the flip count**, and never
-  fewer than **3 rows**, to count (`controls.gate_verdict`): a replayed arm's floor is 0, so
-  without the second term a one-row delta would clear it.
+* **`--aa`** — the reference arm twice, fitted the same way both times. The delta must exceed
+  **3× the flip count** and always **more than 3 rows**, to count (`controls.gate_verdict`): a
+  replayed arm's floor is 0, so without the second term a one-row delta would clear it. For a
+  replayed or cross-validated reference this is a determinism check, and the run says so.
 * **`--order rev|shuffle:<seed>`** — permutes the option tuple, never the strings. Mandatory for
   any claim about wording. An arm that replays a file cannot honour a permutation and the run
-  **refuses** it, rather than recording an `order_sha` the model never saw.
+  **refuses** it (`replays_a_file` on the predictor: `recorded`, `fusion`), rather than recording
+  an `order_sha` the model never saw.
 * **`--paraphrase`** — rewrites *descriptions*, never option names. A label that moves is a
   different class; a description that changes is a different instrument.
 * **`--preregister`** — conditions are `PATH OP VALUE`, resolved against the run's own numbers:
@@ -183,8 +197,8 @@ owning project: the seam is fit-then-predict, not a trainer.
 ## Tests
 
 ```bash
-python3 -m pytest bench/harness/tests -q          # 127 collected: 124 pass, 3 skip, no network
-python3 -m pytest tests/ -q                       # the repo suite, unchanged
+python3 -m pytest bench/harness/tests -q          # 138 collected: 135 pass, 3 skip, no network
+python3 -m pytest tests/ -q                       # the repo suite: 857 pass, 586 subtests
 ```
 
 * `test_metrics_known_answer.py` — every metric against arithmetic on paper: McNemar against six
@@ -217,8 +231,10 @@ the same artifact rather than replacing the script.
 * **The fusion's headline number fails one of its own pre-registered conditions.** The
   equal-weight mean reaches 351/415 = 84.6% against 78.3% (fixed 37, broke 11, exact McNemar
   p = 0.00022, positive in 5 of 5 fold seeds) **but `web_search` nets −5** against a bar of −3,
-  so the verdict as written is FAIL. It is the cheapest failure in the repo to attack: the ledger
-  names two labels and both are the ones the 3B is strongest on. Report it as a fail.
+  so the verdict as written is FAIL. Worse for the story: a *single* 2 ms member with
+  `feature_scale=maxabs` reaches 349/415 with no base artifact at all, so the gain is not yet
+  attributable to fusion. `docs/fusion-2026-11-10.md` is the whole of it, including the
+  fold-rule sensitivity that moves the member by 26 rows.
 * **Grouped CV is stratified now, and the 382 corpus still cannot be cross-validated.** 7 groups
   over 18 intents means every held-out group removes its labels; the run flags it per fold
   instead of averaging in zeros, but a number that cannot be computed is still not a number.

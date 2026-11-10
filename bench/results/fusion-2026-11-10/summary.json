@@ -77,6 +77,7 @@
     "precision": 0.9019607843137255,
     "threshold": 0.5924574720598056
    },
+   "grouped_cv": null,
    "groups": {
     "t1:decide_extract:01": {
      "accuracy": 1.0,
@@ -751,12 +752,14 @@
     "p50": 2714.0,
     "p95": 3044.4
    },
+   "n_errors": 0,
    "order": {
     "n_distinct_orders": 1,
     "order_sha": [
      "6b70f586ec061715"
     ]
-   }
+   },
+   "spec": "recorded|arm=floor_a"
   },
   "r_fusion": {
    "accuracy": {
@@ -1779,7 +1782,8 @@
      2,
      4,
      7
-    ]
+    ],
+    "stratified": true
    },
    "groups": {
     "t1:decide_extract:01": {
@@ -2449,11 +2453,11 @@
     }
    },
    "latency": {
-    "max": 105.97516503185034,
-    "mean": 3.008230667033917,
+    "max": 90.06048797164112,
+    "mean": 3.255345587231533,
     "n": 415,
-    "p50": 2.2682470153085887,
-    "p95": 2.9468369903042912
+    "p50": 2.3743840283714235,
+    "p95": 3.4424590412527323
    },
    "ledger_vs_reference": {
     "broke": 11,
@@ -2526,6 +2530,7 @@
     "fixed": 37,
     "net": 26
    },
+   "n_errors": 0,
    "order": {
     "n_distinct_orders": 1,
     "order_sha": [
@@ -2593,7 +2598,8 @@
     "p": 0.00022224496262168714,
     "reference_correct": 325,
     "treatment_correct": 351
-   }
+   },
+   "spec": "fusion|member=sklearn_text~vectorizer=tfidf_word~clf=logreg~features=rules|weights=0.5"
   },
   "r_gate": {
    "accuracy": {
@@ -3621,7 +3627,8 @@
      2,
      4,
      7
-    ]
+    ],
+    "stratified": true
    },
    "groups": {
     "t1:decide_extract:01": {
@@ -4291,11 +4298,11 @@
     }
    },
    "latency": {
-    "max": 49.008905014488846,
-    "mean": 2.727267729870257,
+    "max": 90.20593605237082,
+    "mean": 3.0593482690515468,
     "n": 415,
-    "p50": 2.1140860044397414,
-    "p95": 2.801529015414417
+    "p50": 2.2115730098448694,
+    "p95": 3.1253480119630694
    },
    "ledger_vs_reference": {
     "broke": 4,
@@ -4368,6 +4375,7 @@
     "fixed": 9,
     "net": 5
    },
+   "n_errors": 0,
    "order": {
     "n_distinct_orders": 1,
     "order_sha": [
@@ -4400,11 +4408,13 @@
     "p": 0.266845703125,
     "reference_correct": 325,
     "treatment_correct": 330
-   }
+   },
+   "spec": "fusion|member=sklearn_text~vectorizer=tfidf_word~clf=logreg~features=rules|mode=gate|t=0.38"
   }
  },
  "dataset": {
   "cv": 5,
+  "cv_rule": "stratified",
   "cv_seeds": [
    0,
    1,
@@ -4427,7 +4437,7 @@
   "order_mode": "frozen",
   "order_sha": "6b70f586ec061715",
   "rows": 415,
-  "source": "/home/andrew/toolInterfacer/bench/data/heldout_v3.json",
+  "source": "bench/data/heldout_v3.json",
   "split": "all"
  },
  "prereg": {
@@ -4480,7 +4490,7 @@
    "needed": 3.0
   },
   "passed": false,
-  "path": "/tmp/fusion-prereg.json"
+  "path": "bench/results/fusion-2026-11-10/prereg.json"
  },
  "reference": "floor_a"
 }
