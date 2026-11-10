@@ -219,19 +219,25 @@ def latency(recs: Sequence[Record]) -> dict:
 # ------------------------------------------------------------------ grouped CV
 
 def assign_folds(groups: Iterable[str], folds: int = 5, seed: int = 0,
-                 labels: Iterable[tuple[str, str]] | None = None) -> dict[str, int]:
+                 labels: Iterable[tuple[str, str]] | None = None,
+                 stratify: bool = True) -> dict[str, int]:
     """Stable group -> fold map. Hashed, not random: the same corpus always folds the same way.
 
-    With ``labels`` (``(group, label)`` pairs) the assignment is stratified instead: groups are
-    placed largest-first into whichever fold currently holds the fewest rows of their labels.
-    That is the difference between a measurement and a wall — an unstratified map can put every
-    row of a label in one fold, so the training side never sees that label and the classifier
-    is asked to predict something it was never shown.
+    With ``labels`` (``(group, label)`` pairs) and ``stratify`` the assignment balances each fold
+    by label: groups are placed largest-first into whichever fold currently holds the fewest rows
+    of their labels. That is the difference between a measurement and a wall — an unstratified
+    map can put every row of a label in one fold, so the training side never sees that label and
+    the classifier is asked to predict something it was never shown.
+
+    ``stratify=False`` keeps the hashed map, and it is a supported experiment rather than a
+    legacy path: the two rules differ by more than 20 rows on this corpus alone, so a delta
+    quoted under one of them is conditional on it. The rule is recorded in every artifact
+    (``grouped_cv.stratified``); quote it beside the number.
     """
     uniq = sorted(set(groups))
     if folds < 2:
         raise ValueError("grouped CV needs at least 2 folds")
-    if labels is None:
+    if labels is None or not stratify:
         return {g: int(hashlib.sha256(f"{seed}|{g}".encode()).hexdigest(), 16) % folds
                 for g in uniq}
     per_group: dict[str, Counter] = {}
@@ -254,7 +260,7 @@ def assign_folds(groups: Iterable[str], folds: int = 5, seed: int = 0,
 
 
 def grouped_cv(rows: Sequence[Row], make: Callable[[], object], folds: int = 5,
-               seed: int = 0, options_for=None) -> dict:
+               seed: int = 0, options_for=None, stratify: bool = True) -> dict:
     """Fit on the other folds, score the held-out fold, and record the assignment.
 
     ``make()`` must return a *fresh, unfitted* predictor exposing ``fit(rows)``. The point
@@ -262,7 +268,7 @@ def grouped_cv(rows: Sequence[Row], make: Callable[[], object], folds: int = 5,
     88% shipped number differ by which rows shared a fold.
     """
     fold_of = assign_folds((r.group for r in rows), folds, seed,
-                           labels=((r.group, r.label) for r in rows))
+                           labels=((r.group, r.label) for r in rows), stratify=stratify)
     per_fold = []
     oof: list[Record] = []
     for k in range(folds):
@@ -284,6 +290,7 @@ def grouped_cv(rows: Sequence[Row], make: Callable[[], object], folds: int = 5,
                          "accuracy": acc["accuracy"], "correct": acc["correct"],
                          "train_missing_labels": sorted({r.label for r in test} - trained)})
     return {"folds": folds, "seed": seed, "fold_of": fold_of, "per_fold": per_fold,
+            "stratified": bool(stratify),
             "n_groups": len(set(fold_of)), "n_labels": len({r.label for r in rows}),
             "oof": oof, "oof_accuracy": accuracy(oof)}
 

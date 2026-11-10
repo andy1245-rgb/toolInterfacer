@@ -1,24 +1,26 @@
 """fusion — two predictors, one answer: an equal-weight mean, or a confidence gate.
 
-The arm this exists for is the 3B plus a cheap lexical member. Measured on the 415 routing
-rows: the 3B alone is 325/415 (78.3%), an equal-weight mean of its recorded distribution and
-a TF-IDF member's out-of-fold distribution reaches 352/415 (84.8%, exact McNemar p=0.0002),
-and a rule that shares nothing with averaging — *take the member when the 3B's own confidence
-is under 0.38* — reaches 345/415 (p=0.0003). The members are not redundant: they fail on the
-same rows only 34 times in 415, φ=0.165.
+The arm this exists for is the 3B plus a cheap lexical member. The numbers, with their
+source: `bench/results/fusion-2026-11-10/summary.json` holds the one pre-registered run.
+Equal-weight mean on the 415 routing rows: **351/415 = 84.6%** against the 3B's 325/415 =
+78.3%, fixed 37 / broke 11, exact McNemar p = 0.00022, positive in 5 of 5 fold seeds — which
+**fails** its own pre-registered condition that no label may net worse than -3 (`web_search`
+netts -5). The gate form at t=0.38 is weaker and not significant: 330/415, p = 0.267. The
+members are not redundant: they are both wrong on 42 of 415 rows, φ = 0.274.
 
 Three things a reader should not have to guess:
 
 * **The base arm is a replay.** ``fusion`` reads the other member's per-row distribution from
   a recorded artifact (``base_path`` + ``base_arm``), not from a live server. That is what
   makes the arm free, offline and reproducible; it also means the fusion inherits that
-  artifact's option order, which the spec's ``order_sha`` records.
+  artifact's option order, which is why the predictor declares ``replays_a_file`` and a run
+  refuses to score it under ``--order``.
 * **``weights`` is the weight on the base arm** and defaults to 0.5, the null. It exists so a
   weighted mean is *expressible*; a weight picked by sweeping it against the rows being
   scored is a knob, not a result, and the honest form of that experiment tunes on a fit split
   and reports the tuned value with its selection cost.
 * **The gate threshold is a claim about the base arm's calibration**, not a free parameter.
-  ``gate=base_conf|t=0.38`` says "the 3B is unsure below 0.38". If the base arm emits no
+  ``gate=base_conf|t=0.38`` says "the base is unsure below 0.38". If the base emits no
   probabilities the gate cannot be evaluated and the spec is refused rather than guessed.
 
 An unfitted fusion (one whose member has ``fit``) raises from ``predict`` with the reason, as
@@ -76,6 +78,10 @@ def load_base(path: str | Path, arm: str) -> dict[str, dict]:
             raise PredictorError(
                 f"fusion: arm {arm!r} of {p.name} has no probabilities on row {row.get('id')}; "
                 f"a fusion needs both members to emit a distribution")
+        if row["id"] in out:
+            raise PredictorError(
+                f"fusion: duplicate row id {row['id']!r} for arm {arm!r} in {p.name} — a "
+                f"later line would silently replace an earlier one, so the base is ambiguous")
         out[row["id"]] = {"choice": row.get("choice"), "probabilities": probs}
     if not out:
         raise PredictorError(f"fusion: no rows for arm {arm!r} in {p}")
@@ -83,6 +89,8 @@ def load_base(path: str | Path, arm: str) -> dict[str, dict]:
 
 
 class FusionPredictor:
+    replays_a_file = True
+
     def __init__(self, member: str = "", mode: str = "mean", base: str = DEFAULT_BASE,
                  base_arm: str = "floor_a", base_path: str = DEFAULT_BASE_PATH,
                  t: str = "0.38", weights: str = "0.5") -> None:
@@ -93,7 +101,7 @@ class FusionPredictor:
                 "(member=sklearn_text~vectorizer=tfidf_word~clf=logreg)")
         self.member_spec = member.strip().replace(MEMBER_PIPE, "|")
         self.mode = _resolve_mode(mode)
-        self.base_spec = base.strip() or DEFAULT_BASE
+        self.base_spec = (base.strip() or DEFAULT_BASE).replace(MEMBER_PIPE, "|")
         self.base_path = base_path
         try:
             self.base_weight = float(weights)
@@ -188,5 +196,10 @@ class FusionPredictor:
 def build(member: str = "", mode: str = "mean", base: str = DEFAULT_BASE,
           base_arm: str = "", base_path: str = DEFAULT_BASE_PATH, t: str = "0.38",
           weights: str = "0.5", **_kw) -> FusionPredictor:
+    if _kw:
+        raise PredictorError(
+            f"fusion: unknown key(s) {sorted(_kw)}; known: {', '.join(FUSION_KEYS)}. A member or "
+            f"base spec nests by writing its own pipes as ~, so a stray key here means the "
+            f"nesting was lost")
     return FusionPredictor(member=member, mode=mode, base=base, base_arm=base_arm,
                            base_path=base_path, t=t, weights=weights)

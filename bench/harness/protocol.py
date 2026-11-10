@@ -134,10 +134,15 @@ def accepts_options(fn) -> bool:
 def honours_order(predictor) -> bool:
     """Whether this predictor can see a permuted option order at all.
 
-    A replay (`predict_for(row)`) reads a file written under one order and cannot answer a
-    different one, so scoring it with ``--order`` would record a permutation it never saw
-    next to an `order_sha` that claims it did. Callers refuse instead.
+    Capability, not signature, is what decides this. A predictor that replays a file — a
+    `recorded` arm, a `fusion` whose base is a recorded arm — reads distributions keyed by
+    option *name* out of an artifact written under one order, so scoring it with ``--order``
+    would record a permutation the model never saw. A signature with a second positional
+    argument is not evidence that the order was used: a `predict_for(row, options)` that
+    discards ``options`` would be waved through.
     """
+    if getattr(predictor, "replays_a_file", False):
+        return False
     fn = getattr(predictor, "predict_for", None)
     if fn is None:
         return True

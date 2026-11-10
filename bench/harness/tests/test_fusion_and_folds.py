@@ -213,3 +213,129 @@ def test_order_is_refused_for_an_arm_that_cannot_see_it():
     with pytest.raises(SystemExit, match="cannot be honoured"):
         run.main(["--dataset", "tool_routing", "--limit", "20",
                   "--arm", "base=recorded|arm=floor_a", "--order", "rev"])
+
+
+# ------------------------------------------------------------------ fixes from the review
+
+def test_stratification_repairs_a_map_that_loses_a_label():
+    """The unstratified map is not just different, it is sometimes unanswerable.
+
+    Two groups per label and two folds: a label whose two groups both hash into the test fold
+    never appears in training. The search over seeds is deterministic, so this is a proof and
+    not a flake.
+    """
+    options = tuple(f"op{i}" for i in range(8))
+    rows = [Row(id=f"r{i}-{g}", text=f"say {group}", label=label, group=group, options=options)
+            for i, label in enumerate(options) for g in range(2)
+            for group in [f"{label}-{g}"]]
+    broken = None
+    for seed in range(8):
+        cv = metrics.grouped_cv(rows, MajorityLabel, folds=2, seed=seed, stratify=False)
+        if any(f["train_missing_labels"] for f in cv["per_fold"]):
+            broken = seed
+            break
+    assert broken is not None, "the hashed map is supposed to be able to lose a label"
+    fixed = metrics.grouped_cv(rows, MajorityLabel, folds=2, seed=broken, stratify=True)
+    assert all(f["train_missing_labels"] == [] for f in fixed["per_fold"])
+
+
+def test_the_two_fold_rules_disagree_on_the_real_corpus():
+    from bench.harness.rows import load
+
+    rows = list(load("tool_routing"))
+    labels = [(r.group, r.label) for r in rows]
+    hashed = metrics.assign_folds((r.group for r in rows), 5, 0, labels=labels, stratify=False)
+    strat = metrics.assign_folds((r.group for r in rows), 5, 0, labels=labels, stratify=True)
+    assert set(hashed) == set(strat)
+    assert hashed != strat, "if the rules produced the same map, one of them is dead code"
+
+
+def test_fit_and_score_on_the_same_rows_is_refused():
+    with pytest.raises(SystemExit, match="must not contain the scoring rows"):
+        run.main(["--dataset", "tool_routing", "--split", "test", "--fit-on", "test",
+                  "--arm", "b=recorded|arm=floor_a",
+                  "--arm", "m=sklearn_text|vectorizer=tfidf_word|clf=logreg",
+                  "--reference", "b"])
+
+
+def test_the_untouched_fit_protocol_works():
+    pytest.importorskip("sklearn")
+    rc = run.main(["--dataset", "tool_routing", "--split", "test", "--fit-on", "train",
+                   "--arm", "b=recorded|arm=floor_a",
+                   "--arm", "m=sklearn_text|vectorizer=tfidf_word|clf=logreg",
+                   "--reference", "b"])
+    assert rc == 0
+
+
+def test_a_replay_capability_not_a_signature_decides_the_order_refusal(tmp_path):
+    base_path = _write_base(tmp_path, [("r1", "a", {"a": 0.6, "b": 0.4})])
+    fusion = build(f"fusion|member=fake|base_arm=base|base_path={base_path}")
+    assert fusion.replays_a_file is True
+    assert build("recorded|arm=floor_a").replays_a_file is True
+    with pytest.raises(SystemExit, match="cannot be honoured"):
+        run.main(["--dataset", "tool_routing", "--limit", "10", "--order", "rev",
+                  "--arm", f"f=fusion|member=fake|base_arm=base|base_path={base_path}"])
+
+
+def test_the_base_spec_nests_and_selects_the_arm(tmp_path):
+    base_path = _write_base(tmp_path, [("r1", "a", {"a": 0.9, "b": 0.1})])
+    fusion = build(f"fusion|member=fake|base=recorded~arm=floor_b|base_path={base_path}",
+                   )
+    assert fusion.base_spec == "recorded|arm=floor_b"
+    assert fusion.base_arm == "floor_b"
+
+
+def test_an_unknown_key_is_refused_rather_than_swallowed(tmp_path):
+    base_path = _write_base(tmp_path, [("r1", "a", {"a": 0.6, "b": 0.4})])
+    with pytest.raises(Exception, match="unknown key"):
+        build(f"fusion|member=fake|swaped=1|base_arm=base|base_path={base_path}")
+
+
+def test_a_duplicate_row_id_in_the_base_is_an_error(tmp_path):
+    path = tmp_path / "dup.jsonl"
+    lines = [{"arm": "base", "id": "r1", "choice": "a", "probabilities": {"a": 0.6, "b": 0.4}},
+             {"arm": "base", "id": "r1", "choice": "b", "probabilities": {"a": 0.1, "b": 0.9}}]
+    path.write_text("\n".join(json.dumps(x) for x in lines) + "\n")
+    fusion = build(f"fusion|member=fake|base_arm=base|base_path={path}")
+    with pytest.raises(Exception, match="duplicate row id"):
+        fusion.base_rows()
+
+
+def test_errors_are_counted_in_the_summary(tmp_path):
+    pytest.importorskip("sklearn")
+    out = tmp_path / "art"
+    base_dir = tmp_path / "base.jsonl"
+    base_dir.write_text(json.dumps({"arm": "floor_a", "id": "v3-0001", "choice": "web_search",
+                                    "probabilities": {"web_search": 0.9}}) + "\n")
+    rc = run.main(["--dataset", "tool_routing", "--limit", "6",
+                   "--arm", "b=recorded|arm=floor_a",
+                   "--arm", f"f=fusion|member=fake|base_arm=floor_a|base_path={base_dir}",
+                   "--reference", "b", "--out", str(out)])
+    assert rc == 0
+    summary = json.loads((out / "summary.json").read_text())
+    assert summary["arms"]["f"]["n_errors"] >= 1, "a row that never ran must be visible"
+
+
+def test_the_artifact_source_has_no_absolute_path(tmp_path):
+    out = tmp_path / "art"
+    run.main(["--dataset", "tool_routing", "--limit", "5",
+              "--arm", "b=recorded|arm=floor_a", "--out", str(out)])
+    summary = json.loads((out / "summary.json").read_text())
+    assert not summary["dataset"]["source"].startswith("/")
+    assert "spec" in summary["arms"]["b"]
+
+
+def test_the_cue_feature_scale_is_real_and_changes_the_member():
+    pytest.importorskip("sklearn")
+    from bench.harness.rows import load
+
+    rows = list(load("tool_routing"))[:120]
+    base = build("sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules")
+    scaled = build("sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules"
+                   "|feature_scale=maxabs")
+    base.fit(rows)
+    scaled.fit(rows)
+    p1 = base.predict(rows[0].text, rows[0].options)
+    p2 = scaled.predict(rows[0].text, rows[0].options)
+    assert p1.probabilities is not None and p2.probabilities is not None
+    assert p1.probabilities != p2.probabilities

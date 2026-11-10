@@ -58,14 +58,31 @@ def _fmt_ci(acc: dict) -> str:
     return f"{100 * acc['accuracy']:5.1f}% [{100 * lo:.1f},{100 * hi:.1f}]"
 
 
-def summarise_arm(recs, reference=None) -> dict:
+def _source(dataset) -> str:
+    """The dataset's origin, relative to the repo when it lives inside it.
+
+    An absolute path in an artifact is a machine path: it makes the artifact unreproducible
+    elsewhere and it trips `tests/test_no_personal_paths.py`.
+    """
+    from .rows import ROOT
+
+    src = str(dataset.source or "")
+    root = str(ROOT)
+    if src.startswith(root + "/"):
+        return src[len(root) + 1:]
+    return src
+
+
+def summarise_arm(recs, reference=None, spec: str = "") -> dict:
     out = {"accuracy": metrics.accuracy(recs),
            "latency": metrics.latency(recs),
            "calibration": metrics.calibration(recs),
            "coverage_at_precision90": metrics.coverage_at_precision(recs, 0.9),
            "order": metrics.order_summary(recs),
            "groups": metrics.group_report(recs),
-           "confusion": metrics.confusion(recs)}
+           "confusion": metrics.confusion(recs),
+           "spec": spec,
+           "n_errors": sum(1 for r in recs if r.meta.get("error"))}
     if reference is not None:
         out["paired_vs_reference"] = metrics.paired(reference, recs)
         out["ledger_vs_reference"] = metrics.ledger(reference, recs)
@@ -73,17 +90,21 @@ def summarise_arm(recs, reference=None) -> dict:
 
 
 def print_arm_table(arms: dict, reference: str) -> None:
-    print(f"\n{'arm':<14}{'n':>5}{'correct':>8}  {'accuracy (95% Wilson)':<24}"
+    print(f"\n{'arm':<14}{'n':>5}{'correct':>8}{'err':>5}  {'accuracy (95% Wilson)':<24}"
           f"{'p50 ms':>8}{'p95 ms':>8}  {'ECE/Brier/NLL':<22}")
     for name, recs in arms.items():
         acc = metrics.accuracy(recs)
         lat = metrics.latency(recs)
         cal = metrics.calibration(recs)
+        errors = sum(1 for r in recs if r.meta.get("error"))
         cal_txt = (f"{cal['ece']:.3f}/{cal['brier']:.3f}/{cal['nll']:.3f}"
                    if cal else "no probabilities")
         mark = "*" if name == reference else " "
-        print(f"{mark}{name:<13}{acc['n']:>5}{acc['correct']:>8}  {_fmt_ci(acc):<24}"
+        print(f"{mark}{name:<13}{acc['n']:>5}{acc['correct']:>8}{errors:>5}  {_fmt_ci(acc):<24}"
               f"{lat['p50']:>8.0f}{lat['p95']:>8.0f}  {cal_txt:<22}")
+    if any(r.meta.get("error") for recs in arms.values() for r in recs):
+        print("           err: rows where the predictor raised. They count as misses; "
+              "read the count before reading the accuracy.")
 
 
 def print_ledger(reference: str, name: str, led: dict) -> None:
@@ -110,6 +131,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out", default="", help="directory for summary.json and rows.jsonl")
     ap.add_argument("--limit", type=int, default=0, help="score at most N rows (smoke test)")
     ap.add_argument("--cv", type=int, default=0, help="grouped CV folds for fitted predictors")
+    ap.add_argument("--cv-rule", default="stratified", choices=("stratified", "hashed"),
+                    help="the fold rule; it changes the out-of-fold number by tens of rows, so "
+                         "quote it beside the result")
     ap.add_argument("--cv-seeds", default="0", help="comma-separated fold seeds (default 0)")
     ap.add_argument("--split", default="",
                     help="score only rows whose meta.split matches this value")
@@ -144,6 +168,13 @@ def main(argv: list[str] | None = None) -> int:
         fit_rows = [r for r in all_rows if str(r.meta.get("split", "")) == args.fit_on]
         if not fit_rows:
             raise SystemExit(f"--fit-on {args.fit_on!r} matched no row")
+        leak = {r.id for r in fit_rows} & {r.id for r in rows}
+        if leak:
+            raise SystemExit(
+                f"--fit-on {args.fit_on!r} and --split {args.split or 'all'!r} share {len(leak)} "
+                f"row(s); the fit set must not contain the scoring rows. Fitting and scoring the "
+                f"same rows reports an in-sample number that is indistinguishable from an "
+                f"honest one.")
 
     arms_specs = parse_arms(args)
     reference = args.reference or arms_specs[0][0]
@@ -161,7 +192,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"paraphrase {args.paraphrase} over {len(mapping)} option(s)")
 
     records: dict[str, list] = {}
+    specs: dict[str, str] = dict(arms_specs)
     cv_runs: dict[str, dict[int, dict]] = {}
+    cv_skipped: list[str] = []
+    stratify = args.cv_rule != "hashed"
     cv_seeds = ([int(s) for s in str(args.cv_seeds).split(",") if s.strip()]
                 if args.cv else [0])
     for name, spec in arms_specs:
@@ -181,7 +215,7 @@ def main(argv: list[str] | None = None) -> int:
             cv_runs[name] = {}
             for seed in cv_seeds:
                 cv = metrics.grouped_cv(rows, (lambda s=spec: build(s)), folds=args.cv,
-                                        seed=seed, options_for=order_for)
+                                        seed=seed, options_for=order_for, stratify=stratify)
                 for rec in cv["oof"]:
                     rec.arm = name
                 cv_runs[name][seed] = cv
@@ -192,14 +226,17 @@ def main(argv: list[str] | None = None) -> int:
                 predictor.fit(fit_rows)
             except PredictorError as exc:
                 raise SystemExit(f"arm {name}: {exc}")
+        if args.cv and not hasattr(predictor, "fit"):
+            cv_skipped.append(name)
         records[name] = score(name, rows, predictor, options_for=order_for)
 
-    summary = {"dataset": {"name": dataset.name, "rows": len(dataset), "source": dataset.source,
+    summary = {"dataset": {"name": dataset.name, "rows": len(dataset), "source": _source(dataset),
                            "options": list(dataset.options), "order_sha": order_sha,
                            "order_mode": order_mode or "frozen",
                            "split": args.split or "all",
                            "fit_on": args.fit_on or "none",
-                           "cv": args.cv, "cv_seeds": cv_seeds},
+                           "cv": args.cv, "cv_seeds": cv_seeds,
+                           "cv_rule": args.cv_rule},
                "reference": reference, "arms": {}}
     print_arm_table(records, reference)
 
@@ -224,21 +261,36 @@ def main(argv: list[str] | None = None) -> int:
 
     floor = None
     if args.aa:
-        ref_spec = dict(arms_specs)[reference]
-        again = score(f"{reference}~aa", list(dataset.rows), build(ref_spec),
-                      options_for=order_for)
+        ref_spec = specs[reference]
+        note = None
+        if reference in cv_runs:
+            rerun = metrics.grouped_cv(rows, (lambda s=ref_spec: build(s)), folds=args.cv,
+                                       seed=cv_seeds[0], options_for=order_for,
+                                       stratify=stratify)
+            again = rerun["oof"]
+            note = ("a cross-validated arm refitted on the same fold map is a determinism check, "
+                    "not a floor: the fold rule is the instrument, so the floor for this arm is "
+                    "the spread across fold seeds, printed above")
+        else:
+            again_predictor = build(ref_spec)
+            if fit_rows is not None and hasattr(again_predictor, "fit"):
+                again_predictor.fit(fit_rows)
+            again = score(f"{reference}~aa", rows, again_predictor, options_for=order_for)
+            if getattr(again_predictor, "replays_a_file", False):
+                note = ("a replayed arm is a file, so this is a determinism check of the harness, "
+                        "not a floor for the served model")
         floor = metrics.a_a_flips(records[reference], again)
         print(f"\nA/A floor  {reference} run twice: {floor['choice_flips']} choice flips in "
               f"{floor['n']} rows ({100 * floor['rate']:.2f}%)")
-        if ref_spec.startswith("recorded"):
-            print("           note: a replayed arm is a file, so this is a determinism check of "
-                  "the harness, not a floor for the served model")
+        if note:
+            print(f"           note: {note}")
 
     if cv_runs:
         for name, runs in cv_runs.items():
             first = runs[cv_seeds[0]]
+            rule = "stratified by label" if first["stratified"] else "hashed, unstratified"
             print(f"\ngrouped CV  {name}: {args.cv} folds over {first['n_groups']} groups / "
-                  f"{first['n_labels']} labels, stratified by label")
+                  f"{first['n_labels']} labels, {rule}")
             for seed, cv in runs.items():
                 acc = cv["oof_accuracy"]
                 folds = " ".join("—" if f["accuracy"] is None else f"{100 * f['accuracy']:.0f}"
@@ -252,15 +304,21 @@ def main(argv: list[str] | None = None) -> int:
                           f"side never sees: {missing} — those rows cannot be predicted")
             print(f"  the arm's records are seed {cv_seeds[0]}'s out-of-fold rows")
             summary["arms"].setdefault(name, {})["grouped_cv"] = {
-                "folds": args.cv, "seeds": cv_seeds,
+                "folds": args.cv, "seeds": cv_seeds, "stratified": first["stratified"],
                 "n_groups": first["n_groups"], "n_labels": first["n_labels"],
                 "per_seed": {str(s): {"fold_of": cv["fold_of"], "per_fold": cv["per_fold"],
                                       "oof_accuracy": cv["oof_accuracy"]}
                              for s, cv in runs.items()}}
+    for name in cv_skipped:
+        print(f"\ngrouped CV  {name}: skipped, this predictor has no fit(). Its records are a "
+              f"single pass and its accuracy is not out-of-fold — do not read it beside a "
+              f"cross-validated arm as if it were.")
+        summary["arms"].setdefault(name, {})["grouped_cv"] = None
 
     for name, recs in records.items():
         summary["arms"].setdefault(name, {}).update(summarise_arm(
-            recs, reference=records[reference] if name != reference else None))
+            recs, reference=records[reference] if name != reference else None,
+            spec=specs.get(name, "")))
 
     # ---- the verdict, which needs a declaration made before the run
     if prereg is None:
@@ -268,7 +326,20 @@ def main(argv: list[str] | None = None) -> int:
               "file before the run, not in the reading of it.")
     else:
         target = prereg.get("arm") or next(n for n, _ in arms_specs if n != reference)
+        if target not in {n for n, _ in arms_specs}:
+            raise SystemExit(f"preregister: arm {target!r} is not one of the arms")
+        if target == reference:
+            raise SystemExit(
+                f"preregister: arm {target!r} is the reference, so there is nothing to compare it "
+                f"with and no ledger, no delta and no p-value exist. Name the treated arm.")
         led = summary["arms"][target]["ledger_vs_reference"]
+        seed_conditions = [c["expr"] for c in prereg.get("conditions") or []
+                           if "seeds_" in str(c.get("expr", ""))]
+        if seed_conditions and not args.cv:
+            raise SystemExit(
+                f"preregister: {seed_conditions[0]!r} asks about fold seeds but this run has no "
+                f"--cv, so there is exactly one fold map. That condition cannot be evaluated "
+                f"and would read as a FAIL for an operational reason, not a scientific one.")
         edited = set(prereg.get("edited_labels") or [])
         paired = summary["arms"][target]["paired_vs_reference"]
         delta_by_seed: dict[str, int] = {}

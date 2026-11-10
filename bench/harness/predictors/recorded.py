@@ -21,6 +21,8 @@ ROOT = Path(__file__).resolve().parents[3]
 class RecordedPredictor:
     """One arm of a ``rows.jsonl``, replayed."""
 
+    replays_a_file = True
+
     def __init__(self, path: str, arm: str, order_sha: str = ""):
         src = Path(path) if path else ROOT / "bench/results/p3-transfer/rows.jsonl"
         if not src.is_absolute():
