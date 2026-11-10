@@ -1,0 +1,9 @@
+{
+  "arm": "r_fusion",
+  "conditions": [
+    {"name": "C1 delta >= +20 rows", "expr": "delta >= 20"},
+    {"name": "C2 mcnemar_p < 0.01", "expr": "mcnemar_p < 0.01"},
+    {"name": "C3 min over labels of net >= -3", "expr": "min_label_net >= -3"},
+    {"name": "C4 delta > 0 in >= 4 of 5 fold seeds", "expr": "seeds_positive >= 4"}
+  ]
+}

@@ -79,20 +79,24 @@ and the description is what the model actually reads. `llama_systemone` uses the
 | `llama_systemone` | a llama-server on `:8080` | the existing `/v1/systemone` path, unchanged behaviour |
 | `logit_read` | a llama-server | the existing letter read |
 | `constant` | nothing | always one op; the baseline every model must beat |
-| `sklearn_text` | `scikit-learn` | TF-IDF word, word+char_wb union, LinearSVC / logistic / SGD, optional sigmoid or isotonic calibration |
+| `sklearn_text` | `scikit-learn` | TF-IDF word, word+char_wb union, LinearSVC / logistic / SGD, optional sigmoid or isotonic calibration, optional eight rule-score features (`features=rules`) |
 | `torch_text` | `torch`, `transformers` | a fine-tuned classification head over a frozen encoder, CPU; `fit` delegates to a caller-supplied trainer |
 | `ensemble` | nothing (vote/mean), `scikit-learn` (stacked) | reports the members' error agreement, because an ensemble that fails on the same rows buys nothing |
+| `fusion` | nothing (the member may need anything) | two predictors, one answer: an equal-weight mean with a recorded arm, or a gate on the recorded arm's confidence |
 | `fake` | nothing | deterministic, needs no model: the fixture the whole suite runs on |
 | `recorded` | a `rows.jsonl` | replay any published arm; this is what makes the records a regression suite |
 
 Spec strings are `kind|key=value|key=value`, so the CLI needs no imports:
 `recorded|arm=floor_a`, `constant|choice=web_search`,
-`sklearn_text|vectorizer=tfidf_word_char|clf=linsvc|calibrate=sigmoid`.
+`sklearn_text|vectorizer=tfidf_word_char|clf=linsvc|calibrate=sigmoid`. A spec nested inside
+another spec writes its own pipes as `~`, because `|` already separates the outer keys:
+`fusion|member=sklearn_text~vectorizer=tfidf_word~clf=logreg|weights=0.5`.
 
-`scikit-learn` and `torch` are **not** installed on this box. Their modules import cleanly anyway
-(everything is imported inside the factory), and building one without the dependency raises a
-message naming the install command. The harness core, its tests and every arm above the dotted
-line run on the standard library plus pytest.
+`scikit-learn` **1.7.2** and `torch` **2.14.1+cpu** with `transformers` **5.20.2** are installed
+on this box, so every arm above the dotted line is a measurement and not a contract. On a box
+without them the modules still import cleanly (everything optional is imported inside the
+factory) and building one raises a message naming the install command; the harness core, its
+tests, and the replay/control path need only the standard library plus pytest.
 
 ## The CLI
 
@@ -107,19 +111,30 @@ python3 -m bench.harness.run \
     --paraphrase words.json                  # {option: alternate wording}
     --preregister conditions.json            # read BEFORE the run
     --cv 5                                   # grouped CV for predictors with fit()
+    --cv-seeds 0,1,2,4,7                     # report every fold seed, not just one
+    --split test                             # score only rows whose meta.split matches
+    --fit-on train                           # fit on these rows, score --split; refused with --cv
     --out /tmp/run                           # writes summary.json and rows.jsonl
 ```
 
 Artifacts carry the option order, its sha256, the per-row probabilities, and the group of every
 row, so a run can be reproduced from its own output.
 
+**`--cv` writes the out-of-fold rows as the arm's records.** That is deliberate: it is what lets
+a paired test and a per-label ledger run between a fitted classifier and a replayed arm, and it
+is the difference between a real number and the `0/n, delta −n, p = 0.0000` that an unfitted
+pass produces. The fold map is stratified by label and reports `n_groups / n_labels` beside
+`train_missing_labels` per fold, because a fold whose training side never sees a label is
+unanswerable rather than bad.
+
 ### Controls
 
-* **`--aa`** — the reference arm twice. The delta must exceed **3× the flip count** to count
-  (`controls.gate_verdict`), and the A/A figure is printed whether or not it flatters the result.
+* **`--aa`** — the reference arm twice. The delta must exceed **3× the flip count**, and never
+  fewer than **3 rows**, to count (`controls.gate_verdict`): a replayed arm's floor is 0, so
+  without the second term a one-row delta would clear it.
 * **`--order rev|shuffle:<seed>`** — permutes the option tuple, never the strings. Mandatory for
-  any claim about wording; a `recorded` arm refuses to replay under a permuted order, because
-  that replays a fixed order and measures nothing.
+  any claim about wording. An arm that replays a file cannot honour a permutation and the run
+  **refuses** it, rather than recording an `order_sha` the model never saw.
 * **`--paraphrase`** — rewrites *descriptions*, never option names. A label that moves is a
   different class; a description that changes is a different instrument.
 * **`--preregister`** — conditions are `PATH OP VALUE`, resolved against the run's own numbers:
@@ -168,7 +183,7 @@ owning project: the seam is fit-then-predict, not a trainer.
 ## Tests
 
 ```bash
-python3 -m pytest bench/harness/tests -q          # 78 tests, no network, no model
+python3 -m pytest bench/harness/tests -q          # 127 collected: 124 pass, 3 skip, no network
 python3 -m pytest tests/ -q                       # the repo suite, unchanged
 ```
 
@@ -195,12 +210,18 @@ the same artifact rather than replacing the script.
 * **No live arm has been run through the new path.** The reproduction above is a replay. The live
   path is the same seam (`llama_systemone`), but it needs the server up, and nothing on this box
   has been served since the order arm finished.
-* **`sklearn_text`, `torch_text` and `ensemble` are unexecuted** for the same reason: neither
-  `scikit-learn` nor `torch` is installed here, so their factories have been exercised only to
-  the point of their import error. Their logic is a seam, not a validated model.
-* **Grouped CV has no published number attached.** `--cv` works and is tested with a fitted fake,
-  but the 382 corpus has 7 groups, so 5-fold splits are lumpy and the per-fold accuracies will be
-  noisy until the corpus is grouped more finely.
+* **`torch_text` has never been fitted.** The frozen encoder has been loaded and scored
+  (78.7–81.6% on the 207 test rows), but there is no trainer in this repo and no checkpoint, so
+  the fine-tuning arm remains a seam. The plan drops that direction: a frozen 22.7M encoder is
+  already level with the 3B, so a fine-tune has no headroom to buy.
+* **The fusion's headline number fails one of its own pre-registered conditions.** The
+  equal-weight mean reaches 351/415 = 84.6% against 78.3% (fixed 37, broke 11, exact McNemar
+  p = 0.00022, positive in 5 of 5 fold seeds) **but `web_search` nets −5** against a bar of −3,
+  so the verdict as written is FAIL. It is the cheapest failure in the repo to attack: the ledger
+  names two labels and both are the ones the 3B is strongest on. Report it as a fail.
+* **Grouped CV is stratified now, and the 382 corpus still cannot be cross-validated.** 7 groups
+  over 18 intents means every held-out group removes its labels; the run flags it per fold
+  instead of averaging in zeros, but a number that cannot be computed is still not a number.
 * **The reject curve is new and unflattering to be compared with**: `coverage@precision=0.90` is
   73.7% for `floor_a` and 78.3% for `grep_only`, which is the first time this repo has had that
   number and nothing to read it against.
