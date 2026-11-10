@@ -12,7 +12,7 @@ from collections import Counter, defaultdict
 from math import comb
 from pathlib import Path
 
-ROWS = Path("/home/andrew/toolInterfacer/bench/results/p3-transfer/rows.jsonl")
+ROWS = Path(__file__).resolve().parents[1] / "bench/results/p3-transfer/rows.jsonl"
 ARMS = ("floor_a", "grep_only", "grep_control", "floor_b", "order_rev")
 TARGET = "filesys_grep"
 
