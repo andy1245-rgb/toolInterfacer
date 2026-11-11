@@ -20,7 +20,7 @@ implies. Two facts produce it:
 1. **Half the task list is single-call shapes** (`l0_read`, `l0_grep`, `l1_list`,
    `l2_reddit`): one tool call either way, so the layer can only add overhead. A round-trip
    count cannot improve on one.
-2. **The decision is the expensive term on this box.** 10 decide hops cost **10,555 ms**
+2. **The decision is the expensive term on the development machine.** 10 decide hops cost **10,555 ms**
    (≈1,055 ms each, the CPU llama-server) against **138 ms** of actual tool work for the
    entire native arm. The layer trades a model pass for a local decision, and here the local
    decision is slower than the tool work it schedules.
@@ -41,7 +41,7 @@ process.
 is excluded from both arms. Wall time is `round_trips x pass_ms + measured tool/service time`,
 so `pass_ms` is the only assumed input and the sweep below shows what it does to the answer.
 
-`pass_ms = 2000` is the headline. The bench also measured a local anchor on this box — an
+`pass_ms = 2000` is the headline. The bench also measured a local anchor on the development machine — an
 OpenAI-compatible server at `127.0.0.1:8098`, **1,753.6 ms for 29 completion tokens** — which
 is the same order; the sweep carries the whole range either way.
 
@@ -63,7 +63,7 @@ Aggregate at `pass_ms = 2000`: **14 → 12 round trips (−2, −14.3%)**, A 28,
 B 35,662 ms (**B is 7,523 ms, 26.7% slower**), 43 hops across 12 round trips (3.58 per
 round trip), correctness 8/9 vs 7/9.
 
-`l2_reddit` fails on **both** arms — the `reddit-research` binary is installed on this box but
+`l2_reddit` fails on **both** arms — the `reddit-research` binary is installed on the development machine but
 `ops.reddit.cwd` then defaulted to `~/Documents/<private-project>/…`, which does not exist
 (the project lives under `~/mirror/…`; the default is empty now, so the op names the key to
 set instead of a wrong path), so the op cannot find the project directory it
@@ -165,7 +165,7 @@ What survives, and what does not:
   single-call shapes the layer is strictly overhead, and it cannot be otherwise.
 - **A fast local decision is not an optimisation here, it is the precondition.** This is
   consistent with `docs/decision-pair-vs-hosted.md` and with the iGPU result
-  (`docs/vulkan-igpu-2026-11-03.md`): the decision cost on this box is the binding term, and
+  (`docs/vulkan-igpu-2026-11-03.md`): the decision cost on the development machine is the binding term, and
   the cheapest way to lower it measured so far is the classical backend at 0.04 ms
   (`docs/classical-baseline-2026-11-03.md`), not a faster GPU.
   *(2026-11-03 16:2x EST: that p50 is the low end of a noisy digit. The same rows have
@@ -186,7 +186,7 @@ What survives, and what does not:
    particular model.
 3. **n = 9 tasks.** This is a shape survey, not a distribution. It finds the crossover and
    the direction; it does not estimate a mean saving.
-4. **This box is the slow end for decisions.** ~1,055 ms per decide hop, CPU-only, with a
+4. **The development machine is the slow end for decisions.** ~1,055 ms per decide hop, CPU-only, with a
    `pair` backend whose stage 2 has no key here. The measured `service_ms_B` is therefore a
    pessimistic floor, not a typical.
 5. **`l2_reddit` could not run on either arm.** It is in the table because leaving it out

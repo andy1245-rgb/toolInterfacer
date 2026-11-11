@@ -1,7 +1,7 @@
 # Documentation review — 2026-11-03
 
 Read of `main @ a105d50` in worktree `d3-review`. Read-only: no source file, doc or config
-edited; the only file written is this one. Every command below was run on this box, in this
+edited; the only file written is this one. Every command below was run on the development machine, in this
 worktree.
 
 Scope: `README.md`, `ARCHITECTURE.md`, `TODO.md`, `CONTRIBUTING.md`, `CHANGELOG.md`,
@@ -25,7 +25,7 @@ reader. What the row is about is unchanged: the real default is repo-relative
 ## Verdict
 
 A stranger would trust this repo: the honesty apparatus is real, not decorative — the
-"Honest gaps" list held up on every item I could reproduce, `docs/confidence-sources.md`
+"Honest gaps" list held up on every item reproducible here, `docs/confidence-sources.md`
 classifies every confidence number by provenance, and the negative results reproduce.
 
 The trust is at risk from number drift, not from overclaiming: the published suite count is
@@ -49,7 +49,7 @@ own guarantee", all fixed, none marked superseded, and none reachable by a link.
 
 | document:line | what it says | what is true | evidence |
 |---|---|---|---|
-| `README.md:119` | "`research` runs end to end model-free via `bench/replay.py` and returns a sourced digest" | True only of `bench/demo.py` (which stubs the CLIs). `bench/replay.py` never stubs a CLI: in a clone it errors, and on this box with the author's skill scripts present it ran past 180 s without finishing | `TI_CONF_OVERLAY` fixture + `replay.py --intent "research lora rank for a 3b router"` → `"error": "CLI not found: /nonexistent/web-search/scripts/free-search"` (exit 0); with the real scripts: no completion in 180 s |
+| `README.md:119` | "`research` runs end to end model-free via `bench/replay.py` and returns a sourced digest" | True only of `bench/demo.py` (which stubs the CLIs). `bench/replay.py` never stubs a CLI: in a clone it errors, and on the development machine with the author's skill scripts present it ran past 180 s without finishing | `TI_CONF_OVERLAY` fixture + `replay.py --intent "research lora rank for a 3b router"` → `"error": "CLI not found: /nonexistent/web-search/scripts/free-search"` (exit 0); with the real scripts: no completion in 180 s |
 | `README.md:123` | "Bounded decision state (structural, not conventional) — digest ≤ 8 turns × 240 chars" | `sanitize` clips `turns[].summary` and the counts only; every other key of a turn is copied verbatim (`out = dict(turn)`), so arbitrary extra keys ride through. Measured: one turn `{"role":"user","summary":"x","blob":"A"*100000}` survives at 100,100 chars | `service/ti/context/session_digest.py:44-60`; `PYTHONPATH=service python3 -c "…sanitize(…)…"` → `turn keys: ['role','summary','blob']`, `blob len: 100000` |
 | `service/ti/context/session_digest.py:26-29` | "Anything else survives only as far as those bounds allow — extra keys are dropped rather than forwarded" | Extra keys inside a turn are forwarded; only top-level extra keys are dropped | same probe: top-level `extra` dropped, per-turn `blob` kept |
 | `ARCHITECTURE.md:54-56` | "`sanitize` clips the caller's digest to ≤ 8 turns × 240 chars … A caller cannot inflate the prompt by sending a bigger digest" | The prompt does stay bounded, but by `context.packer.trim` collapsing the digest to a stub, not by `sanitize`; the mechanism named is not the one that holds | `service/ti/context/packer.py:34-48` (`state["digest"] = {"summary": "trim: over budget"}`) |
@@ -68,7 +68,7 @@ own guarantee", all fixed, none marked superseded, and none reachable by a link.
 
 | document:line | what it says | what the source says | evidence |
 |---|---|---|---|
-| `README.md:125`, `README.md:298`, `CONTRIBUTING.md:9`, `ARCHITECTURE.md:102`, `CHANGELOG.md:10`, `CHANGELOG.md:124`, `RELEASE.md:54`, `RELEASE.md:64`, `RELEASE.md:92` | "715 tests, 349 subtests" / "715 passed, 349 subtests passed" | **722 tests, 388 subtests**, green | `python3 -m pytest tests/ -q` → `722 passed, 388 subtests passed in 74.15s` (exit 0). A first run of mine showed `1 failed` — an artefact of my own `bench/demo.py` running concurrently (the test asserts no new `/tmp/ti-demo-*`); the isolated re-run and the clean full run are both green |
+| `README.md:125`, `README.md:298`, `CONTRIBUTING.md:9`, `ARCHITECTURE.md:102`, `CHANGELOG.md:10`, `CHANGELOG.md:124`, `RELEASE.md:54`, `RELEASE.md:64`, `RELEASE.md:92` | "715 tests, 349 subtests" / "715 passed, 349 subtests passed" | **722 tests, 388 subtests**, green | `python3 -m pytest tests/ -q` → `722 passed, 388 subtests passed in 74.15s` (exit 0). A first run showed `1 failed` — an artefact of a `bench/demo.py` running concurrently (the test asserts no new `/tmp/ti-demo-*`); the isolated re-run and the clean full run are both green |
 | `docs/testing.md:55-56` and `README.md:379` | "On a CPU-only box, d1-3B-Q4 costs ~1.7 s per routing decision and ~50 ms on a decision-cache hit" | No recorded run supports 1.7 s. The recorded CPU-arm figures are p50 3283.7 ms (`igpu-vulkan-v1`) and 3443–4311 ms (`run1/2/3-t8`); nothing anywhere records a cache-hit latency | `docs/vulkan-igpu-2026-11-03.md:6-7`; `bench/results/run1-t8-v1.json`, `run2-t8-v2-descriptions.json`, `run3-t8.json`, `igpu-vulkan-liveprobe-cpu-2026-11-03.json` |
 | `README.md:343` (dataset paragraph) and `CHANGELOG.md:117` | "14 trainable records out of 1398 hops" / "1,398 logged lines yield 14" | The cited source says the log has grown: 5,243 lines now yield 15, all still `filesys_glob`. `CHANGELOG.md:141` says so in its own correction table, 24 lines below `:117` | `docs/dataset-status.md:12-23` |
 | `spec/1.0-spec.md:10` | "Liquid d1-3B today: 91.4% tool routing at p50 243ms" | No source, no set named. The repo's own measurement of the same model on its own 150-row set is **74.0%**; 91.36% is a sibling-project figure on a different, easier 382-row set | `README.md:348-358`; `docs/classical-baseline-2026-11-03.md:24`; `docs/roadmap-2026-11.md:139-144` |
@@ -79,13 +79,13 @@ own guarantee", all fixed, none marked superseded, and none reachable by a link.
 
 | defect | document that still describes it as open | fixed? |
 |---|---|---|
-| `bench/classical_baseline.py` crashes on 37 invalid-JSON result files | `CHANGELOG.md:139` ("now *crashes* … the documented command exits at its d1 load") | **Fixed.** All 61 JSON files under `bench/results/` parse; the script runs to completion, exit 0, and rewrites both `classical_382.json` and `classical_v2.json` (I restored both after the run) |
+| `bench/classical_baseline.py` crashes on 37 invalid-JSON result files | `CHANGELOG.md:139` ("now *crashes* … the documented command exits at its d1 load") | **Fixed.** All 61 JSON files under `bench/results/` parse; the script runs to completion, exit 0, and rewrites both `classical_382.json` and `classical_v2.json` (both restored after the run) |
 | same crash, stated in full | `docs/classical-baseline-2026-11-03.md:282-300` — "The first command does not run at HEAD (`ca7ffec`)", "`classical_v2.json` is never written" | **Fixed**; both files are written now |
 | the portability guard is blind to the bare `/home/<name>` form | `docs/pre-publish-audit.md:411-416` — "Right now the repo advertises a portability guarantee that its own test cannot enforce" | **Fixed** in `7113ef8`/`a105d50`; the guard now matches the bare form and the Windows tree (`tests/test_no_personal_paths.py:16-31`). The doc's own §2.3 (`:123-126`) says so, contradicting §7 |
 | "Not publishable today": wheel ships 2 of 53 modules; 66 `tsc` errors; research template names ops that do not exist | `docs/audit-2026-11-03.md:16-26` | **All three fixed** (`docs/roadmap-2026-11.md:145-157`; `CHANGELOG.md:81-88`; `RELEASE.md:96-128`). No superseded banner |
 | five blockers (B1–B5) presented as live | `docs/review-2026-11-03.md:21-23` and following | **Fixed** — review2 has a "Status of B1–B5" section, review1 has none. Unlinked from every other document |
 | "Suite: 361 passed, 159 subtests" | `docs/live-e2e-2026-11-03.md:5-7` | Stale (722/388). The doc is a dated run, but the count is not marked as-of |
-| "the documented L0 example fails with `403 scope_refused` … and the README never says so" | `docs/quickstart-stranger-2026-11-03.md:15-17` (the Verdict, present tense) | **Fixed**: `ops.filesys.roots` ships as `["~",".","/tmp"]` and `README.md:224-228` states the default and that the example works from a clone wherever it lives. I ran the example: `{"status": "done", "result": ["pyproject.toml"], …}` |
+| "the documented L0 example fails with `403 scope_refused` … and the README never says so" | `docs/quickstart-stranger-2026-11-03.md:15-17` (the Verdict, present tense) | **Fixed**: `ops.filesys.roots` ships as `["~",".","/tmp"]` and `README.md:224-228` states the default and that the example works from a clone wherever it lives. The example was run: `{"status": "done", "result": ["pyproject.toml"], …}` |
 | suite counts 326/159 and "588 → 626" | `docs/roadmap-2026-11.md:16` and `:161` | Stale; the header at `:9` claims superseded numbers are marked, and these two are not |
 
 ## Structural problems
@@ -147,7 +147,7 @@ system interpreter), and `CONTRIBUTING.md:11-14` says the suite runs "from a fre
 nothing installed" — so the venv step is the only obstacle and the README does not say you
 may skip it.
 
-Everything the quickstart promises *after* that point is true on this box, when run
+Everything the quickstart promises *after* that point is true on the development machine, when run
 directly: `PYTHONPATH=service python3 -m ti.http.api` serves, `/health` matches the documented
 body byte for byte, the L0 `useTool` example returns
 `{"status": "done", "result": ["pyproject.toml"], …}`, `/v1/plan` matches, the token file is

@@ -17,7 +17,7 @@ own all run without one.
 Text-only serving drops ~850 MB and a second of init; routing never needs the
 vision projector. Measured here: model ready in ~3 s, ~2.9 GB RSS.
 
-Latency on this box (d1-3B Q4, CPU): **~1.7 s per routing decision**, ~50 ms on a
+Latency on the development machine (d1-3B Q4, CPU): **~1.7 s per routing decision**, ~50 ms on a
 decision-cache hit. Prefill is ~19 ms/token, so *state size is the latency knob* —
 which is why `decide.max_candidates` defaults to 6 and the candidate list is sent
 once (criteria), never duplicated into the state. Raising it to 64 costs ~31 s.
@@ -33,7 +33,7 @@ everything else in this file applies to whatever box you are on.
 ssh bench-host "powershell -Command ..."   # bench-host is Windows — schedule/serve there
 ```
 
-## d1-3B launch recipe (measured best on this box so far)
+## d1-3B launch recipe (measured best on the development machine so far)
 
 ```
 llama-server -m models/d1-3B-Q4_K_M.gguf --mmproj models/mmproj-d1-3B-F16.gguf \

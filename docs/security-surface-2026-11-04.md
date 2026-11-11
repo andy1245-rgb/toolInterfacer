@@ -18,7 +18,7 @@ failure that produced the gap, because it is the reusable part.
 
 ## 1. The sentence
 
-> **A valid `X-TI-Token` authorises reading any file the operator owns.** With the
+> **A valid `X-TI-Token` authorises reading any file the account owner owns.** With the
 > config the repository ships that is every file under `$HOME` — `~` is a policy root,
 > so the home directory itself is a legal run root — plus everything under `/tmp` and
 > under the directory the service was started in. Refused: `/etc`, `/root`, `/srv`,
@@ -29,7 +29,7 @@ are the only ops an L0 request may name, and all three are read-only. There is n
 write, no delete, no execute on that surface.
 
 So the honest framing of the token is not "the extension's shared secret". It is a
-**complete filesystem-authorisation boundary for everything the operator owns**, and
+**complete filesystem-authorisation boundary for everything the account owner owns**, and
 the secret is the only thing standing between any local process and that boundary.
 
 ---
@@ -147,7 +147,7 @@ ships three:
 
 | entry | what it evaluates to | why it is there |
 |---|---|---|
-| `"~"` | `os.path.expanduser("~")` — the **`$HOME` of the service process** | the session's cwd is some project under the operator's home, while the service itself is spawned in the repository |
+| `"~"` | `os.path.expanduser("~")` — the **`$HOME` of the service process** | the session's cwd is some project under the invoking user's home, while the service itself is spawned in the repository |
 | `"."` | the directory the service was **started** in | a clone that lives outside `$HOME` |
 | `"/tmp"` | `/tmp` | scratch space, and `git clone` into `/tmp` |
 
@@ -167,7 +167,7 @@ legal read target once it is the root:
 
 | path under `$HOME` | what a `filesys_read` gets from it |
 |---|---|
-| `~/.ssh` | `id_ed25519`, `id_rsa`, `authorized_keys`, `known_hosts`, `config` — every private key the operator has |
+| `~/.ssh` | `id_ed25519`, `id_rsa`, `authorized_keys`, `known_hosts`, `config` — every private key the account has |
 | `~/.gnupg` | `private-keys-v1.d/`, `pubring.kbx` — the GPG secret keyring |
 | `~/.aws` | `credentials`, `config` — long-lived access keys |
 | `~/.config` | per-application state, including CLI OAuth tokens (`gh/hosts.yml`, cloud CLIs) |
@@ -176,9 +176,9 @@ legal read target once it is the root:
 | `~/.netrc`, `~/.git-credentials`, `~/.npmrc`, `~/.pypirc` | plaintext credentials, by design |
 | `~/.bash_history`, `~/.zsh_history` | commands, including any typed with a secret inline |
 | browser profiles, `~/.local/share/keyrings` | cookie jars and the desktop keyring |
-| any project tree | `.env`, `*.pem`, `secrets.*`, whatever the operator's own code reads |
+| any project tree | `.env`, `*.pem`, `secrets.*`, whatever the account owner's own code reads |
 
-Measured on the box this document was written on, through `confine` itself:
+Measured on the machine this document was written on, through `confine` itself:
 
 ```
 policy_roots()  -> ['/home/<user>', '/home/<user>/<the checkout the service was started in>', '/tmp']
@@ -214,12 +214,12 @@ bypassed — the policy root said yes.
 
 ### The `~/mnt` carve-out is configuration, not code
 
-The one path in `$HOME` that is refused *on the operator's own box* is `~/mnt` — an
+The one path in `$HOME` that is refused *on the account owner's own machine* is `~/mnt` — an
 sshfs mount where a single `os.stat` can block a thread in uninterruptible sleep for
 hours (see `ARCHITECTURE.md`, "The deny list"). That refusal comes from
-`ops.filesys.deny_roots: ["~/mnt"]` in the operator's own overlay. **The repository
+`ops.filesys.deny_roots: ["~/mnt"]` in the maintainer's own overlay. **The repository
 ships `deny_roots: []`**, so a stranger who clones this and runs it has no carve-out at
-all: `~/mnt` is admitted like everything else. Do not read the operator's behaviour as
+all: `~/mnt` is admitted like everything else. Do not read the maintainer's configuration as
 the default's behaviour.
 
 ---
@@ -231,7 +231,7 @@ docstring, both verified elsewhere in `docs/`:
 
 1. **The service is not started where the work is.** `pi-extension/src/lifecycle.ts`
    spawns it with the repository as its cwd, while a run is about the *session's* cwd —
-   some project under the operator's home. A policy of `["."]` alone therefore refuses
+   some project under the invoking user's home. A policy of `["."]` alone therefore refuses
    the ordinary case.
 2. **The README's first example must work from a clone anywhere.** This is NB4 from
    `docs/review2-2026-11-03.md`:
@@ -264,7 +264,7 @@ knowing because they are not what a reader would assume:
   `/tmp`", the part that governs an ordinary session is `~`.
 
 What the widening cost, and what nobody wrote down: it moved the boundary from "the
-repository and the temp directory" to "everything the operator owns", and the sentence
+repository and the temp directory" to "everything the account owner owns", and the sentence
 that describes it stayed a portability sentence — *"so a clone runs wherever it lives"*
 (`CHANGELOG.md`). No security sentence was added next to it, in any of the three files
 that document the knob.
@@ -277,7 +277,7 @@ Three candidate changes, each with the cost that has to be paid, not just the ri
 removes.
 
 **(a) Keep `~`, document it.** What this document does. Cost: the exposure above stays,
-and the mitigation is entirely "the operator read the docs". There is nothing to
+and the mitigation is entirely "the account owner read the docs". There is nothing to
 maintain and nothing that can regress.
 
 **(b) Narrow to an explicitly configured root, with `~` opt-in.** Cost: this re-creates
@@ -296,7 +296,7 @@ reverted under pressure.
 - **It is incomplete by construction**, and an incomplete denylist is worse than a
   documented open door, because it produces a *belief* of protection. `.env` files,
   `secrets.yaml`, `~/.config/gh/hosts.yml`, browser cookie stores, keyrings, and every
-  token in the operator's own project trees remain readable. The list can only ever
+  token in the deployment's own project trees remain readable. The list can only ever
   cover the subtrees someone thought of.
 - **It re-uses a mechanism whose stated purpose is different.** `deny_roots` exists so
   that a *dead network mount* is never `lstat`ed; its docstring justifies emptiness on
@@ -432,7 +432,7 @@ curl -s -X POST http://127.0.0.1:1113/v1/useTool \
        "params":{"tool":"filesys_read","args":{"path":"id_ed25519"}}}'
 ```
 
-Run against a service on this box on 2026-11-04, that request returned:
+Run against a service on the development machine on 2026-11-04, that request returned:
 
 ```
 HTTP 200

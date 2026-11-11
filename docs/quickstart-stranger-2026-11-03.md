@@ -30,7 +30,7 @@ roots caveat above.
 
 ## Step-by-step log
 
-| # | Command | What happened | Did the README prepare me? |
+| # | Command | What happened | Did the README prepare the reader? |
 |---|---|---|---|
 | 1 | `git clone <repo> /tmp/stranger-ti` | 246 tracked files. No `service/logs/`, no `node_modules/`, no `models/`. | Yes — implicitly; nothing claims those ship. |
 | 2 | `python3 -m venv /tmp/venv-ti` | **Failed**: `ensurepip is not available`. Needs `python3-venv` (sudo). | No. README says "Python 3.10+ is the only requirement" and never mentions a venv. |
@@ -162,12 +162,12 @@ package using the following command:
     apt install python3.10-venv
 ```
 
-No sudo available, so I used `virtualenv` instead. This is the box, not the project — but
+No sudo available, so `virtualenv` was used instead. This is the machine, not the project — but
 it combines badly with the README's install line, which runs `pip install -e ".[dev]"`
 against whatever `python3` is, with no venv step and no `--user`. On a host with the PEP
-668 `EXTERNALLY-MANAGED` marker that same line is refused outright. This box has no such
-marker (`python3 -m pip install --dry-run -e ".[dev]"` succeeds), so I could not reproduce
-the refusal here; on stock Debian 12 / Ubuntu 24.04 it is the first thing a reader meets.
+668 `EXTERNALLY-MANAGED` marker that same line is refused outright. This machine has no such
+marker (`python3 -m pip install --dry-run -e ".[dev]"` succeeds), so the refusal did not
+reproduce here; on stock Debian 12 / Ubuntu 24.04 it is the first thing a reader meets.
 
 Minimal fix: one line under Quickstart — `python3 -m venv .venv && . .venv/bin/activate`
 (or `pip install --user -e ".[dev]"`), with a note that Debian needs `python3-venv`.
@@ -221,7 +221,7 @@ Ordered by how much they cost a reader.
 
 ### Honest-gaps entries that are still accurate
 
-All six hold up, and three of them predicted exactly what I hit:
+All six hold up, and three of them predicted exactly what the walkthrough hit:
 
 - keyword-rule routing — confirmed live: `/v1/plan` reports `"rule": "RESEARCH_VERB"`.
 - `reddit_digest` unrunnable out of the box — confirmed, with a better error than the
@@ -263,7 +263,7 @@ What the section does **not** warn about: the roots default (gap 1), HTTP 200 on
   `npm ci` is reproducible; `tsc --noEmit` is silent on the first try; `contract-check.ts`
   passes 11/11 without a server.
 - **Doc hygiene.** Every local link in the README resolves, and the Honest-gaps section was
-  accurate on every item I could reproduce — which is why the three gaps above stand out.
+  accurate on every item reproducible here — which is why the three gaps above stand out.
 
 ---
 
@@ -273,7 +273,7 @@ Everything above ran from `/tmp/stranger-ti` and `/tmp/stranger-pristine` (clone
 `/tmp/venv-ti` (clean, `virtualenv`) and `/tmp/venv-wheel` (non-editable install), with a
 fresh `HOME` at `/tmp/stranger-home` so first-boot behaviour was genuine. Service ran on
 11133–11137 via `TI_CONF_OVERLAY` because port 1113 was held by another instance; all of
-my listeners were stopped and the temp trees removed afterwards.
+of listeners were stopped and the temp trees removed afterwards.
 
 ---
 
@@ -303,7 +303,7 @@ directory. With the shipped conf there are no candidates, so that string is unre
 from a fresh install. It is kept in row 17 as superseded history rather than deleted,
 because the row's *finding* is unchanged and only its evidence went stale.
 
-**Why it changed.** The old default named one operator's own `~/Documents/<project>`
+**Why it changed.** The old default named a maintainer's own `~/Documents/<project>`
 tree, in package data, inside the wheel — so every install was told to look in one
 person's documents folder. `tests/test_no_personal_paths.py`'s `_HOME_TREE` rule now fails
 the suite if a `~`-relative path into the documents tree comes back. This is a disclosure

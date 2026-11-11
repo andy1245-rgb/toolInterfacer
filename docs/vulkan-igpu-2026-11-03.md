@@ -4,7 +4,7 @@ Question: this laptop's idle iGPU is free compute. Does ggml's Vulkan backend ru
 the d1-3B routing decision faster than the CPU build, and is it worth the shared
 memory it takes?
 
-**No, and no.** On this box the iGPU is **2.72× slower per routing decision**
+**No, and no.** On the development machine the iGPU is **2.72× slower per routing decision**
 (p50 8943.6 ms vs 3283.7 ms, n=50) and **6.9× slower at prompt processing**
 (9.3 vs 64.3 tok/s). It lost **all 50 paired rows** — there is no subset of the
 workload where it wins. Decode is roughly a tie (10.8 vs 13.1 tok/s), which is
@@ -50,7 +50,7 @@ things were missing; none of them is the driver.
    `glslang-tools` are installed, but ggml-vulkan's CMake does
    `find_package(Vulkan COMPONENTS glslc REQUIRED)` and `glslc` ships in the
    `glslc` (shaderc) package, which is not in jammy's index and whose only pool
-   builds need glibc 2.38 (this box has 2.35 — `GLIBC_2.38 not found`).
+   builds need glibc 2.38 (the development machine has 2.35 — `GLIBC_2.38 not found`).
    Fix: `bench/vulkan/glslc-shim.py`, a small translator over the installed
    `glslangValidator` covering the exact argument shape ggml uses
    (`-fshader-stage= --target-env= -o -O -MD -MF -D`). It also injects
@@ -194,7 +194,7 @@ python3 bench/probe_interleaved.py \
 
 Recorded history for context: `docs/testing.md` claims ~1.7 s per decision
 (that matches the recorded *min*, 1816 ms), and `bench/results/live_probe_summary.json`
-from 2026-10-17 has p50 3496.5 ms at 84.0% accuracy. Today's clean CPU arm
+from 2026-10-17 has p50 3496.5 ms at 84.0% accuracy. The clean CPU arm recorded the same day
 (3283.7 ms) reproduces that run; the "1.7 s" figure is a floor, not a p50.
 
 ## Prefill vs decode — where the 2.7× comes from
@@ -231,11 +231,11 @@ is ~9–11 s. There is nothing left for the GPU to win back.
 
 **The iGPU loses, and it is not close.** 2.72× slower at p50 over 50 paired rows,
 0/50 wins, 6.9× slower at the prefill that *is* the workload. It also costs
-**1.64 GiB** of shared memory (not ~800 MB), which on this box is 1.64 GiB the
+**1.64 GiB** of shared memory (not ~800 MB), which on the development machine is 1.64 GiB the
 VMs and the CPU arm cannot use. Do not switch the routing lane to Vulkan,
 and do not spend the memory.
 
-Why, in order of how confident the evidence makes me:
+Why, in order of confidence:
 
 1. **Decode being a near-tie while prefill is 6.9× worse is the signature of a
    shared-memory-bandwidth machine.** Both engines read the same 1.67 GB of
@@ -248,18 +248,18 @@ Why, in order of how confident the evidence makes me:
    matmul on the Vulkan path dequantizes to fp16 and runs plain fp16 matmul
    shaders; the CPU path uses AVX2/VNNI on the quantized data directly. Xe-LP
    genuinely has no `VK_KHR_cooperative_matrix` (so that costs nothing), but
-   `GL_EXT_integer_dot_product` was unavailable to my shim because glslang 11.8
+   `GL_EXT_integer_dot_product` was unavailable to the shim because glslang 11.8
    can't compile it — that is a *build-tool* limitation, not a hardware one, and
-   it is the one plausible chunk of headroom I could not test.
+   it is the one plausible chunk of headroom not tested.
 3. **Driver maturity is a real but secondary factor.** Mesa 23.2.1 is old; the
    per-node dispatch cost of a ~500-node graph at batch ~131 is on the critical
-   path in a way it would not be for a big batched prefill. I have not separated
+   path in a way it would not be for a big batched prefill. That is not separated
    that from (2), and doing so needs a shaderc-built glslc plus, ideally, a newer
-   Mesa — neither of which I installed.
+   Mesa — neither of which is installed here.
 
 ### One thing that went wrong (and why the numbers above are from fresh servers)
 
-My first 50-row pass reported **6.0% accuracy** on the Vulkan arm — identical
+The first 50-row pass reported **6.0% accuracy** on the Vulkan arm — identical
 choices and identical confidences for runs of consecutive rows, and `/completion`
 producing `/b/b/b/b…`. The CPU arm, which had been through the same sequence,
 stayed at 84%.
@@ -270,7 +270,7 @@ started** Vulkan server was correct, and reproduced the CPU arm row for row
 `igpu-vulkan-freshserver-retest10-2026-11-03.json`). `test-backend-ops -b Vulkan0
 -o MUL_MAT` passes on this driver, which is consistent with that.
 
-I did not isolate the exact trigger. The observed history before the collapse
+The exact trigger was not isolated. The observed history before the collapse
 included a 128-token generation request (`/completion`, `n_predict=128`) on the
 same slot, so either slot/KV reuse after a generation, or Vulkan graph reuse
 across prompts with different states, is the likely culprit — a state-handling
@@ -291,10 +291,10 @@ taken with a freshly started server and no generation probe in the same process.
 - **One model, one quantization.** Q4_K_M at 3B on Xe-LP. A larger model, a
   smaller one, or an fp16 weight format would shift the balance between bandwidth
   and compute and could change the answer.
-- **The shim is mine, not shaderc.** Everything above is "this ggml Vulkan
+- **The shim is a local translator, not shaderc.** Everything above is "this ggml Vulkan
   backend, compiled with glslang 11.8, on Mesa 23.2.1 ANV". A modern shaderc
-  and/or newer Mesa might recover the integer-dot-product path; that is the
-  experiment I would run next, and it is the only plausible route to a different
+  and/or newer Mesa might recover the integer-dot-product path; that is the next
+  experiment, and it is the only plausible route to a different
   verdict.
 - Both arms used `-t 8` (the recorded best on this hybrid CPU; `t12` spanning
   2P+8E is catastrophic here). The Vulkan arm's `-t` only affects its CPU-side

@@ -71,7 +71,7 @@ no seed, no epoch count. `data/distill/clf_recipe.json` carries the configuratio
 corpus hashes and the artefact sha256; `train.py --check` re-fits and asserts it
 reproduces byte-identically.
 
-**Why ridge and not the eight-seed ensemble I first shipped.** The first model was an
+**Why ridge and not the eight-seed ensemble tried first.** The first model was an
 unbounded Adagrad softmax ensemble. It fits the corpus in-sample at **100%**, its weights
 reach |w| = 4.4e3, its eight seeds disagree on **109 of 150** v2 rows, and its averaged
 "confidence" on v2 sits at multiples of 1/8 — it is not an ensemble of a fit, it is eight
@@ -269,7 +269,7 @@ eval set… rows do not duplicate, but nouns recur": **family-held-out CV leaves
 in place.** A frame's slot values recur across families (`topic`, `path` and `sym` values
 are drawn from a 69-value inventory reused by every frame), so holding a family out still
 leaves every noun in the training fold, and a model that has learned "tau_lo → grep" is
-rewarded by the split that was supposed to punish it. Object-held-out CV, which I also
+rewarded by the split that was supposed to punish it. Object-held-out CV, also
 built (`train.grouped_cv(unit="object")`), does not fix this either: the memorising
 model scores **83.4%** on it and the shipped model **83.3%** — both *higher* than their
 family CV — because an unseen object inside a seen frame is the easy case, not the hard
@@ -286,7 +286,7 @@ Two honest caveats, because this is where a reader should press:
 * **The bounded-vs-unbounded split was decided after `C1`'s transfer number was seen.**
   The declared rule was "highest family-CV among candidates whose fit is bounded", and
   the evidence for calling the ensembles unbounded is the in-sample/mean-max-P/disagreement
-  columns above, measured independently of v2 — but it is not a rule I wrote before looking.
+  columns above, measured independently of v2 — but it is not a rule declared before looking.
   The conclusion does not depend on it: every candidate loses to the 3B and to the cue
   table except `C6`, which ties the 3B within noise.
 * **v2 has now been read once for diagnosis and once for measurement**, so it is spent as
@@ -339,7 +339,7 @@ The four reasons, in order of weight:
   drops it for the classes that must not use it (grep, search) is the obvious next shape.
   That is a per-class feature decision, and §4 names which classes it would have to flip.
 
-None of that is a reason to ship today. The negative result is the deliverable: **68.7%
+None of that is a reason to ship. The negative result is the deliverable: **68.7%
 [59.6–77.0], not better than the 3B within noise, worse than the cue table at p = 0.040,
 better than the 3B on exactly the two classes the 3B is documented to fail, and trained
 under a corpus protocol that ranks candidates backwards.**

@@ -14,7 +14,7 @@ and every number in it is that tree's. Two of its findings were closed 24 minute
 findings closed in which commit and which are still the owner's decision; read it before
 acting on §7.
 
-This document records exposure, not blame. Where I call something *deliberate* I mean the
+This document records exposure, not blame. Where something is called *deliberate*, the
 author clearly chose to publish it; *accidental* means it is a by-product that the author
 most likely did not intend to hand to a stranger. Both are inventory, not judgement.
 
@@ -89,7 +89,7 @@ history from the third commit onward**, peaking at 14 files mid-run and reduced 
 redaction commit.
 
 A first pass measuring `git log --all -S'/home/'` reports only 20 commits. That number is
-misleading and I record it here because it is the number one would naturally quote: `-S`
+misleading and is recorded here because it is the number one would naturally quote: `-S`
 counts commits whose *diff* mentions the string, which includes the commits that **removed**
 it. The measure that matters for exposure is the tree state, because `git checkout <sha>`
 gives a stranger whatever that tree held.
@@ -186,7 +186,7 @@ owner's decision. The real consequences, as they apply to this repo:
 - Consequence: a reader learns a Linux username, a Windows account name (`<user>`), a
   hostname (`<host>`), the sshfs workflow, and the layout of a personal projects tree. All
   of it is consistent with an identity that is already deliberately public (see §4), so this
-  is "my machine's shape is public", not "my identity is revealed".
+  is "the machine's shape is public", not "an identity is revealed".
 - Publish cleanly on top: fix the `_HOME` regex, redact the two HEAD files, delete the 6
   unmerged `bench/*` branches, and the *headline* exposure becomes a history footnote rather
   than something visible at HEAD. Note that the two HEAD fixes require a new commit, which
@@ -214,7 +214,7 @@ owner's decision. The real consequences, as they apply to this repo:
   audited HEAD tree. All development history (110 commits, 3 weeks, the measured dead ends
   that are this project's main epistemic asset) is gone from the public artefact.
 - Consequence: exposure goes to zero for everything except what is in HEAD — but two
-  occurrences are still in HEAD today, so the squash must include the two file fixes, or it
+  occurrences were still in HEAD at that commit, so the squash must include the two file fixes, or it
   squashes the leak forward.
 - The trade is real: the commit history is a large part of what makes this repo worth
   reading (`docs/` repeatedly cites commits as evidence), and a squash discards it.
@@ -317,9 +317,9 @@ de-anonymises anyone:
 
 Given that, the remaining disclosures are about **machine and projects**, not person:
 
-| finding | where | my read |
+| finding | where | assessment |
 |---|---|---|
-| Survey of **35 private sibling project directories** (39 table rows), with file inventories, byte sizes and what to import from each | `docs/assets-inventory.md` (300 lines) | **deliberate inclusion, accidental disclosure.** Committed on purpose (`73cc66d`, "inventory the sibling projects for reusable decision-model assets") but written for the operator as a working note. This is the single largest disclosure surface in the repo. |
+| Survey of **35 private sibling project directories** (39 table rows), with file inventories, byte sizes and what to import from each | `docs/assets-inventory.md` (300 lines) | **deliberate inclusion, accidental disclosure.** Committed on purpose (`73cc66d`, "inventory the sibling projects for reusable decision-model assets") but written as a working note for the maintainer. This is the single largest disclosure surface in the repo. |
 | **Four private project trees** named at the home root, plus a `mirror/` subtree and a `Research/` tree with their per-project entries | `docs/assets-inventory.md:29-53` | same |
 | A sibling project given a substantive characterisation of what it does | `docs/assets-inventory.md:62` | **accidental** — a characterisation of unrelated private work |
 | A sibling project described as a small research sweep, with a dated `RESEARCH_…` filename | `docs/assets-inventory.md:63` | accidental |
@@ -409,7 +409,7 @@ Clean. `git ls-files | xargs du -h | sort -rh` shows:
   pooled numbers honest.
 - `demo/toolinterfacer.png` and `toolinterfacer.svg` are rendered from the tracked
   `demo/toolinterfacer.cast` (`demo/README.md:38-40`), so their full text content is
-  auditable. I checked the cast rather than the pixels: it contains **only** `127.0.0.1` —
+  auditable. The cast was checked rather than the pixels: it contains **only** `127.0.0.1` —
   no username, no path, no hostname, no email. The PNG carries no EXIF or textual metadata.
   **The rendered demo does not leak.**
 
@@ -539,7 +539,7 @@ extension's own dependency tree.
 ### What remains — the owner's decision, unchanged
 
 - **History.** 108 of `main`'s 110 trees still contain the path. Nothing in the
-  working tree touches that; only a rewrite does. §2.6 option A remains my read.
+  working tree touches that; only a rewrite does. §2.6 option A remains the recommendation.
 - **Commit messages.** Three carry `<host>` (`c1adb56`, `412da1a`, `7872d7d`), and
   a content-only rewrite does not fix them (§2.4).
 - **The 6 unmerged `bench/*` branches** — 7 commits, and a further copy of the

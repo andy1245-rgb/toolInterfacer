@@ -1,10 +1,14 @@
 # The shared harness — make it modular, and make it score classifiers
 
-Decided 2026-11-10 by the operator: **this repository's bench becomes the shared one** for all
-three projects (toolInterfacer, localAlexa, agentFleet). It already has the parts that matter —
-arms, an A/A floor, pre-registered pass conditions, a per-option ledger, and (as of this morning)
-an order control. What it does not have is seams: every experiment is a bespoke script, and there
-is no way to score a scikit-learn model at all.
+> What this document is: the specification the shared evaluation harness was built to — one dataset
+> seam, one predictor seam, one set of metrics, one set of controls — followed by the open
+> questions the first build left.
+
+Decided 2026-11-10: **this repository's bench becomes the shared one** for all three projects
+(toolInterfacer, localAlexa, agentFleet). It already has the parts that matter — arms, an A/A
+floor, pre-registered pass conditions, a per-option ledger, and an order control. What it does not
+have is seams: every experiment is a bespoke script, and there is no way to score a scikit-learn
+model at all.
 
 Goal: **any dataset, any predictor, one set of metrics and controls.** Adding a classifier must be
 a class, not a new script.
@@ -30,7 +34,7 @@ Adapters to ship:
 
 | adapter | source | rows | notes |
 |---|---|---:|---|
-| `tool_routing` | `bench/data/heldout_v3.json` | 415 | the eight ops; must reproduce today's arms exactly |
+| `tool_routing` | `bench/data/heldout_v3.json` | 415 | the eight ops; must reproduce the recorded arms exactly |
 | `localalexa_intents` | `localAlexa/data/routing_382.json` + `results/historical/*.json` | 382 | 17 intents, `group` = family; the corpus for the classifier work |
 | `generic_csv` | `--csv path --text-col --label-col` | any | so a new corpus is never a code change |
 
@@ -69,7 +73,7 @@ Implementations that must exist:
   errors**, because an ensemble of predictors that fail on the same rows buys nothing.
 
 Order matters and must be explicit: the harness passes `options` in the order given, and records
-that order plus a hash of it in every artifact. This morning's result is why — reversing the eight
+that order plus a hash of it in every artifact. The 2026-11-10 result is why — reversing the eight
 descriptions with no text change cost **9 rows and flipped 34 argmaxes**, against an A/A floor of
 one flip.
 
@@ -110,29 +114,44 @@ The controls are what make a number believable, and they must be impossible to f
 3. `docs/harness.md` — the seams, and a worked "add a predictor in 20 lines" example.
 4. **`bench/rewrite_transfer.py` keeps working unchanged.** Either keep it as-is or make it a thin
    shim; do not break the reproduction command in `docs/grep-arm-2026-11-10.md`.
-5. Re-run **one existing arm through the new harness** and assert it reproduces today's numbers
-   (`floor_a` = 325/415). A harness that cannot reproduce a record it was built from is not
-   finished.
+5. Re-run **one existing arm through the new harness** and assert it reproduces the recorded
+   numbers (`floor_a` = 325/415). A harness that cannot reproduce a record it was built from is
+   not finished.
+
+## Data rule — a dataset adapter is a door into a public repo
+
+`toolInterfacer` is a public repository. Most datasets in play are authored (`tool_routing` and
+`localalexa_intents` are hand-written utterances) but `generic_csv` is not — it is whatever path
+the caller points at, and one of those targets will be mined session text.
+
+- **A dataset never gets committed.** Rows are read from a path; the artifact records the path, the
+  row count, and a **sha256 of the file**. That identifies a dataset without publishing it.
+- **Only aggregates are written.** Counts, rates, per-label ledgers, latency, calibration figures,
+  shas. Never a row, never a snippet, never "for example, the model saw…" — a quoted utterance is
+  the corpus with the quotes filed off.
+- **Row-level output for a non-authored dataset goes beside the dataset**, not into `bench/results/`.
+- The test when unsure: *would this line be fine on a projector in a room with an outside reader
+  in it?* If not, it is a count, not a row.
 
 ## Hard limits
 
-Branch commits only, never push. No hosted model calls — the operator's $1 is nearly spent and this
-job needs none. Do not edit `service/ti/conf/defaults.json`. Do not delete `rows.jsonl` or any
-existing arm; the historical records are the regression suite.
+No hosted model calls: the budget is nearly spent and the work here needs none. Do not edit
+`service/ti/conf/defaults.json`. Do not delete `rows.jsonl` or any existing arm; the historical
+records are the regression suite.
 
 ---
 
-## Open questions from the first build (2026-11-10, night)
+## Open questions from the first build (2026-11-10)
 
-Written down instead of asked. Each one has the default I chose so the build is not blocked; any
-of them can be reversed without touching the seams.
+Written down instead of asked. Each one has the default taken so the build is not blocked; any of
+them can be reversed without touching the seams.
 
 1. **Do the harness tests run in CI?** `ci.yml:31-32` runs `python3 -m pytest tests/ -q`, so a
-   suite in `bench/harness/tests/` is invisible to it. I put the detailed tests there (as the spec
-   asked) and added `tests/test_harness_contract.py` as a bridge so CI covers the reproduction and
-   the metric cross-check. *Default taken:* bridge only. *The alternative:* add the path to
-   `ci.yml` and to `pyproject.toml`'s `testpaths`, which makes CI slower and makes one command run
-   two suites — your call, because it changes a shared config.
+   suite in `bench/harness/tests/` is invisible to it. The detailed tests are there (as the spec
+   asked), with `tests/test_harness_contract.py` as a bridge so CI covers the reproduction and the
+   metric cross-check. *Default taken:* bridge only. *The alternative:* add the path to `ci.yml`
+   and to `pyproject.toml`'s `testpaths`, which makes CI slower and makes one command run two
+   suites — a decision that changes a shared config.
 
 2. **Is `--limit` allowed to be a sample?** It truncates in dataset order, which is neither random
    nor stratified, so it is a smoke-test switch and not a cheap experiment. *Default taken:* smoke
@@ -142,11 +161,11 @@ of them can be reversed without touching the seams.
 3. **How many order permutations is a claim worth?** The control implements `rev` and
    `shuffle:<seed>`; one reversal moved 8.2% of argmaxes and cost 9 rows, which is an upper bound
    for a single permutation, not an estimate. *Default taken:* one run, hash recorded, no policy.
-   *The alternative:* require three seeded shuffles for any wording claim, as the plan's E3 says.
+   *The alternative:* require three seeded shuffles for any wording claim, as E3 specifies.
 
 4. **What does `llama_systemone` present for the 382-intent task?** It presents
    `row.meta["descriptions"]` when present, else the option name. localAlexa's registry has
-   `id`, `family` and `patterns` (regexes), and no description field, so an 18-way llama arm today
+   `id`, `family` and `patterns` (regexes), and no description field, so an 18-way llama arm
    reads 18 bare ids. *Default taken:* bare ids. *The alternative:* present the patterns, which is
    closer to what the tool actually matches and changes the task.
 
@@ -158,7 +177,7 @@ of them can be reversed without touching the seams.
 6. **Should the legacy artifacts carry their order hash?** `recorded` refuses to replay under a
    permuted order only when `order_sha=` is passed, because the historical `rows.jsonl` rows
    predate order recording. *Default taken:* the guard is opt-in. *The alternative:* annotate the
-   artifact (a data edit to 2,905 rows of the historical records — I did not do it).
+   artifact (a data edit to 2,905 rows of the historical records — not done here).
 
 7. **Is nested cross-validation wanted?** `--cv` fits one predictor per fold; for an `ensemble` the
    members are fitted inside the same factory, and `stacked` runs its own inner out-of-fold loop.
@@ -166,8 +185,9 @@ of them can be reversed without touching the seams.
    honest but not comparable to a single model's. *Default taken:* documented, not changed.
 
 8. **Are run artifacts committed?** `--out` writes `summary.json` and `rows.jsonl` wherever you
-   point it; tonight's went to `/tmp`. The historical record lives in git, so the convention is
-   probably "a run that gets quoted gets committed". *Default taken:* nothing new in git.
+   point it; the 2026-11-10 runs went to `/tmp`. The historical record lives in git, so the
+   convention is probably "a run that gets quoted gets committed". *Default taken:* nothing new in
+   git.
 
 9. **`coverage@precision=0.90` is new and unanchored.** `grep_only` reaches 78.3% coverage at
    0.90 precision against `floor_a`'s 73.7%, and nothing in the repo says whether 0.90 is the

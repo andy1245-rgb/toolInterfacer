@@ -65,7 +65,7 @@ this hardware.
 
 ## Decision
 
-**Shipped default stays `pair` at tau 0.90 on this box, knowingly accepting a latency
+**Shipped default stays `pair` at tau 0.90 on the development machine, knowingly accepting a latency
 regression**, because hosted-only hard-fails when the key is absent while the pair
 degrades to local and keeps answering. Latency favours `openrouter`; availability
 favours `pair`. Until `TI_OPENROUTER_API_KEY` is guaranteed in the service environment,
@@ -93,5 +93,5 @@ call plus a wasted local call.
 - Direction (`pair costs escalation_rate x local_latency more than hosted-only`) is
   structural. Magnitude is load-dependent — local p50 was 4052 ms in
   `bench/results/ab-three-arm-30rows.json` and 2261 ms here (rows 1801-3428 ms, so
-  nothing in this run reached 4.1 s). Re-measure rather than re-reason when the box
+  nothing in this run reached 4.1 s). Re-measure rather than re-reason when the machine
   changes.

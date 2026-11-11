@@ -29,7 +29,7 @@ scene 2 — a vague intent, resolved against real files
 
 `--live` runs the same scenes against the configured decision model and the real CLIs.
 [`ARCHITECTURE.md`](ARCHITECTURE.md) is how it works, [`TODO.md`](TODO.md) is what is next,
-and the numbers are under [`docs/`](docs/) — including the ones that are bad news.
+and the numbers are under [`docs/`](docs/) — including the results that argue against shipping.
 
 <details>
 <summary>The whole run, as one picture (a recording of <code>bench/demo.py</code>, offline)</summary>
@@ -109,7 +109,7 @@ Full notes: [`docs/architecture.md`](docs/architecture.md).
 
 ## What works today
 
-Verified by running it, not by reading the spec:
+Verified by execution, not by reading the spec:
 
 | capability | state |
 |---|---|
@@ -119,14 +119,14 @@ Verified by running it, not by reading the spec:
 | L2 templates: `research` (queries → search → pick → fetch+verify loop → optional reddit cross-check → digest) and `reddit_digest` | `research` runs end to end **offline** via `bench/demo.py` — scene 3 pins the decisions to the fixture backend and both web CLIs to `tests/data/fake_cli.py`, and assembles a digest over the four stubbed sources. `bench/replay.py` runs the same plan against the *real* CLIs, so it needs them configured and takes minutes, not milliseconds. `reddit_digest` needs the reddit project (see gaps) |
 | Nine registered ops | `decide_extract`, `decide_pick`, `digest_assemble`, `filesys_glob`, `filesys_grep`, `filesys_read`, `reddit_digest`, `web_fetch`, `web_search` |
 | Decide backends and the pre-gate → cache → backend fast path | works — `heuristic_micro` pre-gate and the 256-entry decision cache are on by default |
-| `pair` (local, escalating to hosted) and `openrouter` | implemented and measured by the author; running them needs a local llama.cpp server, and the hosted stage needs `TI_OPENROUTER_API_KEY` — [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md) |
+| `pair` (local, escalating to hosted) and `openrouter` | implemented and measured; running them needs a local llama.cpp server, and the hosted stage needs `TI_OPENROUTER_API_KEY` — [`docs/decision-pair-vs-hosted.md`](docs/decision-pair-vs-hosted.md) |
 | Bounded decision state (structural, not conventional) | works — `session_digest.sanitize` projects each digest turn onto `{role, summary, mentions}` and each antecedent onto `{phrase, resolved}`, keeps the last 8 of each and clips every string that survives (240 chars per turn, 6 mentions, 1024 per path, `cwd` included), so a key the shape does not list is dropped rather than forwarded; `context.packer` is the backstop, stubbing the digest if the decide state still exceeds `conf.context.state_max_tokens` |
 | pi extension: `useTool`, `/ti` command, service spawn on session start | complete — `npm ci && npx tsc --noEmit` exits 0, and `contract-check` passes every schema case plus the live leg against a stub service on a loopback port; the case counts and the case-by-case enumeration live in [`pi-extension/README.md`](pi-extension/README.md) |
-| Test suite | **852 tests, 586 subtests**, no network, no model. This row is the only place the current count is written — every other document links here, tells you to run `pytest`, or states a floor (`700+`), so a track that adds tests edits one line |
+| Test suite | **852 tests, 586 subtests**, no network, no model. The count is written here and nowhere else: every other document links to this row, tells you to run `pytest`, or states a floor (`700+`), so a change that adds tests edits one line |
 
-### Honest gaps
+### What it does not do
 
-These are not wired, and the README would be lying if it did not say so:
+These are not wired:
 
 - **Intent classification is keyword rules, not the decision model.**
   `planner/inspector.py` picks L0/L1/L2 from ordered keyword frames — an explicit op, a
@@ -156,7 +156,7 @@ These are not wired, and the README would be lying if it did not say so:
 - **`web_search` / `web_fetch` shell out to CLIs you must configure.**
   `ops.web_search.script`, `ops.web_search_provider.script` and `ops.web_fetch.script`
   ship **empty** — they name a third-party CLI's install path, which is different on
-  every machine, so a filled-in default would only ever be right on its author's. Point
+  every machine, so a filled-in default would only ever be right on one of them. Point
   them at any CLI that honours the contract in [`docs/ops.md`](docs/ops.md); until you
   do, the ops raise `CliMissingBinary` naming the key to set.
 - **L3 (model-planned DAG) is a placeholder** — `service/ti/planner/free.py` is a docstring.
@@ -193,7 +193,7 @@ curl -s http://127.0.0.1:1113/health
 
 ### The service token
 
-The service reads the operator's files on behalf of whoever asks, and anything on the box
+The service reads the caller's files on behalf of whoever asks, and any local process
 can open a loopback socket — so every POST carries a shared token, checked before the body
 is read. `/health` stays open: it is how the extension decides whether a service is already
 running.
@@ -466,13 +466,15 @@ can read as current.
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | the overview: why the layer exists, the process view, the life of one `useTool` call, the two plugin walls, the bounded-context argument, the security surface. Read it before `docs/architecture.md` |
 | [`docs/architecture.md`](docs/architecture.md) | the per-module contract: what each module owns and explicitly does not, so a change to a behaviour lands in the one module that owns it |
 | [`docs/ops.md`](docs/ops.md) | the CLI contract the three subprocess ops rely on — invocation, locating the result, exit codes, op shapes — and the mismatches found against the live CLIs; §9 is the HTTP status contract, including why a run that fails is served `200` |
+| [`docs/harness.md`](docs/harness.md) | the shared harness: one dataset seam, one predictor seam, one set of metrics and one set of controls, so "score this model on this corpus" stops being a new script |
+| [`docs/harness-spec.md`](docs/harness-spec.md) | the specification the harness was built to — the four seams, the deliverables, the data rule — followed by the open questions the first build left |
 | [`docs/confidence-sources.md`](docs/confidence-sources.md) | every place a `confidence` is produced, each classified **measured** / **derived** / **asserted**, and the rule that came out of it: reported only when a hop measured one, the minimum over those, absent otherwise — the run-level `1.0` is `None` now |
 
 ### Running, testing, shipping
 
 | file | contents |
 |---|---|
-| [`docs/testing.md`](docs/testing.md) | where the suite and the benchmarks run (bench-host over ssh; this box is compile-only), the d1-3B launch recipe, the enforced placeholders-not-paths rule, the CPU-only stack recipe, and how to prove the wire rather than the engine |
+| [`docs/testing.md`](docs/testing.md) | where the suite and the benchmarks run (a separate benchmark host over ssh; the development machine is compile-only), the d1-3B launch recipe, the enforced placeholders-not-paths rule, the CPU-only stack recipe, and how to prove the wire rather than the engine |
 | [`RELEASE.md`](RELEASE.md) | the release runbook: the pre-flight that must exit 0, the wheel built *and installed* into a clean venv before anything is tagged, TestPyPI before PyPI, and the rollback order |
 
 ### What was measured
@@ -492,8 +494,13 @@ can read as current.
 | [`docs/dataset-status.md`](docs/dataset-status.md) | the hop log measured as training data: 14 of 1398 records trainable and all 14 carrying the same label (15 of 5243 on the re-checked snapshot) — it is an execution trace, so the fine-tune corpus is distilled rather than harvested |
 | [`docs/distill-corpus-certification-2026-11-03.md`](docs/distill-corpus-certification-2026-11-03.md) | the distilled corpus certified as training data: **412** rows labelled (not 267 — that was a snapshot of a run still going), **0** collisions with either frozen eval set across all pairs, 410 frozen at `data/distill/` after two near-duplicate exclusions, the teacher's answer rejected as a label because it gives opposite answers to rows one filename apart at 0.9 confidence, and what a fair evaluation may claim from a corpus whose t1 band is saturated |
 | [`docs/cost-reduction-glm-flash.md`](docs/cost-reduction-glm-flash.md) | the hosted routing bill cut, measured rather than projected: 38 endpoints of one model id on the same 150 rows, `$0.0202 → $0.0053` per 1k decisions (−73.8%) at 141/150 → 145/150, by pinning the cheapest endpoint and making three prompt/answer changes — and why `sort: "price"` does not get there |
+| [`docs/grep-arm-2026-11-10.md`](docs/grep-arm-2026-11-10.md) | the grep-description arm measured properly: one served model with `/props` asserted before the first call, five arms, 2,075 rows — **it does not ship**, and the per-option ledger is why |
+| [`docs/fusion-2026-11-10.md`](docs/fusion-2026-11-10.md) | the fusion arm, pre-registered before the run and then measured against the member it was meant to improve: what is established, what the fold-rule sensitivity changes, and what the review changed in the harness |
+| [`docs/classical-revival-2026-11-10.md`](docs/classical-revival-2026-11-10.md) | the classical tier was dead for its whole life — `decide.classical.corpus_path` pointed at a 17-label registry — and this is the revival measured on the 207 eval rows, coverage first, with the part that is not proven |
+| [`docs/post-rewrite-diagnosis.md`](docs/post-rewrite-diagnosis.md) | the diagnosis written after the 2026-11-04/05 rewrite measurements: where the 3B loses rows it was never asked about, the cheapest experiments that separate the explanations, and the re-baseline protocol that follows |
+| [`docs/direction-adjudication.md`](docs/direction-adjudication.md) | four candidate directions for the decision layer — fusion, scaffolding features, the classical backend, an encoder fine-tune — one section each, with the measurement that decides it and the condition that would reverse it |
 
-**Correction — 2026-11-04.** The claims this table made that Phase 1 retired, in one place:
+**Correction — 2026-11-04.** The claims this table made that a later measurement pass retired, in one place:
 
 - **84.7% was an oracle, not a result.** It is the per-class `lr`-or-`3B` map applied on each
   row's ground-truth label (`bench/local_clf.py:1085`), so no router can reach it; 92.8%
@@ -554,10 +561,10 @@ shipping it without the extract edit is a different experiment, and it has not b
 Full derivations and the per-signal tables: [`docs/eval-harness-2026-11-04.md`](docs/eval-harness-2026-11-04.md).
 Each affected document carries its own dated, appended correction.
 
-### Dated audits, probes and plans — 2026-11-03 and 2026-11-04
+### Dated audits, probes, plans and diagnoses
 
-One tree, not reference material. These were written on 2026-11-03 and 2026-11-04 against
-the tree of the day — most name the commit — and none is rewritten afterwards except by an
+Records of one tree on one day, not reference material. Each was written against
+the tree of its own date — most name the commit — and none is rewritten afterwards except by an
 appended Resolution section.
 
 | file | contents |
@@ -569,12 +576,14 @@ appended Resolution section.
 | [`docs/quickstart-stranger-2026-11-03.md`](docs/quickstart-stranger-2026-11-03.md) | the README followed literally from a fresh clone: five wrong turns to a first working `useTool` — the L0 example 403s unless the clone sits under the reader's home directory, and `ti-serve` dead-ends on a held port with no recovery hint |
 | [`docs/live-e2e-2026-11-03.md`](docs/live-e2e-2026-11-03.md) | the *shipped* path probed over a real socket, `5/5` cases — HTTP → inspector → plan → decide wall → ops wall with d1-3B answering — and ten defects found and fixed, from a picked path read against the service's cwd to a gate block that degraded instead of asking |
 | [`docs/pre-publish-audit.md`](docs/pre-publish-audit.md) | the gate before a public push, taken at `ca7ffec`: what a stranger can see, download and infer from the clone — history, secrets, licence, the tracked tree — with a Resolution appendix saying which findings were closed and which are still the owner's call |
-| [`docs/roadmap-2026-11.md`](docs/roadmap-2026-11.md) | the plan for the overnight run and its closing Outcome: which publish blockers were closed and re-probed rather than asserted, and the three measurements that changed the plan — the classical baseline, the iGPU, the hop log |
+| [`docs/roadmap-2026-11.md`](docs/roadmap-2026-11.md) | a work plan and its closing Outcome: which publish blockers were closed and re-probed rather than asserted, and the three measurements that changed the plan — the classical baseline, the iGPU, the hop log |
 | [`docs/assets-inventory.md`](docs/assets-inventory.md) | what the sibling projects already hold, surveyed against this repo's three needs: five ranked import candidates with concrete paths and a recommendation for each, the cactus/needle fine-tune that came back negative, and two things worth not importing |
 | [`docs/router-policy-2026-11-04.md`](docs/router-policy-2026-11-04.md) | the per-class routing figure measured without the answer: 84.7% was an oracle applied on the true label, its deployable replacement is **79.3% [73.6–84.8], n=150**, family-grouped 5-fold × 5 seeds — separately better than the cheap expert (+12.3 pts) and *not* separable from the 3B (+5.3 pts, CI −1.4 to +12.3), with the cascade's accuracy/cost curve (81.6% at 38% escalation), the finding that a top-2 margin gate is no better than top-1 probability, and the 14 of 22 confident 3B misses a class-level policy recovers where no confidence gate can — *not* the same 79.3% as the classical front gate in the baseline row above: same digits, different device, 30% coverage against 44% |
-| [`docs/consistency-review-2026-11-04.md`](docs/consistency-review-2026-11-04.md) | the consistency pass over the whole night's corrections: a contradiction matrix for every retired number (84.7 / 93.19 / 66.23 / 62.7 / 82.0 / 74.0 / the 8.0-point "leak" / the "17-point gap"), which of the conflicts are a dated body doing its job and which are a reader being misled, the reachability ledger (a correction 342 lines below the number it retires is not a correction), the figures the first sweep's grep could not see, and the pointers this pass added |
+| [`docs/consistency-review-2026-11-04.md`](docs/consistency-review-2026-11-04.md) | the consistency pass over that pass's corrections: a contradiction matrix for every retired number (84.7 / 93.19 / 66.23 / 62.7 / 82.0 / 74.0 / the 8.0-point "leak" / the "17-point gap"), which of the conflicts are a dated body doing its job and which are a reader being misled, the reachability ledger (a correction 342 lines below the number it retires is not a correction), the figures the first sweep's grep could not see, and the pointers this pass added |
 | [`docs/logging-2026-11-04.md`](docs/logging-2026-11-04.md) | what the tool records by default, asked of the consumer first: one reader takes two fields out of `hops.jsonl`, so `artifact_summary` (200 chars of a file that was read) and `params` (verbatim argument values) had no reader at all — the conclusion is opt-in capture, a reduced record, a `~`-rooted path and `0600`/`0700` modes that narrow rather than refuse, plus what that costs |
-| [`docs/security-surface-2026-11-04.md`](docs/security-surface-2026-11-04.md) | what a token holder can reach, written down because nothing said it: a valid `X-TI-Token` authorises reading **any file the operator owns**, and with the shipped config that is enumerated from `confine.py` rather than argued — `~/.ssh` (every private key, and the document's own end-to-end request returns one), `~/.gnupg`, `~/.aws`, `~/.local/state/ti` (the token file that authorised the request), `~/.kube` and `~/.docker`, `~/.netrc` / `~/.git-credentials`, shell histories, browser and keyring stores — three body fields and a header, no guard bypassed. It then says why the default is what it is: `roots: ["~", ".", "/tmp"]` closed a real `403` on a clone outside `$HOME` and was documented as a portability fix, never re-read as an authority grant. Recommendation: **keep the roots, ship a short `deny_roots` over the credential subtrees no `useTool` intent needs**, and write the incompleteness in as the headline, because a denylist reduces exposure and does not close it — with what a tighter default would cost and §8's account of the review that measured the widening in only one direction |
+| [`docs/security-surface-2026-11-04.md`](docs/security-surface-2026-11-04.md) | what a token holder can reach, written down because nothing said it: a valid `X-TI-Token` authorises reading **any file the service's user owns**, and with the shipped config that is enumerated from `confine.py` rather than argued — `~/.ssh` (every private key, and the document's own end-to-end request returns one), `~/.gnupg`, `~/.aws`, `~/.local/state/ti` (the token file that authorised the request), `~/.kube` and `~/.docker`, `~/.netrc` / `~/.git-credentials`, shell histories, browser and keyring stores — three body fields and a header, no guard bypassed. It then says why the default is what it is: `roots: ["~", ".", "/tmp"]` closed a real `403` on a clone outside `$HOME` and was documented as a portability fix, never re-read as an authority grant. Recommendation: **keep the roots, ship a short `deny_roots` over the credential subtrees no `useTool` intent needs**, and write the incompleteness in as the headline, because a denylist reduces exposure and does not close it — with what a tighter default would cost and §8's account of the review that measured the widening in only one direction |
+| [`docs/rot-audit-2026-11-10.md`](docs/rot-audit-2026-11-10.md) | the rot register: every backend and every composition asked one question — is there a way this degrades into "no opinion" that is indistinguishable from a careful component with nothing to add — audited read-only against `1db9479` and re-verified for every `B` |
+| [`docs/rot-detection.md`](docs/rot-detection.md) | the generalisable lesson from those two: a silent fallback is indistinguishable from a working one, as an audit method — a symptom per row and the check that exposes it — plus the protocol that keeps a revived tier's measurement from being misread |
 
 ## Layout
 

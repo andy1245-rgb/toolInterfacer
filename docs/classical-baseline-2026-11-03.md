@@ -30,7 +30,7 @@ with it.
 ## 1. What was built, and why it is not scikit-learn
 
 `python3 -c "import sklearn; print(sklearn.__version__)"` raises
-`ModuleNotFoundError` on this box (Python 3.10.12), and `pyproject.toml` declares
+`ModuleNotFoundError` on the development machine (Python 3.10.12), and `pyproject.toml` declares
 `dependencies = []` with no third-party imports anywhere under `service/`. So
 scikit-learn was **not** added; the vectoriser and the solver were re-implemented
 in stdlib Python and the recorded hyper-parameters were copied exactly.
@@ -85,9 +85,9 @@ accuracy:
 The p50 gap is measurement, not speed: the recorded 0.61 ms is
 `clf.predict(vec.transform([txt]))` through sklearn, this is the same transform
 plus one 18-class dot product in a plain loop. Single-shot timings at this scale
-move by 3x between runs on this box, which is why the row is a range, and both
+move by 3x between runs on the development machine, which is why the row is a range, and both
 numbers sit far below the per-hop overhead that matters (`decide.cache` hits cost
-~50 ms). Latency here is single-shot per row on the local box; it is not a
+~50 ms). Latency here is single-shot per row on the local machine; it is not a
 throughput claim.
 
 The stability check, because a single accuracy can be solver luck: **18 fits —
@@ -373,7 +373,7 @@ This is the defect this document did not have. `--out-dir` defaults to
 unconditional `write_text` calls (`:319`, `:354`). So the reproduction command
 above does not reproduce the recorded numbers — it **replaces the files that
 record them**, `bench/results/classical_382.json` and `classical_v2.json`, with
-whatever the box produced this run.
+whatever the machine produced in that run.
 
 Observed when this baseline was first re-run by hand on 2026-11-03: the accuracy
 was identical and the p50 latency moved **0.062 → 0.024 ms** — the same 3×

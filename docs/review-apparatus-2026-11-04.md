@@ -1,10 +1,10 @@
 # The apparatus, not the arithmetic
 
-2026-11-04. A review of the instrument and of the reasoning behind tonight's four
-results — `docs/eval-harness-2026-11-04.md`, `docs/rewrite-transfer-2026-11-04.md`,
+2026-11-04. A review of the instrument and of the reasoning behind the four results dated
+2026-11-04 — `docs/eval-harness-2026-11-04.md`, `docs/rewrite-transfer-2026-11-04.md`,
 `docs/router-policy-2026-11-04.md`, `docs/distill-classifier-2026-11-04.md`, read
 against `bench/data/heldout_v3*.json`, `bench/results/p3-transfer/`,
-`data/distill/` and `tests/data/utterances_v2.json`. Branch `v-method`.
+`data/distill/` and `tests/data/utterances_v2.json`.
 
 I did not recheck the arithmetic, and I found none of it wrong. The overall rewrite
 verdict reproduces to the point (−3.1 pts, 16 fixed / 29 broken, 133 families), the
@@ -327,7 +327,7 @@ out-of-corpus transfer. The demonstration is solid and does not depend on the
 correlation: `val.jsonl` ranks the candidates the same way family-CV does, so the
 certification's recommended protocol inherits the failure; `C3` scores 64.2% on val —
 last of seven — and transfers at 66.0%, third; the top CV candidate transfers 8.7 points below
-the fourth. Anyone who follows "fit on train, select on val" today loses 8.7 points of
+the fourth. Anyone who follows "fit on train, select on val" loses 8.7 points of
 transfer. That is a genuine, expensive, well-evidenced finding and it should keep its
 place in the roadmap.
 
@@ -419,7 +419,7 @@ Applied to 82.0%: the two description strings carry
 untouched rows next to it. The error becomes impossible to state rather than merely
 unadvisable to state, and the run that produced 82.0% would have produced a non-claim.
 
-Applied tonight: the grep slice carries `authored_on = {the 150 v2 rows}`, which is
+Applied in this pass: the grep slice carries `authored_on = {the 150 v2 rows}`, which is
 clean, so the harness would *permit* it — and this review's complaint about grep is
 about the unit and the ledger, not provenance. That is right: the gate is not a
 substitute for the other corrections, it is the one that would have prevented the
@@ -498,7 +498,7 @@ Ordered by how much it matters.
 
 ## 8. What is right, and should not be softened in the other direction
 
-A review that only takes is not useful, and three of tonight's four results are better
+A review that only takes is not useful, and three of the four 2026-11-04 results are better
 evidenced than the repo has managed before.
 
 - **Retiring 82.0% is correct, and the evidence is stronger than the document says** —

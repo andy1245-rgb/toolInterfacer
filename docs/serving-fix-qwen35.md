@@ -6,10 +6,10 @@ llama-server-impl.dll` → `llama_server(argc, argv)`) ran CPU-only while
 `llama-bench` on the same build offloads the same GGUFs.
 
 **Verdict: unresolved at driver-flag level. Strongest hypothesis below.**
-Every documented experiment is first-hand measured on bench-host today; nothing
+Every documented experiment is first-hand measured on bench-host on 2026-10-17; nothing
 inherited from q4-scout except where cited.
 
-## Reproduced baseline (all today, build b11512/a11f57ba9 unless noted)
+## Reproduced baseline (all 2026-10-17, build b11512/a11f57ba9 unless noted)
 
 | # | Path | Build | Context shape | qwen35 prefill | Source |
 |---|------|-------|---------------|----------------|--------|
@@ -18,7 +18,7 @@ inherited from q4-scout except where cited.
 | 3 | `llama-bench -ngl 0` | b11512 | CPU-only | 83.5 t/s (12 ms/tok) | E-bench-C |
 | 4 | pyhost server, exact `lane.sh` baseline (argc=13: `-m <gguf> --host 127.0.0.1 --port 8080 -c 8192 -t 8 -ngl 99`) | b11512 | llama-server in-process | 97 t/s cold (13.4 ms/tok), cached-4-tok 261 ms/tok | E-qdiag-1 |
 | 5 | llama-completion (single-shot CLI context) `-p` 22 tok, `-c 8192 -n 1 -lv 5` | b11512 | llama_context via common | 121 t/s (8.27 ms/tok) | E-cli-1 |
-| 6 | pyhost server, d1-3B control (`-c 8192 -ngl 99`, same invocation shape) | b11512 or b11510 | same as 4 | **GPU-fast** (2.57 ms/tok at 64 tok — scout's d1control log; re-run today 547 ms for 145 tok ≈ 3.8 ms/tok) | E-d1-1 |
+| 6 | pyhost server, d1-3B control (`-c 8192 -ngl 99`, same invocation shape) | b11512 or b11510 | same as 4 | **GPU-fast** (2.57 ms/tok at 64 tok — scout's d1control log; re-run the same day 547 ms for 145 tok ≈ 3.8 ms/tok) | E-d1-1 |
 | 7 | server via recreated `d1srv_fix.exe` (real llama-server exe, AV-safe carve, same args as 4) | b11512 | llama-server exe | 18.8 t/s cold / 263 ms/token cached | E-exe-1 |
 | 8 | pyhost against engine dir (`b11510/c35b66744`) impl.dll | b11510 | llama-server in-process | same CPU-class (78 MiB GPU compute buffer) | E-b10-1 |
 | 9 | server `--rpc 127.0.0.1:50052` (local ggml-rpc-server held the Vulkan0 device) | b11512 | RPC device | still CPU-class throughput | E-rpc-1 |
@@ -86,10 +86,10 @@ context.
 
 Caveat: llama-completion got a 513 MiB GPU compute chunk (like bench) yet
 still ran at 121 t/s, so compute-buffer size tracks the split but is not
-itself the causal variable; no context-level flag we could reach changes the
+itself the causal variable; no context-level flag reachable here changes the
 execution class. The scout's fast lane (their q4-Qwen3.5-4B json, p50
 201/91 ms, "GPU engaged") is currently not reproducible by any invocation
-recombination we tested; its serve args are lost (not in `logs/`).
+recombination tested here; its serve args are lost (not in `logs/`).
 
 Strongest remaining hypotheses (in order):
 
@@ -102,7 +102,7 @@ Strongest remaining hypotheses (in order):
    uploads" appears in bench logs too) — the host side silently eats the
    heavy ops.
 3. Something in the environment of the scout's 16:21 run (descriptor state,
-   driver clock state, or an arg we cannot reconstruct).
+   driver clock state, or an arg that cannot be reconstructed).
 
 Follow-up worth an hour: patch `serve_pyhost.py`-equivalent to construct the
 context via llama-bench's `to_llama_cparams()` path, or run the llama.cpp
@@ -110,9 +110,9 @@ equivalent of `llama-sweep` upstream (b11513+ had qwen3.5/vulkan fixes
 (`theneuralfeed` reported gated-deltaNet-vulkan merge ~b1151x)) and test
 whether a newer build moves the qwen35 server path off the host chunk.
 
-## Reproduce today
+## Reproduce
 
-Dell-side driver (new files, this run): `qdiag.py`
+Bench-host driver (new files, this run): `qdiag.py`
 (config-in-json pyhost; fd-redirect gives full load/offload lines at `-lv 5`),
 `qdiag_b10.py` (same, pointed at the b11510 engine dir), plus
 `qdiag_config.json` / `qdiag.log` state and `mkrexe.py` (AV-safe carve of
@@ -124,7 +124,7 @@ post-cache), far above the 300 ms target; **no `fix-*.json` lane files are
 written** because neither run qualifies as a pass. q4-scout's `q4-*.json`
 untouched.
 
-Teardown verified: dell:8080, dell:50052 free; local 18080 free; no python/
+Teardown verified: bench-host:8080, bench-host:50052 free; local 18080 free; no python/
 rpcsrv/llama processes running. AV consumed the treated exes
 (`d1srv_fix.exe`, `rpcsrv_fix.exe`, `serve_fix.cmd`, `rpc_launch.cmd`) per
 the known-§7.2 pattern; the retained diagnostics (`qdiag.py`, `qdiag_b10.py`,

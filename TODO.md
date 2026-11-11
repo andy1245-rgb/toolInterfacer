@@ -153,6 +153,8 @@ still keywords.
 - [ ] **L4 (browser) is a row in the spec's level table and nothing else.** No adapter, no
       code path, and no reference to one anywhere in `service/`. Same choice: build or
       delete. **queued**
+- [ ] **`checkpoints/` is untracked and not ignored in localAlexa.** 260 MB, in a repository
+      that is now public. Add the ignore line, or remove the directory. **queued**
 
 ## 5. Deliberately out of scope for 0.1.0
 

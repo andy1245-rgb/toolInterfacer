@@ -4,8 +4,8 @@ One dataset seam, one predictor seam, one set of metrics, one set of controls. A
 pipeline, a fine-tuned encoder and a llama-server are the same kind of arm, so "score this model
 on this corpus" stops being a new script.
 
-Spec: [`docs/harness-spec-2026-11-10.md`](harness-spec-2026-11-10.md) (the open questions from
-the first build are appended there).
+Spec: [`docs/harness-spec.md`](harness-spec.md) (the open questions from
+ the first build are appended there).
 
 ## Why it exists
 
@@ -93,10 +93,10 @@ another spec writes its own pipes as `~`, because `|` already separates the oute
 `fusion|member=sklearn_text~vectorizer=tfidf_word~clf=logreg|weights=0.5`.
 
 `scikit-learn` **1.7.2** and `torch` **2.14.1+cpu** with `transformers` **5.20.2** are installed
-on this box, so every arm above the dotted line is a measurement and not a contract. On a box
-without them the modules still import cleanly (everything optional is imported inside the
-factory) and building one raises a message naming the install command; the harness core, its
-tests, and the replay/control path need only the standard library plus pytest.
+on the development machine, so every arm above the dotted line is a measurement and not a
+contract. On a machine without them the modules still import cleanly (everything optional is
+imported inside the factory) and building one raises a message naming the install command; the
+harness core, its tests, and the replay/control path need only the standard library plus pytest.
 
 ## The CLI
 
@@ -217,7 +217,7 @@ constraints, enforced in code and pinned by `bench/harness/tests/test_data_rule.
   the rule quoted back.
 
 The test when unsure is the one in the spec: *would this line be fine on a projector in a room
-with his employer in it?* If not, it is a count, not a row.
+with an outside reader in it?* If not, it is a count, not a row.
 
 The row artifacts already committed (`bench/results/p3-transfer/rows.jsonl` and friends) are the
 regression suite that `recorded` replays, and they come from authored corpora whose rows are in
@@ -253,8 +253,8 @@ the same artifact rather than replacing the script.
 ## What this does not do yet
 
 * **No live arm has been run through the new path.** The reproduction above is a replay. The live
-  path is the same seam (`llama_systemone`), but it needs the server up, and nothing on this box
-  has been served since the order arm finished.
+  path is the same seam (`llama_systemone`), but it needs the server up, and nothing on the
+  development machine has been served since the order arm finished.
 * **`torch_text` has never been fitted.** The frozen encoder has been loaded and scored
   (78.7–81.6% on the 207 test rows), but there is no trainer in this repo and no checkpoint, so
   the fine-tuning arm remains a seam. The plan drops that direction: a frozen 22.7M encoder is

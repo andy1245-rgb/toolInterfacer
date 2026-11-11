@@ -1,13 +1,17 @@
-# Forward plan — four directions adjudicated, and the one measurement that outranks all of them
+# Four directions for the decision layer, adjudicated
 
-2026-11-10. Written by an orchestrator that was allowed to read, to dispatch, and to run
-in-process experiments, and **not** to write product code. No file outside this one was
-modified. No llama-server was started, stopped, or contacted; `127.0.0.1:1113` was not touched.
+> What this document is: the adjudication of four candidate directions for the decision layer —
+> fusion, scaffolding features, fixing the classical backend, fine-tuning an encoder — one
+> section each, with the measurement that decides it and the condition that would reverse it.
 
-Five adversarial subagents ran in parallel — one per direction plus one on the harness. Their
-job was to attack their own direction, and three of them refuted the premise they were handed.
+2026-11-10. Research and in-process measurement only: no product code was written and no file
+outside this one was modified. No llama-server was started, stopped, or contacted;
+`127.0.0.1:1113` was not touched.
+
+Five independent analyses ran in parallel — one per direction plus one on the harness — each
+briefed to argue against its own direction, and three refuted the premise they were handed.
 Everything below is either located at `file:line` or reproduced by a command in §10. Where the
-brief this plan was written against was wrong, §2 says so with the evidence.
+brief this document was written against was wrong, §2 says so with the evidence.
 
 ---
 
@@ -35,23 +39,23 @@ there is no headroom for a fine-tune to spend 20–30 hours reaching.
 | 4 | **D2 fine-tune** | **DROP** | frozen encoder **78.74–81.64%** on 207 test rows vs 3B **79.71%** — at the plateau already | 0 (20–30 h avoided) |
 
 **The harness must be fixed before any of these numbers can be quoted from the repo**: three
-gaps make tonight's result non-reproducible through `bench/harness/` (§8).
+gaps make the 2026-11-10 result non-reproducible through `bench/harness/` (§8).
 
 ---
 
-## 2. What was wrong in the numbers we started from
+## 2. What was wrong in the numbers this document started from
 
 | claim in the brief | truth | source |
 |---|---|---|
 | "a **two**-of-eight option-description rewrite: buys 10 rows on one option, costs 7 elsewhere, p=0.6291" | The 10/7/p=0.6291 figures belong to `grep_only`, which changes **one** of eight descriptions. The two-of-eight arm (`targeted`) is **16 fixed / 20 broken, −4 rows, p = 0.6177**. | `bench/rewrite_transfer.py:79-85`; recomputed from `bench/results/p3-transfer/rows.jsonl` (§10.2) |
-| "plain TF-IDF + linear classifier on the same 415 rows: **60.7%**" | 0.607 is the **stdlib** `linear_text` model fitted on a 50-row corpus (`tests/data/utterances.json`), in-sample on v3. The sklearn arm is **62.2%** word / 63.1% word+char / 62.7% calibrated — and those are **seed 0 of a 62–72% band**. These are three different models and one number cannot stand for them. | `docs/plan-post-rewrite-2026-11-09.md:371,451`; `docs/todos-2026-11-10.md:33`; D1's seed sweep (§10.5) |
+| "plain TF-IDF + linear classifier on the same 415 rows: **60.7%**" | 0.607 is the **stdlib** `linear_text` model fitted on a 50-row corpus (`tests/data/utterances.json`), in-sample on v3. The sklearn arm is **62.2%** word / 63.1% word+char / 62.7% calibrated — and those are **seed 0 of a 62–72% band**. These are three different models and one number cannot stand for them. | `docs/post-rewrite-diagnosis.md:376,456`; D1's seed sweep (§10.5) |
 | "66.23% with whole phrase-**families** held out" | It is **template**-grouped (110 groups = 109 templates + the 25 atomic `__none__` rows). `data/routing_382.json` has no template field, so that number cannot be reproduced from the file the sentence names. Family-grouping that corpus is **impossible**: 7 families over 18 intents means every held-out family removes its labels and every fold scores 0. | `docs/classical-baseline-2026-11-03.md:120-133`; harness review §Q2 |
 | "union ceiling 92.8% [88.5-96.6] family-held-out" | That is **n = 150 (v2)**, between `lr` (67.1%) and a 3B at **74.0%** — and it is an oracle. On v3 the equivalent oracle is **90.34%** (207 test rows) / 91.81% (415 rows, D3) / 87.95% (D1). None is achievable. | `docs/eval-harness-2026-11-04.md:260`; `docs/router-policy-2026-11-04.md:129` |
-| "T~0.17 gives 44.6% coverage at the 0.70 gate (precision 0.865)" | The triple reproduces **exactly** — 252/415 = 0.6072, coverage 0.4458, precision 0.8649 — but it is **in-sample on v3**. And "accuracy is invariant across temperature" is a softmax-argmax identity (`linear_text.py:136-145`), not a measurement, so it cannot support a claim in either direction. | D4 §CLAIMS; `docs/plan-post-rewrite-2026-11-09.md:451` |
+| "T~0.17 gives 44.6% coverage at the 0.70 gate (precision 0.865)" | The triple reproduces **exactly** — 252/415 = 0.6072, coverage 0.4458, precision 0.8649 — but it is **in-sample on v3**. And "accuracy is invariant across temperature" is a softmax-argmax identity (`linear_text.py:136-145`), not a measurement, so it cannot support a claim in either direction. | D4 §CLAIMS; `docs/post-rewrite-diagnosis.md:456` |
 | "cascade 79.3% at 95 ms vs 74.0% at 169 ms, p=0.152 at n=150 — the best configuration anyone measured" | Correct as recorded, and unusable as a plan: the threshold (0.20) was chosen by looking at the 150 rows it is scored on. Transferred honestly to v3 it is **+3.38 pp at p = 0.2478**; chosen out-of-fold it is **0.0000 at p = 1.0000**. | `docs/classical-baseline-2026-11-03.md:196-206`; D4 §CASCADE |
-| "torch is not installed yet" | **Wrong as of tonight.** `torch 2.14.1+cpu`, `transformers 5.20.2`, and `sentence-transformers/all-MiniLM-L6-v2` (22.7M params, 90 868 376 B) is in the HF cache and loads **offline**. Direction 2 was never blocked on an install. | `python3 -c "import torch"`; `~/.cache/huggingface/hub/models--sentence-transformers--all-MiniLM-L6-v2/` |
+| "torch is not installed yet" | **Wrong as of 2026-11-10.** `torch 2.14.1+cpu`, `transformers 5.20.2`, and `sentence-transformers/all-MiniLM-L6-v2` (22.7M params, 90 868 376 B) is in the HF cache and loads **offline**. Direction 2 was never blocked on an install. | `python3 -c "import torch"`; `~/.cache/huggingface/hub/models--sentence-transformers--all-MiniLM-L6-v2/` |
 | "`docs/confusion…` if present" | It does not exist. | `ls docs/confusion*` → no such file |
-| "35-rule cue table 78.7% on the 150-row set, BUT contaminated" | Contaminated **and** it does not survive v3: `rules_predict` on all 415 rows is **259/415 = 62.41%** with 91 abstentions (79.9% among the 324 it answers). It has never been scored on v3 before tonight. | `bench/local_clf.py:243-298`, reproduced §10.3 |
+| "35-rule cue table 78.7% on the 150-row set, BUT contaminated" | Contaminated **and** it does not survive v3: `rules_predict` on all 415 rows is **259/415 = 62.41%** with 91 abstentions (79.9% among the 324 it answers). It had not been scored on v3 before this run. | `bench/local_clf.py:243-298`, reproduced §10.3 |
 
 **Verified and correct as stated:** the 3B's 325/415; order reversal moving **34 of 415 argmaxes**,
 costing **9 rows**, p = 0.0784; the A/A floor of **1 flip in 415**; `grep_only` 10/7 p = 0.6291;
@@ -70,8 +74,8 @@ Measured, they fail together on only **34–52 of 415** rows depending on the me
 | member | member OOF | 2×2 (both right / 3B only / member only / both wrong) | φ | source |
 |---|---:|---|---:|---|
 | tfidf_word_char + sigmoid (D3) | 314/415 = 75.7% | 258 / 67 / 56 / 34 | **0.165** | D3 `strict.py` |
-| frozen MiniLM + logreg (this plan) | 313/415 = 75.4% | 275 / 50 / 38 / 52 | **0.406** | §10.6 |
-| tfidf + 8 rule-score features (this plan) | 322/415 = 77.6% | — | — | §10.7 |
+| frozen MiniLM + logreg (this document) | 313/415 = 75.4% | 275 / 50 / 38 / 52 | **0.406** | §10.6 |
+| tfidf + 8 rule-score features (this document) | 322/415 = 77.6% | — | — | §10.7 |
 
 Every member is far from redundant with the 3B. The ensemble has something to work with.
 
@@ -193,7 +197,7 @@ version of the comparison is what §4's frame split exists to supply.
 Object-noun / slot lexicons buy **+13.0 points on v3 and lose 7.3 on transfer**. The reason is
 mechanical: **86.0% of v3 rows contain a literal `frames.py:SLOTS` string** versus 32.7% of v2.
 A feature keyed on that vocabulary decodes the generator, and the generator ships in the repo
-beside it. This is the single sharpest methodological finding of the night and it constrains
+beside it. This is the sharpest methodological finding in this document, and it constrains
 every future feature experiment: *v3 cannot validate a feature that shares a source with
 `tools/distill/`.*
 
@@ -201,8 +205,8 @@ every future feature experiment: *v3 cannot validate a feature that shares a sou
 
 3 hours: lift `local_clf.RULES` into a feature block behind the harness's `sklearn_text` spec,
 score it OOF, and merge it into the fusion member. **Reverse** if a cue-feature block fails to
-beat plain TF-IDF by ≥3 points on a corpus that is not v2 and not v3 — none exists today, so
-the check must wait for one.
+beat plain TF-IDF by ≥3 points on a corpus that is not v2 and not v3 — none exists, so the
+check must wait for one.
 
 ---
 
@@ -242,7 +246,7 @@ every row cannot be measured, reviewed, or deleted on evidence; one that answers
 `tests/test_classical_backend.py:142-146` (which pins 200 rows / 18 labels on the shipped path),
 **keep** `:74-78` (it asserts the None path is *correct* behaviour — this is a conf mismatch, not
 a defect), and add a `bench/arms.json` entry with the override, since no classical arm exists
-there today. Then it is a bench arm with a number, and D3's gate — which is the cascade this
+there. Then it is a bench arm with a number, and D3's gate — which is the cascade this
 direction wanted — has something to gate with.
 
 **Drop the temperature edit.** With accuracy argmax-invariant and no held-out calibration set on
@@ -253,8 +257,9 @@ belongs to a 0.70 gate that nothing in the cascade path consults.
 
 ## 6. Direction 2 — fine-tune an encoder. **DROP.**
 
-The blocker the brief assumed does not exist: torch and transformers are installed and
-`all-MiniLM-L6-v2` loads offline. So the question becomes purely scientific, and the answer is
+The blocker the brief assumed does not exist: torch and transformers are installed, and
+`all-MiniLM-L6-v2` (22.7M params) loads offline in **8 s**, with a head forward and backward
+pass at **17 ms**. So the question becomes purely scientific, and the answer is
 that the plateau is already reached by a **frozen** encoder with a linear head:
 
 | arm | 207 test rows (fit on 208) | source |
@@ -263,7 +268,7 @@ that the plateau is already reached by a **frozen** encoder with a linear head:
 | frozen MiniLM + logreg, C = 1.0 | 163/207 = 78.74% | §10.4 |
 | frozen MiniLM + logreg, C = 1.0 (D2's run) | 81.64% | D2 `exp.py` |
 | frozen MiniLM on the clean v2 transfer | 103/150 = 68.67% | §10.8 |
-| TF-IDF word+char OOF (reported) | 63.1% | `docs/todos-2026-11-10.md:33` |
+| TF-IDF word+char OOF (reported) | 63.1% | §10.5 |
 
 A frozen 22.7M encoder is worth **+17 points over TF-IDF** and then stops dead, level with a 3B
 LLM and level with a 35-rule cue table. Three unrelated families sitting in one 78–82% band is
@@ -278,8 +283,8 @@ Two further facts close it:
   the certification's own "select on `val.jsonl`" protocol inherits the defect. A fine-tune
   produces epochs × LR × early-stop checkpoints with no defensible way to choose between them.
   D2 reproduced the pathology in miniature: the identical protocol, only `C` moved, 76.81% →
-  81.64%. My own run of the same config landed at 78.74%. **Two honest runs, 2.9 points apart, on
-  a knob nobody can rank.**
+  81.64%, and a second run of the same config landed at 78.74%. **Two honest runs, 2.9 points
+  apart, on a knob nobody can rank.**
 - **The headroom is complementarity, not capacity** — which is Direction 3, and Direction 3 is
   cheap.
 
@@ -334,7 +339,7 @@ C4  delta > 0 in >= 4 of 5 fold seeds                  # the sign must not be a 
 ```
 
 `FAIL` on any of them, and the verdict is: the fusion is a recorded curiosity on one fold
-assignment, not a result, and the plan reverts to Direction 1 alone.
+assignment, not a result, and the recommendation reverts to Direction 1 alone.
 
 ---
 
@@ -401,9 +406,9 @@ to `predict_for`, or refuse `--order` for predictors that ignore it, and stop pr
 | 1 | Harness fixes (1) and (2) from §8 | nothing else is quotable without them | 40 min | — |
 | 2 | **The §7 run** | the shipping decision | 4 min | 1 |
 | 3 | Lift `local_clf.RULES` into a features spec and re-run the fusion with it | it is the member that pays (+27 vs +16) | 3 h | 1 |
-| 4 | `weights=`/`gated` in `ensemble.py`, or a `fusion` predictor; delete `vote` for 2 members | the winner is not expressible today and `vote` is a no-op | 2 h | 1 |
+| 4 | `weights=`/`gated` in `ensemble.py`, or a `fusion` predictor; delete `vote` for 2 members | the winner is not expressible and `vote` is a no-op | 2 h | 1 |
 | 5 | The 208-row 8-op corpus file + `test_classical_backend.py:142-146` + a `bench/arms.json` entry | the backend is unmeasurable while it abstains | 3 h | — |
-| 6 | Fold-seed policy: report 3 seeds and `n_groups/n_labels` in every grouped-CV artifact | ±4 points of unreported noise today | 2 h | 1 |
+| 6 | Fold-seed policy: report 3 seeds and `n_groups/n_labels` in every grouped-CV artifact | ±4 points of unreported noise | 2 h | 1 |
 | 7 | A **third** corpus, hand-written, no `frames.py` slot values, ≥150 rows, family-tagged | the only thing that can settle the fusion | 1 day | — |
 | 8 | Frozen-MiniLM as an optional third member (clean on both corpora) | the only uncontaminated member | 2 h | 1 |
 | 9 | Do **not** do: fine-tune; build object-noun lexicons; weight-of-sweep tuning; the temperature edit | §4, §5, §6 | 0 | — |
@@ -418,7 +423,9 @@ gives the command that reconstructs it. Read-only throughout.
 **10.1 The recorded arms.** `python3 - <<'EOF'` over `bench/results/p3-transfer/rows.jsonl`:
 `floor_a 325/415`, `floor_b 326/415` (1 flip), `grep_only 328` (10 fixed / 7 broke, p = 0.6291),
 `grep_control 321` (10/14, p = 0.5413), `targeted 321` (16/20, p = 0.6177), `order_rev 316 (34
-argmax flips, 15 broke / 6 fixed, p = 0.0784)`.
+argmax flips, 15 broke / 6 fixed, p = 0.0784)`. Eight of the ten `filesys_grep` rows `grep_only`
+fixes are also fixed by `grep_control`, so the gain on that option is robust to wording and the
+collateral damage is not.
 
 **10.2 The arm definitions.** `bench/rewrite_transfer.py:79-85` — `targeted` differs from
 `OP_DESCRIPTIONS` in **2** of 8 keys, `grep_only` and `grep_control` in **1**, `order_rev` is the
@@ -434,9 +441,8 @@ same multiset in reversed key order.
 **313/415 = 75.42%**, **308/415 = 74.22%**; hash folds **68.43 / 76.14 / 73.25%**.
 
 **10.5 The fold-assignment spread.** Same script, three seeds each: hash folds
-`68.43/76.14/73.25`; size-balanced folds `75.42/74.22/73.49`. TF-IDF word 1–2: `62.17%` on seed 0
-(reproducing `docs/todos-2026-11-10.md`'s 62.2%), and 62.17–66.99 across seeds 0–4 with
-`GroupKFold(5) = 71.81%` (D1).
+`68.43/76.14/73.25`; size-balanced folds `75.42/74.22/73.49`. TF-IDF word 1–2: `62.17%` on seed 0,
+and 62.17–66.99 across seeds 0–4 with `GroupKFold(5) = 71.81%` (D1).
 
 **10.6 Error overlap and the mean, frozen-MiniLM member.** `/tmp/forward-plan/mine/ens415.py`.
 2×2 on seed 0: `275 / 50 / 38 / 52`, φ = **0.406**; mean@0.5 **341/415, p = 0.0009**.
@@ -468,7 +474,7 @@ confidence gate never commits usefully (t = 0.20 commits 96.6% and loses); the 3
 at t = 0.38 chosen on `split=="train"` rows alone gives **339/415 = 81.69%**, fixed 21 / broke 7,
 p = 0.0125 on two independent fold seeds.
 
-**10.13 Direction-brief numbers reproduced, in the subagents' scratch:** D1
+**10.13 Direction-brief numbers reproduced, in the scratch scripts under `/tmp/forward-plan/`:** D1
 `/tmp/forward-plan/d1/` (rules-on-v3, slot-leak transfer, seed band, 84–85% feature result);
 D2 `/tmp/forward-plan/d2/` (offline encoder load, C-sensitivity 76.81→81.64, ρ = −0.71 citation);
 D3 `/tmp/forward-plan/d3/` (φ = 0.165, mean@0.5 356/415 with the tfidf_word_char member, strict
@@ -478,45 +484,45 @@ verified defects at 4, 5, 6, 7 above).
 
 ---
 
-## 11. What would make me reverse each verdict
+## 11. What would reverse each verdict
 
 | verdict | reversal condition |
 |---|---|
 | **D3 do** | The §7 run fails C1–C4; or a third corpus (follow-up 7) shows a delta ≤ +3 rows; or a live 3B re-run shows its confidences are no longer 0.395-median on wrong rows (the whole mechanism is that number). |
 | **D1 cue half do** | A cue-feature block fails to beat plain TF-IDF by ≥3 points on a corpus that is neither v2 (where the rules were authored) nor v3 (which shares `frames.py` with the lexicons). |
-| **D1 lexicon half drop** | A slot/object-noun feature block that beats TF-IDF by ≥5 points **on v2 transfer** — today it is −7.3. |
-| **D4 accuracy drop** | A gate chosen out-of-fold that fires on ≥15% of rows and yields ≥83% on 415 rows with p < 0.05. Today: fires on 0 rows, delta 0.0000, p = 1.0. |
-| **D2 drop** | A frozen encoder below 74.0% on a clean same-rows protocol, which would leave a real ≥6-point gap; or a selection criterion that ranks fine-tune checkpoints correctly (ρ = −0.71 today). |
-| **harness fixes** | Someone shows a `--cv`-produced artifact from which a paired ledger against `recorded|arm=floor_a` is computable. It is not, today (`run.py:193-203`). |
+| **D1 lexicon half drop** | A slot/object-noun feature block that beats TF-IDF by ≥5 points **on v2 transfer** — it is −7.3 here. |
+| **D4 accuracy drop** | A gate chosen out-of-fold that fires on ≥15% of rows and yields ≥83% on 415 rows with p < 0.05. Here: fires on 0 rows, delta 0.0000, p = 1.0. |
+| **D2 drop** | A frozen encoder below 74.0% on a clean same-rows protocol, which would leave a real ≥6-point gap; or a selection criterion that ranks fine-tune checkpoints correctly (ρ = −0.71 here). |
+| **harness fixes** | Someone shows a `--cv`-produced artifact from which a paired ledger against `recorded|arm=floor_a` is computable. It is not (`run.py:193-203`). |
 
 ---
 
-## 12. Disagreements we did not settle
+## 12. Disagreements not settled
 
-1. **Which member is best.** D3's `tfidf_word_char` + sigmoid reached 356/415 in the mean while my
-   `tfidf + rules` reached 352 and my frozen MiniLM only 341 — yet all three are within 3.5 points
-   as *members*. I could not run them head-to-head under one fold scheme in the time available,
-   so "the best member" is open. The ordering is stable in the direction that matters (any decent
+1. **Which member is best.** D3's `tfidf_word_char` + sigmoid reached 356/415 in the mean while
+   `tfidf + rules` reached 352 and frozen MiniLM only 341 — yet all three are within 3.5 points
+   as *members*. They were not run head-to-head under one fold scheme, so "the best member" is
+   open. The ordering is stable in the direction that matters (any decent
    member beats no member by 14–31 rows), not in the second decimal.
 2. **How much of the 84–85% feature result is real.** D1 reports 84–85% family-held-out for
-   word+char+rule+slot features; I reproduce 77.3–77.6% without the slot block. Both are correct
+   word+char+rule+slot features; without the slot block the same arm reads 77.3–77.6%. Both are correct
    for what they measure; neither is the "true" number, and the gap is exactly the slot leak that
    the frame split (10.10) exists to expose. Resolving it needs follow-up 7's corpus, not a rerun.
 3. **`w = 0.5` versus a fitted weight, and gate versus mean.** The mean at 0.5 edges the gate on
    both members (352 vs 345 on rules, 341 vs 339 on MiniLM) — a difference inside the noise of
    either. The gate is interpretable (13.7% escalation, one scalar the 3B already reports); the
-   mean needs one line and no threshold. I recommend the mean and would not argue with the gate.
+   mean needs one line and no threshold. The mean is the recommendation; the gate is defensible.
    The **stacked** meta-learner was not fitted at all: its headroom over a weighted mean is
-   unattested, and `docs/harness-spec-2026-11-10.md:163-165` already concedes that
+   unattested, and `docs/harness-spec.md`, open question 7, already concedes that
    stacked-plus-`--cv` is double-nested with no separate accounting.
 4. **Whether the 382 corpus should be re-grouped at all.** Harness gap 7 says grouping by family
-   makes it unscorable; the spec's open question 5 offers "group by intent (18 groups)". I think
-   that trades one defect for another (same-intent paraphrases then straddle), and the right answer
-   is a template key that the file does not carry. Unsettled; unblocked by nothing in this plan.
+   makes it unscorable; the spec's open question 5 offers "group by intent (18 groups)". That
+   trades one defect for another (same-intent paraphrases then straddle), and the right answer
+   is a template key that the file does not carry. Unsettled; unblocked by nothing here.
 5. **The 3B's confidence on a live server.** Every number in §3 uses `floor_a`'s **recorded**
-   probabilities. The mechanism depends on the live readout producing the same shape. Nobody
-   checked tonight, because nobody was allowed to start a server.
-6. **Whether `docs/grep-arm-2026-11-10.md`'s guidance still holds.** It recommends a paired
+   probabilities. The mechanism depends on the live readout producing the same shape. Not
+   checked: no server was started for this document.
+6. **Whether `docs/grep-arm-2026-11-10.md`'s guidance still holds.** That record recommends a paired
    rewrite of `filesys_grep` + `web_search`. Nothing here contradicts it; nothing here tested it
    either. It stays queued behind the fusion work, not because it is wrong but because it is a
    description edit on a prompt whose readout is the layer that is already 78–85% accurate.

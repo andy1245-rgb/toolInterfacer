@@ -308,7 +308,7 @@ the artifact that holds the numbers being reproduced — the same hazard
 This reproduction was run with `--json /tmp/…` and the recorded file regenerated
 deliberately (§9).
 
-Runtime ~80 s on this box (all outer folds, the inner grid, three models,
+Runtime ~80 s on the development machine (all outer folds, the inner grid, three models,
 and 430 latency draws). Every accuracy, frontier and break-even figure is
 bit-identical across runs; only the latency rows move (p50 0.22 / 0.30 ms on two
 runs of the same code), which is why §3 quotes the scale.

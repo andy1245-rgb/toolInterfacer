@@ -65,8 +65,8 @@ The same endpoint, same request shape, run twice 30 minutes apart:
 They **disagree on 12 of 150 individual rows** while the aggregate moves 2 rows.
 So a single 150-row run resolves aggregate accuracy to about ±1.3 pp, and one row
 is 0.67 pp. Every claim below about accuracy is stated against that. The earlier
-baseline run of this dataset measured Wafer at 143/150 (95.3%); today's two Wafer
-runs measured 139 and 141, so the endpoint's own spread spans 4 rows. A rule that
+baseline run of this dataset measured Wafer at 143/150 (95.3%); the two Wafer
+runs made for this record measured 139 and 141, so the endpoint's own spread spans 4 rows. A rule that
 sits within ~2 pp of the 93.3% guardrail should be re-measured over 2–3 runs
 before it is trusted.
 

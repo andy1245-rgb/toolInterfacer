@@ -1,13 +1,17 @@
 # After the rewrite study: what the damage is, and how to move on
 
-2026-11-09, at `cb3d708`. **Phase 0: research and a plan. No code was changed, nothing was
-pushed, `service/ti/conf/defaults.json` was not edited, no server was started or stopped.**
+> What this document is: the diagnosis written after the 2026-11-04/05 rewrite measurements —
+> where the 3B loses rows it was never asked about, which experiments separate the explanations,
+> and the re-baseline protocol that follows from them.
 
-Four read-only units ran against the tree: the instrument (margin arithmetic on the recorded
-vectors and a trace of how the choice is scored), the capacity question (the repo's own
+2026-11-09, at `cb3d708`. **Research and a plan only: no code was changed,
+`service/ti/conf/defaults.json` was not edited, no server was started or stopped.**
+
+Four read-only investigations ran against the tree: the instrument (margin arithmetic on the
+recorded vectors and a trace of how the choice is scored), the capacity question (the repo's own
 sensitivity record), the three fix candidates, and the four claims the backlog asserts. Their
-charts are `/tmp/ti-phase0/w{1,2,3,4}-*.md`; the numbers below are the ones that survived a
-second pass, and the ones I re-derived myself are marked **[verified]**.
+reports are `/tmp/ti-phase0/w{1,2,3,4}-*.md`; the numbers below are the ones that survived a
+second pass, and the ones re-derived for this document are marked **[verified]**.
 
 ---
 
@@ -118,8 +122,8 @@ d1-3B-Q4 on the same 150 rows moved **0 of 150** argmaxes
 (`bench/results/dell/v2-d1-3B-Q4.json` vs `-run2.json`, `bench/results/dell/d1-3B-Q4-dell*.json`
 50/50 too). **[verified]**
 
-So the edit's 36 flips are about 30× the floor, and I agree with unit W1 that the instrument is
-not the cause. It is still a real second-order term: a single order reversal on 46 rows moves the
+So the edit's 36 flips are about 30× the floor, and the instrument is not the cause. It is still
+a real second-order term: a single order reversal on 46 rows moves the
 argmax on **8 of 46 (17.4%)**, and swapping the adapter from `systemone` to `logit_read` moves
 **28 of 150** rows for +1 net row — both the same size as the edit's own 16.4% (68/415). Nothing
 in this repo has ever permuted the option order more than once.
@@ -130,7 +134,7 @@ in this repo has ever permuted the option order more than once.
 
 ### 2.1 The instrument is one softmax, and the eight options are one distribution
 
-From unit W1's trace (cite it, do not re-derive): one `/v1/systemone` request carries the
+From W1's trace (cite it, do not re-derive): one `/v1/systemone` request carries the
 utterance as `state` and the eight `OP_DESCRIPTIONS` as `criteria` on a `choice` question
 (`bench/routing_diagnose.py:112-134`); the server renders state and options into a single prompt,
 reads the eight label logits out of **one** next-token distribution at the last prompt position,
@@ -143,7 +147,7 @@ insulated" was never physically available.
 
 ### 2.2 The transport is entanglement; the selection is semantic
 
-The recorded vectors say both things at once **[unit W2, recomputed from `rows.jsonl`]**:
+The recorded vectors say both things at once **[W2, recomputed from `rows.jsonl`]**:
 
 * the two edited options take +0.127 of the vector in total, supplied by the six others;
 * `p(decide_extract)` rises on 98–100% of rows in **every** class, including the untouched ones,
@@ -189,7 +193,7 @@ hand-written rule table beats the model. The information is in the surface form 
 not short of bits, it is short of *separation*: the failure is thin margins, and a description
 edit redistributes exactly the thin ones. Capacity is neither the cause nor the cure — but that
 is an inference from a model *class* comparison, not from the experiment that would settle it,
-and I am not going to present it as the latter.
+and it is not presented here as the latter.
 
 ### 2.4 The three hypotheses, scored
 
@@ -215,8 +219,8 @@ any row below; the one paid lane is named at the end.
 | E3 | **3 seeded order permutations** of the unchanged eight, 1 245 rows | pure instrument: position vs text | 1 245 | ~82 min | :8080 |
 | E3, half-run 2026-11-10 | **one full reversal**, 415 rows | position alone, 8.2% of argmaxes moved, 9 rows net, p = 0.078 — see `docs/grep-arm-2026-11-10.md` §E3 | 415 | 21 min | done |
 | E4 | **grep-only arm**, both arms live in one session | the shipping decision (see (a)) | 830 | ~55 min | :8080 |
-| E5 | **grep-only arm on Q8_0** | capacity, the one test never run | 830 | ~55 min + a serve | a second gguf, **not on this box** |
-| — | **lexical/embedding distance vs the mass ledger** | "nearest in meaning" | **0** | minutes | nothing — **done by W2; r = +0.16 / −0.46** |
+| E5 | **grep-only arm on Q8_0** | capacity, the one test never run | 830 | ~55 min + a serve | a second gguf, **not on the development machine** |
+| — | **lexical/embedding distance vs the mass ledger** | "nearest in meaning" | **0** | minutes | nothing — **done in W2; r = +0.16 / −0.46** |
 
 Already answered with zero calls, so do not spend a server on them: E0 and the similarity test.
 E1–E4 can run as one session of about 3 320 calls (~3.7 h) with the A/A rows interleaved into the
@@ -239,8 +243,8 @@ same session, through the same code path, against the same served model, and `/p
 before the first call and after the last. Record `ts` and `ms` per row. Refuse to report a delta
 when the two arms' p50 differ by more than 20%.
 
-**P2 — Assert the recording is model-only.** Every row must have `ms` above a floor (1 s on this
-box) **and** no `{1.0, seven × 1e-6}` vector. A row failing either is a gate answer and is
+**P2 — Assert the recording is model-only.** Every row must have `ms` above a floor (1 s on the
+development machine) **and** no `{1.0, seven × 1e-6}` vector. A row failing either is a gate answer and is
 excluded and counted, never silently kept. `bench/live_probe.py` goes through the service resolver
 and `bench/rewrite_transfer.py` does not; until that is unified, cross-probe comparisons are not
 comparisons. *(This is the rule the 2026-11-05 correction did not have, and its absence is the
@@ -299,8 +303,8 @@ off `ARMS[arm]` at `:174` and already writes `arm` per row at `:204`, so the row
 part of this arm.
 
 **Cost.** 415 × 3.959 s ≈ 27 min per arm; the protocol pair is ~55 min. `models/d1-3B-Q4_K_M.gguf`
-is on disk, `extern/llama.cpp/build/bin/llama-server` is on disk, and nothing is listening on
-8080 today. `--expect-model d1-3B-Q4_K_M.gguf` (byte compared, `model_guard.py:40-42`).
+is on disk, `extern/llama.cpp/build/bin/llama-server` is on disk, and nothing was listening on
+8080 when this record was made. `--expect-model d1-3B-Q4_K_M.gguf` (byte compared, `model_guard.py:40-42`).
 
 **The pre-registered prediction, so the arm can lose.** grep +9 / −3 (69.2% → 86.5%, the cell is
 identical under both baselines); `decide_extract` unchanged at 20/51 (39.2%); `web_search` −3,
@@ -308,19 +312,19 @@ not −8, because 5 of its 8 were the extract text's captures. Whole-set delta b
 
 **Ship it if and only if** the pre-specified pair clears p < 0.05 in the same session, the
 `web_search` loss is ≤ 3 rows, and the untouched-class ledger is not net-negative. Anything less
-and it stays a bench arm. Note what the record already implies and I will not oversell: the 9
+and it stays a bench arm. Note what the record already implies: the 9
 grep rows are **3 authored families**, so the row-level p = 0.004 is a sentence-level effect
 worth p = 0.25. It is real and it is small, and it is the only option string in this repo with a
 positive out-of-sample ledger.
 
 ### (b) Whether another backend removes the damage — the run is not there
 
-**The backend research run is not in flight and left no artifact.** I looked: `runs.jsonl` in
-`~/.pi/agent/subforge` has nothing for this repo since `i1-verdict` on 2026-11-05; no `pi`
-process is alive on the box; the fleet's "Research and test toolInterfacer" pane (an orchestrator pane) is a
-dead registry row that `read` refuses; no file under `bench/results/`, `docs/`, or `~/reports`
-postdates 2026-11-05 in this repo. **[verified]** So (b) is answered from the tree, not from its
-result, and if it lands later, read it against §4 before believing it.
+**The backend research run is not in flight and left no artifact.** Checked: the run log has
+nothing for this repo since `i1-verdict` on 2026-11-05; no run process is alive on the development
+machine; the run registry row for this repository is dead and cannot be read; no file under
+`bench/results/`, `docs/`, or `~/reports` postdates 2026-11-05 in this repo. **[verified]** So (b)
+is answered from the tree, not from its result, and if it lands later, read it against §4 before
+believing it.
 
 What the tree says:
 
@@ -335,18 +339,19 @@ What the tree says:
 | `pair` | both | yes (choice) | 90.0% @3 118 ms, **paid** |
 | `cascade` | llama-server, x2 | off | 79.3% @95 ms on v2, p = 0.152, n = 150 |
 
-**No backend can score the 415 v3 rows through the harness today**: `bench/ti_bench/sets.py:26-29`
+**No backend can score the 415 v3 rows through the harness**: `bench/ti_bench/sets.py:26-29`
 has `v1` and `v2` only, `bench/arms.json` has no classical arm, and the ids it mints (`v3:NNN`)
 do not join `rows.jsonl`'s (`v3-0001`). Offline, in-process, the classical and heuristic backends
 score 415 rows in under a second — but that is a bench call, not an arm.
 
 **The "another backend" that could plausibly remove the damage is another model, not another
 transport**, because the coupling is in this prompt's readout and every transport here feeds the
-same `/v1/systemone`. The cheap version is Q8 of the same gguf, and **the Q8 gguf is not on this
-box** — only `models/d1-3B-Q4_K_M.gguf` and a vision projector. The `v2-d1-3B-Q8*` pair that
+same `/v1/systemone`. The cheap version is Q8 of the same gguf, and **the Q8 gguf is not on the
+development machine** — only `models/d1-3B-Q4_K_M.gguf` and a vision projector. The `v2-d1-3B-Q8*` pair that
 exists is a *recording* under `bench/results/dell/`, not a file. Getting it is a download or a
-copy from dell321, not a purchase; the hosted lane is ~$0.0022 per 415-row arm at the recorded
-per-token rate and is your call, not mine to spend.
+copy from the other machine on the network, not a purchase; the hosted lane is ~$0.0022 per
+415-row arm at the recorded per-token rate, and that is a spend decision made outside this
+document.
 
 ### (c) The classical backend: temperature is the second defect, not the first
 
@@ -364,7 +369,7 @@ is 0.0%.
 (50 rows), which is what `bench/classical_baseline.py:377-379` passes when it reports 62.67%.
 
 With the corpus corrected, the fit is free and offline (0.16 s in-process, no server, no network),
-and unit-measured on 415 rows:
+and measured in-process on 415 rows:
 
 | objective | optimum | what it gives |
 |---|---|---|
@@ -378,7 +383,7 @@ stated as one. 44.6% at 0.865 precision is the same operating point the repo alr
 against d1's 0.783 on the same 415 rows is a real gap: the classical-front cascade's 79.3% at
 95 ms is an n=150 v2 number at p = 0.152, and nothing here shows it holds on v3.
 
-Order of operations, both edits in `defaults.json` and both waiting on you: **(1)** point
+Order of operations, both edits in `defaults.json` and neither made: **(1)** point
 `corpus_path` at the 8-op corpus, **(2)** then set the temperature to the fitted value, fitted on
 rows held out from the ones it is scored on. The bench form, which needs no conf edit, is
 `"override": {"decide.classical.temperature": 0.17}` in a new `bench/arms.json` entry.
@@ -390,7 +395,7 @@ rows held out from the ones it is scored on. The bench form, which needs no conf
 `CliMissingBinary` naming the key to set, before any subprocess runs
 (`ops/web/search.py:114-119`, `ops/web/fetch.py:47-52`, `ops/reddit/digest.py:98-107`).
 
-What is not true is that nothing works here: the two web CLIs **exist on this box**
+What is not true is that nothing works here: the two web CLIs **exist on the development machine**
 (`~/.pi/profiles/registry/web-search/scripts/free-search`, 49 415 bytes; `.../web-fetch`, 13 970
 bytes) — conf just does not point at them. The reddit project genuinely is not on disk
 (`~/redditScrapingSearching` and `~/tools/reddit-research` both absent), so `reddit_digest` stays
@@ -440,42 +445,42 @@ README's gap list and the TODO item, and let the spec's own "(v2)" tag carry it 
 
 ---
 
-## 6. What I did not verify
+## 6. What this document did not verify
 
-* **I did not run a live probe.** No llama-server was started, nothing was sent to :8080, and the
-  3 320 calls in §3 are estimates from the recorded 3.959 s/row, not measurements. `127.0.0.1:1113`
-  is a live service that is not mine and was not touched.
-* **The instrument trace in §2.1 is unit W1's reading of the vendored llama.cpp source**, not mine.
-  I verified its output (the fingerprint, the arithmetic, the arm composition) but not its
-  `server-decision.cpp` / `server-context.cpp` line citations.
-* **I did not re-run the classical fit.** T ≈ 0.17 / coverage 44.6% / accuracy 0.607 are unit
-  W3's in-process numbers; the recipe is reproducible in under a second and should be re-run
+* **No live probe was run.** No llama-server was started, nothing was sent to :8080, and the
+  3 320 calls in §3 are estimates from the recorded 3.959 s/row, not measurements.
+  `127.0.0.1:1113` was not touched.
+* **The instrument trace in §2.1 is W1's reading of the vendored llama.cpp source.** Its output
+  was verified (the fingerprint, the arithmetic, the arm composition); its
+  `server-decision.cpp` / `server-context.cpp` line citations were not.
+* **The classical fit was not re-run.** T ≈ 0.17 / coverage 44.6% / accuracy 0.607 are W3's
+  in-process numbers; the recipe is reproducible in under a second and should be re-run
   before it is quoted, because it is currently in-sample on v3.
-* **I did not confirm that the archive's 74 gate rows were produced by
+* **Not confirmed: that the archive's 74 gate rows were produced by
   `heuristic_micro_then_d1`.** That is inference from the fingerprint, the conf value, the two
-  classes, and the routing key. The git history of the recording script was not opened, and I did
-  not reproduce a gate row.
+  classes, and the routing key. The git history of the recording script was not opened, and no
+  gate row was reproduced.
 * **The Q4/Q8 comparison is n = 150 on v2, not on v3**, and it is a *different* question from the
   one §3's E5 asks (it perturbs the quant, not the option set).
 * **The 1/341 floor is one archive/live pair**, and the archive ran at 2.1× the live p50, so it
   bounds that pair only. The clean floor is the 0/150 A/A repeat.
-* **No p-value in this document is mine.** 0.618, 0.004, 0.008, 0.0725, 0.25, 0.040 are from the
-  cited documents or from unit W2's recomputation over `rows.jsonl`.
-* **`git status` is clean and nothing was pushed.** This document is the only file written.
+* **No p-value in this document was computed here.** 0.618, 0.004, 0.008, 0.0725, 0.25, 0.040 are
+  from the cited documents or from W2's recomputation over `rows.jsonl`.
+* **This document is the only file written.**
 
 ---
 
-## 7. Decisions for you
+## 7. Open decisions
 
 1. **(a)** Apply `TARGETED_GREP` (one line, one dict key) and run E1–E4 as one ~3.7 h session on
-   the local model — no money, but the box is busy for that long. Alternatively run only E4
+   the local model — no money, but the machine is busy for that long. Alternatively run only E4
    (~55 min) to settle the shipping question first and take the rest later.
 2. **(c)** The order: point `classical.corpus_path` at the 8-op corpus first, then set the
-   temperature. Both are `defaults.json` edits and I have not made either.
+   temperature. Both are `defaults.json` edits and neither has been made.
 3. **(f)** L3 and L4: delete, or (L3 only) keep the spec tag and drop the README/TODO promises.
-4. **(b)** If the backend research run exists somewhere I could not read, point me at it. If it
-   does not, say whether Q8 belongs in the next session — that is the only capacity test worth
-   running and it needs a gguf that is not on this box.
+4. **(b)** If the backend research run exists somewhere not readable from this tree, name it. If
+   it does not, the question is whether Q8 belongs in the next session — that is the only capacity
+   test worth running and it needs a gguf that is not on the development machine.
 
 ---
 
@@ -501,9 +506,9 @@ for p in sorted(glob.glob("bench/results/**/*.json", recursive=True)):
 Its output on this tree is the table in §1.2 plus the `heuristic_micro` recordings (11, 11 and 6
 gate rows, which are the heuristic scoring itself, correctly) and the iGPU live probe (6).
 
-## Appendix B — the four unit reports
+## Appendix B — the four scratch reports
 
-| unit | file | what it holds |
+| report | file | what it holds |
 |---|---|---|
 | W1 instrument | `/tmp/ti-phase0/w1-instrument.md` | probe trace, margin quartiles per split, the 20 broken rows, the floor recomputation, the gate fingerprint |
 | W2 capacity | `/tmp/ti-phase0/w2-capacity.md` | the 31-row evidence table, per-class mass ledger, the never-measured gaps, the ranked experiment list |
@@ -511,4 +516,4 @@ gate rows, which are the heuristic scoring itself, correctly) and the iGPU live 
 | W4 unbuilt | `/tmp/ti-phase0/w4-unbuilt.md` | the four claims, the suite run, the L3/L4 touches |
 
 They live in `/tmp` and will not survive a reboot. Everything load-bearing is restated above with
-its source; if a unit file is gone, its numbers are still checkable from the committed artifacts.
+its source; if a scratch report is gone, its numbers are still checkable from the committed artifacts.

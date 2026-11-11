@@ -434,7 +434,7 @@ is stated at that strength. It holds.
 
 ## 7. Other instances of the same error shape
 
-The orchestrator flagged one tonight: "7 fixed, 0 broken" quoted from a 87-row stratified
+One instance was flagged earlier in the same review run: "7 fixed, 0 broken" quoted from a 87-row stratified
 sample where only 39 rows came from the classes that broke. Same shape, found by reading
 the artefacts:
 
@@ -447,8 +447,8 @@ the artefacts:
    never shown.
 3. **Commit `55449e2`: "27 broken against 16 fixed."** 27 is `v3_others.broke` (the six
    untouched classes; `summary.json`), 16 is `v3_all.fixed` (all rows). The all-rows pair
-   is 16 / 29. Numerator and denominator from different slices — the same mixing the
-   orchestrator caught, in a commit subject.
+   is 16 / 29. Numerator and denominator from different slices — the same mixing flagged
+   earlier, in a commit subject.
 4. **Determinism.** `heldout_v3_NOTES.md` leans on "0/150 argmax disagreement across two
    llama.cpp builds" to justify pairing a new arm against an archive. The committed live
    re-run shows **6 disagreements in 233 rows (2.6%)** on the identical prompt. The

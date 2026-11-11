@@ -1,6 +1,6 @@
 # Decision-backend sweep — consolidated report
 
-Session handoff. Consolidates three workstreams run on bench-host on 2026-10-17:
+Consolidated record of three workstreams run on bench-host on 2026-10-17:
 
 1. **Stratified v2 backend sweep** — the primary comparison, every lane scored on
    the same frozen 150-row set (`tests/data/utterances_v2.json`).
@@ -28,7 +28,7 @@ those lanes. Three defects combined (full RCA: a private run-recap note from tha
    {"enable_thinking": false}`. An unquoted `{"enable_thinking": false}` in a
    PowerShell 5.1 command line is a **parse error**, so the serve never started
    and its `> log` redirect was never created — a silent remote failure.
-2. A **stale d1-3B-Q4 server owned dell:8080** during the Qwen lane's probes
+2. A **stale d1-3B-Q4 server owned bench-host:8080** during the Qwen lane's probes
    (a concurrent session had left it running).
 3. The lane loop gated only on **`/health`**, which *any* llama-server answers
    `ok`, so the stale model answered every probe.

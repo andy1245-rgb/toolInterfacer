@@ -12,7 +12,7 @@ two failure modes that the append-only policy does not cover by itself:
    (`README.md`, `CHANGELOG.md`, `TODO.md`, `spec/`) carries its own copy of the
    claim, and the copy does not inherit the correction.
 
-This document is the audit of both, for the eight numbers the night touched, and
+This document is the audit of both, for the eight numbers the 2026-11-04 run touched, and
 for the numbers the previous sweep did not reach. Nothing here changes a number.
 Where the defect was a missing pointer, the pointer was added — that is all that
 was added.
@@ -340,7 +340,7 @@ also carries the whole-edit failure in the same sentence or the next one:
 `README.md:483` ("the whole edit is net negative"), `TODO.md:88` ("Done, and it
 fails"), `docs/rewrite-transfer-2026-11-04.md:9` ("the whole rewrite fails out of
 sample"), `bench/results/p1-diagnose/FINDINGS.md:302` ("the rewrite was run out of
-sample, and it fails"). That part is clean and is the strongest thing the night
+sample, and it fails"). That part is clean and is the strongest work the 2026-11-04 run
 produced.
 
 **Is the post-hoc nature of the per-class split visible wherever it is claimed?**

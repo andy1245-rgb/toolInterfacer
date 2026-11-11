@@ -76,7 +76,7 @@ The 14 records, with how many hop lines each one summarises:
 The observation counts and the labels in that table are measured; the intent text
 on the seven mislabelled rows is not. Rows 1 and 9–14 show a same-shape synthetic
 substitute: the marker, the grammar and the class of artefact are the log's, the
-subject is invented, because the log's own subjects are the operator's query
+subject is invented, because the log's own subjects are the owner's query
 history and a public repository is not where it belongs. The shapes use the
 reserved placeholder labels — `Exampleco`, `Example`, `Placeholder`,
 `RX-0000`, `EXAMPLE-BENCH`, and the RFC 2606 `caselaw.example.org` — rather than

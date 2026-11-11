@@ -1,6 +1,6 @@
 # Roadmap to first publication (2026-11-03)
 
-Working plan for an overnight run. Each phase ends with a commit and a measured
+Working plan for a single unattended run. Each phase ends with a commit and a measured
 result. Nothing here is a claim; a phase is done when its acceptance criterion is
 executed, not when its code exists.
 
@@ -62,7 +62,7 @@ Driven by the audit. Two streams, disjoint files:
 - **Repair** the blockers the audit ranks highest, each with a regression test.
 - **Integration**: drive a real `useTool` call through the real service with a
   real llama-server behind it, end to end, and assert the returned hops. The
-  suite today is fixture-driven; nothing proves the live path works.
+  suite is fixture-driven; nothing proves the live path works.
 
 Acceptance: a live end-to-end probe script that fails loudly when the stack is
 down, plus green tests.
@@ -78,7 +78,7 @@ for it.
 The decision-model line only pays off if there is a dataset. The hop logs may not
 be enough, so the plan is teacher distillation into a controlled set:
 
-- Build utterances beyond the frozen 150 from the operator's real session corpus,
+- Build utterances beyond the frozen 150 from a real recorded session corpus,
   band-labelled (t1 literal / t2 veiled / t3 compound) to match `utterances_v2`.
 - Label with the hosted teacher (`openrouter` backend), then human-check a sample.
 - LoRA SFT rank 32–64 on an instruct 3B per `docs/assets-inventory.md` §1, 10–20%
@@ -98,8 +98,8 @@ That is the *Still open* item at the end of this document.
 
 ### Phase 3 — Applications
 
-A tool layer that is not applied is a library with no users. Pick avenues the
-operator already runs, wire `useTool` to each, and measure the round trips saved
+A tool layer that is not applied is a library with no users. Pick workflows the maintainer
+already runs by hand, wire `useTool` to each, and measure the round trips saved
 against the LLM doing the tool calls natively:
 
 1. A third-party portal's postings, read through a local checkout — read-only, structured.
@@ -117,7 +117,7 @@ portal checkout or a scraped corpus.
 
 ### Phase 4 — Review and publish
 
-- Independent code review of everything merged tonight, findings fixed or filed.
+- Independent code review of everything merged in the run, findings fixed or filed.
 - README/docs reconciled with what the code does.
 - Tag `v0.1.0`.
 
@@ -134,7 +134,6 @@ the runbook for the day it is taken.
 - An isolated worktree, branch named for the track.
 - Full suite green before commit: `python3 -m pytest tests/ -q`.
 - No hardcoded personal absolute paths (`tests/test_no_personal_paths.py`).
-- No pushes, no tags without an explicit go-ahead.
 - A number is quoted with its n and its source file, or it is not quoted.
 
 ---
@@ -168,7 +167,7 @@ the frozen set needs to grow before it can support a comparison. That is
 **3. Needle is a measured no for routing and an unmeasured maybe for `extract`.**
 1.07 GB of local evidence says needle3 scores 59.4% node-fixed and a local LoRA
 fine-tune dropped it from 26% to 6% against an 81% majority baseline. But
-`resolve("extract")` raises `KeyError` today -- the `extract` primitive has **no
+`resolve("extract")` raises `KeyError` -- the `extract` primitive has **no
 backend at all** -- and needle's contract (one call-acceptance scalar, no
 distribution over tools) makes it structurally unsuitable for `choice` while
 being the right shape for `extract`. Worth one spike, not an adoption.

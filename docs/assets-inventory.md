@@ -7,7 +7,7 @@
 | status | findings. The directory listings, byte-for-byte inventory and survey method notes were cut on 2026-11-03; every measurement, `n`, quoted figure and negative result below survived the cut |
 
 **The trees these figures come from are private.** The survey read a set of sibling trees that
-belong to the operator: an agent-orchestration project, a multi-agent coordination project, a
+belong to the maintainer: an agent-orchestration project, a multi-agent coordination project, a
 decision-model literature tree, the working-notes tree kept alongside this repo, the benchmark
 tree that produced the 382-row routing set, and a few others. None of them is published with
 this repository and none of their paths appears here. The figures below were measured against
@@ -120,7 +120,7 @@ depth, the tuned number means nothing.
 An earlier control at 8 layers over **40 rows**: exact **15.0%**, `flag` recall **85.7%**,
 `nudge` recall **0%**, `leave` recall **0%**, **37/40** refusals, p50 994 / p95 1210 ms.
 
-### Throughput and cost, measured on this box
+### Throughput and cost, measured on the development machine
 
 - Training: **262.4 s/step**, **29 steps/epoch**, **126.8 min/epoch** — 452 examples, batch 16,
   seq 1024, CPU JAX. The recorded verdict against a 600 s/epoch box is `OVER BUDGET`.
@@ -228,7 +228,7 @@ fine-tune that dropped 26% → 6% — and an *unmeasured maybe* for `extract`.
 
 ## The decision-model synthesis — 28 conclusions
 
-The operator's own synthesis of a private decision-model research tree, in 28 points, each with
+The maintainer's own synthesis of a private decision-model research tree, in 28 points, each with
 its document and section anchor inside that tree (`README` or `01`–`05`, with a section number).
 The tree itself is not in this repo. (The summary line this section carried before the cut said
 "20 points"; the list has always run to 28, and 28 is what the cross-references below count.)
@@ -360,7 +360,7 @@ Sizes and verdicts only. No path, and no list of what else sat in the same folde
 | A tiny-finetune toolchain spec: tool matrix, FLOPs arithmetic, a measured `llama-finetune` run, the full-FT-vs-LoRA argument, serving handoff, and a full-parameter SFT script + corpus renderer in the appendices | — | The appendices are a runnable full-parameter SFT for a 135M model on CPU or one T4. |
 | Metric definitions | 22 KB | Read only if the eval introduces a new metric. |
 | A spec set: role grammars, a corpus factory, prompt trimming, a free-compute survey, an integrity rule, orchestration plans | — | Prompt trimming is where the 403 → 333 token prefix number comes from. The rest is project-specific. |
-| A hybrid needle/swarm plan, "every number measured on this box" | 46 KB | The only place the 121,019,861 is decomposed by component, and the verdict that `d8` is unusable as a router. |
+| A hybrid needle/swarm plan, "every number measured on the development machine" | 46 KB | The only place the 121,019,861 is decomposed by component, and the verdict that `d8` is unusable as a router. |
 | A benchmark design note and an experiment contract | 60 KB | Method only. Worth importing if this repo starts committing run records as contracts rather than results. |
 | The incumbent's benchmark write-up: accuracy, calibration bands, and the serving gotchas | — | The bar every candidate must beat. See the serving-trap list below. |
 | Hardware/serving trap notes, vision and screen-grounding benchmark notes, validation widening | — | Four bugs worth a day each, all carried into `docs/serving-fix-qwen35.md`. The vision half is relevant only if this project grows a vision op. |

@@ -4,7 +4,7 @@ Gate conditions honored: datasets frozen (`tests/data/utterances.json` 50 v1,
 `tests/data/utterances_v2.json` 150 v2), prompt/criteria untouched, lanes run
 through the Jev-style `logit_read` adapter (`/v1/chat/completions`,
 `max_tokens=1`, top_logprobs=20, softmax over A–K letters, conf = 1−H/lnK).
-Bar to beat: d1-3B Q4_K_M on dell = 84% @ p50 ~155ms (Q8: 86%).
+Bar to beat: d1-3B Q4_K_M on bench-host = 84% @ p50 ~155ms (Q8: 86%).
 
 *(Both the bar and the pick below are superseded. The consolidated report records
 the same model at **74.0%** on the 150-row v2 set through `systemone` and 74.7%
@@ -28,7 +28,7 @@ number from this file.)*
 ## Findings from the web
 
 1. **The "decision model" class is now real and llama.cpp-served.** Liquid's
-   d1 line (our incumbent, `/v1/systemone` via llama.cpp PR #29818) reported
+   d1 line (the incumbent, `/v1/systemone` via llama.cpp PR #29818) reported
    Decision Index 0.2.1 = 48.57 (d1-3B), "ahead of every model under 10B and
    on par with Decider 35B-A3B (47.11)"; independent Winnow-12B sits higher
    (12x class, out of size budget). Sources:
@@ -103,13 +103,13 @@ target, and all dirs ship official/community-verified conversion docs.
 
 ## Downloads (Q4_K_M GGUFs; first bytes "GGUF" verified at acquisition)
 
-All fetched fresh with `curl -L` (no resume), placed directly on the dell via
+All fetched fresh with `curl -L` (no resume), placed directly on bench-host via
 the Samba mount (mount write ~10.5 MB/s == HF direct ~12.9 MB/s; single copy
 wins):
 
-| File (exact) | Dell path (Windows) | Bytes | SHA-256 (head) | Verified |
+| File (exact) | Bench-host path (Windows) | Bytes | SHA-256 (head) | Verified |
 |---|---|---:|---|---|
-| `Intern-Decision-4B-Q4_K_M.gguf` | `<dell lab>\models\Intern-Decision-4B-Q4_K_M.gguf` | 2,708,804,416 | `3c3be9bd…` (full: 3c3be9bd66008743fc24a763f28e2de51fb2417d2e4406ae59a3015ec7eaeaab) | GGUF magic; **SHA-256 matches yeaay card's published hash** |
+| `Intern-Decision-4B-Q4_K_M.gguf` | `<bench-host lab>\models\Intern-Decision-4B-Q4_K_M.gguf` | 2,708,804,416 | `3c3be9bd…` (full: 3c3be9bd66008743fc24a763f28e2de51fb2417d2e4406ae59a3015ec7eaeaab) | GGUF magic; **SHA-256 matches yeaay card's published hash** |
 | `Kev-4B-Q4_K_M.gguf` | `…\models\Kev-4B-Q4_K_M.gguf` | 3,033,489,824 | `33ae6b18…` | GGUF magic; size == HF tree (3.03 GB); no upstream SHA published |
 | `Qwen3.5-4B-Q4_K_M.gguf` | `…\models\Qwen3.5-4B-Q4_K_M.gguf` | 2,740,937,888 | `00fe7986…` (full: 00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4) | GGUF magic; size == HF tree (2.74 GB); no upstream SHA published |
 
@@ -117,10 +117,10 @@ Out: no mmproj downloaded (no vision lanes; adapter runs text-only).
 
 ## Phase B results (bench-host, 2026-10-17)
 
-Lock state when acquired: dell 8080 free for the entire 45-min window + 10-min
+Lock state when acquired: bench-host 8080 free for the entire 45-min window + 10-min
 idle grace; v2 lanes (dell-sweep-v2 outputs) had not appeared -> proceeded under
 the documented idle-grace clause (0 v2-* files at start, 4 landed mid-run,
-dell-sweep-v2 serving again after my teardown finished).
+dell-sweep-v2 serving again after the teardown finished).
 
 Serve recipe: e3\python.exe serve_pyhost.py (LoadLibrary llama-server-impl.dll
 from the benchmark host's e3 Python environment, built b11512 / a11f57ba9),
@@ -179,5 +179,5 @@ Q8 86%; jev-style-2b logit_read 46%; qwen3.5-0.8b base logit_read 16%.
   qwen35 lanes should not yet be treated as a stable serving-recipe section.
 - The P1/P2 "Answer:" protocol needs no adapter change on any lane; adapter
   normalization tok.strip()==letter already covers bare and spaced letters.
-- Do not kill dell port-8080 processes unless they are yours; after the sweep
+- Do not kill bench-host port-8080 processes unless they belong to the run; after the sweep
   dell-sweep-v2 was serving again (v2 files appearing).
