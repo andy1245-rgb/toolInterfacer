@@ -9,6 +9,7 @@ model fingerprint beside the accuracy.
 import json
 import pathlib
 import sys
+import tempfile
 import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -140,10 +141,34 @@ class CorpusAndConfigTest(unittest.TestCase):
         self.assertTrue(path.exists(), f"{path} missing — the backend cannot fit")
 
     def test_registry_shaped_corpus_is_flattened_to_rows(self):
-        rows = load_corpus(resolve_path(load()["decide"]["classical"]["corpus_path"]))
-        self.assertEqual(len(rows), 200)
-        self.assertEqual(len({label for _, label in rows}), 18)
-        self.assertIn("__none__", {label for _, label in rows})
+        """A registry fixture, not the shipped one.
+
+        This case used to read the *shipped* corpus and assert it held 200 references over 18
+        voice-assistant labels. That pinned the backend to the vocabulary that made it abstain on
+        every routing request, so the one test guarding the corpus was guarding the rot.
+        """
+        registry = {"tools": [{"id": "timer_create", "references": ["set a timer", "time me"]},
+                              {"id": "light_set", "references": ["turn the lights on"]}],
+                    "none_route": {"id": "__none__", "references": ["tell me a joke"]}}
+        with tempfile.TemporaryDirectory() as tmp:
+            path = pathlib.Path(tmp) / "registry.json"
+            path.write_text(json.dumps(registry), encoding="utf-8")
+            rows = load_corpus(path)
+        self.assertEqual(rows, [("set a timer", "timer_create"), ("time me", "timer_create"),
+                                ("turn the lights on", "light_set"),
+                                ("tell me a joke", "__none__")])
+
+    def test_the_shipped_corpus_can_name_the_offered_options(self):
+        """The shipped default must be fitted on the eight ops the router offers."""
+        cfg = load()["decide"]["classical"]
+        rows = load_corpus(resolve_path(cfg["corpus_path"]))
+        labels = {label for _, label in rows}
+        offered = {"filesys_read", "filesys_glob", "filesys_grep", "decide_pick",
+                   "decide_extract", "web_search", "web_fetch", "reddit_digest"}
+        self.assertTrue(labels & offered,
+                        f"the shipped corpus is fitted on {sorted(labels)[:4]}…, which shares no "
+                        f"label with {sorted(offered)} — the backend will abstain forever")
+        self.assertTrue(offered <= labels, f"the corpus cannot name {sorted(offered - labels)}")
 
     def test_row_shaped_corpus_is_accepted(self):
         path = ROOT / "tests/data/utterances.json"

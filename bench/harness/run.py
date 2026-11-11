@@ -112,7 +112,10 @@ def summarise_arm(recs, reference=None, spec: str = "") -> dict:
            "groups": metrics.group_report(recs),
            "confusion": metrics.confusion(recs),
            "spec": spec,
-           "n_errors": sum(1 for r in recs if r.meta.get("error"))}
+           "n_errors": sum(1 for r in recs if r.meta.get("error")),
+           "n_abstained": sum(1 for r in recs if r.meta.get("abstained")),
+           "n_answered": sum(1 for r in recs
+                             if not r.meta.get("error") and not r.meta.get("abstained"))}
     if reference is not None:
         out["paired_vs_reference"] = metrics.paired(reference, recs)
         out["ledger_vs_reference"] = metrics.ledger(reference, recs)
@@ -120,21 +123,28 @@ def summarise_arm(recs, reference=None, spec: str = "") -> dict:
 
 
 def print_arm_table(arms: dict, reference: str) -> None:
-    print(f"\n{'arm':<14}{'n':>5}{'correct':>8}{'err':>5}  {'accuracy (95% Wilson)':<24}"
+    print(f"\n{'arm':<14}{'n':>5}{'correct':>8}{'err':>5}{'abst':>6}  {'accuracy (95% Wilson)':<24}"
           f"{'p50 ms':>8}{'p95 ms':>8}  {'ECE/Brier/NLL':<22}")
     for name, recs in arms.items():
         acc = metrics.accuracy(recs)
         lat = metrics.latency(recs)
         cal = metrics.calibration(recs)
         errors = sum(1 for r in recs if r.meta.get("error"))
+        abstains = sum(1 for r in recs if r.meta.get("abstained"))
         cal_txt = (f"{cal['ece']:.3f}/{cal['brier']:.3f}/{cal['nll']:.3f}"
                    if cal else "no probabilities")
         mark = "*" if name == reference else " "
-        print(f"{mark}{name:<13}{acc['n']:>5}{acc['correct']:>8}{errors:>5}  {_fmt_ci(acc):<24}"
+        print(f"{mark}{name:<13}{acc['n']:>5}{acc['correct']:>8}{errors:>5}{abstains:>6}  "
+              f"{_fmt_ci(acc):<24}"
               f"{lat['p50']:>8.0f}{lat['p95']:>8.0f}  {cal_txt:<22}")
     if any(r.meta.get("error") for recs in arms.values() for r in recs):
         print("           err: rows where the predictor raised. They count as misses; "
               "read the count before reading the accuracy.")
+    for name, recs in arms.items():
+        abstains = sum(1 for r in recs if r.meta.get("abstained"))
+        if abstains:
+            print(f"           abst: {name} declined {abstains}/{len(recs)} rows. A tier that "
+                  f"declines everything is dead, and its accuracy says nothing.")
 
 
 def print_ledger(reference: str, name: str, led: dict) -> None:

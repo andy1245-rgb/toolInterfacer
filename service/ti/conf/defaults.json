@@ -17,7 +17,7 @@
       "timeout_s": 30
     },
     "classical": {
-      "corpus_path": "bench/registry_382.json",
+      "corpus_path": "service/ti/data/classical_v3_train.json",
       "loss": "squared_hinge",
       "c": 1.0,
       "epochs": 100,

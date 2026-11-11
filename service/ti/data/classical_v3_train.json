@@ -1,0 +1,834 @@
+[
+ {
+  "utterance": "show me what's on screen for service/ti/conf/defaults.json",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "get me the text from https://docs.python.org/3/library/json.html",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "the underlying text of that reference, please",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "the reddit picture on kalman filters, not a single post",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "is the general vibe on the x86 lane numbers positive or not?",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "which of these actually answers the ask?",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "what does the timeout block hold right now?",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "read service/ti/decide/resolve.py and nothing else \u2014 don't search the tree",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "extract the referenced paths; no disk scan",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "which files exist under tests?",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "digest the reddit threads on kalman filters, not a general search",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "anything in here still pointing at ChoiceAnswer?",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "anything in here still pointing at tau_lo?",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "grep for every line that matches retry_after",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "select the best twelve out of what we have",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "give me the reddit digest for the eviction policy",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "select the best four out of what we have",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "google the retry budget for me",
+  "label": "web_search"
+ },
+ {
+  "utterance": "google local llama.cpp serving for me",
+  "label": "web_search"
+ },
+ {
+  "utterance": "list the files named runner",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "select the best three out of what we have",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "is tau_lo referenced anywhere else?",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "what are the current numbers for the qwen3.5 release?",
+  "label": "web_search"
+ },
+ {
+  "utterance": "scrape https://arxiv.org/abs/1706.04599 and give me the text",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "what are commenters on r/LocalLLaMA saying about local llama.cpp serving?",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "select the best five out of what we have",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "give me the shape of the tree under docs",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "give me a few ways to phrase it",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "google the two-pass reranker for me",
+  "label": "web_search"
+ },
+ {
+  "utterance": "extract the full list, no selection",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "give me the shape of the tree under tests",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "list the files that reference resolve_backend",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "find writing about local llama.cpp serving outside the community threads",
+  "label": "web_search"
+ },
+ {
+  "utterance": "list the files named Makefile",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "of the twelve files that came back, pick the right one",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "pull down https://example.org/posts/lane-tuning and give me what it says",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "what are the current numbers for the cascade thresholds?",
+  "label": "web_search"
+ },
+ {
+  "utterance": "rank these by relevance",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "which should we act on first?",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "the reddit picture on the cascade thresholds, not a single post",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "get me whatever lives at that location",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "pull the values out of docs/architecture.md, don't paste the file",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "what terms should go in the box?",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "pull up the file service/ti/conf/defaults.json",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "what's the latest on the two-pass reranker?",
+  "label": "web_search"
+ },
+ {
+  "utterance": "read me what's at https://openrouter.ai/docs",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "what are the current numbers for kalman filters?",
+  "label": "web_search"
+ },
+ {
+  "utterance": "read me what's at https://arxiv.org/abs/1706.04599",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "open docs/architecture.md and paste it back",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "google kalman filters for me",
+  "label": "web_search"
+ },
+ {
+  "utterance": "turn that into twelve distinct search queries",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "is the general vibe on local llama.cpp serving positive or not?",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "find writing about the eviction policy outside the community threads",
+  "label": "web_search"
+ },
+ {
+  "utterance": "of the four that came up, what actually matters?",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "get the text at https://example.org/posts/lane-tuning, whole page",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "boil that down to the values we need",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "has anyone benchmarked the x86 lane numbers recently?",
+  "label": "web_search"
+ },
+ {
+  "utterance": "digest the reddit threads on the two-pass reranker, not a general search",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "search the codebase for usages of _first_json_object",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "get me the text from https://example.org/posts/lane-tuning",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "is handle_stream referenced anywhere else?",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "pull out the keywords",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "read bench/lanes.json and nothing else \u2014 don't search the tree",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "get me the text from https://openrouter.ai/docs",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "has anyone benchmarked the cascade thresholds recently?",
+  "label": "web_search"
+ },
+ {
+  "utterance": "list the files that reference _first_json_object",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "anything in here still pointing at _first_json_object?",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "the reddit picture on the x86 lane numbers, not a single post",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "which file out of the ones found should we act on?",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "pull down https://docs.python.org/3/library/json.html and give me what it says",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "of the four files that came back, pick the right one",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "give me the reddit digest for the retry budget",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "what are the current numbers for the retry budget?",
+  "label": "web_search"
+ },
+ {
+  "utterance": "what are the current numbers for the two-pass reranker?",
+  "label": "web_search"
+ },
+ {
+  "utterance": "what are the current numbers for local llama.cpp serving?",
+  "label": "web_search"
+ },
+ {
+  "utterance": "give me the shape of the tree under bench",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "pull up the file README.md",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "give me the reddit digest for local llama.cpp serving",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "of the three files that came back, pick the right one",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "what should we actually type into the box?",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "give me the reddit digest for kalman filters",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "generate the queries; don't search yet",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "what does the config hold right now?",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "list the candidates without choosing",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "what does the spec hold right now?",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "find all the .toml files",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "is the general vibe on the qwen3.5 release positive or not?",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "is pack referenced anywhere else?",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "pull the values out of spec/1.0-spec.md, don't paste the file",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "find writing about kalman filters outside the community threads",
+  "label": "web_search"
+ },
+ {
+  "utterance": "of the five files that came back, pick the right one",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "grep for every line that matches deprecat",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "pull up the file service/ti/decide/resolve.py",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "list the files named README",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "show me what's on screen for README.md",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "list the files that reference pack",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "show me what's on screen for service/ti/decide/resolve.py",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "go and get it, all of it",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "grep for every line that matches TODO",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "what paths does the message name? don't list files",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "which files exist under service/ti/ops?",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "turn that into three distinct search queries",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "what does the retry settings hold right now?",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "get the text at https://arxiv.org/abs/1706.04599, whole page",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "which of the extracted items should we act on?",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "open spec/1.0-spec.md and paste it back",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "of the twelve that came up, what actually matters?",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "pull the values out of tests/test_context_bound.py, don't paste the file",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "scrape https://docs.python.org/3/library/json.html and give me the text",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "read spec/1.0-spec.md and nothing else \u2014 don't search the tree",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "download https://arxiv.org/abs/1706.04599 without the navigation chrome",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "find writing about the retry budget outside the community threads",
+  "label": "web_search"
+ },
+ {
+  "utterance": "pull the values out of service/ti/decide/resolve.py, don't paste the file",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "grep for every line that matches max_candidates",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "is ChoiceAnswer referenced anywhere else?",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "anything in here still pointing at pack?",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "what's the latest on the qwen3.5 release?",
+  "label": "web_search"
+ },
+ {
+  "utterance": "search the codebase for usages of handle_stream",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "read tests/test_context_bound.py and nothing else \u2014 don't search the tree",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "what does the test harness hold right now?",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "give me the shape of the tree under spec",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "get me the text from https://arxiv.org/abs/1706.04599",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "pull down https://openrouter.ai/docs and give me what it says",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "pull down https://arxiv.org/abs/1706.04599 and give me what it says",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "list the keywords that appear in docs/architecture.md",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "list of files in hand: which one matters?",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "list the keywords that appear in pyproject.toml",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "list the files named defaults",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "the reddit picture on local llama.cpp serving, not a single post",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "google the cascade thresholds for me",
+  "label": "web_search"
+ },
+ {
+  "utterance": "has anyone benchmarked the eviction policy recently?",
+  "label": "web_search"
+ },
+ {
+  "utterance": "get the text at https://openrouter.ai/docs, whole page",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "scrape https://openrouter.ai/docs and give me the text",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "pull the values out of service/ti/conf/defaults.json, don't paste the file",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "read README.md and nothing else \u2014 don't search the tree",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "choose between these five and tell me why",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "find all the .json files",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "list the files that reference handle_stream",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "the reddit picture on the qwen3.5 release, not a single post",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "find writing about the x86 lane numbers outside the community threads",
+  "label": "web_search"
+ },
+ {
+  "utterance": "read me what's at https://example.org/posts/lane-tuning",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "scrape https://example.org/posts/lane-tuning and give me the text",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "glob for *defaults* on disk and report what's really there",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "search the codebase for usages of ChoiceAnswer",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "find all the .py files",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "glob for *probe* on disk and report what's really there",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "choose between these three and tell me why",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "search the codebase for usages of tau_lo",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "find all the .md files",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "from the files that came up, select the best",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "give me the reddit digest for the x86 lane numbers",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "search the codebase for usages of pack",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "i need the raw bits that go in the slots",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "open README.md and paste it back",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "which files exist under docs?",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "turn that into four distinct search queries",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "of the three that came up, what actually matters?",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "list the files named probe",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "which files exist under service/ti?",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "which files exist under bench?",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "what are commenters on r/LocalLLaMA saying about the cascade thresholds?",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "list the files that reference ChoiceAnswer",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "open pyproject.toml and paste it back",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "the reddit picture on the two-pass reranker, not a single post",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "turn that into five distinct search queries",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "what are commenters on r/rust saying about the retry budget?",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "what are commenters on r/selfhosted saying about kalman filters?",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "is the general vibe on the retry budget positive or not?",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "pull up the file docs/architecture.md",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "google the qwen3.5 release for me",
+  "label": "web_search"
+ },
+ {
+  "utterance": "search the codebase for usages of resolve_backend",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "what's the latest on the cascade thresholds?",
+  "label": "web_search"
+ },
+ {
+  "utterance": "find all the .sh files",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "pull up the file spec/1.0-spec.md",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "grep for every line that matches state_max_tokens",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "choose between these four and tell me why",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "choose between these twelve and tell me why",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "among the files found, which one should we open?",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "open service/ti/decide/resolve.py and paste it back",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "which files exist under spec?",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "enumerate the queries implied by this",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "pick the best of these",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "pull up the file tests/test_context_bound.py",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "what's the latest on kalman filters?",
+  "label": "web_search"
+ },
+ {
+  "utterance": "read service/ti/conf/defaults.json and nothing else \u2014 don't search the tree",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "from the values we listed, select one",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "glob for *README* on disk and report what's really there",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "glob for *Makefile* on disk and report what's really there",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "is the general vibe on the eviction policy positive or not?",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "generate query variants for this",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "is the general vibe on kalman filters positive or not?",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "give me the reddit digest for the qwen3.5 release",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "what are commenters on r/MachineLearning saying about the qwen3.5 release?",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "pull the values out of README.md, don't paste the file",
+  "label": "decide_extract"
+ },
+ {
+  "utterance": "give me the shape of the tree under service/ti",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "show me what's on screen for tests/test_context_bound.py",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "glob for *runner* on disk and report what's really there",
+  "label": "filesys_glob"
+ },
+ {
+  "utterance": "is resolve_backend referenced anywhere else?",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "what are commenters on r/rust saying about the two-pass reranker?",
+  "label": "reddit_digest"
+ },
+ {
+  "utterance": "get the text at https://docs.python.org/3/library/json.html, whole page",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "download https://docs.python.org/3/library/json.html without the navigation chrome",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "list the files that reference tau_lo",
+  "label": "filesys_grep"
+ },
+ {
+  "utterance": "of the five that came up, what actually matters?",
+  "label": "decide_pick"
+ },
+ {
+  "utterance": "open tests/test_context_bound.py and paste it back",
+  "label": "filesys_read"
+ },
+ {
+  "utterance": "go to it and bring back everything on it",
+  "label": "web_fetch"
+ },
+ {
+  "utterance": "find writing about the qwen3.5 release outside the community threads",
+  "label": "web_search"
+ },
+ {
+  "utterance": "has anyone benchmarked the retry budget recently?",
+  "label": "web_search"
+ },
+ {
+  "utterance": "read me what's at https://docs.python.org/3/library/json.html",
+  "label": "web_fetch"
+ }
+]
