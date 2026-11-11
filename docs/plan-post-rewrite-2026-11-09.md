@@ -317,7 +317,7 @@ positive out-of-sample ledger.
 
 **The backend research run is not in flight and left no artifact.** I looked: `runs.jsonl` in
 `~/.pi/agent/subforge` has nothing for this repo since `i1-verdict` on 2026-11-05; no `pi`
-process is alive on the box; the fleet's "Research and test toolInterfacer" pane (`w49:p1`) is a
+process is alive on the box; the fleet's "Research and test toolInterfacer" pane (an orchestrator pane) is a
 dead registry row that `read` refuses; no file under `bench/results/`, `docs/`, or `~/reports`
 postdates 2026-11-05 in this repo. **[verified]** So (b) is answered from the tree, not from its
 result, and if it lands later, read it against §4 before believing it.
