@@ -58,7 +58,7 @@ def test_the_cli_runs_end_to_end_without_a_model(tmp_path):
     out = tmp_path / "run"
     assert main(["--dataset", "tool_routing", "--limit", "12",
                  "--predictor", f"fake|accuracy=1.0|seed=1|truth={truth}",
-                 "--aa", "--out", str(out)]) == 0
+                 "--aa", "--write-rows", "--out", str(out)]) == 0
     summary = json.loads((out / "summary.json").read_text())
     assert summary["arms"]["arm"]["accuracy"]["correct"] == 12
     assert summary["dataset"]["order_sha"] == option_order_sha(summary["dataset"]["options"])

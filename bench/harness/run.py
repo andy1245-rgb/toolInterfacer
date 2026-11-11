@@ -58,19 +58,49 @@ def _fmt_ci(acc: dict) -> str:
     return f"{100 * acc['accuracy']:5.1f}% [{100 * lo:.1f},{100 * hi:.1f}]"
 
 
-def _source(dataset) -> str:
-    """The dataset's origin, relative to the repo when it lives inside it.
+def _source(dataset) -> tuple[str, str]:
+    """The dataset's origin, and whether it may be named in full.
 
-    An absolute path in an artifact is a machine path: it makes the artifact unreproducible
-    elsewhere and it trips `tests/test_no_personal_paths.py`.
+    An in-repo dataset is recorded repo-relative. An external one is recorded by file name only:
+    this repo is public, so an absolute path into someone's corpus directory identifies a dataset
+    the way a fingerprint identifies a person — and the artifact is the thing that gets committed.
     """
     from .rows import ROOT
 
     src = str(dataset.source or "")
     root = str(ROOT)
+    if not src:
+        return "", "unknown"
     if src.startswith(root + "/"):
-        return src[len(root) + 1:]
-    return src
+        return src[len(root) + 1:], "in-repo"
+    if src.startswith("/"):
+        return Path(src).name, "external"
+    return src, "relative"
+
+
+def rows_destination(args, dataset) -> Path:
+    """Where row-level records may go. Beside the dataset unless it was authored here."""
+    if args.rows_to:
+        return Path(args.rows_to) / "rows.jsonl"
+    if dataset.authored:
+        return Path(args.out) / "rows.jsonl"
+    return Path(dataset.source).parent / f"{dataset.name}-rows.jsonl"
+
+
+def _guard_rows_destination(dest: Path, dataset) -> Path:
+    """A non-authored dataset's rows never land inside the repo's results tree."""
+    from .rows import ROOT
+
+    resolved = dest.resolve()
+    if dataset.authored:
+        return resolved
+    results = (ROOT / "bench/results").resolve()
+    if resolved == results or results in resolved.parents:
+        raise SystemExit(
+            f"--write-rows: dataset {dataset.name!r} is not authored here, so its rows do not go "
+            f"into bench/results/ ({resolved}) — this repo is public and a dataset is a door. "
+            f"They belong beside the dataset: {Path(dataset.source).parent / (dataset.name + '-rows.jsonl')}")
+    return resolved
 
 
 def summarise_arm(recs, reference=None, spec: str = "") -> dict:
@@ -128,7 +158,12 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--order", default="", help="rev | shuffle:<seed>")
     ap.add_argument("--paraphrase", default="", help="{option: wording} JSON")
     ap.add_argument("--preregister", default="", help="conditions JSON/YAML, read before the run")
-    ap.add_argument("--out", default="", help="directory for summary.json and rows.jsonl")
+    ap.add_argument("--out", default="", help="directory for summary.json")
+    ap.add_argument("--write-rows", action="store_true",
+                    help="also write row-level records; refused into bench/results for a "
+                         "dataset that was not authored here")
+    ap.add_argument("--rows-to", default="",
+                    help="directory for row-level records (default: beside the dataset)")
     ap.add_argument("--limit", type=int, default=0, help="score at most N rows (smoke test)")
     ap.add_argument("--cv", type=int, default=0, help="grouped CV folds for fitted predictors")
     ap.add_argument("--cv-rule", default="stratified", choices=("stratified", "hashed"),
@@ -144,7 +179,7 @@ def main(argv: list[str] | None = None) -> int:
     dataset: Dataset = load_dataset(args.dataset)
     if args.limit:
         dataset = Dataset(dataset.name, dataset.rows[: args.limit], dataset.options,
-                          dataset.source)
+                          dataset.source, dataset.authored, dataset.sha256)
     if args.paraphrase:
         mapping = controls.load_paraphrase(args.paraphrase)
         dataset = controls.apply_paraphrase(dataset, mapping)
@@ -156,7 +191,8 @@ def main(argv: list[str] | None = None) -> int:
         rows = [r for r in rows if str(r.meta.get("split", "")) == args.split]
         if not rows:
             raise SystemExit(f"--split {args.split!r} matched no row")
-        dataset = Dataset(dataset.name, rows, dataset.options, dataset.source)
+        dataset = Dataset(dataset.name, rows, dataset.options, dataset.source,
+                          dataset.authored, dataset.sha256)
     fit_rows = None
     if args.fit_on:
         if args.cv:
@@ -230,7 +266,17 @@ def main(argv: list[str] | None = None) -> int:
             cv_skipped.append(name)
         records[name] = score(name, rows, predictor, options_for=order_for)
 
-    summary = {"dataset": {"name": dataset.name, "rows": len(dataset), "source": _source(dataset),
+    source, source_kind = _source(dataset)
+    rows_dest = None
+    if args.write_rows:
+        if dataset.authored and not (args.out or args.rows_to):
+            raise SystemExit(
+                "--write-rows needs --out or --rows-to: without one, row-level records would "
+                "land in the working directory")
+        rows_dest = _guard_rows_destination(rows_destination(args, dataset), dataset)
+    summary = {"dataset": {"name": dataset.name, "rows": len(dataset), "source": source,
+                           "source_kind": source_kind, "authored": dataset.authored,
+                           "sha256": dataset.sha256,
                            "options": list(dataset.options), "order_sha": order_sha,
                            "order_mode": order_mode or "frozen",
                            "split": args.split or "all",
@@ -388,13 +434,21 @@ def main(argv: list[str] | None = None) -> int:
     if args.out:
         out = Path(args.out)
         out.mkdir(parents=True, exist_ok=True)
-        with (out / "rows.jsonl").open("w", encoding="utf-8") as fh:
+        (out / "summary.json").write_text(json.dumps(summary, indent=1, sort_keys=True) + "\n",
+                                          encoding="utf-8")
+        print(f"\nwrote {out / 'summary.json'} (aggregates only)")
+    if rows_dest is not None:
+        rows_dest.parent.mkdir(parents=True, exist_ok=True)
+        with rows_dest.open("w", encoding="utf-8") as fh:
             for name, recs in records.items():
                 for r in recs:
                     fh.write(json.dumps(r.as_dict(), sort_keys=True) + "\n")
-        (out / "summary.json").write_text(json.dumps(summary, indent=1, sort_keys=True) + "\n",
-                                          encoding="utf-8")
-        print(f"\nwrote {out / 'summary.json'} and {out / 'rows.jsonl'}")
+        print(f"wrote {rows_dest} (row-level: {sum(len(r) for r in records.values())} rows, "
+              f"dataset authored={dataset.authored})")
+    elif args.out:
+        print("no row-level records: only aggregates are written. Pass --write-rows if you "
+              "need them, and read the data rule first — rows from a dataset that was not "
+              "authored here belong beside the dataset, not in this repo.")
     return 0
 
 

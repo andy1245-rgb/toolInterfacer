@@ -115,7 +115,8 @@ python3 -m bench.harness.run \
     --cv-seeds 0,1,2,4,7                     # report every fold seed, not just one
     --split test                             # score only rows whose meta.split matches
     --fit-on train                           # fit on these rows, score --split; refused with --cv
-    --out /tmp/run                           # writes summary.json and rows.jsonl
+    --out /tmp/run                           # writes summary.json, aggregates only
+    --write-rows                             # also row-level records (data rule; see below)
 ```
 
 Artifacts carry the option order, its sha256, the per-row probabilities, and the group of every
@@ -194,10 +195,40 @@ per fold, fit it on the other folds, and write the fold assignment into the arti
 the difference between a 97% in-sample number and an 88% shipped one. Keep training loops in the
 owning project: the seam is fit-then-predict, not a trainer.
 
+## The data rule — a dataset adapter is a door into a public repo
+
+This repo is public, so a dataset is treated as an entry point rather than as data. Three
+constraints, enforced in code and pinned by `bench/harness/tests/test_data_rule.py`:
+
+* **The artifact identifies a dataset; it never carries one.** `summary.json.dataset` holds
+  `name`, `rows`, `source`, `source_kind`, `authored` and a **sha256 of the file**. The hash is
+  computed over the bytes, so it does not move when a loader changes, and it survives `--limit`
+  and `--split`: the identity is the file, not the slice. An in-repo source is recorded
+  repo-relative; an external one is recorded by **file name only**, because an absolute path into
+  a corpus directory identifies a dataset the way a fingerprint identifies a person.
+* **Only aggregates are written.** `--out` writes `summary.json` and nothing else: rates, Wilson
+  intervals, per-label ledgers, latency, calibration, coverage, group reports, confusion counts,
+  shas. Row-level records require `--write-rows`, and a test asserts that no utterance from the
+  corpus appears anywhere in an aggregate.
+* **Row-level output for a non-authored dataset goes beside the dataset.** `tool_routing` and
+  `localalexa_intents` are authored here, so their rows may be written into an artifact.
+  `generic_csv` is not — it is whatever path you point at — so `--write-rows` on it lands in
+  `<dataset dir>/<name>-rows.jsonl`, and a destination inside `bench/results/` is **refused** with
+  the rule quoted back.
+
+The test when unsure is the one in the spec: *would this line be fine on a projector in a room
+with his employer in it?* If not, it is a count, not a row.
+
+The row artifacts already committed (`bench/results/p3-transfer/rows.jsonl` and friends) are the
+regression suite that `recorded` replays, and they come from authored corpora whose rows are in
+this repo already. They are kept deliberately: the spec's hard limits say not to delete a
+`rows.jsonl`. What the rule changes is the default for *new* runs, and what may happen to a
+dataset nobody wrote here.
+
 ## Tests
 
 ```bash
-python3 -m pytest bench/harness/tests -q          # 138 collected: 135 pass, 3 skip, no network
+python3 -m pytest bench/harness/tests -q          # 146 collected: 143 pass, 3 skip, no network
 python3 -m pytest tests/ -q                       # the repo suite: 857 pass, 586 subtests
 ```
 

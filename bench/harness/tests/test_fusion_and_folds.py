@@ -196,7 +196,7 @@ def test_cv_artifacts_carry_the_out_of_fold_rows_not_an_unfitted_pass(tmp_path):
     rc = run.main(["--dataset", "tool_routing", "--limit", "80",
                    "--arm", "base=recorded|arm=floor_a",
                    "--arm", "member=sklearn_text|vectorizer=tfidf_word|clf=logreg",
-                   "--reference", "base", "--cv", "2", "--out", str(out)])
+                   "--reference", "base", "--cv", "2", "--write-rows", "--out", str(out)])
     assert rc == 0
     summary = json.loads((out / "summary.json").read_text())
     member = summary["arms"]["member"]

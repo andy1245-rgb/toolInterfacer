@@ -15,6 +15,7 @@ fails at load instead of scoring 0.0 in silence.
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import os
 from dataclasses import dataclass, field
@@ -54,10 +55,20 @@ class Row:
 
 @dataclass(frozen=True)
 class Dataset:
+    """Rows, the option set, and the provenance the artifact is allowed to carry.
+
+    ``authored`` says the rows were written here, for this repo. ``generic_csv`` cannot say that
+    — it is whatever path the operator points at — and a dataset that is not authored is a door
+    into a public repository: the artifact may record its path, its row count and a sha256 of the
+    file, and nothing about its rows.
+    """
+
     name: str
     rows: tuple[Row, ...]
     options: tuple[str, ...]
     source: str = ""
+    authored: bool = False
+    sha256: str = ""
 
     def __len__(self) -> int:
         return len(self.rows)
@@ -82,7 +93,7 @@ class Dataset:
         """A subset by ``meta[name]`` — the seam the v3 train/test split uses."""
         keep = set(values)
         rows = tuple(r for r in self.rows if r.meta.get(name) in keep)
-        return Dataset(self.name, rows, self.options, self.source)
+        return Dataset(self.name, rows, self.options, self.source, self.authored, self.sha256)
 
 
 def _validate(rows: list[Row], name: str) -> tuple[Row, ...]:
@@ -99,6 +110,19 @@ def _validate(rows: list[Row], name: str) -> tuple[Row, ...]:
                 f"{name}: {r.id} has a different option tuple than {rows[0].id} — the option "
                 f"set and its order are part of the instrument, so one dataset has one of each")
     return tuple(rows)
+
+
+def file_sha256(path: str | Path) -> str:
+    """The dataset's identity in the artifact: a hash of the file, never the file.
+
+    Read in chunks so a large corpus does not have to fit in memory twice; keyed on bytes so the
+    hash does not move when the loader changes.
+    """
+    h = hashlib.sha256()
+    with Path(path).open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
 _REGISTRY: dict[str, object] = {}
@@ -174,7 +198,8 @@ def tool_routing(path: str | None = None) -> Dataset:
                   "descriptions": descriptions})
         for r in raw
     ]
-    return Dataset("tool_routing", _validate(rows, "tool_routing"), options, str(src))
+    return Dataset("tool_routing", _validate(rows, "tool_routing"), options, str(src),
+                   authored=True, sha256=file_sha256(src))
 
 
 def _localalexa_root(path: str | None) -> Path:
@@ -217,7 +242,7 @@ def localalexa_intents(path: str | None = None, options_from: str = "registry") 
         for i, r in enumerate(raw)
     ]
     return Dataset("localalexa_intents", _validate(rows, "localalexa_intents"), options,
-                   str(rows_path))
+                   str(rows_path), authored=True, sha256=file_sha256(rows_path))
 
 
 @register_dataset("generic_csv")
@@ -247,4 +272,5 @@ def generic_csv(path: str, text_col: str = "text", label_col: str = "label",
             group=(r.get(group_col) if group_col else "") or "all", options=opts)
         for i, r in enumerate(raw)
     ]
-    return Dataset("generic_csv", _validate(rows, "generic_csv"), opts, str(src))
+    return Dataset("generic_csv", _validate(rows, "generic_csv"), opts, str(src),
+                   authored=False, sha256=file_sha256(src))

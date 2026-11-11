@@ -235,7 +235,7 @@ def test_cli_writes_an_artifact_and_prints_no_verdict_without_a_preregistration(
     rc = main(["--dataset", "tool_routing", "--limit", "25",
                "--arm", f"ref=fake|accuracy=1.0|seed=1|truth={truth}",
                "--arm", f"treat=fake|accuracy=0.0|seed=1|truth={truth}",
-               "--reference", "ref", "--aa", "--out", str(out)])
+               "--reference", "ref", "--aa", "--write-rows", "--out", str(out)])
     text = capsys.readouterr().out
     assert rc == 0
     assert "no --preregister file" in text and "VERDICT" not in text
