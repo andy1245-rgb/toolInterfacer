@@ -238,6 +238,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"paraphrase {args.paraphrase} over {len(mapping)} option(s)")
 
     records: dict[str, list] = {}
+    predictors: dict[str, object] = {}
     specs: dict[str, str] = dict(arms_specs)
     cv_runs: dict[str, dict[int, dict]] = {}
     cv_skipped: list[str] = []
@@ -249,6 +250,7 @@ def main(argv: list[str] | None = None) -> int:
             predictor = build(spec)
         except PredictorError as exc:
             raise SystemExit(f"arm {name}: {exc}")
+        predictors[name] = predictor
         if order_mode and not honours_order(predictor):
             raise SystemExit(
                 f"arm {name}: --order {order_mode} cannot be honoured by {getattr(predictor, 'name', spec)}."
@@ -363,7 +365,8 @@ def main(argv: list[str] | None = None) -> int:
                 "folds": args.cv, "seeds": cv_seeds, "stratified": first["stratified"],
                 "n_groups": first["n_groups"], "n_labels": first["n_labels"],
                 "per_seed": {str(s): {"fold_of": cv["fold_of"], "per_fold": cv["per_fold"],
-                                      "oof_accuracy": cv["oof_accuracy"]}
+                                      "oof_accuracy": cv["oof_accuracy"],
+                                      "fold_predictors": cv.get("fold_predictors", [])}
                              for s, cv in runs.items()}}
     for name in cv_skipped:
         print(f"\ngrouped CV  {name}: skipped, this predictor has no fit(). Its records are a "
@@ -375,6 +378,9 @@ def main(argv: list[str] | None = None) -> int:
         summary["arms"].setdefault(name, {}).update(summarise_arm(
             recs, reference=records[reference] if name != reference else None,
             spec=specs.get(name, "")))
+    for name, predictor in predictors.items():
+        if hasattr(predictor, "describe"):
+            summary["arms"].setdefault(name, {})["predictor"] = predictor.describe()
 
     # ---- the verdict, which needs a declaration made before the run
     if prereg is None:

@@ -1,0 +1,10 @@
+{
+  "arm": "r_fusion",
+  "note": "ONE change from the run that failed C3: mask=auto. The member may vote for label L only when, on the rows where it votes L, it is right more often than the base arm is — tallied from an inner 5-fold over exactly the rows handed to fit, minimum 10 such rows. A label whose member vote is worse than the base's is removed from the member's candidate set for that fold. Same member spec, same folds, same seeds, same conditions as bench/results/fusion-2026-11-10/prereg.json. If C3 still fails, report the residual and stop.",
+  "conditions": [
+    {"name": "C1 delta >= +20 rows", "expr": "delta >= 20"},
+    {"name": "C2 mcnemar_p < 0.01", "expr": "mcnemar_p < 0.01"},
+    {"name": "C3 min over labels of net >= -3", "expr": "min_label_net >= -3"},
+    {"name": "C4 delta > 0 in >= 4 of 5 fold seeds", "expr": "seeds_positive >= 4"}
+  ]
+}

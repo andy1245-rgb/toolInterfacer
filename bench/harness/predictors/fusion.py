@@ -36,7 +36,9 @@ from ..protocol import Prediction, PredictorError, build as build_predictor, reg
 from ..rows import Row
 
 MODES = ("mean", "gate")
-FUSION_KEYS = ("member", "mode", "base", "base_arm", "base_path", "t", "weights")
+MASKS = ("auto", "off")
+FUSION_KEYS = ("member", "mode", "base", "base_arm", "base_path", "t", "weights",
+               "mask", "mask_folds", "mask_min_rows", "seed")
 MEMBER_PIPE = "~"
 DEFAULT_BASE = "recorded|arm=floor_a"
 DEFAULT_BASE_PATH = "bench/results/p3-transfer/rows.jsonl"
@@ -93,7 +95,8 @@ class FusionPredictor:
 
     def __init__(self, member: str = "", mode: str = "mean", base: str = DEFAULT_BASE,
                  base_arm: str = "floor_a", base_path: str = DEFAULT_BASE_PATH,
-                 t: str = "0.38", weights: str = "0.5") -> None:
+                 t: str = "0.38", weights: str = "0.5", mask: str = "off",
+                 mask_folds: str = "5", mask_min_rows: str = "10", seed: str = "0") -> None:
         if not member.strip():
             raise PredictorError(
                 "fusion: member= is empty; expected member=SPEC, where SPEC is any predictor "
@@ -114,6 +117,19 @@ class FusionPredictor:
         if not 0.0 <= self.threshold <= 1.0:
             raise PredictorError(f"fusion: t={self.threshold} must be in [0, 1]")
         self.base_arm = base_arm or self._arm_from_spec()
+        if mask not in MASKS:
+            raise PredictorError(f"fusion: unknown mask {mask!r}; known: {', '.join(MASKS)}")
+        self.mask = mask
+        try:
+            self.mask_folds = int(mask_folds)
+            self.mask_min_rows = int(mask_min_rows)
+            self.seed = int(seed)
+        except ValueError as exc:
+            raise PredictorError(
+                f"fusion: mask_folds={mask_folds!r} mask_min_rows={mask_min_rows!r} "
+                f"seed={seed!r} must be integers: {exc}") from None
+        self.mask_labels: tuple[str, ...] | None = None
+        self.mask_tally: dict[str, list[int]] = {}
         self.member = build_predictor(self.member_spec)
         self._base: dict[str, dict] | None = None
         self.name = f"fusion:{self.mode}@{self.base_weight:g}:{self.member.name}"
@@ -128,9 +144,57 @@ class FusionPredictor:
         return self._base
 
     def fit(self, rows: list[Row]) -> None:
+        rows = list(rows)
         if not hasattr(self.member, "fit"):
             return
-        self.member.fit(list(rows))
+        if self.mask == "auto":
+            self.mask_labels = self.learn_mask(rows)
+        self.member.fit(rows)
+
+    def learn_mask(self, rows: list[Row]) -> tuple[str, ...]:
+        """Which labels this member may vote for, from its own out-of-fold confusion.
+
+        The rule, declared before any run that uses it: the member may vote for label ``L`` only
+        when, on the rows where it votes ``L``, it is right **more often than the base arm** is.
+        That is the question a fusion actually asks — *should this member be allowed to override
+        the base here* — and it is a question per-label precision cannot answer, because a member
+        can be accurate on a label while voting it on rows that belong to another one.
+
+        The tally is built from an inner cross-validation over exactly the rows handed to
+        ``fit``, scored against the base arm's recorded choices for those same ids. Nothing in it
+        touches the outer fold's held-out rows.
+        """
+        from .. import metrics  # noqa: PLC0415 - metrics imports score, which imports this package
+
+        truth = {r.id: r.label for r in rows}
+        inner = metrics.grouped_cv(rows, (lambda: build_predictor(self.member_spec)),
+                                   folds=self.mask_folds, seed=self.seed, stratify=True)
+        base = self.base_rows()
+        tally: dict[str, list[int]] = {}
+        for rec in inner["oof"]:
+            if not rec.choice or rec.id not in base or rec.id not in truth:
+                continue
+            counts = tally.setdefault(rec.choice, [0, 0, 0])
+            counts[0] += 1
+            counts[1] += 1 if rec.correct else 0
+            counts[2] += 1 if base[rec.id]["choice"] == truth[rec.id] else 0
+        self.mask_tally = tally
+        return tuple(sorted(label for label, (n, mine, theirs) in tally.items()
+                            if n >= self.mask_min_rows and mine > theirs))
+
+    def _masked(self, options: tuple[str, ...]) -> tuple[str, ...]:
+        """The member's allowed vote, restricted to its demonstrated competence."""
+        if self.mask_labels is None:
+            return tuple(options)
+        allowed = tuple(o for o in options if o in self.mask_labels)
+        return allowed
+
+    def describe(self) -> dict:
+        return {"member": self.member_spec, "mode": self.mode,
+                "base": self.base_spec, "base_weight": self.base_weight,
+                "mask": self.mask, "mask_labels": list(self.mask_labels or ()),
+                "mask_tally": {k: {"n": v[0], "member_right": v[1], "base_right": v[2]}
+                               for k, v in sorted(self.mask_tally.items())}}
 
     def _member_prediction(self, row: Row, options: tuple[str, ...]) -> Prediction:
         return self.member.predict(row.text, options)
@@ -155,7 +219,11 @@ class FusionPredictor:
             base_dist = {o: float(base["probabilities"][o]) for o in known}
             base_conf = max(base_dist.values())
             use_member = base_conf < self.threshold
-            if use_member:
+            allowed = self._masked(offered)
+            if use_member and member.choice not in allowed:
+                choice = _argmax(known, base_dist)
+                probabilities, source = base_dist, "base_masked"
+            elif use_member:
                 choice, probabilities, source = member.choice, member.probabilities, "member"
             else:
                 choice = _argmax(known, base_dist)
@@ -167,12 +235,26 @@ class FusionPredictor:
                     f"equal-weight mean is undefined. Give the member a probabilistic "
                     f"classifier (clf=logreg) or calibrate it (calibrate=sigmoid), or use "
                     f"mode=gate, which needs only the member's choice")
+            allowed = self._masked(offered)
+            if member.choice not in allowed:
+                # "may not vote for L" is not "votes against L". A pruned distribution in a mean
+                # blend is an active vote against everything pruned — measured: masking the
+                # member's web_search vote cost web_search 8 net rows instead of saving it. A
+                # member that cannot name its top choice has no opinion here, so the base's own
+                # distribution stands alone.
+                base_dist = {o: float(base["probabilities"][o]) for o in known}
+                return Prediction(choice=_argmax(known, base_dist), probabilities=base_dist,
+                                  latency_ms=(time.perf_counter() - t0) * 1000.0,
+                                  meta={"fusion": "base_masked"})
             member_dist = {o: float(member.probabilities[o]) for o in known
                            if o in member.probabilities}
             if not member_dist:
-                raise PredictorError(
-                    f"fusion(mean): member {self.member.name} put no mass on the offered "
-                    f"options {known} on row {row.id!r}")
+                # the mask removed every label the member was willing to name: it has no vote
+                # here, so the base's own answer stands rather than a uniform guess
+                base_dist = {o: float(base["probabilities"][o]) for o in known}
+                return Prediction(choice=_argmax(known, base_dist), probabilities=base_dist,
+                                  latency_ms=(time.perf_counter() - t0) * 1000.0,
+                                  meta={"fusion": "base_masked"})
             base_dist = {o: float(base["probabilities"][o]) for o in known}
             blended = {o: self.base_weight * base_dist[o]
                           + (1.0 - self.base_weight) * member_dist.get(o, 0.0) for o in known}
@@ -195,11 +277,13 @@ class FusionPredictor:
 @register("fusion")
 def build(member: str = "", mode: str = "mean", base: str = DEFAULT_BASE,
           base_arm: str = "", base_path: str = DEFAULT_BASE_PATH, t: str = "0.38",
-          weights: str = "0.5", **_kw) -> FusionPredictor:
+          weights: str = "0.5", mask: str = "off", mask_folds: str = "5",
+          mask_min_rows: str = "10", seed: str = "0", **_kw) -> FusionPredictor:
     if _kw:
         raise PredictorError(
             f"fusion: unknown key(s) {sorted(_kw)}; known: {', '.join(FUSION_KEYS)}. A member or "
             f"base spec nests by writing its own pipes as ~, so a stray key here means the "
             f"nesting was lost")
     return FusionPredictor(member=member, mode=mode, base=base, base_arm=base_arm,
-                           base_path=base_path, t=t, weights=weights)
+                           base_path=base_path, t=t, weights=weights, mask=mask,
+                           mask_folds=mask_folds, mask_min_rows=mask_min_rows, seed=seed)

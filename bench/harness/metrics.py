@@ -270,6 +270,7 @@ def grouped_cv(rows: Sequence[Row], make: Callable[[], object], folds: int = 5,
     fold_of = assign_folds((r.group for r in rows), folds, seed,
                            labels=((r.group, r.label) for r in rows), stratify=stratify)
     per_fold = []
+    fitted: list[dict] = []
     oof: list[Record] = []
     for k in range(folds):
         test = [r for r in rows if fold_of[r.group] == k]
@@ -282,6 +283,10 @@ def grouped_cv(rows: Sequence[Row], make: Callable[[], object], folds: int = 5,
         if not hasattr(pred, "fit"):
             raise TypeError(f"{getattr(pred, 'name', pred)} has no fit(); grouped CV needs one")
         pred.fit(list(train))
+        if hasattr(pred, "describe"):
+            # what the fold actually decided, when the predictor makes decisions from data
+            # (fusion learns which labels its member may vote for, per fold)
+            fitted.append({"fold": k, **pred.describe()})
         recs = score(f"cv{k}", test, pred, options_for=options_for)
         oof.extend(recs)
         acc = accuracy(recs)
@@ -292,7 +297,7 @@ def grouped_cv(rows: Sequence[Row], make: Callable[[], object], folds: int = 5,
     return {"folds": folds, "seed": seed, "fold_of": fold_of, "per_fold": per_fold,
             "stratified": bool(stratify),
             "n_groups": len(set(fold_of)), "n_labels": len({r.label for r in rows}),
-            "oof": oof, "oof_accuracy": accuracy(oof)}
+            "oof": oof, "oof_accuracy": accuracy(oof), "fold_predictors": fitted}
 
 
 # ------------------------------------------------------------------ reporting helpers
