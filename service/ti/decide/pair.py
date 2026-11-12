@@ -236,7 +236,12 @@ _STAGE_NEEDS = {
 }
 
 # The deciding backends that need no server and no key: the way out of the failure.
+# Both are alive as of 2026-11-10 — `heuristic_micro` answers 32 of the 207 eval rows at 100%
+# precision, `classical` answers all 207 at 71.5% once its corpus is built. Neither figure is
+# quoted in the message below, because a number in an error string is the next thing to rot:
+# the message names the command that prints the current ones instead.
 OFFLINE_CHOICE = ("heuristic_micro", "classical")
+COVERAGE_COMMAND = "python3 bench/backend_coverage.py"
 
 
 def _block(name: str) -> dict[str, Any]:
@@ -275,7 +280,10 @@ def _no_choice_message(stages: Sequence[DecideBackend], detail: str) -> str:
     message += (". For a decision with no server and no key, set "
                 "decide.backends_in_use.choice to "
                 + " or ".join(OFFLINE_CHOICE)
-                + " (docs/decision-pair-vs-hosted.md)")
+                + "; run `" + COVERAGE_COMMAND + "` to see which offline backend answers on "
+                "this machine and how often it is right "
+                "(classical needs its corpus: python3 bench/build_classical_corpus.py) "
+                "(docs/decision-pair-vs-hosted.md)")
     return f"{message}. Stage errors: {detail}" if detail else message
 
 
