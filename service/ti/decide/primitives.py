@@ -60,7 +60,7 @@ def _ensure_backends_loaded() -> None:
         return
     _LOADED = True  # before the imports: a backend resolving another on import must not recurse
     from . import cascade, pair  # noqa: F401  (registration: compose other backends by name)
-    from .backends import (d1_systemone, fixture, heuristic_micro,  # noqa: F401  (registration)
+    from .backends import (d1_systemone, fixture, fusion, heuristic_micro,  # noqa: F401
                            logit_read, rule_extract)
 
 
