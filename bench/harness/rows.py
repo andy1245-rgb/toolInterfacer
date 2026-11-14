@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import itertools
 import json
 import os
 from dataclasses import dataclass, field
@@ -217,8 +218,26 @@ def _localalexa_root(path: str | None) -> Path:
 
 
 @register_dataset("localalexa_intents")
-def localalexa_intents(path: str | None = None, options_from: str = "registry") -> Dataset:
-    """The 382-row, 17-intent task. ``group`` is the intent family from the row."""
+def localalexa_intents(path: str | None = None, options_from: str = "registry",
+                       group_by: str = "family") -> Dataset:
+    """The 382-row, 17-intent task.
+
+    ``group_by`` decides what a fold may not share, and it is the difference between a
+    measurement and a wall on this corpus:
+
+    ``family``
+        the seven-value ``family`` column in the file — *domains* (timers, lights,
+        knowledge). Five folds over seven domains withholds a whole domain each, so every
+        fold contains intents the training side has never seen: measured 0/382 out of fold,
+        which is the grouping failing rather than the arm.
+    ``phrasing``
+        the template that generated the row — 110 phrasing families. This is the grouping
+        the localAlexa ladder used, and the one that leaves a router something to learn from
+        while still holding the wording out.
+
+    The row's own ``family`` column stays in ``meta`` either way, so per-domain reporting
+    works under both.
+    """
     root = _localalexa_root(path)
     rows_path = root / "data/routing_382.json"
     if not rows_path.exists():
@@ -235,14 +254,103 @@ def localalexa_intents(path: str | None = None, options_from: str = "registry") 
             options = options + (none_route["id"],)
     else:
         options = tuple(sorted({r["tool"] for r in raw}))
-    rows = [
-        Row(id=f"a382-{i:03d}", text=r["text"], label=r["tool"],
-            group=r.get("family") or "unknown", options=options,
-            meta={"family": r.get("family")})
-        for i, r in enumerate(raw)
-    ]
+    if group_by not in ("family", "phrasing"):
+        raise DatasetError(
+            f"localalexa_intents: unknown group_by {group_by!r}; known: family, phrasing")
+    index = None
+    if group_by == "phrasing":
+        index = _localalexa_template_index(root)
+    rows = []
+    for i, r in enumerate(raw):
+        group = r.get("family") or "unknown"
+        if index is not None:
+            hit = index.get(r["text"])
+            group = hit[1] if hit else "__chitchat__"
+        rows.append(Row(id=f"a382-{i:03d}", text=r["text"], label=r["tool"], group=group,
+                        options=options, meta={"family": r.get("family")}))
     return Dataset("localalexa_intents", _validate(rows, "localalexa_intents"), options,
-                   str(rows_path), authored=True, sha256=file_sha256(rows_path))
+                   str(rows_path))
+
+
+def _localalexa_expand(tool: dict, template: str) -> list[str]:
+    """Every slot fill of one template, in slot-vocabulary product order."""
+    keys = list(tool.get("slots", {}))
+    if not keys:
+        return [template]
+    out = []
+    for combo in itertools.product(*[tool["slots"][k] for k in keys]):
+        text = template
+        for key, value in zip(keys, combo):
+            text = text.replace("{%s}" % key, value)
+        out.append(text)
+    return out
+
+
+def _localalexa_leaks(root: Path) -> dict[str, list[str]]:
+    """Every utterance -> *all* phrasing families that render it.
+
+    ``_localalexa_template_index`` keeps the first hit because that is what the phrasing
+    group is; the contamination filter needs every hit, because a reference is dropped when
+    *any* held-out family can render it, whichever tool the hit came from.
+    """
+    reg = json.loads((root / "data/registry.json").read_text(encoding="utf-8"))
+    leaks: dict[str, list[str]] = {}
+    for tool in reg["tools"]:
+        for template in tool.get("templates", ()):
+            for text in _localalexa_expand(tool, template):
+                families = leaks.setdefault(text, [])
+                if template not in families:
+                    families.append(template)
+    return leaks
+
+
+def _localalexa_template_index(root: Path) -> dict[str, tuple[str, str]]:
+    """Every renderable utterance -> (tool id, template). The phrasing-family key."""
+    reg = json.loads((root / "data/registry.json").read_text(encoding="utf-8"))
+    index: dict[str, tuple[str, str]] = {}
+    for tool in reg["tools"]:
+        for template in tool.get("templates", ()):
+            for text in _localalexa_expand(tool, template):
+                index.setdefault(text, (tool["id"], template))
+    return index
+
+
+@register_dataset("localalexa_refs")
+def localalexa_refs(path: str | None = None) -> Dataset:
+    """The 200 hand-written references this router trains on, as a *fit pool*.
+
+    Not a scoring set: these are the rows ``--fit-pool`` supplies so a grouped CV can hold
+    the phrasing families out of the *scored* rows while still training on the reference
+    pool, which is the protocol the localAlexa ladder measured. Training on the other folds
+    of the 382 instead gives the model more rows and easier ones — those rows are slot fills
+    of the very templates being held out — so the two are different experiments.
+
+    ``meta.leaks_into`` carries the phrasing families this reference is a *literal slot fill*
+    of. A fold that holds such a family out drops the reference with it, which is the same
+    contamination filter ``localalexa`` applies; without it a reference can hand the model the
+    exact wording it is about to be scored on.
+    """
+    root = _localalexa_root(path)
+    reg = json.loads((root / "data/registry.json").read_text(encoding="utf-8"))
+    options = tuple(t["id"] for t in reg["tools"])
+    none_route = reg.get("none_route") or {}
+    if isinstance(none_route, dict) and none_route.get("id"):
+        options = options + (none_route["id"],)
+    leaks = _localalexa_leaks(root)
+    rows = []
+    for tool in reg["tools"]:
+        for j, reference in enumerate(tool.get("references", ())):
+            rows.append(Row(
+                id=f"ref-{tool['id']}-{j:02d}", text=reference, label=tool["id"],
+                group="refs", options=options,
+                meta={"leaks_into": sorted(leaks.get(reference, []))}))
+    for j, reference in enumerate(none_route.get("references", ())):
+        rows.append(Row(
+            id=f"ref-none-{j:02d}", text=reference, label=none_route.get("id", "__none__"),
+            group="refs", options=options, meta={"leaks_into": []}))
+    rows_path = root / "data/registry.json"
+    return Dataset("localalexa_refs", _validate(rows, "localalexa_refs"), options,
+                   str(rows_path))
 
 
 @register_dataset("generic_csv")

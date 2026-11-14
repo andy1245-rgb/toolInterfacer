@@ -16,6 +16,7 @@ only tensors, strings, ints and dicts, so nothing has to be unpickled into code)
         "labels": ["op_a", "op_b", ...],   # head output order: logit i belongs to labels[i]
         "encoder": "sentence-transformers/all-MiniLM-L6-v2",  # optional, overrides the spec
         "pooling": "mean",                # "mean" or "cls"
+        "normalize": False,               # L2-normalise the pooled vector before the head
         "max_length": 128,                # optional
     }, path)
 
@@ -74,7 +75,7 @@ def _argmax(known: list[str], values: dict[str, float]) -> str:
     return min(known, key=lambda option: (-values[option], known.index(option), option))
 
 
-def _checkpoint_file(checkpoint: str) -> Path:
+def _checkpoint_file(checkpoint: str, allow_missing: bool = False) -> Path:
     path = Path(checkpoint) if checkpoint else Path("")
     if not str(checkpoint).strip():
         raise PredictorError(
@@ -87,6 +88,11 @@ def _checkpoint_file(checkpoint: str) -> Path:
         raise PredictorError(
             f"torch_text: {path} is a directory with no {' or '.join(CHECKPOINT_NAMES)} in it")
     if not path.is_file():
+        if allow_missing:
+            # with a trainer= the checkpoint is an output before it is an input: grouped CV
+            # builds a fresh predictor per fold and the trainer writes that fold's weights.
+            # Requiring the file up front would make training-from-scratch inexpressible.
+            return path
         raise PredictorError(f"torch_text: checkpoint {path} does not exist")
     return path
 
@@ -96,7 +102,7 @@ class TorchTextPredictor:
 
     def __init__(self, checkpoint: str, encoder: str = DEFAULT_ENCODER, device: str = "cpu",
                  max_length: int = 128, trainer: str = ""):
-        self.checkpoint = _checkpoint_file(checkpoint)
+        self.checkpoint = _checkpoint_file(checkpoint, allow_missing=bool(trainer))
         self.encoder = encoder or DEFAULT_ENCODER
         self.device = device or "cpu"
         self.max_length = int(max_length)
@@ -104,6 +110,7 @@ class TorchTextPredictor:
         self.trainer_fn = None
         self.labels: tuple[str, ...] = ()
         self.pooling = "mean"
+        self.normalize = False
         self.encoder_state: dict[str, int] = {}
         self._torch = None
         self.tokenizer = None
@@ -139,6 +146,7 @@ class TorchTextPredictor:
                 f"contract is a dict with state_dict/labels/encoder/pooling, saveable with "
                 f"weights_only=True (tensors, str, int, dict only)") from exc
         state_dict, labels, pooling, encoder_name, max_length = self._validate(blob)
+        normalize = bool(blob.get("normalize", False))
         try:
             tokenizer = AutoTokenizer.from_pretrained(encoder_name)
             encoder_model = AutoModel.from_pretrained(encoder_name)
@@ -176,6 +184,7 @@ class TorchTextPredictor:
         self.head = head
         self.labels = labels
         self.pooling = pooling
+        self.normalize = normalize or self.normalize
         self.max_length = max_length
         self.encoder_state = encoder_state
 
@@ -262,6 +271,11 @@ class TorchTextPredictor:
             else:
                 mask = encoded["attention_mask"].unsqueeze(-1).to(hidden.dtype)
                 pooled = (hidden * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1e-6)
+            if self.normalize:
+                # sentence-transformers' Normalize module sits between pooling and the head;
+                # a SetFit model is trained on unit-norm embeddings, so scoring it without
+                # this is scoring a different model
+                pooled = torch.nn.functional.normalize(pooled, p=2, dim=1)
             logits = self.head(pooled)
             weights = torch.softmax(logits.float(), dim=-1)[0].tolist()
         return {label: float(p) for label, p in zip(self.labels, weights)}
@@ -332,7 +346,8 @@ class TorchTextPredictor:
 
 @register("torch_text")
 def build(checkpoint: str = "", encoder: str = DEFAULT_ENCODER, device: str = "cpu",
-          max_length: str = "128", trainer: str = "", **_kw) -> TorchTextPredictor:
+          max_length: str = "128", trainer: str = "", normalize: str = "",
+          **_kw) -> TorchTextPredictor:
     try:
         max_len = int(max_length)
     except ValueError as exc:
@@ -340,7 +355,12 @@ def build(checkpoint: str = "", encoder: str = DEFAULT_ENCODER, device: str = "c
             f"torch_text: max_length={max_length!r} must be an int: {exc}") from exc
     if max_len < 1:
         raise PredictorError(f"torch_text: max_length={max_len} must be at least 1")
+    if normalize not in ("", "true", "false", "1", "0", "yes", "no"):
+        raise PredictorError(
+            f"torch_text: normalize={normalize!r}; use true/false (or leave it to the checkpoint)")
     predictor = TorchTextPredictor(checkpoint=checkpoint, encoder=encoder, device=device,
                                    max_length=max_len, trainer=trainer)
+    if normalize:
+        predictor.normalize = normalize in ("true", "1", "yes")
     _require("building a spec")
     return predictor

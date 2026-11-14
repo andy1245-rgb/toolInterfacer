@@ -62,7 +62,7 @@ from ..rows import Row
 INSTALL = "python3 -m pip install scikit-learn"
 
 MODES = ("vote", "mean", "stacked")
-ENSEMBLE_KEYS = ("members", "mode", "folds")
+ENSEMBLE_KEYS = ("members", "mode", "folds", "standardise")
 MEMBER_SEPARATOR = ";;"
 MEMBER_PIPE = "~"
 
@@ -230,10 +230,29 @@ def member_error_correlation(records_by_member: dict[str, list]) -> dict:
 
 # ---------------------------------------------------------------- the predictor
 
+def _standardise(shares: dict[str, float]) -> dict[str, float]:
+    """Row-standardise one member's distribution: ``(v - mean) / sd``, in z-score space.
+
+    The ordering survives and the scale does not, which is the point: it is what stops the
+    sharpest member from deciding every row alone. The output sums to roughly zero and is
+    *not* a distribution — ``_mean`` softmaxes the average of these at the end. Shifting and
+    renormalising each member here instead would rescale every member's vote by its own
+    spread, which is a different aggregation and gives a different answer on about 2% of
+    rows on this corpus.
+    """
+    values = list(shares.values())
+    count = len(values)
+    mean = sum(values) / count
+    variance = sum((value - mean) * (value - mean) for value in values) / count
+    spread = variance ** 0.5 or 1.0
+    return {option: (value - mean) / spread for option, value in shares.items()}
+
+
 class EnsemblePredictor:
     """Members composed by ``vote``, ``mean`` or a ``stacked`` meta-learner."""
 
-    def __init__(self, members: list[tuple[str, str]], mode: str = "vote", folds: int = 5):
+    def __init__(self, members: list[tuple[str, str]], mode: str = "vote", folds: int = 5,
+                 standardise: bool = False):
         if not members:
             raise PredictorError("ensemble: no members")
         self.member_specs: dict[str, str] = {name: spec for name, spec in members}
@@ -241,6 +260,7 @@ class EnsemblePredictor:
         self.members: dict[str, object] = {name: build_predictor(spec)
                                            for name, spec in members}
         self.mode = mode
+        self.standardise = standardise
         self.folds = folds
         self.meta = None
         self.meta_classes: tuple[str, ...] = ()
@@ -248,7 +268,8 @@ class EnsemblePredictor:
         self.fit_skipped: dict[str, str] = {}
         self.member_failures: dict[str, int] = {}
         self._calls: list[_Call] = []
-        self.name = f"ensemble:{mode}({','.join(self.member_names)})"
+        suffix = ":standardised" if standardise else ""
+        self.name = f"ensemble:{mode}({','.join(self.member_names)}){suffix}"
 
     def __repr__(self) -> str:
         return f"EnsemblePredictor({self.name!r}, members={list(self.member_names)})"
@@ -458,8 +479,16 @@ class EnsemblePredictor:
                     f"options {known}")
             # averaged per option over the members that cover it, so a member trained on a
             # different label space does not silently down-weight the options it never saw
+            shares = {o: prediction.probabilities[o] / total for o in known}
+            if self.standardise:
+                # Row-standardise this member's distribution before it votes. A probability
+                # average hands the whole vote to whichever member is sharpest, which on this
+                # corpus is the linear model at 0.1-0.9 against an encoder head at 0.2-0.35:
+                # without this the ensemble is the linear arm plus a cost. Standardising needs
+                # no calibration set, and it is recorded on the arm name.
+                shares = _standardise(shares)
             for option in known:
-                totals[option] += prediction.probabilities[option] / total
+                totals[option] += shares[option]
                 cover[option] += 1
         if not any(cover.values()):
             raise PredictorError(
@@ -468,6 +497,14 @@ class EnsemblePredictor:
                 f"calibrate a linsvc or use mode=vote")
         averaged = {option: totals[option] / cover[option]
                     for option in offered if cover[option]}
+        if self.standardise:
+            # z-scores average to a vector that is not a distribution; one softmax at the end
+            # makes it one, and leaves the argmax where the averaged scores put it
+            peak = max(averaged.values())
+            exponentiated = {option: math.exp(value - peak) for option, value in averaged.items()}
+            norm = sum(exponentiated.values())
+            probabilities = {option: value / norm for option, value in exponentiated.items()}
+            return _argmax(list(probabilities), probabilities), probabilities
         norm = sum(averaged.values())
         if not norm > 0.0:
             raise PredictorError(
@@ -571,4 +608,13 @@ def build(**fragments: str) -> EnsemblePredictor:
         raise PredictorError(f"ensemble: folds={folds} must be at least 2 for an out-of-fold fit")
     if mode == "stacked":
         _require_sklearn("building mode=stacked")
-    return EnsemblePredictor(_split_members(member_spec), mode=mode, folds=folds)
+    flag = own.get("standardise", "")
+    if flag not in ("", "true", "false", "1", "0", "yes", "no"):
+        raise PredictorError(f"ensemble: standardise={flag!r}; use true or false")
+    standardise = flag in ("true", "1", "yes")
+    if standardise and mode != "mean":
+        raise PredictorError(
+            "ensemble: standardise applies to mode=mean, where members are averaged as "
+            "distributions; mode=%r has nothing to standardise" % mode)
+    return EnsemblePredictor(_split_members(member_spec), mode=mode, folds=folds,
+                             standardise=standardise)
