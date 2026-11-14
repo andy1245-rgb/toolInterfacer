@@ -49,10 +49,17 @@ class LlamaSystemOne:
         return Prediction(choice=choice, probabilities=answer.get("probabilities") or None,
                           latency_ms=latency)
 
-    def predict_for(self, row) -> Prediction:
+    def predict_for(self, row, options: tuple[str, ...] | None = None) -> Prediction:
+        """Ask the served model, presenting the options in the order it is given.
+
+        The order is the instrument in every ordering experiment, so this method takes it: without
+        the second parameter `honours_order` is False and `--order` refuses the arm, which is how
+        the live order arms became unrunnable after the refusal guard went in.
+        """
+        offered = tuple(options or row.options)
         descriptions = (row.meta or {}).get("descriptions") or {}
-        criteria = {o: descriptions.get(o, o) for o in row.options}
-        return self._ask(row.text, criteria, row.options)
+        criteria = {o: descriptions.get(o, o) for o in offered}
+        return self._ask(row.text, criteria, offered)
 
     def predict(self, text: str, options: tuple[str, ...]) -> Prediction:
         return self._ask(text, {o: o for o in options}, options)

@@ -111,6 +111,7 @@ def run_plan(steps: list[Step], llm_params: dict[str, Any], budget: Budget,
                 continue
             art = _run_one(step, llm_params, store, hops, assumptions, run_op_fn)
         except Exception as exc:  # noqa: BLE001 — runner converts op errors into structured status
+            _shadow_outcome(op=step.op, ok=False, step=step.id, error=str(exc))
             if not step.optional:
                 return finish("error", str(exc))
             degraded = True
@@ -149,7 +150,18 @@ def _run_one(step: Step, llm_params: dict[str, Any], store: ArtifactStore,
     art = store.put(step.id, step.op, kind, data, conf)
     hops.append({"step": step.id, "op": step.op, "ms": ms, "conf": conf,
                  "artifact_summary": _summarize(kind, data)})
+    _shadow_outcome(op=step.op, ok=True, ms=ms, step=step.id)
     return art
+
+
+def _shadow_outcome(*, op: str, ok: bool, ms: float = 0.0, step: str = "",
+                    error: str | None = None) -> None:
+    """Tell the shadow log what the chosen op did. No-op when nothing is being shadowed."""
+    try:
+        from ..decide import shadow  # noqa: PLC0415 - only reached on a real op execution
+        shadow.note_outcome(op=op, ok=ok, ms=ms, step=step, error=error)
+    except Exception:  # noqa: BLE001 - measurement never gates a step
+        pass
 
 
 def _run_over(step: Step, llm_params: dict[str, Any], store: ArtifactStore,

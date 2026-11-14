@@ -38,8 +38,12 @@ def resolve(kind: str) -> DecideBackend:
     if kind != "choice":
         return _mapped(kind)
     primary = make_backend("cascade") if cascade_enabled() else _mapped(kind)
-    return FastPathBackend(primary, gate=pre_gate(),
-                           cache=cache_mod.shared() if cache_mod.enabled() else None)
+    backend = FastPathBackend(primary, gate=pre_gate(),
+                              cache=cache_mod.shared() if cache_mod.enabled() else None)
+    # shadow wraps the *resolved* backend, so it sees pre-gate and cache answers too, and it
+    # returns that backend object untouched when decide.shadow.enabled is false
+    from . import shadow  # noqa: PLC0415 - keeps the import off every non-choice path
+    return shadow.wrap(backend)
 
 
 def _mapped(kind: str) -> DecideBackend:
