@@ -1,0 +1,10 @@
+{
+  "arm": "r_fusion",
+  "note": "Option 3 from docs/fusion-2026-11-10.md, declared before the run: web_search and web_fetch are the base arm's ops. When the base's own top choice is one of those two, the member is not consulted and the base answers alone (meta fusion=base_protected). On the other six ops the equal-weight mean is unchanged from bench/results/fusion-2026-11-10/prereg.json. No mask, no weights tuned, same member spec, same folds, same seeds.",
+  "conditions": [
+    {"name": "C1 delta >= +20 rows", "expr": "delta >= 20"},
+    {"name": "C2 mcnemar_p < 0.01", "expr": "mcnemar_p < 0.01"},
+    {"name": "C3 min over labels of net >= -3", "expr": "min_label_net >= -3"},
+    {"name": "C4 delta > 0 in >= 4 of 5 fold seeds", "expr": "seeds_positive >= 4"}
+  ]
+}

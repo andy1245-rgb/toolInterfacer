@@ -339,3 +339,42 @@ def test_the_cue_feature_scale_is_real_and_changes_the_member():
     p2 = scaled.predict(rows[0].text, rows[0].options)
     assert p1.probabilities is not None and p2.probabilities is not None
     assert p1.probabilities != p2.probabilities
+
+
+# ------------------------------------------------------------------ option 3: the base owns two ops
+
+def test_the_base_owns_the_labels_it_is_given(tmp_path):
+    base_path = _write_base(tmp_path, [("guarded", "b", {"a": 0.1, "b": 0.9}),
+                                       ("open", "a", {"a": 0.6, "b": 0.4})])
+    fusion = build(f"fusion|member=fake|base_arm=base|base_path={base_path}"
+                   f"|weights=0.5|protect=b")
+    fusion.member = StubMember("a", {"a": 0.95, "b": 0.05})
+    owned = fusion.predict_for(_row("guarded", "b"))
+    assert owned.choice == "b" and owned.meta["fusion"] == "base_protected", (
+        "a protected label must not be overruled by the member, however confident it is")
+    free = fusion.predict_for(_row("open", "a"))
+    assert free.meta["fusion"] == "mean", "an unprotected label must still be blended"
+
+
+def test_protection_never_hides_a_member_that_disagrees(tmp_path):
+    """The protection is visible in the meta, not silent — the whole point of this harness."""
+    base_path = _write_base(tmp_path, [("r1", "b", {"a": 0.05, "b": 0.95})])
+    fusion = build(f"fusion|member=fake|base_arm=base|base_path={base_path}|protect=b")
+    fusion.member = StubMember("a", {"a": 0.99, "b": 0.01})
+    pred = fusion.predict_for(_row("r1", "b"))
+    assert pred.meta == {"fusion": "base_protected"}
+    assert pred.probabilities == pytest.approx({"a": 0.05, "b": 0.95})
+
+
+def test_the_protected_set_is_recorded_in_the_artifact(tmp_path):
+    pytest.importorskip("sklearn")
+    out = tmp_path / "art"
+    rc = run.main(["--dataset", "tool_routing", "--limit", "40",
+                   "--arm", "b=recorded|arm=floor_a",
+                   "--arm", "f=fusion|member=sklearn_text~vectorizer=tfidf_word~clf=logreg"
+                            "|protect=web_search,web_fetch",
+                   "--reference", "b", "--cv", "2", "--out", str(out)])
+    assert rc == 0
+    described = json.loads((out / "summary.json").read_text())["arms"]["f"]["grouped_cv"]
+    per_fold = described["per_seed"]["0"]["fold_predictors"]
+    assert per_fold and per_fold[0]["protect"] == ["web_search", "web_fetch"]

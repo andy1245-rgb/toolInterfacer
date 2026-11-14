@@ -38,7 +38,7 @@ from ..rows import Row
 MODES = ("mean", "gate")
 MASKS = ("auto", "off")
 FUSION_KEYS = ("member", "mode", "base", "base_arm", "base_path", "t", "weights",
-               "mask", "mask_folds", "mask_min_rows", "seed")
+               "mask", "mask_folds", "mask_min_rows", "seed", "protect")
 MEMBER_PIPE = "~"
 DEFAULT_BASE = "recorded|arm=floor_a"
 DEFAULT_BASE_PATH = "bench/results/p3-transfer/rows.jsonl"
@@ -96,7 +96,8 @@ class FusionPredictor:
     def __init__(self, member: str = "", mode: str = "mean", base: str = DEFAULT_BASE,
                  base_arm: str = "floor_a", base_path: str = DEFAULT_BASE_PATH,
                  t: str = "0.38", weights: str = "0.5", mask: str = "off",
-                 mask_folds: str = "5", mask_min_rows: str = "10", seed: str = "0") -> None:
+                 mask_folds: str = "5", mask_min_rows: str = "10", seed: str = "0",
+                 protect: str = "") -> None:
         if not member.strip():
             raise PredictorError(
                 "fusion: member= is empty; expected member=SPEC, where SPEC is any predictor "
@@ -128,6 +129,11 @@ class FusionPredictor:
             raise PredictorError(
                 f"fusion: mask_folds={mask_folds!r} mask_min_rows={mask_min_rows!r} "
                 f"seed={seed!r} must be integers: {exc}") from None
+        # Labels the base owns outright: when the base's own top choice is one of these, the
+        # member is not consulted. This is the narrow form of "route these ops by the 3B alone",
+        # and the trigger has to be the base's answer rather than the true label, because the
+        # true label is exactly what is unavailable at prediction time.
+        self.protect = tuple(p.strip() for p in str(protect).split(",") if p.strip())
         self.mask_labels: tuple[str, ...] | None = None
         self.mask_tally: dict[str, list[int]] = {}
         self.member = build_predictor(self.member_spec)
@@ -193,6 +199,7 @@ class FusionPredictor:
         return {"member": self.member_spec, "mode": self.mode,
                 "base": self.base_spec, "base_weight": self.base_weight,
                 "mask": self.mask, "mask_labels": list(self.mask_labels or ()),
+                "protect": list(self.protect),
                 "mask_tally": {k: {"n": v[0], "member_right": v[1], "base_right": v[2]}
                                for k, v in sorted(self.mask_tally.items())}}
 
@@ -214,6 +221,14 @@ class FusionPredictor:
             raise PredictorError(
                 f"fusion: the base distribution covers none of the {len(offered)} offered "
                 f"options on row {row.id!r}")
+
+        base_dist = {o: float(base["probabilities"][o]) for o in known}
+        if self.protect:
+            base_choice = _argmax(known, base_dist)
+            if base_choice in self.protect:
+                return Prediction(choice=base_choice, probabilities=base_dist,
+                                  latency_ms=(time.perf_counter() - t0) * 1000.0,
+                                  meta={"fusion": "base_protected"})
 
         if self.mode == "gate":
             base_dist = {o: float(base["probabilities"][o]) for o in known}
@@ -278,7 +293,8 @@ class FusionPredictor:
 def build(member: str = "", mode: str = "mean", base: str = DEFAULT_BASE,
           base_arm: str = "", base_path: str = DEFAULT_BASE_PATH, t: str = "0.38",
           weights: str = "0.5", mask: str = "off", mask_folds: str = "5",
-          mask_min_rows: str = "10", seed: str = "0", **_kw) -> FusionPredictor:
+          mask_min_rows: str = "10", seed: str = "0", protect: str = "",
+          **_kw) -> FusionPredictor:
     if _kw:
         raise PredictorError(
             f"fusion: unknown key(s) {sorted(_kw)}; known: {', '.join(FUSION_KEYS)}. A member or "
@@ -286,4 +302,5 @@ def build(member: str = "", mode: str = "mean", base: str = DEFAULT_BASE,
             f"nesting was lost")
     return FusionPredictor(member=member, mode=mode, base=base, base_arm=base_arm,
                            base_path=base_path, t=t, weights=weights, mask=mask,
-                           mask_folds=mask_folds, mask_min_rows=mask_min_rows, seed=seed)
+                           mask_folds=mask_folds, mask_min_rows=mask_min_rows, seed=seed,
+                           protect=protect)

@@ -1,0 +1,3048 @@
+{
+ "arms": {
+  "floor_a": {
+   "accuracy": {
+    "accuracy": 0.7831325301204819,
+    "correct": 325,
+    "n": 415,
+    "wilson95": [
+     0.7409830449067595,
+     0.8200884418120454
+    ]
+   },
+   "calibration": {
+    "brier": 0.3235672320315567,
+    "ece": 0.04577245637503527,
+    "n_scored": 415,
+    "n_skipped": 0,
+    "nll": 0.7988400723381838
+   },
+   "confusion": {
+    "decide_extract": {
+     "decide_extract": 21,
+     "decide_pick": 3,
+     "filesys_glob": 7,
+     "filesys_grep": 4,
+     "filesys_read": 13,
+     "web_search": 3
+    },
+    "decide_pick": {
+     "decide_pick": 51,
+     "filesys_glob": 1
+    },
+    "filesys_glob": {
+     "decide_extract": 3,
+     "filesys_glob": 44,
+     "filesys_grep": 1,
+     "filesys_read": 2,
+     "web_fetch": 2
+    },
+    "filesys_grep": {
+     "decide_extract": 1,
+     "decide_pick": 1,
+     "filesys_glob": 7,
+     "filesys_grep": 36,
+     "web_fetch": 4,
+     "web_search": 3
+    },
+    "filesys_read": {
+     "decide_extract": 4,
+     "decide_pick": 1,
+     "filesys_glob": 2,
+     "filesys_read": 43,
+     "web_fetch": 1,
+     "web_search": 1
+    },
+    "reddit_digest": {
+     "decide_pick": 1,
+     "reddit_digest": 32,
+     "web_fetch": 1,
+     "web_search": 18
+    },
+    "web_fetch": {
+     "filesys_grep": 1,
+     "filesys_read": 1,
+     "web_fetch": 49,
+     "web_search": 1
+    },
+    "web_search": {
+     "decide_extract": 1,
+     "decide_pick": 2,
+     "web_search": 49
+    }
+   },
+   "coverage_at_precision90": {
+    "coverage": 0.7373493975903614,
+    "n_accepted": 306,
+    "precision": 0.9019607843137255,
+    "threshold": 0.5924574720598056
+   },
+   "grouped_cv": null,
+   "groups": {
+    "t1:decide_extract:01": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:02": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t1:decide_extract:03": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:04": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:decide_extract:05": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:06": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:07": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:09": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:10": {
+     "accuracy": 0.75,
+     "correct": 3,
+     "n": 4
+    },
+    "t1:decide_extract:11": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:12": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t1:decide_extract:13": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t1:decide_extract:14": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:01": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:03": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:04": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:05": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:06": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:07": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:08": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:decide_pick:09": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:decide_pick:10": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:11": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:12": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:13": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:decide_pick:14": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:filesys_glob:03": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:filesys_glob:04": {
+     "accuracy": 1.0,
+     "correct": 5,
+     "n": 5
+    },
+    "t1:filesys_glob:06": {
+     "accuracy": 1.0,
+     "correct": 5,
+     "n": 5
+    },
+    "t1:filesys_glob:09": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:filesys_grep:01": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:filesys_grep:12": {
+     "accuracy": 1.0,
+     "correct": 5,
+     "n": 5
+    },
+    "t1:filesys_grep:13": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:filesys_grep:14": {
+     "accuracy": 0.2,
+     "correct": 1,
+     "n": 5
+    },
+    "t1:filesys_read:06": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:filesys_read:09": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:filesys_read:13": {
+     "accuracy": 0.6666666666666666,
+     "correct": 4,
+     "n": 6
+    },
+    "t1:filesys_read:14": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:reddit_digest:03": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 4
+    },
+    "t1:reddit_digest:04": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:reddit_digest:07": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:reddit_digest:11": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:web_fetch:05": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:web_fetch:06": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:web_fetch:07": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:web_fetch:08": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:web_fetch:09": {
+     "accuracy": 1.0,
+     "correct": 2,
+     "n": 2
+    },
+    "t1:web_fetch:11": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:web_search:03": {
+     "accuracy": 0.8333333333333334,
+     "correct": 5,
+     "n": 6
+    },
+    "t1:web_search:06": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:web_search:11": {
+     "accuracy": 0.8333333333333334,
+     "correct": 5,
+     "n": 6
+    },
+    "t1:web_search:14": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t2:decide_extract:01": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:decide_extract:02": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:decide_extract:03": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t2:decide_extract:04": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t2:decide_extract:06": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t2:decide_extract:07": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:decide_extract:08": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t2:decide_extract:09": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:decide_extract:11": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t2:decide_extract:13": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:decide_pick:01": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t2:decide_pick:05": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t2:decide_pick:07": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:decide_pick:11": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:filesys_glob:09": {
+     "accuracy": 0.2,
+     "correct": 1,
+     "n": 5
+    },
+    "t2:filesys_glob:16": {
+     "accuracy": 0.2,
+     "correct": 1,
+     "n": 5
+    },
+    "t2:filesys_grep:01": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t2:filesys_grep:05": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 6
+    },
+    "t2:filesys_read:05": {
+     "accuracy": 0.4,
+     "correct": 2,
+     "n": 5
+    },
+    "t2:filesys_read:12": {
+     "accuracy": 0.2,
+     "correct": 1,
+     "n": 5
+    },
+    "t2:reddit_digest:07": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 6
+    },
+    "t2:reddit_digest:08": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 4
+    },
+    "t2:web_fetch:01": {
+     "accuracy": 0.75,
+     "correct": 3,
+     "n": 4
+    },
+    "t2:web_fetch:04": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t2:web_fetch:07": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:web_fetch:08": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t2:web_fetch:09": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:web_fetch:10": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:web_fetch:11": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:web_search:03": {
+     "accuracy": 0.8333333333333334,
+     "correct": 5,
+     "n": 6
+    },
+    "t2:web_search:09": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:decide_extract->decide_pick:03": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t3:decide_extract->decide_pick:06": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t3:decide_extract->decide_pick:08": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t3:decide_extract->filesys_glob:04": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t3:decide_extract->filesys_glob:07": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t3:decide_extract->filesys_glob:08": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t3:decide_extract->filesys_read:01": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 6
+    },
+    "t3:decide_extract->filesys_read:04": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 2
+    },
+    "t3:decide_extract->filesys_read:07": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 6
+    },
+    "t3:decide_extract->web_search:05": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_extract->web_search:08": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t3:decide_pick->decide_extract:01": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->decide_extract:02": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->decide_extract:04": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->decide_extract:05": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->decide_extract:06": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->decide_extract:07": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->decide_extract:08": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->filesys_glob:01": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->filesys_glob:02": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:decide_pick->filesys_glob:04": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:decide_pick->filesys_glob:05": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->filesys_glob:06": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->filesys_glob:07": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t3:decide_pick->filesys_glob:08": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:filesys_glob->decide_extract:03": {
+     "accuracy": 1.0,
+     "correct": 5,
+     "n": 5
+    },
+    "t3:filesys_glob->decide_extract:07": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:filesys_glob->decide_pick:03": {
+     "accuracy": 1.0,
+     "correct": 5,
+     "n": 5
+    },
+    "t3:filesys_glob->filesys_grep:03": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:filesys_grep->filesys_glob:02": {
+     "accuracy": 0.5,
+     "correct": 3,
+     "n": 6
+    },
+    "t3:filesys_grep->filesys_read:02": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:filesys_grep->web_fetch:03": {
+     "accuracy": 0.4,
+     "correct": 2,
+     "n": 5
+    },
+    "t3:filesys_grep->web_search:01": {
+     "accuracy": 1.0,
+     "correct": 3,
+     "n": 3
+    },
+    "t3:filesys_read->decide_extract:02": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:filesys_read->decide_extract:06": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:filesys_read->filesys_grep:01": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:filesys_read->filesys_grep:02": {
+     "accuracy": 1.0,
+     "correct": 2,
+     "n": 2
+    },
+    "t3:reddit_digest->web_fetch:01": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:reddit_digest->web_fetch:06": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 6
+    },
+    "t3:reddit_digest->web_search:02": {
+     "accuracy": 1.0,
+     "correct": 2,
+     "n": 2
+    },
+    "t3:reddit_digest->web_search:08": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:web_fetch->filesys_grep:01": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:web_fetch->filesys_grep:07": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:web_fetch->filesys_grep:08": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:web_fetch->reddit_digest:07": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:web_fetch->reddit_digest:08": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:web_search->decide_extract:04": {
+     "accuracy": 1.0,
+     "correct": 2,
+     "n": 2
+    },
+    "t3:web_search->decide_extract:06": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:web_search->filesys_grep:08": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:web_search->reddit_digest:07": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    }
+   },
+   "latency": {
+    "max": 3201.5,
+    "mean": 2699.013253012048,
+    "n": 415,
+    "p50": 2714.0,
+    "p95": 3044.4
+   },
+   "n_abstained": 0,
+   "n_answered": 415,
+   "n_errors": 0,
+   "order": {
+    "n_distinct_orders": 1,
+    "order_sha": [
+     "6b70f586ec061715"
+    ]
+   },
+   "spec": "recorded|arm=floor_a"
+  },
+  "r_fusion": {
+   "accuracy": {
+    "accuracy": 0.8409638554216867,
+    "correct": 349,
+    "n": 415,
+    "wilson95": [
+     0.8026738030714043,
+     0.8729995192325183
+    ]
+   },
+   "calibration": {
+    "brier": 0.2687666475197354,
+    "ece": 0.11485407590062231,
+    "n_scored": 415,
+    "n_skipped": 0,
+    "nll": 0.6286065956154538
+   },
+   "confusion": {
+    "decide_extract": {
+     "decide_extract": 31,
+     "decide_pick": 2,
+     "filesys_glob": 7,
+     "filesys_read": 7,
+     "web_search": 4
+    },
+    "decide_pick": {
+     "decide_pick": 51,
+     "filesys_glob": 1
+    },
+    "filesys_glob": {
+     "decide_extract": 1,
+     "filesys_glob": 49,
+     "web_fetch": 2
+    },
+    "filesys_grep": {
+     "filesys_glob": 3,
+     "filesys_grep": 40,
+     "filesys_read": 1,
+     "web_fetch": 4,
+     "web_search": 4
+    },
+    "filesys_read": {
+     "decide_pick": 1,
+     "filesys_glob": 1,
+     "filesys_grep": 1,
+     "filesys_read": 46,
+     "web_fetch": 1,
+     "web_search": 2
+    },
+    "reddit_digest": {
+     "reddit_digest": 33,
+     "web_fetch": 1,
+     "web_search": 18
+    },
+    "web_fetch": {
+     "decide_extract": 1,
+     "filesys_grep": 1,
+     "web_fetch": 49,
+     "web_search": 1
+    },
+    "web_search": {
+     "decide_pick": 2,
+     "web_search": 50
+    }
+   },
+   "coverage_at_precision90": {
+    "coverage": 0.8963855421686747,
+    "n_accepted": 372,
+    "precision": 0.9005376344086021,
+    "threshold": 0.3951247721817111
+   },
+   "grouped_cv": {
+    "folds": 5,
+    "n_groups": 133,
+    "n_labels": 8,
+    "per_seed": {
+     "0": {
+      "fold_of": {
+       "t1:decide_extract:01": 3,
+       "t1:decide_extract:02": 3,
+       "t1:decide_extract:03": 3,
+       "t1:decide_extract:04": 4,
+       "t1:decide_extract:05": 0,
+       "t1:decide_extract:06": 4,
+       "t1:decide_extract:07": 2,
+       "t1:decide_extract:09": 2,
+       "t1:decide_extract:10": 3,
+       "t1:decide_extract:11": 4,
+       "t1:decide_extract:12": 1,
+       "t1:decide_extract:13": 4,
+       "t1:decide_extract:14": 3,
+       "t1:decide_pick:01": 2,
+       "t1:decide_pick:03": 1,
+       "t1:decide_pick:04": 1,
+       "t1:decide_pick:05": 0,
+       "t1:decide_pick:06": 4,
+       "t1:decide_pick:07": 4,
+       "t1:decide_pick:08": 0,
+       "t1:decide_pick:09": 4,
+       "t1:decide_pick:10": 3,
+       "t1:decide_pick:11": 0,
+       "t1:decide_pick:12": 2,
+       "t1:decide_pick:13": 4,
+       "t1:decide_pick:14": 0,
+       "t1:filesys_glob:03": 0,
+       "t1:filesys_glob:04": 4,
+       "t1:filesys_glob:06": 2,
+       "t1:filesys_glob:09": 2,
+       "t1:filesys_grep:01": 0,
+       "t1:filesys_grep:12": 2,
+       "t1:filesys_grep:13": 1,
+       "t1:filesys_grep:14": 4,
+       "t1:filesys_read:06": 4,
+       "t1:filesys_read:09": 4,
+       "t1:filesys_read:13": 1,
+       "t1:filesys_read:14": 1,
+       "t1:reddit_digest:03": 4,
+       "t1:reddit_digest:04": 4,
+       "t1:reddit_digest:07": 0,
+       "t1:reddit_digest:11": 2,
+       "t1:web_fetch:05": 3,
+       "t1:web_fetch:06": 0,
+       "t1:web_fetch:07": 1,
+       "t1:web_fetch:08": 4,
+       "t1:web_fetch:09": 0,
+       "t1:web_fetch:11": 0,
+       "t1:web_search:03": 1,
+       "t1:web_search:06": 2,
+       "t1:web_search:11": 4,
+       "t1:web_search:14": 2,
+       "t2:decide_extract:01": 2,
+       "t2:decide_extract:02": 2,
+       "t2:decide_extract:03": 1,
+       "t2:decide_extract:04": 4,
+       "t2:decide_extract:06": 0,
+       "t2:decide_extract:07": 4,
+       "t2:decide_extract:08": 2,
+       "t2:decide_extract:09": 0,
+       "t2:decide_extract:11": 4,
+       "t2:decide_extract:13": 1,
+       "t2:decide_pick:01": 1,
+       "t2:decide_pick:05": 3,
+       "t2:decide_pick:07": 3,
+       "t2:decide_pick:11": 3,
+       "t2:filesys_glob:09": 1,
+       "t2:filesys_glob:16": 1,
+       "t2:filesys_grep:01": 1,
+       "t2:filesys_grep:05": 3,
+       "t2:filesys_read:05": 3,
+       "t2:filesys_read:12": 0,
+       "t2:reddit_digest:07": 0,
+       "t2:reddit_digest:08": 3,
+       "t2:web_fetch:01": 3,
+       "t2:web_fetch:04": 2,
+       "t2:web_fetch:07": 3,
+       "t2:web_fetch:08": 2,
+       "t2:web_fetch:09": 4,
+       "t2:web_fetch:10": 4,
+       "t2:web_fetch:11": 3,
+       "t2:web_search:03": 1,
+       "t2:web_search:09": 0,
+       "t3:decide_extract->decide_pick:03": 4,
+       "t3:decide_extract->decide_pick:06": 2,
+       "t3:decide_extract->decide_pick:08": 3,
+       "t3:decide_extract->filesys_glob:04": 3,
+       "t3:decide_extract->filesys_glob:07": 1,
+       "t3:decide_extract->filesys_glob:08": 0,
+       "t3:decide_extract->filesys_read:01": 0,
+       "t3:decide_extract->filesys_read:04": 2,
+       "t3:decide_extract->filesys_read:07": 1,
+       "t3:decide_extract->web_search:05": 2,
+       "t3:decide_extract->web_search:08": 2,
+       "t3:decide_pick->decide_extract:01": 1,
+       "t3:decide_pick->decide_extract:02": 3,
+       "t3:decide_pick->decide_extract:04": 1,
+       "t3:decide_pick->decide_extract:05": 2,
+       "t3:decide_pick->decide_extract:06": 0,
+       "t3:decide_pick->decide_extract:07": 3,
+       "t3:decide_pick->decide_extract:08": 1,
+       "t3:decide_pick->filesys_glob:01": 3,
+       "t3:decide_pick->filesys_glob:02": 2,
+       "t3:decide_pick->filesys_glob:04": 2,
+       "t3:decide_pick->filesys_glob:05": 1,
+       "t3:decide_pick->filesys_glob:06": 0,
+       "t3:decide_pick->filesys_glob:07": 0,
+       "t3:decide_pick->filesys_glob:08": 0,
+       "t3:filesys_glob->decide_extract:03": 3,
+       "t3:filesys_glob->decide_extract:07": 0,
+       "t3:filesys_glob->decide_pick:03": 4,
+       "t3:filesys_glob->filesys_grep:03": 3,
+       "t3:filesys_grep->filesys_glob:02": 2,
+       "t3:filesys_grep->filesys_read:02": 4,
+       "t3:filesys_grep->web_fetch:03": 3,
+       "t3:filesys_grep->web_search:01": 0,
+       "t3:filesys_read->decide_extract:02": 2,
+       "t3:filesys_read->decide_extract:06": 3,
+       "t3:filesys_read->filesys_grep:01": 0,
+       "t3:filesys_read->filesys_grep:02": 2,
+       "t3:reddit_digest->web_fetch:01": 3,
+       "t3:reddit_digest->web_fetch:06": 1,
+       "t3:reddit_digest->web_search:02": 1,
+       "t3:reddit_digest->web_search:08": 2,
+       "t3:web_fetch->filesys_grep:01": 1,
+       "t3:web_fetch->filesys_grep:07": 4,
+       "t3:web_fetch->filesys_grep:08": 2,
+       "t3:web_fetch->reddit_digest:07": 1,
+       "t3:web_fetch->reddit_digest:08": 2,
+       "t3:web_search->decide_extract:04": 4,
+       "t3:web_search->decide_extract:06": 3,
+       "t3:web_search->filesys_grep:08": 3,
+       "t3:web_search->reddit_digest:07": 0
+      },
+      "fold_predictors": [
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 0,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 1,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 2,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 3,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 4,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       }
+      ],
+      "oof_accuracy": {
+       "accuracy": 0.8409638554216867,
+       "correct": 349,
+       "n": 415,
+       "wilson95": [
+        0.8026738030714043,
+        0.8729995192325183
+       ]
+      },
+      "per_fold": [
+       {
+        "accuracy": 0.8433734939759037,
+        "correct": 70,
+        "fold": 0,
+        "n_test": 83,
+        "n_train": 332,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.7682926829268293,
+        "correct": 63,
+        "fold": 1,
+        "n_test": 82,
+        "n_train": 333,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.9397590361445783,
+        "correct": 78,
+        "fold": 2,
+        "n_test": 83,
+        "n_train": 332,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.788235294117647,
+        "correct": 67,
+        "fold": 3,
+        "n_test": 85,
+        "n_train": 330,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.8658536585365854,
+        "correct": 71,
+        "fold": 4,
+        "n_test": 82,
+        "n_train": 333,
+        "train_missing_labels": []
+       }
+      ]
+     },
+     "1": {
+      "fold_of": {
+       "t1:decide_extract:01": 1,
+       "t1:decide_extract:02": 0,
+       "t1:decide_extract:03": 2,
+       "t1:decide_extract:04": 3,
+       "t1:decide_extract:05": 1,
+       "t1:decide_extract:06": 3,
+       "t1:decide_extract:07": 0,
+       "t1:decide_extract:09": 0,
+       "t1:decide_extract:10": 2,
+       "t1:decide_extract:11": 3,
+       "t1:decide_extract:12": 0,
+       "t1:decide_extract:13": 0,
+       "t1:decide_extract:14": 3,
+       "t1:decide_pick:01": 0,
+       "t1:decide_pick:03": 1,
+       "t1:decide_pick:04": 3,
+       "t1:decide_pick:05": 0,
+       "t1:decide_pick:06": 4,
+       "t1:decide_pick:07": 1,
+       "t1:decide_pick:08": 2,
+       "t1:decide_pick:09": 0,
+       "t1:decide_pick:10": 3,
+       "t1:decide_pick:11": 3,
+       "t1:decide_pick:12": 4,
+       "t1:decide_pick:13": 3,
+       "t1:decide_pick:14": 0,
+       "t1:filesys_glob:03": 1,
+       "t1:filesys_glob:04": 3,
+       "t1:filesys_glob:06": 0,
+       "t1:filesys_glob:09": 0,
+       "t1:filesys_grep:01": 3,
+       "t1:filesys_grep:12": 1,
+       "t1:filesys_grep:13": 4,
+       "t1:filesys_grep:14": 4,
+       "t1:filesys_read:06": 3,
+       "t1:filesys_read:09": 4,
+       "t1:filesys_read:13": 1,
+       "t1:filesys_read:14": 1,
+       "t1:reddit_digest:03": 3,
+       "t1:reddit_digest:04": 0,
+       "t1:reddit_digest:07": 2,
+       "t1:reddit_digest:11": 1,
+       "t1:web_fetch:05": 0,
+       "t1:web_fetch:06": 0,
+       "t1:web_fetch:07": 1,
+       "t1:web_fetch:08": 2,
+       "t1:web_fetch:09": 4,
+       "t1:web_fetch:11": 3,
+       "t1:web_search:03": 2,
+       "t1:web_search:06": 1,
+       "t1:web_search:11": 2,
+       "t1:web_search:14": 1,
+       "t2:decide_extract:01": 2,
+       "t2:decide_extract:02": 1,
+       "t2:decide_extract:03": 2,
+       "t2:decide_extract:04": 4,
+       "t2:decide_extract:06": 3,
+       "t2:decide_extract:07": 4,
+       "t2:decide_extract:08": 0,
+       "t2:decide_extract:09": 4,
+       "t2:decide_extract:11": 0,
+       "t2:decide_extract:13": 3,
+       "t2:decide_pick:01": 4,
+       "t2:decide_pick:05": 1,
+       "t2:decide_pick:07": 3,
+       "t2:decide_pick:11": 3,
+       "t2:filesys_glob:09": 2,
+       "t2:filesys_glob:16": 2,
+       "t2:filesys_grep:01": 2,
+       "t2:filesys_grep:05": 0,
+       "t2:filesys_read:05": 4,
+       "t2:filesys_read:12": 0,
+       "t2:reddit_digest:07": 4,
+       "t2:reddit_digest:08": 1,
+       "t2:web_fetch:01": 0,
+       "t2:web_fetch:04": 2,
+       "t2:web_fetch:07": 1,
+       "t2:web_fetch:08": 3,
+       "t2:web_fetch:09": 2,
+       "t2:web_fetch:10": 3,
+       "t2:web_fetch:11": 1,
+       "t2:web_search:03": 3,
+       "t2:web_search:09": 4,
+       "t3:decide_extract->decide_pick:03": 2,
+       "t3:decide_extract->decide_pick:06": 1,
+       "t3:decide_extract->decide_pick:08": 2,
+       "t3:decide_extract->filesys_glob:04": 3,
+       "t3:decide_extract->filesys_glob:07": 2,
+       "t3:decide_extract->filesys_glob:08": 4,
+       "t3:decide_extract->filesys_read:01": 1,
+       "t3:decide_extract->filesys_read:04": 0,
+       "t3:decide_extract->filesys_read:07": 4,
+       "t3:decide_extract->web_search:05": 4,
+       "t3:decide_extract->web_search:08": 0,
+       "t3:decide_pick->decide_extract:01": 4,
+       "t3:decide_pick->decide_extract:02": 4,
+       "t3:decide_pick->decide_extract:04": 3,
+       "t3:decide_pick->decide_extract:05": 0,
+       "t3:decide_pick->decide_extract:06": 2,
+       "t3:decide_pick->decide_extract:07": 1,
+       "t3:decide_pick->decide_extract:08": 4,
+       "t3:decide_pick->filesys_glob:01": 4,
+       "t3:decide_pick->filesys_glob:02": 1,
+       "t3:decide_pick->filesys_glob:04": 2,
+       "t3:decide_pick->filesys_glob:05": 0,
+       "t3:decide_pick->filesys_glob:06": 0,
+       "t3:decide_pick->filesys_glob:07": 2,
+       "t3:decide_pick->filesys_glob:08": 4,
+       "t3:filesys_glob->decide_extract:03": 1,
+       "t3:filesys_glob->decide_extract:07": 4,
+       "t3:filesys_glob->decide_pick:03": 3,
+       "t3:filesys_glob->filesys_grep:03": 4,
+       "t3:filesys_grep->filesys_glob:02": 1,
+       "t3:filesys_grep->filesys_read:02": 2,
+       "t3:filesys_grep->web_fetch:03": 0,
+       "t3:filesys_grep->web_search:01": 3,
+       "t3:filesys_read->decide_extract:02": 2,
+       "t3:filesys_read->decide_extract:06": 0,
+       "t3:filesys_read->filesys_grep:01": 3,
+       "t3:filesys_read->filesys_grep:02": 2,
+       "t3:reddit_digest->web_fetch:01": 3,
+       "t3:reddit_digest->web_fetch:06": 2,
+       "t3:reddit_digest->web_search:02": 4,
+       "t3:reddit_digest->web_search:08": 0,
+       "t3:web_fetch->filesys_grep:01": 3,
+       "t3:web_fetch->filesys_grep:07": 4,
+       "t3:web_fetch->filesys_grep:08": 2,
+       "t3:web_fetch->reddit_digest:07": 1,
+       "t3:web_fetch->reddit_digest:08": 4,
+       "t3:web_search->decide_extract:04": 0,
+       "t3:web_search->decide_extract:06": 3,
+       "t3:web_search->filesys_grep:08": 0,
+       "t3:web_search->reddit_digest:07": 4
+      },
+      "fold_predictors": [
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 0,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 1,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 2,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 3,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 4,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       }
+      ],
+      "oof_accuracy": {
+       "accuracy": 0.8361445783132531,
+       "correct": 347,
+       "n": 415,
+       "wilson95": [
+        0.7974795567527075,
+        0.8686436125857888
+       ]
+      },
+      "per_fold": [
+       {
+        "accuracy": 0.788235294117647,
+        "correct": 67,
+        "fold": 0,
+        "n_test": 85,
+        "n_train": 330,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.9036144578313253,
+        "correct": 75,
+        "fold": 1,
+        "n_test": 83,
+        "n_train": 332,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.7926829268292683,
+        "correct": 65,
+        "fold": 2,
+        "n_test": 82,
+        "n_train": 333,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.891566265060241,
+        "correct": 74,
+        "fold": 3,
+        "n_test": 83,
+        "n_train": 332,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.8048780487804879,
+        "correct": 66,
+        "fold": 4,
+        "n_test": 82,
+        "n_train": 333,
+        "train_missing_labels": []
+       }
+      ]
+     },
+     "2": {
+      "fold_of": {
+       "t1:decide_extract:01": 4,
+       "t1:decide_extract:02": 2,
+       "t1:decide_extract:03": 3,
+       "t1:decide_extract:04": 0,
+       "t1:decide_extract:05": 3,
+       "t1:decide_extract:06": 2,
+       "t1:decide_extract:07": 1,
+       "t1:decide_extract:09": 2,
+       "t1:decide_extract:10": 2,
+       "t1:decide_extract:11": 0,
+       "t1:decide_extract:12": 0,
+       "t1:decide_extract:13": 1,
+       "t1:decide_extract:14": 4,
+       "t1:decide_pick:01": 4,
+       "t1:decide_pick:03": 2,
+       "t1:decide_pick:04": 3,
+       "t1:decide_pick:05": 4,
+       "t1:decide_pick:06": 4,
+       "t1:decide_pick:07": 4,
+       "t1:decide_pick:08": 3,
+       "t1:decide_pick:09": 0,
+       "t1:decide_pick:10": 0,
+       "t1:decide_pick:11": 2,
+       "t1:decide_pick:12": 0,
+       "t1:decide_pick:13": 3,
+       "t1:decide_pick:14": 2,
+       "t1:filesys_glob:03": 1,
+       "t1:filesys_glob:04": 3,
+       "t1:filesys_glob:06": 4,
+       "t1:filesys_glob:09": 0,
+       "t1:filesys_grep:01": 1,
+       "t1:filesys_grep:12": 4,
+       "t1:filesys_grep:13": 3,
+       "t1:filesys_grep:14": 0,
+       "t1:filesys_read:06": 1,
+       "t1:filesys_read:09": 4,
+       "t1:filesys_read:13": 2,
+       "t1:filesys_read:14": 2,
+       "t1:reddit_digest:03": 4,
+       "t1:reddit_digest:04": 3,
+       "t1:reddit_digest:07": 0,
+       "t1:reddit_digest:11": 2,
+       "t1:web_fetch:05": 3,
+       "t1:web_fetch:06": 4,
+       "t1:web_fetch:07": 0,
+       "t1:web_fetch:08": 3,
+       "t1:web_fetch:09": 4,
+       "t1:web_fetch:11": 0,
+       "t1:web_search:03": 0,
+       "t1:web_search:06": 3,
+       "t1:web_search:11": 3,
+       "t1:web_search:14": 1,
+       "t2:decide_extract:01": 3,
+       "t2:decide_extract:02": 3,
+       "t2:decide_extract:03": 3,
+       "t2:decide_extract:04": 0,
+       "t2:decide_extract:06": 2,
+       "t2:decide_extract:07": 2,
+       "t2:decide_extract:08": 3,
+       "t2:decide_extract:09": 3,
+       "t2:decide_extract:11": 1,
+       "t2:decide_extract:13": 1,
+       "t2:decide_pick:01": 4,
+       "t2:decide_pick:05": 1,
+       "t2:decide_pick:07": 0,
+       "t2:decide_pick:11": 2,
+       "t2:filesys_glob:09": 4,
+       "t2:filesys_glob:16": 3,
+       "t2:filesys_grep:01": 3,
+       "t2:filesys_grep:05": 4,
+       "t2:filesys_read:05": 4,
+       "t2:filesys_read:12": 0,
+       "t2:reddit_digest:07": 4,
+       "t2:reddit_digest:08": 1,
+       "t2:web_fetch:01": 4,
+       "t2:web_fetch:04": 1,
+       "t2:web_fetch:07": 2,
+       "t2:web_fetch:08": 3,
+       "t2:web_fetch:09": 3,
+       "t2:web_fetch:10": 2,
+       "t2:web_fetch:11": 1,
+       "t2:web_search:03": 1,
+       "t2:web_search:09": 2,
+       "t3:decide_extract->decide_pick:03": 0,
+       "t3:decide_extract->decide_pick:06": 3,
+       "t3:decide_extract->decide_pick:08": 4,
+       "t3:decide_extract->filesys_glob:04": 1,
+       "t3:decide_extract->filesys_glob:07": 0,
+       "t3:decide_extract->filesys_glob:08": 2,
+       "t3:decide_extract->filesys_read:01": 4,
+       "t3:decide_extract->filesys_read:04": 3,
+       "t3:decide_extract->filesys_read:07": 1,
+       "t3:decide_extract->web_search:05": 4,
+       "t3:decide_extract->web_search:08": 0,
+       "t3:decide_pick->decide_extract:01": 4,
+       "t3:decide_pick->decide_extract:02": 0,
+       "t3:decide_pick->decide_extract:04": 0,
+       "t3:decide_pick->decide_extract:05": 2,
+       "t3:decide_pick->decide_extract:06": 2,
+       "t3:decide_pick->decide_extract:07": 4,
+       "t3:decide_pick->decide_extract:08": 4,
+       "t3:decide_pick->filesys_glob:01": 3,
+       "t3:decide_pick->filesys_glob:02": 1,
+       "t3:decide_pick->filesys_glob:04": 2,
+       "t3:decide_pick->filesys_glob:05": 1,
+       "t3:decide_pick->filesys_glob:06": 0,
+       "t3:decide_pick->filesys_glob:07": 1,
+       "t3:decide_pick->filesys_glob:08": 1,
+       "t3:filesys_glob->decide_extract:03": 2,
+       "t3:filesys_glob->decide_extract:07": 0,
+       "t3:filesys_glob->decide_pick:03": 1,
+       "t3:filesys_glob->filesys_grep:03": 2,
+       "t3:filesys_grep->filesys_glob:02": 2,
+       "t3:filesys_grep->filesys_read:02": 0,
+       "t3:filesys_grep->web_fetch:03": 2,
+       "t3:filesys_grep->web_search:01": 1,
+       "t3:filesys_read->decide_extract:02": 3,
+       "t3:filesys_read->decide_extract:06": 0,
+       "t3:filesys_read->filesys_grep:01": 3,
+       "t3:filesys_read->filesys_grep:02": 1,
+       "t3:reddit_digest->web_fetch:01": 2,
+       "t3:reddit_digest->web_fetch:06": 1,
+       "t3:reddit_digest->web_search:02": 0,
+       "t3:reddit_digest->web_search:08": 3,
+       "t3:web_fetch->filesys_grep:01": 2,
+       "t3:web_fetch->filesys_grep:07": 0,
+       "t3:web_fetch->filesys_grep:08": 1,
+       "t3:web_fetch->reddit_digest:07": 1,
+       "t3:web_fetch->reddit_digest:08": 2,
+       "t3:web_search->decide_extract:04": 4,
+       "t3:web_search->decide_extract:06": 2,
+       "t3:web_search->filesys_grep:08": 0,
+       "t3:web_search->reddit_digest:07": 4
+      },
+      "fold_predictors": [
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 0,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 1,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 2,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 3,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 4,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       }
+      ],
+      "oof_accuracy": {
+       "accuracy": 0.8385542168674699,
+       "correct": 348,
+       "n": 415,
+       "wilson95": [
+        0.8000753131798797,
+        0.8708229326413297
+       ]
+      },
+      "per_fold": [
+       {
+        "accuracy": 0.8333333333333334,
+        "correct": 70,
+        "fold": 0,
+        "n_test": 84,
+        "n_train": 331,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.7560975609756098,
+        "correct": 62,
+        "fold": 1,
+        "n_test": 82,
+        "n_train": 333,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.9047619047619048,
+        "correct": 76,
+        "fold": 2,
+        "n_test": 84,
+        "n_train": 331,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.9523809523809523,
+        "correct": 80,
+        "fold": 3,
+        "n_test": 84,
+        "n_train": 331,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.7407407407407407,
+        "correct": 60,
+        "fold": 4,
+        "n_test": 81,
+        "n_train": 334,
+        "train_missing_labels": []
+       }
+      ]
+     },
+     "4": {
+      "fold_of": {
+       "t1:decide_extract:01": 3,
+       "t1:decide_extract:02": 1,
+       "t1:decide_extract:03": 0,
+       "t1:decide_extract:04": 4,
+       "t1:decide_extract:05": 4,
+       "t1:decide_extract:06": 2,
+       "t1:decide_extract:07": 1,
+       "t1:decide_extract:09": 1,
+       "t1:decide_extract:10": 2,
+       "t1:decide_extract:11": 2,
+       "t1:decide_extract:12": 2,
+       "t1:decide_extract:13": 0,
+       "t1:decide_extract:14": 3,
+       "t1:decide_pick:01": 1,
+       "t1:decide_pick:03": 4,
+       "t1:decide_pick:04": 0,
+       "t1:decide_pick:05": 3,
+       "t1:decide_pick:06": 4,
+       "t1:decide_pick:07": 4,
+       "t1:decide_pick:08": 0,
+       "t1:decide_pick:09": 1,
+       "t1:decide_pick:10": 2,
+       "t1:decide_pick:11": 3,
+       "t1:decide_pick:12": 4,
+       "t1:decide_pick:13": 2,
+       "t1:decide_pick:14": 2,
+       "t1:filesys_glob:03": 3,
+       "t1:filesys_glob:04": 0,
+       "t1:filesys_glob:06": 2,
+       "t1:filesys_glob:09": 1,
+       "t1:filesys_grep:01": 0,
+       "t1:filesys_grep:12": 2,
+       "t1:filesys_grep:13": 1,
+       "t1:filesys_grep:14": 4,
+       "t1:filesys_read:06": 0,
+       "t1:filesys_read:09": 2,
+       "t1:filesys_read:13": 2,
+       "t1:filesys_read:14": 1,
+       "t1:reddit_digest:03": 0,
+       "t1:reddit_digest:04": 1,
+       "t1:reddit_digest:07": 4,
+       "t1:reddit_digest:11": 3,
+       "t1:web_fetch:05": 1,
+       "t1:web_fetch:06": 3,
+       "t1:web_fetch:07": 4,
+       "t1:web_fetch:08": 2,
+       "t1:web_fetch:09": 0,
+       "t1:web_fetch:11": 0,
+       "t1:web_search:03": 1,
+       "t1:web_search:06": 3,
+       "t1:web_search:11": 2,
+       "t1:web_search:14": 4,
+       "t2:decide_extract:01": 0,
+       "t2:decide_extract:02": 4,
+       "t2:decide_extract:03": 2,
+       "t2:decide_extract:04": 3,
+       "t2:decide_extract:06": 4,
+       "t2:decide_extract:07": 4,
+       "t2:decide_extract:08": 4,
+       "t2:decide_extract:09": 1,
+       "t2:decide_extract:11": 0,
+       "t2:decide_extract:13": 3,
+       "t2:decide_pick:01": 3,
+       "t2:decide_pick:05": 2,
+       "t2:decide_pick:07": 0,
+       "t2:decide_pick:11": 0,
+       "t2:filesys_glob:09": 0,
+       "t2:filesys_glob:16": 4,
+       "t2:filesys_grep:01": 3,
+       "t2:filesys_grep:05": 4,
+       "t2:filesys_read:05": 3,
+       "t2:filesys_read:12": 0,
+       "t2:reddit_digest:07": 4,
+       "t2:reddit_digest:08": 1,
+       "t2:web_fetch:01": 2,
+       "t2:web_fetch:04": 1,
+       "t2:web_fetch:07": 2,
+       "t2:web_fetch:08": 3,
+       "t2:web_fetch:09": 1,
+       "t2:web_fetch:10": 2,
+       "t2:web_fetch:11": 3,
+       "t2:web_search:03": 0,
+       "t2:web_search:09": 4,
+       "t3:decide_extract->decide_pick:03": 1,
+       "t3:decide_extract->decide_pick:06": 2,
+       "t3:decide_extract->decide_pick:08": 2,
+       "t3:decide_extract->filesys_glob:04": 4,
+       "t3:decide_extract->filesys_glob:07": 1,
+       "t3:decide_extract->filesys_glob:08": 2,
+       "t3:decide_extract->filesys_read:01": 0,
+       "t3:decide_extract->filesys_read:04": 1,
+       "t3:decide_extract->filesys_read:07": 3,
+       "t3:decide_extract->web_search:05": 1,
+       "t3:decide_extract->web_search:08": 1,
+       "t3:decide_pick->decide_extract:01": 0,
+       "t3:decide_pick->decide_extract:02": 3,
+       "t3:decide_pick->decide_extract:04": 0,
+       "t3:decide_pick->decide_extract:05": 4,
+       "t3:decide_pick->decide_extract:06": 0,
+       "t3:decide_pick->decide_extract:07": 3,
+       "t3:decide_pick->decide_extract:08": 1,
+       "t3:decide_pick->filesys_glob:01": 2,
+       "t3:decide_pick->filesys_glob:02": 4,
+       "t3:decide_pick->filesys_glob:04": 1,
+       "t3:decide_pick->filesys_glob:05": 0,
+       "t3:decide_pick->filesys_glob:06": 3,
+       "t3:decide_pick->filesys_glob:07": 4,
+       "t3:decide_pick->filesys_glob:08": 3,
+       "t3:filesys_glob->decide_extract:03": 4,
+       "t3:filesys_glob->decide_extract:07": 3,
+       "t3:filesys_glob->decide_pick:03": 1,
+       "t3:filesys_glob->filesys_grep:03": 2,
+       "t3:filesys_grep->filesys_glob:02": 2,
+       "t3:filesys_grep->filesys_read:02": 3,
+       "t3:filesys_grep->web_fetch:03": 1,
+       "t3:filesys_grep->web_search:01": 0,
+       "t3:filesys_read->decide_extract:02": 4,
+       "t3:filesys_read->decide_extract:06": 1,
+       "t3:filesys_read->filesys_grep:01": 3,
+       "t3:filesys_read->filesys_grep:02": 4,
+       "t3:reddit_digest->web_fetch:01": 0,
+       "t3:reddit_digest->web_fetch:06": 3,
+       "t3:reddit_digest->web_search:02": 2,
+       "t3:reddit_digest->web_search:08": 2,
+       "t3:web_fetch->filesys_grep:01": 4,
+       "t3:web_fetch->filesys_grep:07": 3,
+       "t3:web_fetch->filesys_grep:08": 0,
+       "t3:web_fetch->reddit_digest:07": 4,
+       "t3:web_fetch->reddit_digest:08": 1,
+       "t3:web_search->decide_extract:04": 2,
+       "t3:web_search->decide_extract:06": 1,
+       "t3:web_search->filesys_grep:08": 0,
+       "t3:web_search->reddit_digest:07": 3
+      },
+      "fold_predictors": [
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 0,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 1,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 2,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 3,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 4,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       }
+      ],
+      "oof_accuracy": {
+       "accuracy": 0.8409638554216867,
+       "correct": 349,
+       "n": 415,
+       "wilson95": [
+        0.8026738030714043,
+        0.8729995192325183
+       ]
+      },
+      "per_fold": [
+       {
+        "accuracy": 0.8313253012048193,
+        "correct": 69,
+        "fold": 0,
+        "n_test": 83,
+        "n_train": 332,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.8690476190476191,
+        "correct": 73,
+        "fold": 1,
+        "n_test": 84,
+        "n_train": 331,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.8902439024390244,
+        "correct": 73,
+        "fold": 2,
+        "n_test": 82,
+        "n_train": 333,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.8313253012048193,
+        "correct": 69,
+        "fold": 3,
+        "n_test": 83,
+        "n_train": 332,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.7831325301204819,
+        "correct": 65,
+        "fold": 4,
+        "n_test": 83,
+        "n_train": 332,
+        "train_missing_labels": []
+       }
+      ]
+     },
+     "7": {
+      "fold_of": {
+       "t1:decide_extract:01": 2,
+       "t1:decide_extract:02": 4,
+       "t1:decide_extract:03": 4,
+       "t1:decide_extract:04": 3,
+       "t1:decide_extract:05": 2,
+       "t1:decide_extract:06": 0,
+       "t1:decide_extract:07": 3,
+       "t1:decide_extract:09": 2,
+       "t1:decide_extract:10": 1,
+       "t1:decide_extract:11": 1,
+       "t1:decide_extract:12": 0,
+       "t1:decide_extract:13": 2,
+       "t1:decide_extract:14": 4,
+       "t1:decide_pick:01": 0,
+       "t1:decide_pick:03": 3,
+       "t1:decide_pick:04": 1,
+       "t1:decide_pick:05": 0,
+       "t1:decide_pick:06": 4,
+       "t1:decide_pick:07": 1,
+       "t1:decide_pick:08": 1,
+       "t1:decide_pick:09": 4,
+       "t1:decide_pick:10": 1,
+       "t1:decide_pick:11": 1,
+       "t1:decide_pick:12": 3,
+       "t1:decide_pick:13": 2,
+       "t1:decide_pick:14": 3,
+       "t1:filesys_glob:03": 0,
+       "t1:filesys_glob:04": 3,
+       "t1:filesys_glob:06": 4,
+       "t1:filesys_glob:09": 4,
+       "t1:filesys_grep:01": 0,
+       "t1:filesys_grep:12": 2,
+       "t1:filesys_grep:13": 3,
+       "t1:filesys_grep:14": 4,
+       "t1:filesys_read:06": 1,
+       "t1:filesys_read:09": 3,
+       "t1:filesys_read:13": 4,
+       "t1:filesys_read:14": 0,
+       "t1:reddit_digest:03": 0,
+       "t1:reddit_digest:04": 1,
+       "t1:reddit_digest:07": 3,
+       "t1:reddit_digest:11": 0,
+       "t1:web_fetch:05": 4,
+       "t1:web_fetch:06": 0,
+       "t1:web_fetch:07": 2,
+       "t1:web_fetch:08": 2,
+       "t1:web_fetch:09": 1,
+       "t1:web_fetch:11": 0,
+       "t1:web_search:03": 1,
+       "t1:web_search:06": 4,
+       "t1:web_search:11": 0,
+       "t1:web_search:14": 3,
+       "t2:decide_extract:01": 3,
+       "t2:decide_extract:02": 3,
+       "t2:decide_extract:03": 4,
+       "t2:decide_extract:04": 1,
+       "t2:decide_extract:06": 4,
+       "t2:decide_extract:07": 3,
+       "t2:decide_extract:08": 1,
+       "t2:decide_extract:09": 4,
+       "t2:decide_extract:11": 0,
+       "t2:decide_extract:13": 3,
+       "t2:decide_pick:01": 4,
+       "t2:decide_pick:05": 0,
+       "t2:decide_pick:07": 3,
+       "t2:decide_pick:11": 0,
+       "t2:filesys_glob:09": 3,
+       "t2:filesys_glob:16": 1,
+       "t2:filesys_grep:01": 3,
+       "t2:filesys_grep:05": 1,
+       "t2:filesys_read:05": 2,
+       "t2:filesys_read:12": 4,
+       "t2:reddit_digest:07": 3,
+       "t2:reddit_digest:08": 4,
+       "t2:web_fetch:01": 3,
+       "t2:web_fetch:04": 4,
+       "t2:web_fetch:07": 0,
+       "t2:web_fetch:08": 3,
+       "t2:web_fetch:09": 4,
+       "t2:web_fetch:10": 0,
+       "t2:web_fetch:11": 3,
+       "t2:web_search:03": 0,
+       "t2:web_search:09": 3,
+       "t3:decide_extract->decide_pick:03": 1,
+       "t3:decide_extract->decide_pick:06": 1,
+       "t3:decide_extract->decide_pick:08": 4,
+       "t3:decide_extract->filesys_glob:04": 4,
+       "t3:decide_extract->filesys_glob:07": 0,
+       "t3:decide_extract->filesys_glob:08": 2,
+       "t3:decide_extract->filesys_read:01": 0,
+       "t3:decide_extract->filesys_read:04": 4,
+       "t3:decide_extract->filesys_read:07": 2,
+       "t3:decide_extract->web_search:05": 3,
+       "t3:decide_extract->web_search:08": 1,
+       "t3:decide_pick->decide_extract:01": 0,
+       "t3:decide_pick->decide_extract:02": 3,
+       "t3:decide_pick->decide_extract:04": 1,
+       "t3:decide_pick->decide_extract:05": 0,
+       "t3:decide_pick->decide_extract:06": 2,
+       "t3:decide_pick->decide_extract:07": 2,
+       "t3:decide_pick->decide_extract:08": 0,
+       "t3:decide_pick->filesys_glob:01": 4,
+       "t3:decide_pick->filesys_glob:02": 3,
+       "t3:decide_pick->filesys_glob:04": 2,
+       "t3:decide_pick->filesys_glob:05": 1,
+       "t3:decide_pick->filesys_glob:06": 0,
+       "t3:decide_pick->filesys_glob:07": 3,
+       "t3:decide_pick->filesys_glob:08": 2,
+       "t3:filesys_glob->decide_extract:03": 0,
+       "t3:filesys_glob->decide_extract:07": 2,
+       "t3:filesys_glob->decide_pick:03": 1,
+       "t3:filesys_glob->filesys_grep:03": 2,
+       "t3:filesys_grep->filesys_glob:02": 4,
+       "t3:filesys_grep->filesys_read:02": 2,
+       "t3:filesys_grep->web_fetch:03": 1,
+       "t3:filesys_grep->web_search:01": 0,
+       "t3:filesys_read->decide_extract:02": 2,
+       "t3:filesys_read->decide_extract:06": 3,
+       "t3:filesys_read->filesys_grep:01": 0,
+       "t3:filesys_read->filesys_grep:02": 1,
+       "t3:reddit_digest->web_fetch:01": 2,
+       "t3:reddit_digest->web_fetch:06": 1,
+       "t3:reddit_digest->web_search:02": 2,
+       "t3:reddit_digest->web_search:08": 4,
+       "t3:web_fetch->filesys_grep:01": 1,
+       "t3:web_fetch->filesys_grep:07": 2,
+       "t3:web_fetch->filesys_grep:08": 4,
+       "t3:web_fetch->reddit_digest:07": 3,
+       "t3:web_fetch->reddit_digest:08": 1,
+       "t3:web_search->decide_extract:04": 2,
+       "t3:web_search->decide_extract:06": 4,
+       "t3:web_search->filesys_grep:08": 2,
+       "t3:web_search->reddit_digest:07": 1
+      },
+      "fold_predictors": [
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 0,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 1,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 2,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 3,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       },
+       {
+        "base": "recorded|arm=floor_a",
+        "base_weight": 0.5,
+        "fold": 4,
+        "mask": "off",
+        "mask_labels": [],
+        "mask_tally": {},
+        "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+        "mode": "mean",
+        "protect": [
+         "web_search",
+         "web_fetch"
+        ]
+       }
+      ],
+      "oof_accuracy": {
+       "accuracy": 0.8433734939759037,
+       "correct": 350,
+       "n": 415,
+       "wilson95": [
+        0.8052750759245233,
+        0.8751733228621126
+       ]
+      },
+      "per_fold": [
+       {
+        "accuracy": 0.8795180722891566,
+        "correct": 73,
+        "fold": 0,
+        "n_test": 83,
+        "n_train": 332,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.7590361445783133,
+        "correct": 63,
+        "fold": 1,
+        "n_test": 83,
+        "n_train": 332,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.9024390243902439,
+        "correct": 74,
+        "fold": 2,
+        "n_test": 82,
+        "n_train": 333,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.8690476190476191,
+        "correct": 73,
+        "fold": 3,
+        "n_test": 84,
+        "n_train": 331,
+        "train_missing_labels": []
+       },
+       {
+        "accuracy": 0.8072289156626506,
+        "correct": 67,
+        "fold": 4,
+        "n_test": 83,
+        "n_train": 332,
+        "train_missing_labels": []
+       }
+      ]
+     }
+    },
+    "seeds": [
+     0,
+     1,
+     2,
+     4,
+     7
+    ],
+    "stratified": true
+   },
+   "groups": {
+    "t1:decide_extract:01": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:02": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:03": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:04": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:decide_extract:05": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:06": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:07": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:09": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:10": {
+     "accuracy": 0.75,
+     "correct": 3,
+     "n": 4
+    },
+    "t1:decide_extract:11": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:12": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t1:decide_extract:13": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_extract:14": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:01": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:03": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:04": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:05": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:06": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:07": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:08": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:decide_pick:09": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:decide_pick:10": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:11": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:12": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:decide_pick:13": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:decide_pick:14": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t1:filesys_glob:03": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:filesys_glob:04": {
+     "accuracy": 1.0,
+     "correct": 5,
+     "n": 5
+    },
+    "t1:filesys_glob:06": {
+     "accuracy": 1.0,
+     "correct": 5,
+     "n": 5
+    },
+    "t1:filesys_glob:09": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:filesys_grep:01": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:filesys_grep:12": {
+     "accuracy": 1.0,
+     "correct": 5,
+     "n": 5
+    },
+    "t1:filesys_grep:13": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:filesys_grep:14": {
+     "accuracy": 0.6,
+     "correct": 3,
+     "n": 5
+    },
+    "t1:filesys_read:06": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:filesys_read:09": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:filesys_read:13": {
+     "accuracy": 0.6666666666666666,
+     "correct": 4,
+     "n": 6
+    },
+    "t1:filesys_read:14": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:reddit_digest:03": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 4
+    },
+    "t1:reddit_digest:04": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:reddit_digest:07": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:reddit_digest:11": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:web_fetch:05": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:web_fetch:06": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:web_fetch:07": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:web_fetch:08": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:web_fetch:09": {
+     "accuracy": 1.0,
+     "correct": 2,
+     "n": 2
+    },
+    "t1:web_fetch:11": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:web_search:03": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t1:web_search:06": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t1:web_search:11": {
+     "accuracy": 0.8333333333333334,
+     "correct": 5,
+     "n": 6
+    },
+    "t1:web_search:14": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t2:decide_extract:01": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:decide_extract:02": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:decide_extract:03": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:decide_extract:04": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t2:decide_extract:06": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t2:decide_extract:07": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:decide_extract:08": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t2:decide_extract:09": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:decide_extract:11": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t2:decide_extract:13": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:decide_pick:01": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t2:decide_pick:05": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t2:decide_pick:07": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t2:decide_pick:11": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:filesys_glob:09": {
+     "accuracy": 0.6,
+     "correct": 3,
+     "n": 5
+    },
+    "t2:filesys_glob:16": {
+     "accuracy": 0.8,
+     "correct": 4,
+     "n": 5
+    },
+    "t2:filesys_grep:01": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t2:filesys_grep:05": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 6
+    },
+    "t2:filesys_read:05": {
+     "accuracy": 1.0,
+     "correct": 5,
+     "n": 5
+    },
+    "t2:filesys_read:12": {
+     "accuracy": 0.2,
+     "correct": 1,
+     "n": 5
+    },
+    "t2:reddit_digest:07": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 6
+    },
+    "t2:reddit_digest:08": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 4
+    },
+    "t2:web_fetch:01": {
+     "accuracy": 0.75,
+     "correct": 3,
+     "n": 4
+    },
+    "t2:web_fetch:04": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t2:web_fetch:07": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:web_fetch:08": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t2:web_fetch:09": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:web_fetch:10": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:web_fetch:11": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t2:web_search:03": {
+     "accuracy": 0.8333333333333334,
+     "correct": 5,
+     "n": 6
+    },
+    "t2:web_search:09": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:decide_extract->decide_pick:03": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t3:decide_extract->decide_pick:06": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t3:decide_extract->decide_pick:08": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t3:decide_extract->filesys_glob:04": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t3:decide_extract->filesys_glob:07": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t3:decide_extract->filesys_glob:08": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t3:decide_extract->filesys_read:01": {
+     "accuracy": 0.8333333333333334,
+     "correct": 5,
+     "n": 6
+    },
+    "t3:decide_extract->filesys_read:04": {
+     "accuracy": 1.0,
+     "correct": 2,
+     "n": 2
+    },
+    "t3:decide_extract->filesys_read:07": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 6
+    },
+    "t3:decide_extract->web_search:05": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_extract->web_search:08": {
+     "accuracy": 0.0,
+     "correct": 0,
+     "n": 1
+    },
+    "t3:decide_pick->decide_extract:01": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->decide_extract:02": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->decide_extract:04": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->decide_extract:05": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->decide_extract:06": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->decide_extract:07": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->decide_extract:08": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->filesys_glob:01": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->filesys_glob:02": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:decide_pick->filesys_glob:04": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:decide_pick->filesys_glob:05": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->filesys_glob:06": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->filesys_glob:07": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:decide_pick->filesys_glob:08": {
+     "accuracy": 1.0,
+     "correct": 1,
+     "n": 1
+    },
+    "t3:filesys_glob->decide_extract:03": {
+     "accuracy": 1.0,
+     "correct": 5,
+     "n": 5
+    },
+    "t3:filesys_glob->decide_extract:07": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:filesys_glob->decide_pick:03": {
+     "accuracy": 1.0,
+     "correct": 5,
+     "n": 5
+    },
+    "t3:filesys_glob->filesys_grep:03": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:filesys_grep->filesys_glob:02": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:filesys_grep->filesys_read:02": {
+     "accuracy": 0.8333333333333334,
+     "correct": 5,
+     "n": 6
+    },
+    "t3:filesys_grep->web_fetch:03": {
+     "accuracy": 0.4,
+     "correct": 2,
+     "n": 5
+    },
+    "t3:filesys_grep->web_search:01": {
+     "accuracy": 1.0,
+     "correct": 3,
+     "n": 3
+    },
+    "t3:filesys_read->decide_extract:02": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:filesys_read->decide_extract:06": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:filesys_read->filesys_grep:01": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:filesys_read->filesys_grep:02": {
+     "accuracy": 1.0,
+     "correct": 2,
+     "n": 2
+    },
+    "t3:reddit_digest->web_fetch:01": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:reddit_digest->web_fetch:06": {
+     "accuracy": 0.16666666666666666,
+     "correct": 1,
+     "n": 6
+    },
+    "t3:reddit_digest->web_search:02": {
+     "accuracy": 1.0,
+     "correct": 2,
+     "n": 2
+    },
+    "t3:reddit_digest->web_search:08": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:web_fetch->filesys_grep:01": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:web_fetch->filesys_grep:07": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:web_fetch->filesys_grep:08": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:web_fetch->reddit_digest:07": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:web_fetch->reddit_digest:08": {
+     "accuracy": 1.0,
+     "correct": 4,
+     "n": 4
+    },
+    "t3:web_search->decide_extract:04": {
+     "accuracy": 1.0,
+     "correct": 2,
+     "n": 2
+    },
+    "t3:web_search->decide_extract:06": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:web_search->filesys_grep:08": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    },
+    "t3:web_search->reddit_digest:07": {
+     "accuracy": 1.0,
+     "correct": 6,
+     "n": 6
+    }
+   },
+   "latency": {
+    "max": 30.14724000240676,
+    "mean": 1.229997782362064,
+    "n": 415,
+    "p50": 0.8484089921694249,
+    "p95": 1.3691190106328577
+   },
+   "ledger_vs_reference": {
+    "broke": 2,
+    "by_label": {
+     "decide_extract": {
+      "base": 21,
+      "broke": 0,
+      "fixed": 10,
+      "n": 51,
+      "net": 10,
+      "treat": 31
+     },
+     "decide_pick": {
+      "base": 51,
+      "broke": 1,
+      "fixed": 1,
+      "n": 52,
+      "net": 0,
+      "treat": 51
+     },
+     "filesys_glob": {
+      "base": 44,
+      "broke": 0,
+      "fixed": 5,
+      "n": 52,
+      "net": 5,
+      "treat": 49
+     },
+     "filesys_grep": {
+      "base": 36,
+      "broke": 1,
+      "fixed": 5,
+      "n": 52,
+      "net": 4,
+      "treat": 40
+     },
+     "filesys_read": {
+      "base": 43,
+      "broke": 0,
+      "fixed": 3,
+      "n": 52,
+      "net": 3,
+      "treat": 46
+     },
+     "reddit_digest": {
+      "base": 32,
+      "broke": 0,
+      "fixed": 1,
+      "n": 52,
+      "net": 1,
+      "treat": 33
+     },
+     "web_fetch": {
+      "base": 49,
+      "broke": 0,
+      "fixed": 0,
+      "n": 52,
+      "net": 0,
+      "treat": 49
+     },
+     "web_search": {
+      "base": 49,
+      "broke": 0,
+      "fixed": 1,
+      "n": 52,
+      "net": 1,
+      "treat": 50
+     }
+    },
+    "fixed": 26,
+    "net": 24
+   },
+   "n_abstained": 0,
+   "n_answered": 415,
+   "n_errors": 0,
+   "order": {
+    "n_distinct_orders": 1,
+    "order_sha": [
+     "6b70f586ec061715"
+    ]
+   },
+   "paired_vs_reference": {
+    "broke": 2,
+    "broke_ids": [
+     "v3-0153",
+     "v3-0308"
+    ],
+    "fixed": 26,
+    "fixed_ids": [
+     "v3-0036",
+     "v3-0050",
+     "v3-0056",
+     "v3-0060",
+     "v3-0064",
+     "v3-0081",
+     "v3-0082",
+     "v3-0122",
+     "v3-0129",
+     "v3-0134",
+     "v3-0182",
+     "v3-0183",
+     "v3-0201",
+     "v3-0219",
+     "v3-0224",
+     "v3-0228",
+     "v3-0229",
+     "v3-0233",
+     "v3-0244",
+     "v3-0250",
+     "v3-0252",
+     "v3-0253",
+     "v3-0325",
+     "v3-0372",
+     "v3-0397",
+     "v3-0400"
+    ],
+    "n": 415,
+    "only_in_reference": [],
+    "only_in_treatment": [],
+    "p": 3.032386302947998e-06,
+    "reference_correct": 325,
+    "treatment_correct": 349
+   },
+   "predictor": {
+    "base": "recorded|arm=floor_a",
+    "base_weight": 0.5,
+    "mask": "off",
+    "mask_labels": [],
+    "mask_tally": {},
+    "member": "sklearn_text|vectorizer=tfidf_word|clf=logreg|features=rules",
+    "mode": "mean",
+    "protect": [
+     "web_search",
+     "web_fetch"
+    ]
+   },
+   "spec": "fusion|member=sklearn_text~vectorizer=tfidf_word~clf=logreg~features=rules|weights=0.5|protect=web_search,web_fetch"
+  }
+ },
+ "dataset": {
+  "authored": true,
+  "cv": 5,
+  "cv_rule": "stratified",
+  "cv_seeds": [
+   0,
+   1,
+   2,
+   4,
+   7
+  ],
+  "fit_on": "none",
+  "name": "tool_routing",
+  "options": [
+   "filesys_read",
+   "filesys_glob",
+   "filesys_grep",
+   "decide_pick",
+   "decide_extract",
+   "web_search",
+   "web_fetch",
+   "reddit_digest"
+  ],
+  "order_mode": "frozen",
+  "order_sha": "6b70f586ec061715",
+  "rows": 415,
+  "sha256": "f05916b9de5d9580da9c2b52a359e8eace2dc238c9e3a23e03efc4619eaa1194",
+  "source": "bench/data/heldout_v3.json",
+  "source_kind": "in-repo",
+  "split": "all"
+ },
+ "prereg": {
+  "arm": "r_fusion",
+  "conditions": [
+   {
+    "expr": "delta >= 20",
+    "name": "C1 delta >= +20 rows",
+    "op": ">=",
+    "passed": true,
+    "target": "20",
+    "value": 24
+   },
+   {
+    "expr": "mcnemar_p < 0.01",
+    "name": "C2 mcnemar_p < 0.01",
+    "op": "<",
+    "passed": true,
+    "target": "0.01",
+    "value": 3.032386302947998e-06
+   },
+   {
+    "expr": "min_label_net >= -3",
+    "name": "C3 min over labels of net >= -3",
+    "op": ">=",
+    "passed": true,
+    "target": "-3",
+    "value": 0
+   },
+   {
+    "expr": "seeds_positive >= 4",
+    "name": "C4 delta > 0 in >= 4 of 5 fold seeds",
+    "op": ">=",
+    "passed": true,
+    "target": "4",
+    "value": 5
+   }
+  ],
+  "delta_by_seed": {
+   "0": 24,
+   "1": 22,
+   "2": 23,
+   "4": 24,
+   "7": 25
+  },
+  "floor_gate": {
+   "clears": true,
+   "delta": 24,
+   "floor": 0,
+   "needed": 3.0
+  },
+  "passed": true,
+  "path": "bench/results/fusion-option3-prereg.json"
+ },
+ "reference": "floor_a"
+}
