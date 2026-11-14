@@ -184,6 +184,13 @@ def main(argv: list[str] | None = None) -> int:
                     help="score only rows whose meta.split matches this value")
     ap.add_argument("--fit-on", default="",
                     help="fit on rows whose meta.split matches this value (refused with --cv)")
+    ap.add_argument("--fit-pool", default="",
+                    help="dataset spec supplying the training pool for --cv, instead of the other "
+                         "folds of the scored rows (e.g. the reference utterances a router is "
+                         "trained on, when the scored rows are generated)")
+    ap.add_argument("--fold-map", default="",
+                    help="JSON file mapping group -> fold, to re-score on another run's folds "
+                         "instead of assigning new ones")
     args = ap.parse_args(argv)
 
     dataset: Dataset = load_dataset(args.dataset)
@@ -243,6 +250,23 @@ def main(argv: list[str] | None = None) -> int:
     cv_runs: dict[str, dict[int, dict]] = {}
     cv_skipped: list[str] = []
     stratify = args.cv_rule != "hashed"
+    fold_map = None
+    if args.fold_map:
+        try:
+            fold_map = json.loads(Path(args.fold_map).read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise SystemExit(f"--fold-map {args.fold_map}: {exc}") from exc
+        if not isinstance(fold_map, dict) or not fold_map:
+            raise SystemExit(f"--fold-map {args.fold_map}: expected a JSON object of group -> fold")
+    pool_rows = None
+    if args.fit_pool:
+        if args.fit_on:
+            raise SystemExit(
+                "--fit-pool and --fit-on are two ways to name a training pool; pass one")
+        pool_dataset = load_dataset(args.fit_pool)
+        pool_rows = list(pool_dataset.rows)
+        print(f"fit pool  {pool_dataset.name}  rows {len(pool_rows)}  "
+              f"from {pool_dataset.source}")
     cv_seeds = ([int(s) for s in str(args.cv_seeds).split(",") if s.strip()]
                 if args.cv else [0])
     for name, spec in arms_specs:
@@ -251,19 +275,14 @@ def main(argv: list[str] | None = None) -> int:
         except PredictorError as exc:
             raise SystemExit(f"arm {name}: {exc}")
         predictors[name] = predictor
-        if order_mode and not honours_order(predictor):
-            raise SystemExit(
-                f"arm {name}: --order {order_mode} cannot be honoured by {getattr(predictor, 'name', spec)}."
-                f" It replays a file recorded under one option order, so the run would record a "
-                f"permutation the model never saw next to an order_sha claiming otherwise. "
-                f"Drop --order, or score a predictor that takes the option set at call time.")
         if args.cv and hasattr(predictor, "fit"):
             # the out-of-fold records *are* the arm's records: that is what lets a paired
             # test run between a fitted arm and a replayed one
             cv_runs[name] = {}
             for seed in cv_seeds:
                 cv = metrics.grouped_cv(rows, (lambda s=spec: build(s)), folds=args.cv,
-                                        seed=seed, options_for=order_for, stratify=stratify)
+                                        seed=seed, options_for=order_for, stratify=stratify,
+                                        fold_of=fold_map, fit_pool=pool_rows)
                 for rec in cv["oof"]:
                     rec.arm = name
                 cv_runs[name][seed] = cv
@@ -324,7 +343,8 @@ def main(argv: list[str] | None = None) -> int:
         if reference in cv_runs:
             rerun = metrics.grouped_cv(rows, (lambda s=ref_spec: build(s)), folds=args.cv,
                                        seed=cv_seeds[0], options_for=order_for,
-                                       stratify=stratify)
+                                       stratify=stratify, fold_of=fold_map,
+                                       fit_pool=pool_rows)
             again = rerun["oof"]
             note = ("a cross-validated arm refitted on the same fold map is a determinism check, "
                     "not a floor: the fold rule is the instrument, so the floor for this arm is "
@@ -381,6 +401,13 @@ def main(argv: list[str] | None = None) -> int:
     for name, predictor in predictors.items():
         if hasattr(predictor, "describe"):
             summary["arms"].setdefault(name, {})["predictor"] = predictor.describe()
+        if order_mode and not honours_order(predictor):
+            # a replay cannot see a permutation. It is still a legitimate reference arm for
+            # pairing, so it runs — but every record says which order it actually answered.
+            summary["arms"].setdefault(name, {})["order_ignored"] = True
+            print(f"note: {name} replays a file and cannot honour --order {order_mode}; its "
+                  f"records carry the frozen order's sha and meta.options_ignored, so it can be "
+                  f"paired against the permuted arms without claiming to have seen the permutation")
 
     # ---- the verdict, which needs a declaration made before the run
     if prereg is None:

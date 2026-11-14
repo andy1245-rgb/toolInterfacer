@@ -162,13 +162,20 @@ def score(arm: str, rows: list[Row], predictor: Predictor,
     for row in rows:
         options = options_for(row) if options_for else row.options
         t0 = time.perf_counter()
+        honoured = options
         try:
             # replay needs row identity, a live predictor needs only the text; a predictor
             # that takes options in predict_for sees the permutation instead of silently
             # answering the frozen order
             fn = getattr(predictor, "predict_for", None)
             if fn is not None:
-                pred = fn(row, options) if accepts_options(fn) else fn(row)
+                if accepts_options(fn):
+                    pred = fn(row, options)
+                else:
+                    # this arm read a file recorded under one order: it answered the frozen
+                    # tuple, so the frozen tuple is what its record must claim
+                    pred = fn(row)
+                    honoured = row.options
             else:
                 pred = predictor.predict(row.text, options)
             latency = pred.latency_ms if pred.latency_ms else (time.perf_counter() - t0) * 1000
@@ -180,10 +187,12 @@ def score(arm: str, rows: list[Row], predictor: Predictor,
             latency = (time.perf_counter() - t0) * 1000
             choice, probs = "", None
             meta = dict(row.meta, error=f"{type(exc).__name__}: {exc}")
+        if honoured != options:
+            meta.setdefault("options_ignored", True)
         if choice not in options:
             meta.setdefault("invalid_choice", choice)
         out.append(Record(arm=arm, id=row.id, group=row.group, label=row.label,
                           text=row.text, choice=choice, correct=(choice == row.label),
                           latency_ms=latency, probabilities=probs,
-                          order_sha=option_order_sha(tuple(options)), meta=meta))
+                          order_sha=option_order_sha(tuple(honoured)), meta=meta))
     return out

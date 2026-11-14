@@ -209,10 +209,27 @@ def test_cv_artifacts_carry_the_out_of_fold_rows_not_an_unfitted_pass(tmp_path):
     assert sum(1 for r in member_rows if r["correct"]) == member["accuracy"]["correct"]
 
 
-def test_order_is_refused_for_an_arm_that_cannot_see_it():
-    with pytest.raises(SystemExit, match="cannot be honoured"):
-        run.main(["--dataset", "tool_routing", "--limit", "20",
-                  "--arm", "base=recorded|arm=floor_a", "--order", "rev"])
+def test_a_replay_arm_under_a_permutation_records_the_order_it_answered(tmp_path):
+    """A replay cannot see a permutation, so it is marked rather than refused.
+
+    Refusing it also refused the only experimental design that works: a frozen reference paired
+    against live arms under a permuted order. The record now carries the frozen order's sha and
+    `meta.options_ignored`, and the summary carries `order_ignored`, so the artifact says what
+    happened instead of the run refusing to happen.
+    """
+    out = tmp_path / "art"
+    rc = run.main(["--dataset", "tool_routing", "--limit", "20",
+                   "--arm", "base=recorded|arm=floor_a", "--order", "rev",
+                   "--write-rows", "--out", str(out)])
+    assert rc == 0
+    summary = json.loads((out / "summary.json").read_text())
+    assert summary["arms"]["base"]["order_ignored"] is True
+    rows = [json.loads(line) for line in (out / "rows.jsonl").read_text().splitlines()]
+    frozen_sha = summary["dataset"]["order_sha"]
+    assert all(r["meta"].get("options_ignored") for r in rows)
+    assert all(r["order_sha"] != frozen_sha for r in rows), (
+        "each record must carry the sha of the order it answered, not the run's")
+    assert len({r["order_sha"] for r in rows}) == 1, "one frozen order, one sha"
 
 
 # ------------------------------------------------------------------ fixes from the review
@@ -268,13 +285,17 @@ def test_the_untouched_fit_protocol_works():
 
 
 def test_a_replay_capability_not_a_signature_decides_the_order_refusal(tmp_path):
+    """The capability flag is what marks an arm order-blind, and the run says so."""
+    from bench.harness.protocol import honours_order
+
     base_path = _write_base(tmp_path, [("r1", "a", {"a": 0.6, "b": 0.4})])
     fusion = build(f"fusion|member=fake|base_arm=base|base_path={base_path}")
     assert fusion.replays_a_file is True
+    assert honours_order(fusion) is False, "a fusion holding a replay cannot see a permutation"
     assert build("recorded|arm=floor_a").replays_a_file is True
-    with pytest.raises(SystemExit, match="cannot be honoured"):
-        run.main(["--dataset", "tool_routing", "--limit", "10", "--order", "rev",
-                  "--arm", f"f=fusion|member=fake|base_arm=base|base_path={base_path}"])
+    rc = run.main(["--dataset", "tool_routing", "--limit", "10", "--order", "rev",
+                   "--arm", f"f=fusion|member=fake|base_arm=base|base_path={base_path}"])
+    assert rc == 0
 
 
 def test_the_base_spec_nests_and_selects_the_arm(tmp_path):
