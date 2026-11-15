@@ -189,3 +189,83 @@ The two orders reported above are enough to demonstrate the protocol and answer 
 question as it currently stands: the reversal ties on the half it would be selected on and loses
 nine rows on the half it would be validated on. A wider permutation sweep is now cheap — four arms
 in an hour — and it is the obvious next step, on an otherwise idle machine.
+
+---
+
+## 4. The live runs, and the second time I got the concurrency wrong
+
+Two live arms completed, on the documented server command, against all 415 rows.
+
+| arm | correct | vs the recorded 3B | fixed / broke | exact McNemar |
+|---|---:|---:|---:|---:|
+| `order_frozen` — the live model, shipped order | **326/415 = 78.6%** | **+1**, one flip | 1 / 0 | 1.0000 |
+| `order_rev` — live, eight descriptions reversed | **315/415 = 75.9%** | **−10** | 6 / 16 | 0.0525 |
+
+The control is the important row: the live model reproduces the recording **to one row**, so the
+instrument is stable tonight and the −10 is the order, not the box. The reversal has now been
+measured live twice — 316/415 earlier (`bench/results/p3-transfer/rows.jsonl`) and 315/415 now —
+and both times it costs nine to ten rows at p ≈ 0.05.
+
+Applying the selection protocol to the two live orders:
+
+| order | selection half (208) | other half (207) | vs frozen on the other half |
+|---|---:|---:|---:|
+| `order_frozen` | **161 = 77.4%** | **165 = 79.7%** | — |
+| `order_rev` | 159 = 76.4% | 156 = 75.4% | **−9 rows** |
+
+Frozen wins the selection half by two rows and the validation half by nine. **No order change is
+supported**, on live data this time rather than on recorded data.
+
+### What did not get measured, and the mistake that caused it
+
+The seeded permutation and the paired rewrite did not complete. I started both while the delegated
+run's two arms were still occupying the same two server slots, and 3 h 43 m later my arms had
+produced nothing — 0% CPU, blocked behind four competing clients. I killed them.
+
+That is the same error as §2's, committed again after I had written it down: **the live arms need the
+box to themselves, and I gave them a crowded one.** The difference this time is that the crowding
+came from work I had already delegated, so the fix is scheduling rather than arithmetic: one live
+experiment at a time, chosen before anything else is launched.
+
+The paraphrase for the paired rewrite is written and checked — `filesys_grep` steered to
+content-search, `web_search` steered away from it and towards commentary, every other description
+byte-identical — and it is one command away:
+
+```bash
+python3 -m bench.harness.run --dataset tool_routing \
+  --arm floor_a='recorded|arm=floor_a' --arm order_rewrite='llama_systemone' \
+  --reference floor_a --order shuffle:11 --paraphrase rewrite.json \
+  --write-rows --out bench/results/live-orders-2026-11-10/order_rewrite
+```
+
+Run with the same `--order` as the permutation arm so the wording is the only thing that differs.
+
+---
+
+## 5. Fusion weightings, selected on one half
+
+`f_w40` beat the shipped arm by four rows in §2, and was not adopted because the weight was read off
+the rows being scored. This is the same sweep with the protocol applied: five weights, whole-corpus
+numbers for the record, per-half numbers for the decision.
+
+| weight on the base | whole corpus (415, seeds 0/1/2) | selection half (208) | other half (207) | vs shipped on that half |
+|---|---:|---:|---:|---:|
+| 0.3 | 344 = 82.9% | 182 = 87.5% | 162 = 78.3% | −6 |
+| **0.4** | **353 = 85.1%** | **185 = 88.9%** | 168 = 81.2% | **+0** |
+| 0.5 (shipped) | 349 = 84.1% | 181 = 87.0% | 168 = 81.2% | — |
+| 0.6 | 339 = 81.7% | 171 = 82.2% | 168 = 81.2% | +0 |
+| 0.7 | 332 = 80.0% | 166 = 79.8% | 166 = 80.2% | −2 |
+
+```
+selected on the split half: w40 (0.889 against w50's 0.870, +1.9% there)
+that weight on the other half: 0.812 against 0.812 = +0.0% realised
+verdict: the selection did not transfer.
+```
+
+**The four-row advantage of `w = 0.4` is entirely in the training half.** On the 207 eval rows
+`w = 0.4` and `w = 0.5` are the same arm to the row (168 both). The pooled +28 that made `f_w40`
+look like the best arm in §2 is +4 on the half the weight was chosen on and +0 on the half it was
+not — which is exactly the shape of a knob, and exactly why it was refused then.
+
+`w = 0.5` stays shipped. Not because 0.4 scored worse — it did not — but because nothing survives
+selection to justify moving.

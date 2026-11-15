@@ -259,22 +259,54 @@ def assign_folds(groups: Iterable[str], folds: int = 5, seed: int = 0,
     return out
 
 
+def _leaking(row: Row, held_out: set[str]) -> bool:
+    """True when this training row is declared to hand over wording a held-out group contains."""
+    declared = (row.meta or {}).get("leaks_into")
+    if not declared:
+        return False
+    targets = {declared} if isinstance(declared, str) else set(declared)
+    return bool(targets & held_out)
+
+
 def grouped_cv(rows: Sequence[Row], make: Callable[[], object], folds: int = 5,
-               seed: int = 0, options_for=None, stratify: bool = True) -> dict:
+               seed: int = 0, options_for=None, stratify: bool = True,
+               fold_of: dict[str, int] | None = None,
+               fit_pool: Sequence[Row] | None = None) -> dict:
     """Fit on the other folds, score the held-out fold, and record the assignment.
 
     ``make()`` must return a *fresh, unfitted* predictor exposing ``fit(rows)``. The point
     of the fold map being written into the artifact is that a 97% in-sample number and an
     88% shipped number differ by which rows shared a fold.
+
+    Two optional overrides exist because a protocol is not an implementation detail:
+
+    ``fold_of``
+        an explicit group -> fold map instead of ``assign_folds``. This is how a result
+        measured somewhere else is re-scored here on *its* folds rather than on folds that
+        merely look similar; the map is still written into the artifact.
+
+    ``fit_pool``
+        an explicit training pool instead of "the other folds of the rows being scored". A
+        pool row is dropped for a fold when its own group is held out, or when
+        ``meta.leaks_into`` names a held-out group — a reference that is a literal slot fill
+        of a held-out phrasing family would otherwise hand the model the wording it is about
+        to be scored on.
     """
-    fold_of = assign_folds((r.group for r in rows), folds, seed,
-                           labels=((r.group, r.label) for r in rows), stratify=stratify)
+    if fold_of is None:
+        fold_of = assign_folds((r.group for r in rows), folds, seed,
+                               labels=((r.group, r.label) for r in rows), stratify=stratify)
+    pool = list(fit_pool) if fit_pool is not None else None
     per_fold = []
     fitted: list[dict] = []
     oof: list[Record] = []
     for k in range(folds):
         test = [r for r in rows if fold_of[r.group] == k]
-        train = [r for r in rows if fold_of[r.group] != k]
+        held_out = {g for g, fold in fold_of.items() if fold == k}
+        if pool is None:
+            train = [r for r in rows if fold_of[r.group] != k]
+        else:
+            train = [r for r in pool
+                     if fold_of.get(r.group, -1) != k and not _leaking(r, held_out)]
         if not test:
             per_fold.append({"fold": k, "n_test": 0, "n_train": len(train), "accuracy": None,
                              "train_missing_labels": []})
@@ -295,7 +327,7 @@ def grouped_cv(rows: Sequence[Row], make: Callable[[], object], folds: int = 5,
                          "accuracy": acc["accuracy"], "correct": acc["correct"],
                          "train_missing_labels": sorted({r.label for r in test} - trained)})
     return {"folds": folds, "seed": seed, "fold_of": fold_of, "per_fold": per_fold,
-            "stratified": bool(stratify),
+            "stratified": bool(stratify), "fit_pool": None if pool is None else len(pool),
             "n_groups": len(set(fold_of)), "n_labels": len({r.label for r in rows}),
             "oof": oof, "oof_accuracy": accuracy(oof), "fold_predictors": fitted}
 

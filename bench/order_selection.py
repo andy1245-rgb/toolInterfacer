@@ -82,6 +82,11 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--dir", default=DEFAULT_DIR)
     ap.add_argument("--by", default="split", choices=("split", "family"),
                     help="how to halve the rows: the declared split, or family parity")
+    ap.add_argument("--noun", default="order",
+                    help="what is being selected (order, weight, …) — used in the verdict")
+    ap.add_argument("--reference", default="",
+                    help="the arm every other is compared against (default: order_frozen, else "
+                         "the first arm by name)")
     ap.add_argument("--only", default="",
                     help="comma-separated arm names to keep; the rest are ignored")
     ap.add_argument("--rows", action="append", default=[],
@@ -112,7 +117,8 @@ def main(argv: list[str]) -> int:
     if len(arms) < 2:
         raise SystemExit(f"{directory} holds {len(arms)} arm(s); selection needs at least two")
 
-    reference = "order_frozen" if "order_frozen" in arms else sorted(arms)[0]
+    reference = (args.reference or
+                 next((n for n in ("order_frozen", "w50", "floor_a") if n in arms), sorted(arms)[0]))
     any_id = next(iter(arms[reference]))
     first, second = halve(arms[reference], args.by)
     if not first or not second:
@@ -139,15 +145,15 @@ def main(argv: list[str]) -> int:
     gain_realised = best_b - frozen[1]
     print(f"\nselected on the {args.by} half: {best_name} "
           f"({best_a:.3f} against {reference}'s {frozen[0]:.3f}, +{gain_selected:.1%} there)")
-    print(f"that order on the other half: {best_b:.3f} against {frozen[1]:.3f} "
+    print(f"that {args.noun} on the other half: {best_b:.3f} against {frozen[1]:.3f} "
           f"= {gain_realised:+.1%} realised")
     if best_name == reference:
-        print("\nverdict: the frozen order won the selection too — no order change is supported.")
+        print(f"\nverdict: {reference} won the selection too — no {args.noun} change is supported.")
         return 0
     if gain_realised <= 0:
-        print(f"\nverdict: the selection did not transfer. The order that won the {args.by} half "
-              f"loses {abs(gain_realised):.1%} on the other half, so the gain was fitted to the "
-              f"half it was chosen on and there is no order result here.")
+        print(f"\nverdict: the selection did not transfer. The {args.noun} that won the {args.by} "
+              f"half loses {abs(gain_realised):.1%} on the other half, so the gain was fitted to "
+              f"the half it was chosen on and there is no {args.noun} result here.")
         return 0
     print(f"\nverdict: the selection transferred, at {gain_realised:+.1%} on the half it was not "
           f"chosen on. That is the number to quote, not the {gain_selected:+.1%} selection gain.")
