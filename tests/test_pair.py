@@ -434,9 +434,13 @@ class RegistrationTest(unittest.TestCase):
         decide["cascade"]["enabled"] = False
         self.addCleanup(lambda: self._restore(before))
         backend = resolve("choice")
-        self.assertIsInstance(backend, FastPathBackend)
-        self.assertIsInstance(backend.primary, PairBackend)
-        self.assertEqual(backend.name, "pair")
+        # shadow mode wraps the resolved backend when decide.shadow.enabled is on, and it
+        # forwards every attribute, so unwrap before asserting the shape. What matters is that
+        # resolve() hands back the pair inside the fast path, not the wrapper's class name.
+        inner = getattr(backend, "inner", backend)
+        self.assertIsInstance(inner, FastPathBackend)
+        self.assertIsInstance(inner.primary, PairBackend)
+        self.assertEqual(inner.name, "pair")
 
     def _restore(self, before):
         decide = load()["decide"]

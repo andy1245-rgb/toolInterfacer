@@ -204,6 +204,17 @@ class ShadowBackend(DecideBackend):
     def last_source(self) -> str:
         return str(getattr(self.inner, "last_source", "") or "")
 
+    def __getattr__(self, name: str):
+        """Anything the inner backend exposes, the shadow exposes: a wrapper must be invisible.
+
+        `resolve()` returns this object now, and callers legitimately reach through it for
+        `.cache`, `.gate`, `.primary` and the rest. Without this, enabling a logging feature
+        changed the shape of what `resolve()` returns — thirteen tests said so.
+        """
+        if name == "inner":
+            raise AttributeError(name)
+        return getattr(self.inner, name)
+
 
 def wrap(backend: DecideBackend, cfg: dict[str, Any] | None = None) -> DecideBackend:
     """Wrap the resolved backend when shadowing is on; otherwise return it untouched."""

@@ -419,3 +419,25 @@ def test_every_artifact_pins_the_order_and_both_hashes(tmp_path):
     assert dataset["frozen_order_sha"] == option_order_sha(tuple(dataset["options"]))
     assert dataset["order_sha"] != dataset["frozen_order_sha"]
     assert dataset["order_mode"] == "rev"
+
+
+def test_a_paraphrase_keeps_the_dataset_authored(tmp_path):
+    """Rewording descriptions must not turn an authored corpus into a foreign one.
+
+    The rows are unchanged — only the text the predictor reads — so the authorship flag and the
+    source hash travel with it. Dropping them sent the row-level records beside the dataset instead
+    of into the run's artifact, which is a data-rule violation wearing a bug's clothes.
+    """
+    mapping = tmp_path / "words.json"
+    mapping.write_text(json.dumps({"filesys_grep": "search inside file contents"}))
+    out = tmp_path / "art"
+    rc = run.main(["--dataset", "tool_routing", "--limit", "6",
+                   "--arm", "b=recorded|arm=floor_a", "--paraphrase", str(mapping),
+                   "--write-rows", "--out", str(out)])
+    assert rc == 0
+    dataset = json.loads((out / "summary.json").read_text())["dataset"]
+    assert dataset["authored"] is True
+    assert dataset["sha256"]
+    assert dataset["paraphrase"] == {"filesys_grep": "search inside file contents"}
+    assert dataset["paraphrase_sha"]
+    assert (out / "rows.jsonl").exists(), "an authored corpus may write its rows into the artifact"
