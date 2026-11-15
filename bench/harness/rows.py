@@ -69,6 +69,7 @@ class Dataset:
     source: str = ""
     authored: bool = False
     sha256: str = ""
+    paraphrase: dict = field(default_factory=dict)
 
     def __len__(self) -> int:
         return len(self.rows)
@@ -93,7 +94,8 @@ class Dataset:
         """A subset by ``meta[name]`` — the seam the v3 train/test split uses."""
         keep = set(values)
         rows = tuple(r for r in self.rows if r.meta.get(name) in keep)
-        return Dataset(self.name, rows, self.options, self.source, self.authored, self.sha256)
+        return Dataset(self.name, rows, self.options, self.source, self.authored, self.sha256,
+                       self.paraphrase)
 
 
 def _validate(rows: list[Row], name: str) -> tuple[Row, ...]:

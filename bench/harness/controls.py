@@ -94,7 +94,13 @@ def apply_paraphrase(ds: Dataset, mapping: dict[str, str]) -> Dataset:
         meta["paraphrased"] = sorted(mapping)
         rows.append(Row(id=r.id, text=r.text, label=r.label, group=r.group,
                         options=r.options, meta=meta))
-    return Dataset(ds.name, tuple(rows), ds.options, ds.source)
+    # authorship and the source hash travel with the paraphrase: the *rows* are unchanged, only
+    # the descriptions the predictor reads, so this is still the same authored corpus — dropping
+    # the flag here silently made a non-authored dataset out of an authored one and sent the
+    # row-level records beside the dataset instead of into the run's artifact
+    return Dataset(ds.name, tuple(rows), ds.options, ds.source,
+                   authored=ds.authored, sha256=ds.sha256,
+                   paraphrase=dict(mapping))
 
 
 # ------------------------------------------------------------------ pre-registration

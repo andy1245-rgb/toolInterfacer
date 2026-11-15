@@ -308,8 +308,19 @@ def main(argv: list[str] | None = None) -> int:
     summary = {"dataset": {"name": dataset.name, "rows": len(dataset), "source": source,
                            "source_kind": source_kind, "authored": dataset.authored,
                            "sha256": dataset.sha256,
-                           "options": list(dataset.options), "order_sha": order_sha,
+                           # the order is an instrument input, so the artifact carries the tuple
+                           # itself and both hashes: the order this run used, and the corpus's
+                           # frozen one. A reader can rebuild either without guessing, and a
+                           # comparison between two artifacts can tell whether the instrument
+                           # moved or only the arms.
+                           "options": list(dataset.options),
+                           "options_order": list(controls.permute(dataset.options, order_mode)),
+                           "order_sha": order_sha,
+                           "frozen_order_sha": option_order_sha(dataset.options),
                            "order_mode": order_mode or "frozen",
+                           "paraphrase": dataset.paraphrase,
+                           "paraphrase_sha": option_order_sha(
+                               tuple(f"{k}={v}" for k, v in sorted(dataset.paraphrase.items()))),
                            "split": args.split or "all",
                            "fit_on": args.fit_on or "none",
                            "cv": args.cv, "cv_seeds": cv_seeds,

@@ -1,0 +1,12 @@
+{
+  "arm": "order_rewrite",
+  "note": "The paired rewrite, declared before the run: filesys_grep's description gains its content-search clause and web_search's is adjusted to match, in ONE arm, with the option order FROZEN. The frozen order is deliberate — it makes the wording the only difference from the reference, so the delta is attributable to the pair and not to a permutation. Reference is the frozen floor_a recording. Conditions are the rewrite's, not the fusion's: a rewrite moves a handful of rows, so the bar is 3x the A/A floor (1), p < 0.05, no label worse than -3, and BOTH edited labels must net non-negative — the whole point of a paired edit is that grep's gain is not paid out of web_search.",
+  "edited_labels": ["filesys_grep", "web_search"],
+  "conditions": [
+    {"name": "C1 delta >= 4 rows (3x the A/A floor)", "expr": "delta >= 4"},
+    {"name": "C2 mcnemar_p < 0.05", "expr": "mcnemar_p < 0.05"},
+    {"name": "C3 no label worse than -3", "expr": "min_label_net >= -3"},
+    {"name": "C4 filesys_grep nets >= 0", "expr": "ledger.filesys_grep.net >= 0"},
+    {"name": "C5 web_search nets >= 0", "expr": "ledger.web_search.net >= 0"}
+  ]
+}

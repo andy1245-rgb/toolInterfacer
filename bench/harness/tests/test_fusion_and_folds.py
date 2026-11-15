@@ -399,3 +399,23 @@ def test_the_protected_set_is_recorded_in_the_artifact(tmp_path):
     described = json.loads((out / "summary.json").read_text())["arms"]["f"]["grouped_cv"]
     per_fold = described["per_seed"]["0"]["fold_predictors"]
     assert per_fold and per_fold[0]["protect"] == ["web_search", "web_fetch"]
+
+
+def test_every_artifact_pins_the_order_and_both_hashes(tmp_path):
+    """The order is an instrument input, so an artifact carries the tuple, not only its hash.
+
+    A reader must be able to rebuild the order a run used, and to tell whether two artifacts differ
+    because the instrument moved or because the arms did.
+    """
+    from bench.harness.protocol import option_order_sha
+
+    out = tmp_path / "art"
+    rc = run.main(["--dataset", "tool_routing", "--limit", "6",
+                   "--arm", "b=recorded|arm=floor_a", "--order", "rev", "--out", str(out)])
+    assert rc == 0
+    dataset = json.loads((out / "summary.json").read_text())["dataset"]
+    assert dataset["options_order"] == list(reversed(dataset["options"]))
+    assert dataset["order_sha"] == option_order_sha(tuple(dataset["options_order"]))
+    assert dataset["frozen_order_sha"] == option_order_sha(tuple(dataset["options"]))
+    assert dataset["order_sha"] != dataset["frozen_order_sha"]
+    assert dataset["order_mode"] == "rev"
