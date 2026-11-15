@@ -156,21 +156,36 @@ it would be selected on and loses nine rows on the half it would be validated on
 tuned on the pooled 415 would have seen −9 and been right for the wrong reason; anyone who tuned on
 the selection half would have seen a tie and learned nothing.
 
-### What cut the breadth short: the box is four times slower than the recording
+### What cut the breadth short — and the first explanation was wrong
 
-Five permutations were planned (`rev`, and seeded shuffles 11/23/37, plus the paired rewrite). Two
-were abandoned mid-run because a single live call now costs **7.8 s** on a two-option question:
+Five permutations were planned (`rev`, seeded shuffles 11/23/37, plus the paired rewrite). Two were
+abandoned mid-run. The reason first written here — "the box is four times slower than the
+recording" — **is wrong, and the correction matters more than the original claim.**
 
-```
-$ time curl -s -o /dev/null -w '%{time_total}s\n' -X POST localhost:8080/v1/systemone -d …
-7.781593s
-```
+Measured under load: 10.3–13 s per row. Measured with the box quiet: **2.3 s per row per slot,
+which is the recorded pace.** The difference was contention, and the contention was largely mine:
+load average 31 on 12 cores, 383 MB of free RAM, 8.8 GB in swap, with `ladder_port.py` and
+`needle_probe.py` from another session in this repository **and my own ten-arm offline sweep** all
+running while the live arms did. The box did not get slower. I filled it up.
 
-against the **2 714 ms** p50 stored in the recorded artifact. A 415-row live arm is therefore ~70
-minutes tonight, not the ~19 the recording implies, and six of them do not fit in a job. The
-throughput finding matters on its own: any cost model built on 2.7 s/call is 4× optimistic on this
-box, which includes the front-door arithmetic in `docs/classical-revival-2026-11-10.md`.
+Three concrete consequences, all self-inflicted:
 
-The two orders that are reported above are enough to demonstrate the protocol and enough to answer
-the ordering question as it stands — the reversal loses — but they are not a search. A real search
-needs the remaining permutations run overnight, and it needs the latency number re-recorded first.
+1. **Running an offline arm sweep and a live order arm at the same time measures the scheduler, not
+the model.** The 7.8 s single call that produced the wrong claim was taken while nine other python
+processes were running.
+2. **The live arms competed with each other** on the same two server slots: the server logged 928
+releases against the 830 requests two arms could produce, and the surplus was my own probe plus a
+third client left running.
+3. **I killed the server mid-run.** A `pkill` aimed at the process I had started also killed the
+server a delegated run was using, aborting its arms. The delegated run's own report caught both the
+foreign client and the kill and said so.
+
+The planning number, corrected: **≈2.3 s per row per slot on a quiet box**, so a 415-row live arm is
+~16 minutes and four arms fit in an hour — *if nothing else is running*. That is a scheduling
+constraint, not a hardware one, and it is the reason the breadth request needs a quiet box rather
+than a faster one.
+
+The two orders reported above are enough to demonstrate the protocol and answer the ordering
+question as it currently stands: the reversal ties on the half it would be selected on and loses
+nine rows on the half it would be validated on. A wider permutation sweep is now cheap — four arms
+in an hour — and it is the obvious next step, on an otherwise idle machine.
