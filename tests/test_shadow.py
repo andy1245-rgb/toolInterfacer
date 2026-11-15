@@ -157,10 +157,15 @@ def test_an_outcome_without_a_decision_is_dropped(tmp_path):
 
 # ------------------------------------------------------------------ the switch
 
-def test_shadow_is_off_by_default_and_wrapping_is_a_no_op():
+def test_wrapping_is_the_identity_when_disabled():
     inner = Stub("filesys_glob", {"filesys_glob": 1.0})
-    assert shadow.wrap(inner) is inner
-    assert shadow.enabled() is False
+    assert shadow.wrap(inner, cfg={"enabled": False}) is inner
+
+
+def test_the_shipped_config_has_shadow_on():
+    """The operator approved shadowing for live traffic on 2026-11-10; this pins the decision."""
+    assert shadow.enabled() is True
+    assert shadow.enabled({"enabled": False}) is False
 
 
 def test_the_log_never_defaults_inside_the_repository():
@@ -173,3 +178,42 @@ def test_the_log_path_can_be_redirected(monkeypatch, tmp_path):
     assert shadow.log_path({}) == tmp_path / "from-env.jsonl"
     assert shadow.log_path({"log_path": str(tmp_path / "explicit.jsonl")}) == \
         tmp_path / "explicit.jsonl"
+
+
+# ------------------------------------------------------------------ the diagnostic that matters on live traffic
+
+def test_an_abstaining_member_is_logged_as_abstaining_not_blended(tmp_path):
+    """The only live choice question is `decide_pick`, whose options are candidate ids.
+
+    `classical` is an op router, so it abstains there by construction. Averaging a uniform
+    distribution into the served answer would have rewritten it towards the middle and reported
+    agreement that came from arithmetic rather than from competence.
+    """
+    backend = _enabled(tmp_path, Stub(None, {"filesys_read": 0.166, "filesys_glob": 0.166}))
+    answer = backend.choice("anything", "", {"cand-1": "a", "cand-2": "b"})
+    assert answer.choice == "filesys_glob"
+    line = _lines(tmp_path)[0]
+    assert line["why"] == "member abstained"
+    assert line["member_answered"] is False
+    assert line["fused"] == line["served"]
+
+
+def test_the_vocabulary_overlap_is_recorded_per_request(tmp_path):
+    class VocabStub(Stub):
+        def fitted_labels(self):
+            return ("filesys_read", "web_search")
+
+    backend = _enabled(tmp_path, VocabStub("filesys_read", {"filesys_read": 0.9,
+                                                            "web_search": 0.1}))
+    backend.choice("anything", "", {"filesys_read": "r", "web_search": "w", "other": "o"})
+    line = _lines(tmp_path)[0]
+    assert line["vocab_match"] == pytest.approx(0.667), "two of three offered options are known"
+
+
+def test_a_classical_tier_can_report_its_vocabulary():
+    """The check that would have caught the dead tier, available from the backend itself."""
+    from ti.decide.backends.classical import ClassicalBackend
+
+    labels = ClassicalBackend().fitted_labels()
+    assert set(labels) == {"filesys_read", "filesys_glob", "filesys_grep", "decide_pick",
+                           "decide_extract", "web_search", "web_fetch", "reddit_digest"}

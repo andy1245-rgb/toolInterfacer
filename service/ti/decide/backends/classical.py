@@ -85,6 +85,15 @@ class ClassicalBackend(DecideBackend):
             )
         return cached
 
+    def fitted_labels(self) -> tuple[str, ...]:
+        """The labels the fitted model can name — its vocabulary, checkable from outside.
+
+        The tier answered nothing for its whole life because this set and the offered option set
+        shared no names. Nothing could ask it that question; now anything can, and shadow mode
+        records the overlap per request (`vocab_match`).
+        """
+        return tuple(sorted(self.model().model.classes))
+
     # -- primitive --------------------------------------------------------
 
     def choice(self, state: Any, instructions: str,

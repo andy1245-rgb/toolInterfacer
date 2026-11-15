@@ -135,6 +135,23 @@ class ShadowBackend(DecideBackend):
         _current.set(decision_id)
         return answer
 
+    def _vocab_match(self, offered: list[str]) -> float | None:
+        """How much of the offered option set this member was even fitted to name.
+
+        `classical` is an op router; `decide_pick` offers candidate ids. A member whose vocabulary
+        matches none of the options cannot answer, and its abstention then says nothing about the
+        policy being shadowed — this field is what makes that visible per record instead of leaving
+        a reader to infer it from a uniform distribution.
+        """
+        labels = getattr(self.member, "fitted_labels", None)
+        if not callable(labels) or not offered:
+            return None
+        try:
+            fitted = set(labels())
+        except Exception:  # noqa: BLE001 - a member that cannot describe itself is not fatal
+            return None
+        return round(len([o for o in offered if o in fitted]) / len(offered), 3)
+
     def _counterfactual(self, state: Any, instructions: str, criteria: dict[str, str],
                         answer: ChoiceAnswer) -> dict[str, Any]:
         offered = list(criteria)
@@ -146,11 +163,20 @@ class ShadowBackend(DecideBackend):
         if base_choice in self.protect:
             out.update({"member": None, "fused": base_choice, "why": "protected"})
             return out
+        out["vocab_match"] = self._vocab_match(offered)
         member = self.member.choice(state, instructions, criteria)
         out["member"] = getattr(member, "choice", None)
         out["member_conf"] = round(float(getattr(member, "confidence", 0.0) or 0.0), 6)
+        out["member_answered"] = out["member"] is not None
         base_dist = _dist(answer, offered)
         member_dist = _dist(member, offered)
+        if out["member"] is None:
+            # an abstaining member has no opinion, and averaging a uniform distribution into the
+            # served answer would silently rewrite it towards the middle — on live traffic the
+            # only choice question asked is `decide_pick`, whose options are candidate ids, so
+            # this is the common case and it must read as itself
+            out.update({"fused": base_choice, "why": "member abstained"})
+            return out
         if base_dist is None or member_dist is None:
             out.update({"fused": base_choice, "why": "one side carries no distribution"})
             return out
@@ -179,9 +205,9 @@ class ShadowBackend(DecideBackend):
         return str(getattr(self.inner, "last_source", "") or "")
 
 
-def wrap(backend: DecideBackend) -> DecideBackend:
+def wrap(backend: DecideBackend, cfg: dict[str, Any] | None = None) -> DecideBackend:
     """Wrap the resolved backend when shadowing is on; otherwise return it untouched."""
-    cfg = _block()
+    cfg = _block() if cfg is None else dict(cfg)
     if not cfg.get("enabled"):
         return backend
     try:

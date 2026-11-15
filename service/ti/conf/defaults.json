@@ -34,6 +34,13 @@
       "default_choice_conf": 0.95,
       "default_noul": 0.9
     },
+    "shadow": {
+      "enabled": true,
+      "member": "classical",
+      "weights": 0.5,
+      "protect": ["web_search", "web_fetch"],
+      "log_path": ""
+    },
     "openrouter": {
       "base_url": "https://openrouter.ai/api/v1",
       "model": "z-ai/glm-5.3-flash",
