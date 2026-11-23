@@ -1656,6 +1656,12 @@
   ],
   "order_mode": "frozen",
   "order_sha": "6b70f586ec061715",
+  "paraphrase": {
+   "filesys_grep": "Search inside local file contents for a pattern or string; the answer is which code or text contains it.",
+   "web_search": "Search the open web for pages and discussion about a topic by keywords, including writing or commentary about a subject; not local files or code."
+  },
+  "paraphrase_note": "recorded here after the run: the summary was emitted before apply_paraphrase stopped dropping the field. The mapping was recovered from the arm's own row records, which carry the descriptions the model read, so it is the wording that was actually used and not a retyped copy.",
+  "paraphrase_sha": "6c99bd077a106e09",
   "rows": 415,
   "sha256": "",
   "source": "bench/data/heldout_v3.json",

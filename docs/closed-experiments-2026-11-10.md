@@ -151,3 +151,31 @@ way, pre-registered the same way.
 
 **Record:** `bench/results/paired-rewrite-2026-11-10/` (summary, rows, and the paraphrase inside
 the artifact), `docs/order-and-variants-2026-11-10.md`.
+
+---
+
+## 5. Replaying the assistant's own tool calls as routing traffic — CLOSED as a benchmark
+
+**The claim:** the pi session corpus can stand in for real routing traffic, so the shadow can be
+compared against what was actually chosen without enabling anything.
+
+**What was measured** (`docs/history-replay-2026-11-10.md`): 203 transcripts yield **20 000**
+request/outcome pairs over 182 sessions, 28 tools, a 4.4% tool error rate and a 16.7%
+agent-management share.
+
+* The shipped eight-op member shares **zero** names with the assistant's tools — it answers
+  **0 of 20 000**.
+* A member fitted on the corpus's own vocabulary, held out by session, scores **68.8%**
+  [0.681, 0.694] against a constant `bash` at **70.7%**, with **0.4%** coverage at 90% precision.
+
+**Why it is closed as a benchmark:** the agent's tool choice is not a function of the request text.
+71% of calls are `bash`, and the rest depend on session state — the file just read, the command that
+failed, the artifact in hand — which is not in the user's message. A classifier below the majority
+class cannot be compared against anything.
+
+**What it is still good for:** the error rate and per-tool latency are real numbers about what a
+wrong choice costs. And it is the strongest evidence yet that the shadow's meaningful traffic is the
+*router's* decisions, not the assistant's.
+
+**What would reopen it:** a corpus of router decisions (the shadow log, once the service runs with
+it), or a member that beats the constant on held-out sessions.

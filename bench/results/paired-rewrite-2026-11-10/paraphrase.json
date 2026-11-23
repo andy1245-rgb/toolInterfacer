@@ -1,0 +1,4 @@
+{
+ "filesys_grep": "Search inside local file contents for a pattern or string; the answer is which code or text contains it.",
+ "web_search": "Search the open web for pages and discussion about a topic by keywords, including writing or commentary about a subject; not local files or code."
+}
