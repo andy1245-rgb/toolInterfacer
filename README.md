@@ -47,8 +47,7 @@ count, which pays when a model pass is expensive and costs when the local decisi
 rather than asserted (round-trip rows below). The `ms` column is the service's own timing, and the
 first decision in a fresh process pays a one-off backend warm-up.
 
-That is the whole quickstart: Python 3.10+ and nothing else, since the package declares no runtime
-dependencies.
+That is the whole quickstart: Python 3.10+ and nothing else — no install, no runtime dependencies.
 
 ```sh
 git clone https://github.com/andy1245-rgb/toolInterfacer.git
@@ -142,6 +141,16 @@ answer — reversing the eight option descriptions alone moved 34 of 415 argmaxe
 (p = 0.0784). Conditions go into a pre-registration file *before* the run, an A/A arm measures the
 floor, and a per-label ledger shows who paid for the rows won. Exact McNemar throughout.
 
+Real traffic is the other input: `bench/history_replay.py` walks pi session transcripts and pairs
+every user request with the tool call that followed it and how it ended — **20 000 request/outcome
+pairs over 182 sessions**, 28 tools, a 4.4% tool-call error rate
+([`docs/history-replay-2026-11-10.md`](docs/history-replay-2026-11-10.md)). It executes nothing,
+calls no model, and writes no request, argument or path: only counts leave the corpus. It cannot
+answer the fusion question, because an agent's tool choice is not a function of the request text —
+71% of calls are `bash` and the rest turn on session state. The eight-op member answers **0 of
+20 000**; a member fitted on this vocabulary, held out by session, scores **68.8%** against a
+constant `bash` at **70.7%**.
+
 The baseline the headline compares against reproduces offline, with no model and no server:
 
 ```sh
@@ -159,21 +168,38 @@ python3 -m bench.harness.run --dataset tool_routing \
 ship. `--aa` scores the reference twice and flips 0 of 415 choices: a determinism check, not a floor
 for a served model.
 
+The paired rewrite is that shape taken to its conclusion, pinned so it is not re-run: `filesys_grep`
+gained the ten rows the earlier rewrite gained and `web_search` paid nothing, and the run is still a
+**FAIL** — 327/415 against 325/415, **+2 rows at p = 0.8145** — because the cost moved to
+`reddit_digest` (−4) and broke three of its five pre-registered conditions. The numbers are in
+`bench/results/paired-rewrite-2026-11-10/`; `tests/test_paired_rewrite_claim.py` recomputes them.
+
+Coverage is now reported, and its absence had a cost. `classical` answered **0 of 415** for
+its whole life — a 17-label voice-assistant corpus against the eight ops, no shared names, so it
+abstained on every request it ever received, and an abstaining tier looks exactly like a cautious
+one. Revived on a corpus built from the training split it answers all 415 at **85.8% pooled** and
+**71.5% held out** (148/207), below the 79.7% of the 3B it would replace: the pooled figure counts
+the 208 rows it was fitted on. `python3 bench/backend_coverage.py --all` prints answered, abstained
+and precision per backend; a detector that answers nothing is never wrong. `heuristic_micro`'s third
+detector emitted a key that is not an op name and matched 0 of 415 rows; the branch is gone, the
+backend still ships, and its two survivors answer 74 of 415, all correct.
+
 Read next: [`docs/fusion-2026-11-10.md`](docs/fusion-2026-11-10.md) for the arm whose four conditions
-passed and the sensitivity that undercuts it,
-[`docs/closed-experiments-2026-11-10.md`](docs/closed-experiments-2026-11-10.md) for five experiments
-shut with the number that closed each, [`docs/eval-harness-2026-11-04.md`](docs/eval-harness-2026-11-04.md)
-for what an honest split does to the earlier local numbers, and
-[`docs/roundtrips-2026-11-03.md`](docs/roundtrips-2026-11-03.md) for the cost side.
+passed and the sensitivity that undercuts it, [`docs/closed-experiments-2026-11-10.md`](docs/closed-experiments-2026-11-10.md)
+for five experiments shut with the number that closed each — the paired rewrite is §4 —
+[`docs/eval-harness-2026-11-04.md`](docs/eval-harness-2026-11-04.md) for what an honest split does to
+the earlier local numbers, and [`docs/roundtrips-2026-11-03.md`](docs/roundtrips-2026-11-03.md) for the
+cost side.
 
 ## Shadow mode
 
 `decide.shadow` ships **on** in `service/ti/conf/defaults.json`, and it is the shape any other router
-change should take: measure the counterfactual on real traffic before serving it. It returns exactly
-the answer the service returned before — `choice()` hands back the inner backend's object, untouched —
-and appends what the fused policy *would* have said on the same request, plus one `outcome` line per
-executed op under the same `id`: which op ran, whether it errored, and how many attempts it took. So
-"the shadow was right and the served answer was wrong" is a number, not an impression.
+change should take: measure the counterfactual on real traffic before serving it. It changes **no
+behaviour** — the routing tier, the served answer, the cache and the pre-gate are what they were,
+and `choice()` hands back the inner backend's object, untouched. It adds, per request, what the fused
+policy *would* have said plus one `outcome` line per executed op under the same `id`: which op ran,
+whether it errored, and how many attempts it took. So "the shadow was right and the served answer
+was wrong" is a number, not an impression.
 
 | | |
 |---|---|
@@ -200,9 +226,8 @@ says which question it does measure, and what would make it measure the other.
   is a row in the spec's level table and nothing else.
 - **Three of the nine ops need software this repo does not vendor.** `ops.web_search.script`,
   `ops.web_search_provider.script` and `ops.web_fetch.script` ship empty, and `reddit_digest` is
-  written against a CLI that is not included; until you point them somewhere those ops raise
-  `CliMissingBinary` naming the key. `--live` needs a llama-server and a GGUF, both gitignored local
-  state rather than repo content.
+  written against a CLI that is not included; those ops raise `CliMissingBinary` naming the key.
+  `--live` needs a llama-server and a GGUF, both gitignored.
 - **The token is broad on purpose, and is the exposure to read first.** Any valid `X-TI-Token`
   authorises reading any file under `ops.filesys.roots` — by default the account's own `~/.ssh` and
   `~/.aws`, runtime paths outside the repo. Documented rather than hidden:
